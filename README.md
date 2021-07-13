@@ -135,12 +135,12 @@ Finally, we'll connect our away team to the Sela stat calculator.
 Our away team now has a number of team-specific stats related to facing an enemy Sela. For example:
 ```
 >>> team.selaNumSurvivors
-mappingproxy({('Sela', 'TPol'): 3.9675140169440333,
-              ('Sela', 'Geordi'): 3.9504591357572014,
-              ('Sela', 'Tomalak'): 3.9330452098536446,
-              ('TPol', 'Geordi'): 3.962098808910768,
-              ('TPol', 'Tomalak'): 3.9446848830072114,
-              ('Geordi', 'Tomalak'): 3.9276300018203796})
+mappingproxy({('Sela', 'TPol'): 3.334155929514963,
+              ('Sela', 'Geordi'): 3.2894552124626872,
+              ('Sela', 'Tomalak'): 3.187458769932807,
+              ('TPol', 'Geordi'): 3.3001377713212223,
+              ('TPol', 'Tomalak'): 3.1981413287913427,
+              ('Geordi', 'Tomalak'): 3.1534406117390663})
 ```
 What we see here is the average number of survivors of Sela's Surprise Attack, as a function of who we put behind cover. As we see, this is maximized by placing Sela and T'Pol  behind cover.
 
@@ -167,7 +167,7 @@ Next, we need to tell the guru which stats are important to us.
 ```
 >>> guru.addStats('survSelaNoCover', 'effTechDmg')
 ```
-We have told the guru that the most important stat for us is the character's chance of surviving Sela's Surprise Attack when out of cover, and the second most important stat is our effective tech damage. These will be the stat priorities by default for all characters.
+We have told the guru that the most important stat for us is the character's chance of surviving Sela's Surprise Attack when out of cover, and the second most important stat is our effective tech damage. These will be the stat priorities, by default, for all characters.
 
 But that doesn't make sense for T'Pol and Tomalak, so we can customize those.
 ```
@@ -270,7 +270,7 @@ Tomalak 1: None
 survSelaNoCover: 0.6259, effHealth: 7657.3
 ----------------------------------------
 ```
-Notice that we ended up giving Geordi one of Tomalak's particles, so he now only has one. We can equip him like we did T'Pol, or we can equip the whole team at once. When we equip the whole team at once, they are equipped from top to bottom, and locked particles will not be touched. So the guru will first equip Sela, will skip T'Pol and Geordi, and then equip Tomalak.
+Notice that we ended up giving Geordi one of Tomalak's particles, so he now only has one. We can equip Tomalak like we equipped T'Pol, or we can equip the whole team at once. When we equip the whole team at once, they are equipped from top to bottom, and locked particles will not be touched. So the guru will first equip Sela, will skip T'Pol and Geordi, and then equip Tomalak.
 ```
 >>> guru.equip()
 Sela 0: [*170] Nexus L5 (D/GC/GD/H)                                     

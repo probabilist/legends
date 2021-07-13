@@ -8,3 +8,4 @@ README.html
 tests.py
 pconfigdata.json
 gurudata.json
+*.csv
