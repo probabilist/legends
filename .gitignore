@@ -1,0 +1,10 @@
+.DS_Store
+*.sublime*
+_archive
+__pycache__
+decodeAssets
+_legendsplus.py
+README.html
+tests.py
+pconfigdata.json
+gurudata.json
