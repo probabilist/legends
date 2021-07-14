@@ -3,9 +3,10 @@
 _archive
 __pycache__
 decodeAssets
-_legendsplus.py
-README.html
-tests.py
 pconfigdata.json
 gurudata.json
 *.csv
+_legendsplus.py
+README.html
+tests.py
+daily.py

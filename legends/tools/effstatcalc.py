@@ -3,9 +3,10 @@
 """
 
 from types import MappingProxyType
+from legends.utils.printable import Printable
 from legends.utils.eventhandler import EventHandler
 
-class EffStatCalc():
+class EffStatCalc(Printable):
     """An Effective Stat Calculator for stats that denote averages.
 
     Computes effective attack and tech damage, which represent the
@@ -38,6 +39,8 @@ class EffStatCalc():
                 are registered with the effective stat calculator.
 
         """
+        Printable.__init__(self)
+        self.collapse = ['effTechDmg', 'effAttDmg', 'effHealth']
         self.onChange = EventHandler()
         self._nextID = 1    # characters register so their stats are
                             # stored for quick retrieval; they are given

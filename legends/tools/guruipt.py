@@ -12,6 +12,7 @@ from tabulate import tabulate
 from os.path import abspath, dirname
 from json import load, dump
 from legends.utils.functions import printProgressBar
+from legends.utils.printable import Printable
 from legends.tools.particleguru import ParticleGuru, Filter, Stat
 
 ABBREVIATIONS = {
@@ -108,7 +109,7 @@ def roundStat(num):
     """
     return round(num, 4) if num < 10 else round(num, 2)
 
-class GuruIPT():
+class GuruIPT(Printable):
     """Particle Guru Interactive Prompt Tool.
 
     A wrapper around a ParticleGuru instance for use at a Python
@@ -132,6 +133,7 @@ class GuruIPT():
             saveSlot (SaveSlot): The save slot to use.
 
         """
+        Printable.__init__(self)
         saveSlot.savePartConfig()
         self._guru = ParticleGuru(saveSlot)
         self.chars = []
@@ -191,8 +193,8 @@ class GuruIPT():
 
     @property
     def stats(self):
-        """dict of str:str: A dictionary mapping character names to the
-        names of the stats associated with that character.
+        """dict of str:(tuple of str): A dictionary mapping character
+        names to the names of the stats associated with that character.
         """
         return MappingProxyType({
             charName: tuple(stat.name for stat in self._guru.stats[charName])
@@ -261,6 +263,19 @@ class GuruIPT():
             [self._statMenu[statName] for statName in statNames]
         )
 
+    def copyStats(self, fromChar, *toChars):
+        """Copies stats from one character to others.
+
+        Args:
+            fromChar (str): The name of the character to copy from.
+            toChars (list of str): The names of the characters to copy
+                to.
+
+        """
+        statNames = self.stats[fromChar]
+        for charName in toChars:
+            self.addStats(*statNames, char=charName)
+
     def clearStats(self, charName='default'):
         """Removes all stats associated with the given character. If no
         character is provided, removes all default stats.
@@ -304,7 +319,9 @@ class GuruIPT():
                 `chars` attribute. If not provided, all characters will
                 be equipped.
             arg2 (int): If `arg1` is an int and `arg2` is provided, all
-                characters in `chars[arg1:arg2]` will be equipped.
+                characters in `chars[arg1:arg2]` will be equipped. If
+                `arg1` is an int and `arg2` is not provided, all
+                characters in `chars[:arg1]` will be equipped.
             showOnly (bool): If True, the suggestion process is skipped
                 so that all that occurs is a display of the character's
                 equipped particles.
@@ -318,7 +335,8 @@ class GuruIPT():
             arg2 = arg1 + 1
         else:
             if arg2 is None:
-                arg2 = arg1 + 1
+                arg2 = arg1
+                arg1 = 0
         for charName in self.chars[arg1:arg2]:
             char = self.roster.get(charName)
             charID = char.inPool[1]
@@ -392,6 +410,29 @@ class GuruIPT():
         header = ['Particle'] + list(impact.stats.keys())
         print(tabulate(table, headers=header))
 
+    def seePart(self, partID):
+        """Given a particle ID, prints to the console the particle's
+        information and location. Stats are not alphabetized, but rather
+        shown in the order they appear on the particle. The location
+        that is shown is the location in the embedded `saveSlot` object,
+        which may differ from the in-game location if the guru has moved
+        particles.
+
+        Args:
+            partID (int): The ID of the particle to display.
+
+        """
+        part = self.laboratory.items[partID]
+        if part.equippedOn == None:
+            locationStr = 'None'
+        else:
+            char, slot = part.equippedOn
+            locationStr = char.name + ' ' + str(slot)
+        print(
+            partDisplay(part, partID in self.locked, False)
+            + ' equipped on ' + locationStr
+        )
+
     def move(self, partID, charName, slot):
         """Moves the given particle to the give slot on the given
         character.
@@ -443,19 +484,33 @@ class GuruIPT():
         ))
         return changes       
 
+    def changesDisplay(self):
+        """Returns a list of strings to print to the console when
+        showing changes to the particle configuration. Each item in the
+        list is a line on the console.
+
+        Returns:
+            list of str: The lines to print.
+
+        """
+        changes = self.getChanges()
+        disp = []
+        for partID, (from_, to) in changes.items():
+            part = self.laboratory.items[partID]
+            disp.append(
+                partDisplay(part)
+                + ' from ' + equippedOnDisplay(from_)
+                + ' to ' + equippedOnDisplay(to)
+            )
+        return disp
+
     def changes(self):
         """Prints to the console the changes returned by the
         `getChanges` method.
 
         """
-        changes = self.getChanges()
-        for partID, (from_, to) in changes.items():
-            part = self.laboratory.items[partID]
-            print(
-                partDisplay(part)
-                + ' from ' + equippedOnDisplay(from_)
-                + ' to ' + equippedOnDisplay(to)
-            )
+        for line in self.changesDisplay():
+            print(line)
 
     def save(self):
         """Saves the `chars`, `stats`, and `locked` attributes to a json
