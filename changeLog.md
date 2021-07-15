@@ -2,7 +2,7 @@
 
 ## Version 1.0.2
 
-* Fixed typos in the comments that offer mathematical explanations for the workings of the Sela stat calculator.
+* Fixed typos in comments that offer mathematical explanations for the workings of the Sela stat calculator.
 * Added a function, `roundSigFig`, to `utils.functions` that rounds numbers according to significant figures.
 * Added a boolean `probability` attribute to the `Stat` class in the `particleguru` module, to indicate if the stat is meant to represent a probability.
 * Changes to `guruipt` module:
@@ -16,7 +16,7 @@
         + For greater compartmentalization, separated off part of the `seePart` method to a new method, `seePartDisplay`. Modified these methods to utilize the new `location` argument in the `partDisplay` function, and to allow a list of particle IDs as arguments.
         + Added a boolean `force` argument to the `move` method, giving the option to unlock, move, and relock particles with a single method call.
         + Fixed the `changesDisplay` method to display stats as they appear on the particle in-game, rather than in alphabetical order.
-    - Fixed the docstring for the `changes` method.
+        + Fixed the docstring for the `changes` method.
 
 ## Version 1.0.1
 
