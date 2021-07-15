@@ -17143,7 +17143,7 @@
     "hidden": false,
     "cooldown": 3,
     "startingCooldown": 0,
-    "numTargets": 3,
+    "numTargets": 2,
     "targetType": "Enemies",
     "targetState": "Alive",
     "isPassive": false,

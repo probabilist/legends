@@ -2,7 +2,7 @@
 *.sublime*
 _archive
 __pycache__
-decodeAssets
+temp.cs
 pconfigdata.json
 gurudata.json
 *.csv

@@ -5,15 +5,13 @@ update to the game is released.
 
 Instructions for updating game assets: Open Star Trek: Legends and let
 it play for a while to be sure all assets download. Run
-`legends.setup.getAssets`. Open the 'decodeAssets' project in Visual
-Studio. Edit it as needed to read assets from `[cwd]/assets` and to
-place deserialized assets in `[cwd]/data-new`. Add a reference of
-`Assembly-CSharp.dll` as needed, then run the code. Use
-`legends.setup.exportData` to export the current data to the current
-working directory. Compare the new data and the current data to be sure
-everything looks okay. Once satisfied, use `legends.updateData` to
-replace the data inside the `legends` package with the contents of the
-`data-new` folder.
+`legends.setup.getAssets`. In Visual Studio, create an empty C# project,
+add reference to 'Assembly-CSharp.dll', then add the code in 'temp.cs'
+somewhere in the project. Use `legends.setup.exportData` to export the
+current data to the current working directory. Compare the new data and
+the current data to be sure everything looks okay. Once satisfied, use
+`legends.updateData` to replace the data inside the `legends` package
+with the contents of the `data-new` folder.
 
 Attributes:
     CHARACTER (dict): A direct parsing of `data/GSCharacter.json`
