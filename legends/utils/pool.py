@@ -73,7 +73,7 @@ class Pool(Printable):
     and may receive communications from the pool. As such, items can
     only be in one pool at a time. Subclasses can disable this by
     setting the `_blind` attribute to True. In this case, items do not
-    need an `inPool` attribute or a `onPoolChange` method.
+    need an `inPool` attribute or an `onPoolChange` method.
 
     Attributes:
         onChange (EventHandler): When the pool is modified, it uses this

@@ -1,8 +1,7 @@
 """This module contains the constants used in the `legends` package.
 Most data is read from the json files in the 'data' folder, which were
-parsed from the Unity game assets. Those assets were lasted extracted on
-June 19, 2021. They need to be updated each time an update to the game
-is released.
+parsed from the Unity game assets. They need to be updated each time an
+update to the game is released.
 
 Instructions for updating game assets: Open Star Trek: Legends and let
 it play for a while to be sure all assets download. Run
