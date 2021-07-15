@@ -3,6 +3,8 @@
 Attributes:
     ABBREVIATIONS (dict of str:str): Abbreviations used by the
         ParticleGuruIPT class.
+    PROBABILITIES (list of str): The names of stats that represent
+        probabilities.
     PATH (str): The full, absolute path of this module.
 
 """
@@ -11,7 +13,8 @@ from types import MappingProxyType
 from tabulate import tabulate
 from os.path import abspath, dirname
 from json import load, dump
-from legends.utils.functions import printProgressBar
+from math import log
+from legends.utils.functions import printProgressBar, roundSigFig
 from legends.utils.printable import Printable
 from legends.tools.particleguru import ParticleGuru, Filter, Stat
 
@@ -26,6 +29,11 @@ ABBREVIATIONS = {
     'GlancingChance': 'GC',
     'GlancingDamage': 'GD'
 }
+
+PROBABILITIES = ['CritChance', 'CritDamage', 'GlancingChance',
+    'GlancingDamage', 'Resolve', 'survSelaCover', 'survSelaNoCover',
+    'survSela'
+]
 
 PATH = abspath(dirname(__file__))
 
@@ -54,7 +62,7 @@ def equippedOnDisplay(equippedOn):
         display = char.name + ' ' + str(slot)
     return display
 
-def partDisplay(particle, locked=False, sort=True):
+def partDisplay(particle, locked=False, sort=True, location=False):
     """Builds and returns a display string for the given particle that
     includes its laboratory ID, type, rarity, level, and stats. The ID
     is preceded by an asterisk if the particle is locked.
@@ -79,6 +87,13 @@ def partDisplay(particle, locked=False, sort=True):
     if sort:
         statAbbrs.sort()
     disp += ' (' + '/'.join(statAbbrs) + ')'
+    if location:
+        if particle.equippedOn == None:
+            locationStr = 'None'
+        else:
+            char, slot = particle.equippedOn
+            locationStr = char.name + ' ' + str(slot)
+        disp += ' equipped on ' + locationStr
     return disp
 
 def printSlot(char, slot, locked=False):
@@ -98,7 +113,7 @@ def printSlot(char, slot, locked=False):
 
 def roundStat(num):
     """Rounds the given number to 2 decimal places, unless the number is
-    less than 10, in which case, it rounds it to 4 decimal places.
+    less than 10, in which case, it rounds it to 4 significant figures.
 
     Args:
         num (float): The number to round.
@@ -107,7 +122,7 @@ def roundStat(num):
         float: The rounded number.
 
     """
-    return round(num, 4) if num < 10 else round(num, 2)
+    return roundSigFig(num, 4) if num < 10 else round(num, 2)
 
 class GuruIPT(Printable):
     """Particle Guru Interactive Prompt Tool.
@@ -151,22 +166,30 @@ class GuruIPT(Printable):
         for statName in testChar.totalStats:
             def func(char, name=statName):
                 return char.totalStats[name]
-            self._statMenu[statName] = Stat(statName, func)
+            self._statMenu[statName] = Stat(
+                statName, func, statName in PROBABILITIES
+            )
         if testChar.registeredESC is not None:
             for statName in testChar.effStats:
                 def func(char, name=statName):
                     return char.effStats[name]
-                self._statMenu[statName] = Stat(statName, func)
+                self._statMenu[statName] = Stat(
+                    statName, func, statName in PROBABILITIES
+                )
         if testChar.registeredSSC is not None:
             for statName in testChar.selaStats:
                 def func(char, name=statName):
                     return char.selaStats[name]
-                self._statMenu[statName] = Stat(statName, func)
+                self._statMenu[statName] = Stat(
+                    statName, func, statName in PROBABILITIES
+                )
             def func(char):
                 cover = char.selaStats['survSelaCover']
                 noCover = char.selaStats['survSelaNoCover']
                 return (cover + noCover)/2
-            self._statMenu['survSela'] = Stat('survSela', func)
+            self._statMenu['survSela'] = Stat(
+                'survSela', func, statName in PROBABILITIES
+            )
 
     @property
     def saveSlot(self):
@@ -287,6 +310,29 @@ class GuruIPT(Printable):
         """
         self._guru.stats[charName] = []
 
+    def changeStat(self, index, statName, char='default'):
+        """Changes one of the stats for the given character.
+
+        Args:
+            index (int): The 0-based index of the stat to change.
+            statName (str): The name of the stat to change it to.
+            char (str): The name of the character whose stat to change.
+                If not provided, a default stat will be changed.
+
+        """
+        self._guru.stats[char][index] = self._statMenu[statName]
+
+    def removeStat(self, statName, char='default'):
+        """Removes the given stat from the given character. If not
+        character is provided, removes the stat from the default list.
+
+        Args:
+            statName (str): The name of the stat to remove.
+            char (str): The name of the character whose stat to remove.
+
+        """
+        self._guru.stats[char].remove(self._statMenu[statName])
+
     def addRoster(self):
         """Adds all characters from the roster to the `chars` list,
         skipping characters that are already on the list.
@@ -368,7 +414,7 @@ class GuruIPT(Printable):
         """A shortcut for `self.equip(arg1, arg2, showOnly=True)`."""
         self.equip(arg1, arg2, True)
 
-    def suggest(self, charName, slot, allParts=False):
+    def suggest(self, charName, slot, allParts=False, logodds=False):
         """Shows the guru's suggestions for the given character and
         slot.
 
@@ -376,6 +422,8 @@ class GuruIPT(Printable):
             charName (str): The character to pass to the guru.
             slot (int): The slot to pass to the guru.
             allParts (bool): If True, dominated particles are omitted.
+            logodds (bool): If True, probabilities are displayed as
+                log-odds.
 
         """
         # get character
@@ -403,6 +451,11 @@ class GuruIPT(Printable):
         table = []
         for partID, impact in impacts.items():
             part = self.laboratory.items[partID]
+            if logodds:
+                for statName in impact.stats:
+                    if self._statMenu[statName].probability:
+                        p = impact.stats[statName]
+                        impact.stats[statName] = log(p/(1 - p))
             row = [partDisplay(part)] + list(
                 roundStat(val) for val in impact.stats.values()
             )
@@ -410,30 +463,41 @@ class GuruIPT(Printable):
         header = ['Particle'] + list(impact.stats.keys())
         print(tabulate(table, headers=header))
 
-    def seePart(self, partID):
-        """Given a particle ID, prints to the console the particle's
-        information and location. Stats are not alphabetized, but rather
-        shown in the order they appear on the particle. The location
-        that is shown is the location in the embedded `saveSlot` object,
-        which may differ from the in-game location if the guru has moved
-        particles.
+    def seePartDisplay(self, *partIDs):
+        """Returns a list of strings to print to the console when
+        showing particle information and location. Stats are not
+        alphabetized, but rather shown in the order they appear on the
+        particle. The location that is shown is the location in the
+        embedded `saveSlot` object, which may differ from the in-game
+        location if the guru has moved particles. To see the location
+        of the particle at the time the guru instance was created (which
+        should match the in-game position), use the `changes` method.
 
         Args:
-            partID (int): The ID of the particle to display.
+            partIDs (list of int): The IDs of the particles whose
+                information to display.
+
+        Returns:
+            list of str: The lines to print.
 
         """
-        part = self.laboratory.items[partID]
-        if part.equippedOn == None:
-            locationStr = 'None'
-        else:
-            char, slot = part.equippedOn
-            locationStr = char.name + ' ' + str(slot)
-        print(
-            partDisplay(part, partID in self.locked, False)
-            + ' equipped on ' + locationStr
-        )
+        disp = []
+        for partID in partIDs:
+            part = self.laboratory.items[partID]
+            disp.append(
+                partDisplay(part, partID in self.locked, False, True)
+            )
+        return disp
 
-    def move(self, partID, charName, slot):
+    def seePart(self, *partIDs):
+        """Prints to the console the changes returned by the
+        `seePartDisplay` method.
+
+        """
+        for line in self.seePartDisplay(*partIDs):
+            print(line)
+
+    def move(self, partID, charName, slot, force=False):
         """Moves the given particle to the give slot on the given
         character.
 
@@ -441,6 +505,10 @@ class GuruIPT(Printable):
             partID (int): The ID of the particle to move.
             charName (str): The name of the character to move it to.
             slot (int): The slot to move it to.
+            force (bool): If True, both the particle being moved and the
+                particle in the destination slot are unlocked
+                automatically, and the method ends by locking the moved
+                particle.
 
         Raises:
             ValueError: If either the given particle or the particle in
@@ -449,9 +517,17 @@ class GuruIPT(Printable):
         """
         char = self.roster.get(charName)
         equippedPartID = char.particles[slot].inPool[1]
+        if force:
+            for idNum in (equippedPartID, partID):
+                try:
+                    self.locked.remove(idNum)
+                except ValueError:
+                    pass
         if partID in self.locked or equippedPartID in self.locked:
             raise ValueError('cannot move locked particle')
         char.addParticle(self.laboratory.items[partID], slot)
+        if force:
+            self.locked.append(partID)
 
     def getChanges(self):
         """Builds and returns a dictionary showing changes in the
@@ -486,8 +562,9 @@ class GuruIPT(Printable):
 
     def changesDisplay(self):
         """Returns a list of strings to print to the console when
-        showing changes to the particle configuration. Each item in the
-        list is a line on the console.
+        showing changes to the particle configuration. Particle stats
+        are listed in the order they appear on the particle. Each item
+        in the list is a line on the console.
 
         Returns:
             list of str: The lines to print.
@@ -498,7 +575,7 @@ class GuruIPT(Printable):
         for partID, (from_, to) in changes.items():
             part = self.laboratory.items[partID]
             disp.append(
-                partDisplay(part)
+                partDisplay(part, sort=False)
                 + ' from ' + equippedOnDisplay(from_)
                 + ' to ' + equippedOnDisplay(to)
             )
@@ -506,7 +583,7 @@ class GuruIPT(Printable):
 
     def changes(self):
         """Prints to the console the changes returned by the
-        `getChanges` method.
+        `changesDisplay` method.
 
         """
         for line in self.changesDisplay():

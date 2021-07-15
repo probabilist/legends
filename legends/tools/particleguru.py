@@ -34,10 +34,11 @@ class Stat():
 
     Attributes:
         name (str): The name of the stat.
+        probability (bool): True if the stat represents a probability.
 
     """
 
-    def __init__(self, name, func):
+    def __init__(self, name, func, prob=False):
         """Creates a stat with the given name and function.
 
         Args:
@@ -49,6 +50,7 @@ class Stat():
         """
         self.name = name
         self._func = func
+        self.probability = prob
 
     def __call__(self, char):
         """Calls the wrapped function."""

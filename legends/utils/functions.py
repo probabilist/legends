@@ -8,6 +8,7 @@ from itertools import chain, combinations
 from base64 import decodebytes
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
+from math import log10, floor
 
 __all__ = [
     'readData', 'writeToCSV', 'fixedSum', 'powerset', 'AESdecrypt',
@@ -139,3 +140,22 @@ def printProgressBar(steps, step):
     )
     if step == steps:
         print(' ' * 72, end='\r')
+
+def roundSigFig(numToRound, numSigFigs):
+    # We will say that, within a decimal number, a digit is in
+    # "position" n if it is in the (10^n)s place. For example, in the
+    # number 12.345, the digit 4 is in the hundredths place (i.e. the
+    # (1/100)s place). Since 1/100 = 10^{-2}, the digit 4 is in position
+    # -2.
+    # 
+    # Notice that `round(num, n)` keeps the (rounded) digit in position
+    # -n, and everything to the left of it.
+    # 
+    leadPos = floor(log10(numToRound))  # the position of the leading
+                                        # digit
+    keepPos = leadPos - (numSigFigs - 1)    # want to keep the digit in
+                                            # this position, and
+                                            # everything to the left
+    return round(numToRound, -keepPos)
+
+
