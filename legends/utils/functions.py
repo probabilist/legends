@@ -142,6 +142,17 @@ def printProgressBar(steps, step):
         print(' ' * 72, end='\r')
 
 def roundSigFig(numToRound, numSigFigs):
+    """Rounds the given number to the given number of significant
+    figures.
+
+    Args:
+        numToRound (float): The number to round.
+        numSigFigs (int): The number of significant figures to keep.
+
+    Returns:
+        float: The rounded number.
+
+    """
     # We will say that, within a decimal number, a digit is in
     # "position" n if it is in the (10^n)s place. For example, in the
     # number 12.345, the digit 4 is in the hundredths place (i.e. the

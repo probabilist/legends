@@ -12,7 +12,7 @@
         + Modified constructor to set the `probability` attribute of the `Stat` objects in the embedded stat menu.
         + Added `changeStat` and `removeStat` methods.
         + Added a boolean `logodds` argument to the `suggest` method, giving the option to display probabilities as log-odds.
-        + For greater compartmentalization, separated off part of the `seePart` method to a new method, `seePartDisplay`. Modified these methods to utilize the new `location` argument in the `partDisplay` function.
+        + For greater compartmentalization, separated off part of the `seePart` method to a new method, `seePartDisplay`. Modified these methods to utilize the new `location` argument in the `partDisplay` function, and to allow a list of particle IDs as arguments.
         + Added a boolean `force` argument to the `move` method, giving the option to unlock, move, and relock particles with a single method call.
         + Fixed the `changesDisplay` method to display stats as they appear on the particle in-game, rather than in alphabetical order.
     - Fixed the docstring for the `changes` method.
