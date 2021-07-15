@@ -419,7 +419,7 @@ class SelaStatCalc():
         # Notice that P(S | H = b) is either 0 or 1. Thus, if
         # Q(.) = P(.| N = k), then 
         # 
-        #   P(S | N = k) = \sum_{b in B: H = b => S} Q(H = b)
+        #   P(S | N = k) = \sum_{b in B: (H = b) => S} Q(H = b)
         #
         # Let
         #
@@ -473,7 +473,7 @@ class SelaStatCalc():
         # 
         #   C_S = "The members of S are the only survivors."
         # 
-        # We want P(B_S). Number the away team members from 0 to 3. Let
+        # We want P(C_S). Number the away team members from 0 to 3. Let
         # 
         #   A_j = "The j-th character survives.",
         # 
@@ -497,7 +497,7 @@ class SelaStatCalc():
         # Note that A_0, ..., A_3 are conditionally independent given T.
         # Thus,
         #
-        #   P(C_S) = E[P(A | T)]
+        #   P(C_S) = E[P(C_S | T)]
         #          = E[ \prod_{j in J} P(A_j | T)
         #                 * \prod_{j in J^c} P(A_j^c | T) ].
         #
@@ -520,7 +520,7 @@ class SelaStatCalc():
         #   B = {b in {0, ..., 4}^4: b_0 + ... + b_3 = 4}.
         #
         # We use the `surviveProb` method to compute P(A_j | N_j = b_j)
-        # and P(A_j | N_j = b_j). The final piece is
+        # and P(A_j^c | N_j = b_j). The final piece is
         #
         #   P(N = b) = (4!/(b_0!b_1!b_2!b_3!)) ((1/4)^4)
         # 
@@ -531,7 +531,7 @@ class SelaStatCalc():
         #
         # and
         #
-        #   Q(S) = \sum_{b in B} P(N = b)
+        #   Q(S) = \sum_{b in B} r_b
         #             * \prod_{j in J}   P(A_j | N_j = b_j)
         #             * \prod_{j in J^c} P(A_j^c | N_j = b_j)
         #

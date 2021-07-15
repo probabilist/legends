@@ -2,6 +2,7 @@
 
 ## Version 1.0.2
 
+* Fixed typos in the comments that offer mathematical explanations for the workings of the Sela stat calculator.
 * Added a function, `roundSigFig`, to `utils.functions` that rounds numbers according to significant figures.
 * Added a boolean `probability` attribute to the `Stat` class in the `particleguru` module, to indicate if the stat is meant to represent a probability.
 * Changes to `guruipt` module:
