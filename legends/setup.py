@@ -17,11 +17,74 @@ import UnityPy
 from legends.utils.functions import readData
 
 __all__ = [
-    'ROOT', 'getSummonPool', 'getPartStats', 'getPowerFunc', 'getSkillIDs',
-    'getAssets'
+    'ROOT', 'getItems', 'getSummonPool', 'getPartStats', 'getPowerFunc',
+    'getSkillIDs', 'getAssets'
 ]
 
 ROOT = abspath(dirname(__file__))
+
+def getItems():
+    """Parses `GSItem.json` as a dictionary. Restructures that
+    dictionary so it is more useful to the `legends` package. Then
+    returns the restructures dictionary.
+
+    Returns:
+        dict: The restructured dictionary.
+
+    """
+    unwantedCategories = ['Token', 'PlayerAvatar', 'Emote']
+    unwantedCurrency = [
+        'Credits', 'Dilithium', 'Tritanium', 'Player XP', 'PvP Stamina',
+        'Alliance Stamina', 'EventPoint', 'PvP Chest Points'
+    ]
+    unwantedItem = [
+        'Shards Advanced', 'Shards Elite', 'Shards Credit', 'Shards Biomimetic',
+        'Shards Protomatter', 'Shards_Worf', 'Shards_McCoy', 'SeasonPoint'
+    ]
+    unwanted = unwantedCurrency + unwantedItem
+    itemGlossary = {
+        'Biomimetic Gel':       'Bio-Mimetic Gel',
+        'Advanced Bio-Gel':     'Very Rare Bio-Gel',
+        'Elite Bio-Gel':        'Epic Bio-Gel',
+        'Proto Command 01':     'Command Protomatter',
+        'Proto Engineer 01':    'Engineer Protomatter',
+        'Proto Security 01':    'Security Protomatter',
+        'Proto Science 01':     'Science Protomatter',
+        'Proto Medical 01':     'Medical Protomatter',
+        'Medal':                'PvP Medal',
+        'Shards Basic':         'Orb'
+    }
+    plurals = {
+        'Power Cell':   'Power Cells',
+        'PvP Medal':    'PvP Medals',
+        'Orb':          'Orbs',
+        'Antiproton':   'Antiprotons',
+        'Antineutron':  'Antineutrons'
+    }
+    GSItem = readData('GSItem', ROOT)
+    def modify(name, data):
+        newData = data.copy()
+        if data['icon'][:4] == 'Gear':
+            if data['rarity'] == 'Common':
+                newData['category'] = 'GearLevelingMat'
+            else:
+                newData['category'] = 'GearRankingMat'
+        newName = itemGlossary.get(name, name)
+        newNamePlural = plurals.get(newName, newName)
+        newData['inGameName'] = newName
+        newData['inGameNamePlural'] = newNamePlural
+        return newData
+    GSItem = {
+        name: modify(name, data) for name, data in GSItem.items()
+        if name not in unwanted and data['category'] not in unwantedCategories
+    }
+    items = {}
+    for name, data in GSItem.items():
+        category = data['category']
+        if category not in items:
+            items[category] = {}
+        items[category][name] = data
+    return items
 
 def getSummonPool(summonable):
     """Builds and returns a dictionary giving probabilities associated

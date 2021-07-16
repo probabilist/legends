@@ -31,6 +31,18 @@ Attributes:
     BASE_STAT (dict): A direct parsing of `data/GSBaseStat.json`, but
         with the key, 'MaxHealth', replaced by 'Health' for consistency
         with other constants.
+    ITEMS (dict of str:(dict of str:dict)): A dictionary storing data
+        about items that can be held in the player's inventory. An item
+        has a name, a category, and a collection of data about it. The
+        `ITEMS` dictionary is structures as `ITEMS[category][name] =
+        data`. This dictionary is build from data in `data/GSItem.json`.
+        It contains latinum, power cells, alliance currency, bio-gel,
+        protomatter, pvp medals, orbs, gear leveling mats, and gear
+        ranking mats.
+
+        Example: `ITEMS['GearRankingMat']['Antineutron']` is a
+        dictionary of data related to antineutrons.
+
     RARITIES (list of str): A list of rarities in the game, from low to
         high. The index of a rarity in this list is referred to as a
         'tier' in this package.
@@ -75,7 +87,7 @@ Attributes:
 
 from legends.utils.functions import readData
 from legends.setup import (
-    ROOT, getSummonPool, getPartStats, getPowerFunc, getSkillIDs
+    ROOT, getItems, getSummonPool, getPartStats, getPowerFunc, getSkillIDs
 )
 
 CHARACTER = readData('GSCharacter', ROOT)
@@ -91,6 +103,7 @@ BASE_STAT = {'Health': None}
 BASE_STAT.update(readData('GSBaseStat', ROOT))
 BASE_STAT['Health'] = BASE_STAT['MaxHealth']
 del BASE_STAT['MaxHealth']
+ITEMS = getItems()
 
 RARITIES = ['Common', 'Rare', 'VeryRare', 'Epic', 'Legendary']
 

@@ -7,7 +7,9 @@ from json import load, loads, dump
 from pyperclip import paste
 from base64 import encode, b64decode
 from zlib import decompress
+from copy import deepcopy
 from legends.utils.printable import Printable
+from legends.constants import ITEMS
 from legends.functions import decryptSaveFile
 from legends.classes.particle import Particle
 from legends.classes.collections import Laboratory
@@ -41,9 +43,10 @@ class SaveSlot(Printable):
         self.collapse = ['saveDict', 'laboratory', 'armory', 'roster']
         self._saveDict = None
         self._startDate = None
-        self.laboratory = None
-        self.armory = None
+        self._fullInventory = {}
         self.roster = None
+        self.armory = None
+        self.laboratory = None
         self._savedPartConfig = None
 
     @property
@@ -58,8 +61,29 @@ class SaveSlot(Printable):
 
     @property
     def startDate(self):
-        """(datetime) The date and time the save slot was created."""
+        """datetime: The date and time the save slot was created."""
         return self._startDate
+
+    @property
+    def fullInventory(self):
+        """dict: A copy of `legends.constant.ITEMS` with a `quantity`
+        field added to each item. Fetching this property returns a deep
+        copy of the underlying data, so modifying its value has no
+        persistent effect.
+        """
+        return deepcopy(self._fullInventory)
+
+    @property
+    def inventory(self):
+        """dict: A simplified version of the `fullInventory` property.
+        """
+        inv = {}
+        for category, itemGroup in self._fullInventory.items():
+            inv[category] = {}
+            for name, data in itemGroup.items():
+                displayName = data['inGameNamePlural']
+                inv[category][displayName] = data['quantity']
+        return inv
 
     @property
     def diffPartConfig(self):
@@ -97,6 +121,11 @@ class SaveSlot(Printable):
             self._startDate = datetime.fromtimestamp(
                 self.saveDict['createts'], timezone.utc
             )
+        items = self.saveDict['items']
+        self._fullInventory = deepcopy(ITEMS)
+        for category, itemGroup in self._fullInventory.items():
+            for name, data in itemGroup.items():
+                data['quantity'] = items.get(name, 0)
         self.laboratory = Laboratory()
         for idNum, data in self.saveDict['accessories'].items():
             idNum = int(idNum)

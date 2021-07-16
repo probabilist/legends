@@ -1,5 +1,13 @@
 # Change log
 
+## Version 1.0.3
+
+* Added `GSItem.json` to data.
+* Added a `getItems` function to `setup.py`.
+* Added an `ITEMS` constant to `constants.py`.
+* Added `inventory` and `fullInventory` properties to the `SaveSlot` class.
+* Updated `README` to illustrate viewing the inventory.
+
 ## Version 1.0.2
 
 * Fixed typos in comments that offer mathematical explanations for the workings of the Sela stat calculator.

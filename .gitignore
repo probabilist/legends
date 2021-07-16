@@ -2,6 +2,7 @@
 *.sublime*
 _archive
 __pycache__
+constants
 temp.cs
 pconfigdata.json
 gurudata.json

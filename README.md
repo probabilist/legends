@@ -144,6 +144,14 @@ mappingproxy({('Sela', 'TPol'): 3.334155929514963,
 ```
 What we see here is the average number of survivors of Sela's Surprise Attack, as a function of who we put behind cover. As we see, this is maximized by placing Sela and T'Pol  behind cover.
 
+### Inventory
+
+Player inventory is available in the `SaveSlot` object. To view your inventory, type
+```
+save.inventory
+```
+The inventory contains latinum, power cells, alliance currency, bio-gel, protomatter, pvp medals, orbs, gear leveling mats, and gear ranking mats.
+
 ### Particle guru
 
 Our save slot also contains all our particles.
