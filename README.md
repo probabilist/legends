@@ -11,23 +11,29 @@ There are many ways to install Python, so google around for one that works for y
 (Note: This package makes use of the insertion-order preservation nature of `dict` objects. This is an official part of Python 3.7 and an unofficial part of Python 3.6. The package will probably work in 3.6 or higher, but not in anything lower.)
 
 1. Create a new folder somewhere. For the sake of the example, let's say your new folder is 'Documents/StarTrek'.
+
 2. Copy the 'legends' folder and the 'requirements.txt' text file from this repository into your new folder, 'Documents/StarTrek'.
+
 3. Open a command prompt at 'Documents/StarTrek'. There are many ways to do this. On a Mac, you can open Finder, navigate to 'Documents', right click on 'StarTrek', and select 'Services > New Terminal at Folder'.
+
 4. At the command prompt, enter
 ```
 % pip install -r requirements.txt
 ```
 This will install the packages needed to run the `legends` package.
+
 5. (optional) At the command prompt, enter
 ```
 % python -m pydoc -b
 ```
 This will open a browser page with Python documentation. Find the "**legends** (package)" link and click it. You can now explore all the package documentation.
+
 6. At the command prompt, enter
 ```
 % python
 ```
 This will open the `Python` interpreter in interactive mode. Your command prompt ought to change to the Python prompt `>>>`.
+
 7. At the Python prompt, enter
 ```
 >>> from legends import *
