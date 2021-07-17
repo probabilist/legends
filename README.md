@@ -2,23 +2,41 @@
 
 A Python package for Star Trek: Legends.
 
-## Accessing documentation
+## Installation instructions
 
-Everything is fully documented with docstrings. You can explore them however you usually prefer to read docstrings, but here is my favorite method. Copy the "legends" folder to the current working directory. At a command prompt, type
+This package is developed and tested in Python 3.7.11. Unless you already use Python, you will probably need to install it. For example, may Mac came with Python 2.7 pre-installed. This package will not run on Python 2.7.
+
+There are many ways to install Python, so google around for one that works for you. Once you get Python installed, follow the below instructions.
+
+(Note: This package makes use of the insertion-order preservation nature of `dict` objects. This is an official part of Python 3.7 and an unofficial part of Python 3.6. The package will probably work in 3.6 or higher, but not in anything lower.)
+
+1. Create a new folder somewhere. For the sake of the example, let's say your new folder is 'Documents/StarTrek'.
+2. Copy the 'legends' folder and the 'requirements.txt' text file from this repository into your new folder, 'Documents/StarTrek'.
+3. Open a command prompt at 'Documents/StarTrek'. There are many ways to do this. On a Mac, you can open Finder, navigate to 'Documents', right click on 'StarTrek', and select 'Services > New Terminal at Folder'.
+4. At the command prompt, enter
 ```
-python -m pydoc -b
+% pip install -r requirements.txt
+```
+This will install the packages needed to run the `legends` package.
+5. (optional) At the command prompt, enter
+```
+% python -m pydoc -b
 ```
 This will open a browser page with Python documentation. Find the "**legends** (package)" link and click it. You can now explore all the package documentation.
-
-## A brief tour
-
-### Getting started
-
-Copy the "legends" folder to your current working directory. Open the Python interpreter in interactive mode and type
+6. At the command prompt, enter
+```
+% python
+```
+This will open the `Python` interpreter in interactive mode. Your command prompt ought to change to the Python prompt `>>>`.
+7. At the Python prompt, enter
 ```
 >>> from legends import *
 ```
 You are now ready to explore the functionality of the `legends` package.
+
+## A brief tour
+
+### Getting started
 
 Let's build a roster of maxed characters to explore:
 ```

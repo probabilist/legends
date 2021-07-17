@@ -87,13 +87,7 @@ def partDisplay(particle, locked=False, sort=True, location=False):
     if sort:
         statAbbrs.sort()
     disp += ' (' + '/'.join(statAbbrs) + ')'
-    if location:
-        if particle.equippedOn == None:
-            locationStr = 'None'
-        else:
-            char, slot = particle.equippedOn
-            locationStr = char.name + ' ' + str(slot)
-        disp += ' equipped on ' + locationStr
+    disp += ' ' + equippedOnDisplay(particle.equippedOn)
     return disp
 
 def printSlot(char, slot, locked=False):
@@ -332,6 +326,19 @@ class GuruIPT(Printable):
 
         """
         self._guru.stats[char].remove(self._statMenu[statName])
+
+    def insertStat(self, index, statName, char='default'):
+        """Inserts the given stat to the stats of the given character at
+        the given index.
+
+        Args:
+            index (int): The index of the stat before which to insert.
+            statName (str): The name of the stat to insert.
+            char (str): The name of the character whose stats are being
+                modified.
+
+        """
+        self._guru.stats[char].insert(index, self._statMenu[statName])
 
     def addRoster(self):
         """Adds all characters from the roster to the `chars` list,

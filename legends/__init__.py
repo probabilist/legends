@@ -2,7 +2,7 @@
 
 Namespaces:
     legends.utils
-    legends.setup
+    legends.build
     legends
     legends.tools
 
@@ -14,7 +14,7 @@ Aliases:
 """
 
 from legends import utils
-from legends import setup
+from legends import build
 from legends.constants import *
 from legends.functions import *
 from legends.classes import *

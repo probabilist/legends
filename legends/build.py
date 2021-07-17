@@ -26,7 +26,7 @@ ROOT = abspath(dirname(__file__))
 def getItems():
     """Parses `GSItem.json` as a dictionary. Restructures that
     dictionary so it is more useful to the `legends` package. Then
-    returns the restructures dictionary.
+    returns the restructured dictionary.
 
     Returns:
         dict: The restructured dictionary.

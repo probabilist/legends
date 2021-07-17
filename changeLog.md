@@ -1,5 +1,15 @@
 # Change log
 
+## Version 1.0.4
+
+* Updated the README file to include detailed installation instructions.
+* Added `requirements.txt` for use in installation.
+* Added an `insertStat` method to `GuruIPT`.
+* Disabled summon rates for `AwayTeam` objects. (They had inherited them from the `Roster` class, but they are not relevant for the `AwayTeam` subclass.)
+* When dealing with over 1000 particles, `printProgressBar` would not completely clear itself after each display. That has been fixed.
+* Renamed `legends.setup` to `legends.build`.
+* Removed redundant code in `guruipt.partDisplay`.
+
 ## Version 1.0.3
 
 * Added `GSItem.json` to data.

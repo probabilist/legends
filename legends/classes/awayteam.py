@@ -32,6 +32,16 @@ class AwayTeam(Roster):
         self._selaStats = None
 
     @property
+    def summonRatesNonCommon(self):
+        """(override) Summon rates not implements for away teams."""
+        return None
+
+    @property
+    def summonRatesAll(self):
+        """(override) Summon rates not implements for away teams."""
+        return None
+
+    @property
     def weights(self):
         """dict of str:float: A dictionary mapping character names to a
         weight (positive number) that represents the relative importance

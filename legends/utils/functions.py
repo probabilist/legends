@@ -126,7 +126,8 @@ def printProgressBar(steps, step):
     """Prints a progress bar to the console.
 
     Args:
-        steps (int): The total number of steps in the iteration.
+        steps (int): The total number of steps in the iteration. Should
+            not exceed 9999.
         step (int): The current step in the iteration.
 
     """
@@ -139,7 +140,7 @@ def printProgressBar(steps, step):
         end='\r'
     )
     if step == steps:
-        print(' ' * 72, end='\r')
+        print(' ' * 73, end='\r')
 
 def roundSigFig(numToRound, numSigFigs):
     """Rounds the given number to the given number of significant
