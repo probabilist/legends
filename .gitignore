@@ -3,6 +3,7 @@
 _archive
 __pycache__
 constants
+AssetStudio-legends
 temp.cs
 pconfigdata.json
 gurudata.json

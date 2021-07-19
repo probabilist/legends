@@ -3,15 +3,15 @@ Most data is read from the json files in the 'data' folder, which were
 parsed from the Unity game assets. They need to be updated each time an
 update to the game is released.
 
-Instructions for updating game assets: Open Star Trek: Legends and let
-it play for a while to be sure all assets download. Run
-`legends.build.getAssets`. In Visual Studio, create an empty C# project,
-add reference to 'Assembly-CSharp.dll', then add the code in 'temp.cs'
-somewhere in the project. Use `legends.build.exportData` to export the
-current data to the current working directory. Compare the new data and
-the current data to be sure everything looks okay. Once satisfied, use
-`legends.build.updateData` to replace the data inside the `legends`
-package with the contents of the `data-new` folder.
+Instructions for updating game assets on a Mac: Download the Asset
+Studios C# solution (available at
+https://github.com/TemporalAgent7/AssetStudio/tree/legends). Replace
+'AssetStudio-legends/LegendsData/Program.cs' with the 'Program.cs' file
+from this repository. Open Star Trek: Legends and let it play a while,
+giving it time for all the assets to be downloaded. Run the
+'LegendsData' project. Extracted assets will be in
+'AssetStudio-legends/LegendsData/bin/Debug/net5.0/extracted'. Compare
+them to what is in 'legends/data' and copy over as needed.
 
 Attributes:
     CHARACTER (dict): A direct parsing of `data/GSCharacter.json`

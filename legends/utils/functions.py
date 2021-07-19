@@ -131,7 +131,7 @@ def printProgressBar(steps, step):
         step (int): The current step in the iteration.
 
     """
-    width = 45
+    width = 44
     units = int(width * step / steps)
     percent = int(100 * step / steps)
     print(
@@ -140,7 +140,7 @@ def printProgressBar(steps, step):
         end='\r'
     )
     if step == steps:
-        print(' ' * 73, end='\r')
+        print(' ' * 72, end='\r')
 
 def roundSigFig(numToRound, numSigFigs):
     """Rounds the given number to the given number of significant

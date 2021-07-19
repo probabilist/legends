@@ -87,7 +87,8 @@ def partDisplay(particle, locked=False, sort=True, location=False):
     if sort:
         statAbbrs.sort()
     disp += ' (' + '/'.join(statAbbrs) + ')'
-    disp += ' ' + equippedOnDisplay(particle.equippedOn)
+    if location:
+        disp += ' ' + equippedOnDisplay(particle.equippedOn)
     return disp
 
 def printSlot(char, slot, locked=False):

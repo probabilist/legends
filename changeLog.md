@@ -1,5 +1,12 @@
 # Change log
 
+## Version 1.0.5
+
+* Updated instructions in `constants.py` for extracting game data.
+* Added a C# file, `Program.cs`, used for extracting game data.
+* Added two new files to `legends/data` in preparation for new features.
+* Minor visual bug fixes.
+
 ## Version 1.0.4
 
 * Updated the README file to include detailed installation instructions.
