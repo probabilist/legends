@@ -13,6 +13,14 @@ giving it time for all the assets to be downloaded. Run the
 'AssetStudio-legends/LegendsData/bin/Debug/net5.0/extracted'. Compare
 them to what is in 'legends/data' and copy over as needed.
 
+Optional: First call the `getAssetList` function in `extract-assets.py`
+to obtain a list of all text assets currently in the game. Then copy
+this list into 'Program.cs'. This would only be necessary if a new text
+asset were introduced in a future update.
+
+Note: In 'Program.cs', `download` should be set to `true` if a hotfix is
+released.
+
 Attributes:
     CHARACTER (dict): A direct parsing of `data/GSCharacter.json`
     SUMMONABLE (dict): A subdictionary of CHARACTER that includes only

@@ -1,13 +1,18 @@
 # Change log
 
-## Version 1.0.5
+## Version 1.1.3
+
+* Removed dependency on `UnityPy`.
+* Revised version numbering to better reflect the major-minor-patch paradigm.
+
+## Version 1.1.2
 
 * Updated instructions in `constants.py` for extracting game data.
 * Added a C# file, `Program.cs`, used for extracting game data.
 * Added two new files to `legends/data` in preparation for new features.
 * Minor visual bug fixes.
 
-## Version 1.0.4
+## Version 1.1.1
 
 * Updated the README file to include detailed installation instructions.
 * Added `requirements.txt` for use in installation.
@@ -17,7 +22,7 @@
 * Renamed `legends.setup` to `legends.build`.
 * Removed redundant code in `guruipt.partDisplay`.
 
-## Version 1.0.3
+## Version 1.1
 
 * Added `GSItem.json` to data.
 * Added a `getItems` function to `setup.py`.
