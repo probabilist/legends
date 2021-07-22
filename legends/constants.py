@@ -70,7 +70,7 @@ Attributes:
 
         Example: `PART_STAT_VALUES['Attack']['Epic'][0]` is the value of
         the attack stat on a Level 1, Epic particle.
-    PART_EFFECTS (dict of str:(dict of str:obj)) A dictionary mapping
+    PART_EFFECTS (dict of str:(dict of str:obj)): A dictionary mapping
         particle types to their effects. The keys are the particle
         types. Each value is a dictionary with three keys, 'effect',
         'baseVal', and 'incrPerTier'.
@@ -85,6 +85,21 @@ Attributes:
         0 (Common) particle. The value of 'incrPerTier' is how much this
         proportion increases with each increase in the tier of the
         particle.
+    PART_UPGRADING (dict of str:(dict of int:(dict of str:int))): A
+        dictionary mapping a particle's rarity to a dictionary mapping a
+        particle's level to a dictionary mapping three different stat
+        names to their values. The stat name are 'latinumCost',
+        'powerCellCost', and 'powerCellSell'. They represent,
+        respectively, the latinum cost of upgrading to that level, the
+        power cell cost of upgrading to that level, and the number of
+        power cells received for selling a particle of that level.
+
+        Example: `PART_UPGRADING['Epic'][4]['powerCellCost']` is the
+        number of power cells requires to upgrade an Epic particle from
+        level 3 to level 4.
+        `PART_UPGRADING['VeryRare'][1]['powerCellSell']` is the number
+        of power cells received for selling a Level 1 Very Rare
+        particle.
     POWER_GRADIENT (dict of str:float) A dictionary mapping stat
         names to the amount that a character's power would increase if
         that stat were to increase by 1.
@@ -95,7 +110,8 @@ Attributes:
 
 from legends.utils.functions import readData
 from legends.build import (
-    ROOT, getItems, getSummonPool, getPartStats, getPowerFunc, getSkillIDs
+    ROOT, getItems, getSummonPool, getPartStats, getPartUpgrading,
+    getPowerFunc, getSkillIDs
 )
 
 CHARACTER = readData('GSCharacter', ROOT)
@@ -156,5 +172,7 @@ PART_EFFECTS = {
         'incrPerTier': 0.01
     }
 }
+
+PART_UPGRADING = getPartUpgrading(RARITIES)
 
 POWER_GRADIENT, POWER_AT_ORIGIN = getPowerFunc(BASE_STAT)

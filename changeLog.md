@@ -1,5 +1,11 @@
 # Change log
 
+## Version 1.2
+
+* Added an `incompleteMissions` property to the `SaveSlot` class.
+* Updated the `README` file to illustrate using the `incompleteMissions` property.
+* In preparation for future features, added a constant, `PART_UPGRADING`, which encodes the latinum and power cell cost of upgrading particles, as well as the number of power cells received for selling them.
+
 ## Version 1.1.4
 
 * Fixed an error where Security and Medical summon pools were erroneously assigning 0 probability to Epic characters.

@@ -178,6 +178,14 @@ save.inventory
 ```
 The inventory contains latinum, power cells, alliance currency, bio-gel, protomatter, pvp medals, orbs, gear leveling mats, and gear ranking mats.
 
+### Missions
+
+The `SaveSlot` object can also give you a list of missions that are not yet 100% complete. Typing
+```
+save.incompleteMissions
+```
+will bring up this list, which includes the mission names and the percent complete (formatted as a decimal).
+
 ### Particle guru
 
 Our save slot also contains all our particles.

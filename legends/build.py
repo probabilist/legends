@@ -159,6 +159,41 @@ def getPartStats(rarities):
         partStats[statName][rarity][level - 1] = statVal
     return partStats
 
+def getPartUpgrading(rarities):
+    """Parses a data file to produce a dictionary that encodes the
+    latinum and power cell cost of upgrading particles, as well as the
+    number of power cells received for selling them.
+
+    Args:
+        rarities (iter of str): Should be an iterable of rarities in the
+            game, in order from lowest to highest. Rarity names should
+            match those used in 'GSAccessoryStatGrowth'.
+
+    Returns:
+        dict of str:(dict of int:(dict of str:int)): A dictionary
+            mapping a particle's rarity to a dictionary mapping a
+            particle's level to a dictionary mapping three different
+            stat names to their values.
+
+    """
+    upgrading = readData('GSAccessoryUpgrading', ROOT)
+    partUpgrading = {
+        rarity: {level: {} for level in range(1,6)} for rarity in rarities
+    }
+    for data in upgrading.values():
+        level = data['Level']
+        rarity = data['Rarity']
+        partUpgrading[rarity][level]['latinumCost'] = (
+            data['PriceUpgrade']['AllItems']['Latinum']
+        ) if level != 1 else None
+        partUpgrading[rarity][level]['powerCellCost'] = (
+            data['PriceUpgrade']['AllItems']['Power Cell']
+        ) if level != 1 else None
+        partUpgrading[rarity][level]['powerCellSell'] = (
+            data['RewardSell']['AllItems']['Power Cell']
+        )
+    return partUpgrading
+
 def getPowerFunc(baseStats):
     """Constructs the parameters needed to compute power as a function
     of stats.

@@ -100,6 +100,33 @@ class SaveSlot(Printable):
             diff[partID] = (location, part.equippedOn)
         return diff
 
+    @property
+    def incompleteMissions(self):
+        """dict of str:float: A dictionary mapping the names of
+        incomplete missions to the proportion completion. Mission names
+        are formatted as '[episode]-[mission]-[difficulty'.
+        """
+        difficulties = {
+            'Easy': 'Normal',
+            'Hard': 'Advanced',
+            'Doom': 'Expert'
+        }
+        incompleteMissions = {}
+        for dataDiff, inGameDiff in difficulties.items():
+            for ep in range(1,8):
+                for miss in range(1,7):
+                    dataKey = 'episode ' + str(ep) + ' mission ' + str(miss)
+                    if dataKey not in self.saveDict['missions']:
+                        percent = 0
+                    else:
+                        data = self.saveDict['missions'][dataKey]
+                        percent = data[dataDiff]['complete_pct']
+                    if percent < 100:
+                        key = str(ep) + '-' + str(miss) + ' ' + inGameDiff
+                        incompleteMissions[key] = percent/100
+        return incompleteMissions
+
+
     def build(self):
         """Sets the `startDate` property, the creates and fills the
         laboratory, arsenal, and roster objects from the information in
