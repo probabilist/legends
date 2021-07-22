@@ -1,5 +1,10 @@
 # Change log
 
+## Version 1.1.4
+
+* Fixed an error where Security and Medical summon pools were erroneously assigning 0 probability to Epic characters.
+* Fixed errors in the `GuruIPT` methods, `suggest` and `move`, that would occur when a character had no particle equipped.
+
 ## Version 1.1.3
 
 * Removed dependency on `UnityPy`.

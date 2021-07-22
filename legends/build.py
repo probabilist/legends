@@ -104,12 +104,12 @@ def getSummonPool(summonable):
     poolNames = [
         'Crew', 'Command', 'Science', 'Engineering', 'Security', 'Medical'
     ]
-    rarityProbs = {
-        'Common': 0.35, 'Rare': 0.3, 'VeryRare': 0.2, 'Epic': 0.1,
-        'Legendary': 0.05
-    }
     summonPool = {}
     for poolName in poolNames:
+        rarityProbs = {
+            'Common': 0.35, 'Rare': 0.3, 'VeryRare': 0.2, 'Epic': 0.1,
+            'Legendary': 0.05
+        }
         probs = {
             charName: 0 for charName, data in summonable.items()
             if poolName == 'Crew' or data['Role'] == poolName

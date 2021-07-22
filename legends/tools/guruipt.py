@@ -440,11 +440,12 @@ class GuruIPT(Printable):
 
         # temporarily unlock equipped particle in given slot
         origPart = char.particles[slot]
-        origPartID = origPart.inPool[1]
         relock = False
-        if origPartID in self.locked:
-            self.locked.remove(origPartID)
-            relock = True
+        if origPart is not None:
+            origPartID = origPart.inPool[1]
+            if origPartID in self.locked:
+                self.locked.remove(origPartID)
+                relock = True
 
         # get particle impacts
         impacts = self._guru.suggest(
@@ -524,7 +525,8 @@ class GuruIPT(Printable):
 
         """
         char = self.roster.get(charName)
-        equippedPartID = char.particles[slot].inPool[1]
+        part = char.particles[slot]
+        equippedPartID = part.inPool[1] if part else None
         if force:
             for idNum in (equippedPartID, partID):
                 try:

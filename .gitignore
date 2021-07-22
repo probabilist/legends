@@ -4,7 +4,7 @@ _archive
 __pycache__
 constants
 AssetStudio-legends
-temp.cs
+assetList.txt
 pconfigdata.json
 gurudata.json
 *.csv

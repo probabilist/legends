@@ -40,6 +40,8 @@ This will open the `Python` interpreter in interactive mode. Your command prompt
 ```
 You are now ready to explore the functionality of the `legends` package.
 
+Note: Depending on how you installed Python, you may need to replace `pip` and `python` with `pip3` and `python3`.
+
 ## A brief tour
 
 ### Getting started
