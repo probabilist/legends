@@ -1,5 +1,9 @@
 # Change log
 
+## Version 1.2.1
+
+* Added a 'data-all' folder containing all extracted text assets to the project repository.
+
 ## Version 1.2
 
 * Added an `incompleteMissions` property to the `SaveSlot` class.
