@@ -3542,7 +3542,7 @@
     "Description": "Data_Character_Chang_description",
     "Rarity": "Epic",
     "Role": "Command",
-    "Type": "Disabled",
+    "Type": "Normal",
     "Tags": [
       "Klingon"
     ],
@@ -3573,8 +3573,8 @@
       "Tactical"
     ],
     "AIProfile": "default-smart",
-    "DailyTokenVisible": false,
-    "DailyTokenWeight": 0,
+    "DailyTokenVisible": true,
+    "DailyTokenWeight": 100,
     "Icon": "Chang_Portrait",
     "RarityIcon": "Token_Epic",
     "id": "Chang",
@@ -3711,5 +3711,93 @@
     "RarityIcon": "Token_Epic",
     "id": "Shinzon",
     "RankupTokenId": "Shinzon"
+  },
+  "Gowron": {
+    "Name": "Common_Gowron",
+    "Description": "Data_Character_Gowron_description",
+    "Rarity": "Epic",
+    "Role": "Command",
+    "Type": "Disabled",
+    "Tags": [
+      "Klingon"
+    ],
+    "SkillIDs": [
+      "gowron_attack",
+      "gowron_skill1",
+      "gowron_skill2",
+      "gowron_skill3"
+    ],
+    "BridgeSkill": "gowron_bridge",
+    "Health": 0.64,
+    "Defense": 0.67,
+    "Attack": 0.68,
+    "Tech": 0.23,
+    "Speed": 0.28,
+    "GlancingChance": 0.11,
+    "GlancingDamage": 0.54,
+    "CritChance": 0.32,
+    "CritDamage": 0.81,
+    "Resolve": 0.72,
+    "ModelMenuPrefabName": "Gowron_Menu_Model",
+    "ModelBattlePrefabName": "Gowron_Battle_Model",
+    "MirrorModelBattlePrefabName": "Gowron_Battle_Mirror_Model",
+    "BattleAnimTreeName": "Gowron_BattleAnimTree",
+    "MenuAnimTreeName": "Gowron_MenuAnimTree",
+    "BridgeStations": [
+      "Captain",
+      "Operations"
+    ],
+    "AIProfile": "default-smart",
+    "DailyTokenVisible": false,
+    "DailyTokenWeight": 0,
+    "Icon": "Gowron_Portrait",
+    "RarityIcon": "Token_Epic",
+    "id": "Gowron",
+    "RankupTokenId": "Gowron"
+  },
+  "JadziaDax": {
+    "Name": "Common_JadziaDax",
+    "Description": "Data_Character_JadziaDax_description",
+    "Rarity": "VeryRare",
+    "Role": "Science",
+    "Type": "Disabled",
+    "Tags": [
+      "Trill",
+      "Starfleet"
+    ],
+    "SkillIDs": [
+      "jadziadax_attack",
+      "jadziadax_skill1",
+      "jadziadax_skill2",
+      "jadziadax_skill3"
+    ],
+    "BridgeSkill": "jadziadax_bridge",
+    "Health": 0.58,
+    "Defense": 0.39,
+    "Attack": 0.44,
+    "Tech": 0.76,
+    "Speed": 0.33,
+    "GlancingChance": 0.24,
+    "GlancingDamage": 0.36,
+    "CritChance": 0.67,
+    "CritDamage": 0.45,
+    "Resolve": 0.78,
+    "ModelMenuPrefabName": "JadziaDax_Menu_Model",
+    "ModelBattlePrefabName": "JadziaDax_Battle_Model",
+    "MirrorModelBattlePrefabName": "JadziaDax_Battle_Mirror_Model",
+    "BattleAnimTreeName": "JadziaDax_BattleAnimTree",
+    "MenuAnimTreeName": "JadziaDax_MenuAnimTree",
+    "BridgeStations": [
+      "Science",
+      "FirstOfficer",
+      "Conn"
+    ],
+    "AIProfile": "default-smart",
+    "DailyTokenVisible": false,
+    "DailyTokenWeight": 0,
+    "Icon": "JadziaDax_Portrait",
+    "RarityIcon": "Token_VeryRare",
+    "id": "JadziaDax",
+    "RankupTokenId": "JadziaDax"
   }
 }
