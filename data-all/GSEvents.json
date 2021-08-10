@@ -635,6 +635,120 @@
     ],
     "id": "Event_Solo_Elnor_01"
   },
+  "Event_Faction_FedCard_SiskoDukat_01": {
+    "hasDateStart": true,
+    "dateStart": "2021-08-16T07:00:00Z",
+    "mainPeriodDuration": "7.00:00:00",
+    "prePeriodDuration": "3.00:00:00",
+    "postPeriodDuration": "4.00:00:00",
+    "eventType": "Faction",
+    "eventTypeId": "Event_Faction_FedCard_SiskoDukat",
+    "name": "Events_FactionEvent_FedCard_Title",
+    "descriptions": {
+      "Pre": "Events_FactionEvent_FedCard_Desc_Pre",
+      "Main": "Events_FactionEvent_FedCard_Desc_Main",
+      "Post": "Events_FactionEvent_FedCard_Desc_Post"
+    },
+    "isEnabled": true,
+    "prefab": "EventTypeFaction",
+    "operations": [],
+    "goals": [],
+    "conditions": [
+      {
+        "type": "PlayerLevel",
+        "parameter2": 7,
+        "operand": "MoreOrEqual"
+      }
+    ],
+    "id": "Event_Faction_FedCard_SiskoDukat_01"
+  },
+  "Event_Solo_Chekov_01": {
+    "hasDateStart": true,
+    "dateStart": "2021-08-23T07:00:00Z",
+    "mainPeriodDuration": "7.00:00:00",
+    "prePeriodDuration": "3.00:00:00",
+    "postPeriodDuration": "4.00:00:00",
+    "eventType": "Solo",
+    "eventTypeId": "SoloEvent_Chekov",
+    "name": "UI_Events_SoloEvent_Title",
+    "descriptions": {
+      "Pre": "UI_Events_SoloEvent_Desc_Pre",
+      "Main": "UI_Events_SoloEvent_Desc_Main",
+      "Post": "UI_Events_SoloEvent_Desc_Post"
+    },
+    "isEnabled": true,
+    "prefab": "EventTypeSolo",
+    "operations": [
+      "Operation_Event_Solo_Chekov"
+    ],
+    "goals": [],
+    "conditions": [
+      {
+        "type": "PlayerLevel",
+        "parameter2": 7,
+        "operand": "MoreOrEqual"
+      }
+    ],
+    "id": "Event_Solo_Chekov_01"
+  },
+  "Event_Solo_Soji_01": {
+    "hasDateStart": true,
+    "dateStart": "2021-08-30T07:00:00Z",
+    "mainPeriodDuration": "7.00:00:00",
+    "prePeriodDuration": "3.00:00:00",
+    "postPeriodDuration": "4.00:00:00",
+    "eventType": "Solo",
+    "eventTypeId": "SoloEvent_Soji",
+    "name": "UI_Events_SoloEvent_Title",
+    "descriptions": {
+      "Pre": "UI_Events_SoloEvent_Desc_Pre",
+      "Main": "UI_Events_SoloEvent_Desc_Main",
+      "Post": "UI_Events_SoloEvent_Desc_Post"
+    },
+    "isEnabled": true,
+    "prefab": "EventTypeSolo",
+    "operations": [
+      "Operation_Event_Solo_Soji"
+    ],
+    "goals": [],
+    "conditions": [
+      {
+        "type": "PlayerLevel",
+        "parameter2": 7,
+        "operand": "MoreOrEqual"
+      }
+    ],
+    "id": "Event_Solo_Soji_01"
+  },
+  "Event_Solo_Troi_01": {
+    "hasDateStart": true,
+    "dateStart": "2021-09-06T07:00:00Z",
+    "mainPeriodDuration": "7.00:00:00",
+    "prePeriodDuration": "3.00:00:00",
+    "postPeriodDuration": "4.00:00:00",
+    "eventType": "Solo",
+    "eventTypeId": "SoloEvent_Troi",
+    "name": "UI_Events_SoloEvent_Title",
+    "descriptions": {
+      "Pre": "UI_Events_SoloEvent_Desc_Pre",
+      "Main": "UI_Events_SoloEvent_Desc_Main",
+      "Post": "UI_Events_SoloEvent_Desc_Post"
+    },
+    "isEnabled": true,
+    "prefab": "EventTypeSolo",
+    "operations": [
+      "Operation_Event_Solo_Troi"
+    ],
+    "goals": [],
+    "conditions": [
+      {
+        "type": "PlayerLevel",
+        "parameter2": 7,
+        "operand": "MoreOrEqual"
+      }
+    ],
+    "id": "Event_Solo_Troi_01"
+  },
   "Event_Faction_FederationKlingon_01": {
     "hasDateStart": true,
     "dateStart": "2999-12-30T08:00:00Z",
@@ -1210,35 +1324,6 @@
       }
     ],
     "id": "Event_Solo_Sisko"
-  },
-  "Event_Solo_Soji": {
-    "hasDateStart": true,
-    "dateStart": "2999-12-30T08:00:00Z",
-    "mainPeriodDuration": "7.00:00:00",
-    "prePeriodDuration": "3.00:00:00",
-    "postPeriodDuration": "4.00:00:00",
-    "eventType": "Solo",
-    "eventTypeId": "SoloEvent_Soji",
-    "name": "UI_Events_SoloEvent_Title",
-    "descriptions": {
-      "Pre": "UI_Events_SoloEvent_Desc_Pre",
-      "Main": "UI_Events_SoloEvent_Desc_Main",
-      "Post": "UI_Events_SoloEvent_Desc_Post"
-    },
-    "isEnabled": false,
-    "prefab": "EventTypeSolo",
-    "operations": [
-      "Operation_Event_Solo_Soji"
-    ],
-    "goals": [],
-    "conditions": [
-      {
-        "type": "PlayerLevel",
-        "parameter2": 7,
-        "operand": "MoreOrEqual"
-      }
-    ],
-    "id": "Event_Solo_Soji"
   },
   "Event_Solo_Sulu": {
     "hasDateStart": true,

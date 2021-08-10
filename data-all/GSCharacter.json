@@ -3319,7 +3319,7 @@
     "Description": "Data_Character_Elnor_description",
     "Rarity": "VeryRare",
     "Role": "Security",
-    "Type": "Disabled",
+    "Type": "Normal",
     "Tags": [
       "Romulan"
     ],
@@ -3406,7 +3406,7 @@
     "Description": "Data_Character_Troi_description",
     "Rarity": "VeryRare",
     "Role": "Command",
-    "Type": "Disabled",
+    "Type": "Normal",
     "Tags": [
       "Human",
       "Betazoid",
@@ -3452,7 +3452,7 @@
     "Description": "Data_Character_Chekov_description",
     "Rarity": "Rare",
     "Role": "Security",
-    "Type": "Disabled",
+    "Type": "Normal",
     "Tags": [
       "Human",
       "Starfleet"

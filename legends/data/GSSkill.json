@@ -4043,7 +4043,7 @@
     "hidden": false,
     "cooldown": 3,
     "startingCooldown": 1,
-    "numTargets": 2,
+    "numTargets": 0,
     "targetType": "Enemies",
     "targetState": "Alive",
     "isPassive": false,
@@ -4070,8 +4070,8 @@
       "level": 1
     },
     "isSingleTarget": false,
-    "isMultiRandom": true,
-    "isAOE": false
+    "isMultiRandom": false,
+    "isAOE": true
   },
   "GSSkillKey(id = \"data_skill3\", level = \"2\")": {
     "level": 2,
@@ -4079,7 +4079,7 @@
     "hidden": false,
     "cooldown": 3,
     "startingCooldown": 1,
-    "numTargets": 2,
+    "numTargets": 0,
     "targetType": "Enemies",
     "targetState": "Alive",
     "isPassive": false,
@@ -4106,8 +4106,8 @@
       "level": 2
     },
     "isSingleTarget": false,
-    "isMultiRandom": true,
-    "isAOE": false
+    "isMultiRandom": false,
+    "isAOE": true
   },
   "GSSkillKey(id = \"doctor_attack\", level = \"1\")": {
     "level": 1,
@@ -4333,8 +4333,8 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "100% Damage (1 hit)",
-        "fraction": 1.5
+        "effect": "100% Tech Damage (6 hits)",
+        "fraction": 0.2
       }
     ],
     "casterEffect": {
@@ -4366,8 +4366,8 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "100% Damage (1 hit)",
-        "fraction": 2.5
+        "effect": "100% Tech Damage (6 hits)",
+        "fraction": 0.35
       }
     ],
     "casterEffect": {
@@ -7906,8 +7906,8 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "Spawn Cover (Federation)",
-        "fraction": 1.4
+        "effect": "Spawn Cover (Major) (Federation)",
+        "fraction": 1.0
       },
       {
         "effect": "Morale Up if Starfleet",
@@ -11585,7 +11585,7 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "Crit Chance Up",
+        "effect": "Crit Chance Up (Major)",
         "fraction": 1.0
       },
       {
@@ -12739,17 +12739,20 @@
     "isPassive": false,
     "effects": [
       {
+        "effect": "1.5x Damage to Wounded Enemies",
+        "fraction": 1.0
+      },
+      {
         "effect": "100% Damage (1 hit)",
         "fraction": 1.5
       },
       {
-        "effect": "1.5x Damage to Wounded Enemies",
+        "effect": "Morale Down (50% Chance)",
         "fraction": 1.0
       }
     ],
     "casterEffect": {
-      "effect": "Klingon Allies Morale Up if Enemy Defeated",
-      "fraction": 1.0
+      "fraction": 0.0
     },
     "sequenceID": "",
     "img": "Skill_BattlethFury",
@@ -12776,17 +12779,20 @@
     "isPassive": false,
     "effects": [
       {
+        "effect": "1.5x Damage to Wounded Enemies",
+        "fraction": 1.0
+      },
+      {
         "effect": "100% Damage (1 hit)",
         "fraction": 2.5
       },
       {
-        "effect": "1.5x Damage to Wounded Enemies",
+        "effect": "Morale Down",
         "fraction": 1.0
       }
     ],
     "casterEffect": {
-      "effect": "Klingon Allies Morale Up if Enemy Defeated",
-      "fraction": 1.0
+      "fraction": 0.0
     },
     "sequenceID": "",
     "img": "Skill_BattlethFury",
@@ -13074,7 +13080,7 @@
     "effects": [
       {
         "effect": "Heal (Major)",
-        "fraction": 1.25
+        "fraction": 1.0
       },
       {
         "effect": "Morale Up (50% Chance)",
@@ -16021,8 +16027,8 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "100% Damage (1 hit)",
-        "fraction": 1.0
+        "effect": "100% Tech Damage (1 hit)",
+        "fraction": 0.6
       },
       {
         "effect": "Tech Down (Minor)",
@@ -16057,8 +16063,8 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "100% Damage (1 hit)",
-        "fraction": 1.5
+        "effect": "100% Tech Damage (1 hit)",
+        "fraction": 0.85
       },
       {
         "effect": "Tech Down",
@@ -16318,7 +16324,7 @@
     "effects": [
       {
         "effect": "100% Tech Damage (1 hit)",
-        "fraction": 1.0
+        "fraction": 0.5
       },
       {
         "effect": "Morale Down (25% Chance)",
@@ -16354,7 +16360,7 @@
     "effects": [
       {
         "effect": "100% Tech Damage (1 hit)",
-        "fraction": 1.5
+        "fraction": 0.65
       },
       {
         "effect": "Morale Down (50% Chance)",
@@ -16798,7 +16804,7 @@
     "effects": [
       {
         "effect": "100% Damage (1 hit)",
-        "fraction": 1.0
+        "fraction": 1.5
       }
     ],
     "casterEffect": {
@@ -19107,17 +19113,20 @@
     "isPassive": false,
     "effects": [
       {
+        "effect": "1.5x Damage to Wounded Enemies",
+        "fraction": 1.0
+      },
+      {
         "effect": "100% Damage (3 hits)",
         "fraction": 1.0
       },
       {
-        "effect": "1.5x Damage to Wounded Enemies",
+        "effect": "Self Morale Up if Enemy Defeated",
         "fraction": 1.0
       }
     ],
     "casterEffect": {
-      "effect": "Self Morale Up if Enemy Defeated",
-      "fraction": 1.0
+      "fraction": 0.0
     },
     "sequenceID": "",
     "img": "Skill_BattlethFury",
@@ -19144,17 +19153,20 @@
     "isPassive": false,
     "effects": [
       {
+        "effect": "1.5x Damage to Wounded Enemies",
+        "fraction": 1.0
+      },
+      {
         "effect": "100% Damage (3 hits)",
         "fraction": 1.35
       },
       {
-        "effect": "1.5x Damage to Wounded Enemies",
+        "effect": "Self Morale Up if Enemy Defeated",
         "fraction": 1.0
       }
     ],
     "casterEffect": {
-      "effect": "Self Morale Up if Enemy Defeated",
-      "fraction": 1.0
+      "fraction": 0.0
     },
     "sequenceID": "",
     "img": "Skill_BattlethFury",
@@ -21037,8 +21049,8 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "100% Damage (1 hit)",
-        "fraction": 0.75
+        "effect": "100% Damage (3 hits)",
+        "fraction": 0.5
       },
       {
         "effect": "Defense Down",
@@ -21077,8 +21089,8 @@
     "isPassive": false,
     "effects": [
       {
-        "effect": "100% Damage (1 hit)",
-        "fraction": 1.0
+        "effect": "100% Damage (3 hits)",
+        "fraction": 0.7
       },
       {
         "effect": "Defense Down (Major)",
@@ -23701,6 +23713,684 @@
     "aiUsable": true,
     "id": {
       "id": "shinzon_bridge",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_attack\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_Gowron_Attack_displayName",
+    "hidden": false,
+    "cooldown": 0,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Damage (1 hit)",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Wound (25% Chance)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_Battleth",
+    "description": "Data_Skill_Gowron_Attack_description_level1",
+    "controller": "Forced_Attack",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_attack",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_attack\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_Gowron_Attack_displayName",
+    "hidden": false,
+    "cooldown": 0,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Damage (1 hit)",
+        "fraction": 1.25
+      },
+      {
+        "effect": "Wound (50% Chance)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_Battleth",
+    "description": "Data_Skill_Gowron_Attack_description_level2",
+    "controller": "Forced_Attack",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_attack",
+      "level": 2
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_skill1\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_Gowron_Skill1_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Morale Down",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Attack Down",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_OverwhelmingStrength",
+    "description": "Data_Skill_Gowron_Skill1_description_level1",
+    "controller": "Forced_Skill1",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_skill1",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_skill1\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_Gowron_Skill1_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 0,
+    "numTargets": 2,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Morale Down",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Attack Down",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_OverwhelmingStrength",
+    "description": "Data_Skill_Gowron_Skill1_description_level2",
+    "controller": "Forced_Skill1",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_skill1",
+      "level": 2
+    },
+    "isSingleTarget": false,
+    "isMultiRandom": true,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_skill2\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_Gowron_Skill2_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 1,
+    "numTargets": 0,
+    "targetType": "Allies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Attack Up",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Morale Up if Klingon (+1 or +2)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_MakeItSo",
+    "description": "Data_Skill_Gowron_Skill2_description_level1",
+    "controller": "Forced_Skill2",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_skill2",
+      "level": 1
+    },
+    "isSingleTarget": false,
+    "isMultiRandom": false,
+    "isAOE": true
+  },
+  "GSSkillKey(id = \"gowron_skill2\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_Gowron_Skill2_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 1,
+    "numTargets": 0,
+    "targetType": "Allies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Attack Up (Major)",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Morale Up if Klingon (+1 or +2)",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Red Alert",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_MakeItSo",
+    "description": "Data_Skill_Gowron_Skill2_description_level2",
+    "controller": "Forced_Skill2",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_skill2",
+      "level": 2
+    },
+    "isSingleTarget": false,
+    "isMultiRandom": false,
+    "isAOE": true
+  },
+  "GSSkillKey(id = \"gowron_skill3\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_Gowron_Skill3_displayName",
+    "hidden": false,
+    "cooldown": 4,
+    "startingCooldown": 2,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Damage (1 hit)",
+        "fraction": 2.0
+      }
+    ],
+    "casterEffect": {
+      "effect": "Counter Gowron",
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_BattlethFury",
+    "description": "Data_Skill_Gowron_Skill3_description_level1",
+    "controller": "Forced_Skill3",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_skill3",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_skill3\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_Gowron_Skill3_displayName",
+    "hidden": false,
+    "cooldown": 4,
+    "startingCooldown": 2,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Damage (1 hit)",
+        "fraction": 3.0
+      },
+      {
+        "effect": "Taunt (target)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "effect": "Counter Gowron",
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_BattlethFury",
+    "description": "Data_Skill_Gowron_Skill3_description_level2",
+    "controller": "Forced_Skill3",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_skill3",
+      "level": 2
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_counter\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_Gowron_Skill3_displayName",
+    "hidden": false,
+    "cooldown": 4,
+    "startingCooldown": 2,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Damage (1 hit)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_BattlethFury",
+    "description": "Data_Skill_Gowron_Attack_description_level1",
+    "controller": "Forced_Counter1",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_counter",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"gowron_bridge\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_Gowron_Bridge_displayName",
+    "hidden": true,
+    "cooldown": 0,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Caster",
+    "targetState": "Alive",
+    "isPassive": true,
+    "effects": [
+      {
+        "effect": "CritChance if Klingon (10%) (Passive)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "",
+    "description": "Data_Skill_Gowron_Bridge_description",
+    "controller": "",
+    "aiUsable": true,
+    "id": {
+      "id": "gowron_bridge",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"jadziadax_attack\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_JadziaDax_Attack_displayName",
+    "hidden": false,
+    "cooldown": 0,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Damage (1 hit)",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Tech Down (10% Chance) (1 Turn)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_TNGPhaser",
+    "description": "Data_Skill_JadziaDax_Attack_description_level1",
+    "controller": "Forced_Attack",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_attack",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"jadziadax_attack\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_JadziaDax_Attack_displayName",
+    "hidden": false,
+    "cooldown": 0,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Damage (1 hit)",
+        "fraction": 1.25
+      },
+      {
+        "effect": "Tech Down (25% Chance) (1 Turn)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_TNGPhaser",
+    "description": "Data_Skill_JadziaDax_Attack_description_level2",
+    "controller": "Forced_Attack",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_attack",
+      "level": 2
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"jadziadax_skill1\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_JadziaDax_Skill1_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Scan",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "effect": "Attack Up (Minor) (50% Chance) (AND)",
+      "fraction": 1.0
+    },
+    "sequenceID": "",
+    "img": "Skill_TOSTricorder",
+    "description": "Data_Skill_JadziaDax_Skill1_description_level1",
+    "controller": "Forced_Skill1",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_skill1",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"jadziadax_skill1\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_JadziaDax_Skill1_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Scan",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "effect": "Attack Up (Minor) (AND)",
+      "fraction": 1.0
+    },
+    "sequenceID": "",
+    "img": "Skill_TOSTricorder",
+    "description": "Data_Skill_JadziaDax_Skill1_description_level2",
+    "controller": "Forced_Skill1",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_skill1",
+      "level": 2
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"jadziadax_skill2\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_JadziaDax_Skill2_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 1,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Tech Damage (3 hits)",
+        "fraction": 0.4
+      },
+      {
+        "effect": "Wound",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "effect": "Morale Up (caster)",
+      "fraction": 1.0
+    },
+    "sequenceID": "",
+    "img": "Skill_Battleth",
+    "description": "Data_Skill_JadziaDax_Skill2_description_level1",
+    "controller": "Forced_Skill2",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_skill2",
+      "level": 1
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"jadziadax_skill2\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_JadziaDax_Skill2_displayName",
+    "hidden": false,
+    "cooldown": 3,
+    "startingCooldown": 1,
+    "numTargets": 1,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "100% Tech Damage (3 hits)",
+        "fraction": 0.7
+      },
+      {
+        "effect": "Wound",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "effect": "Morale Up (caster) (2)",
+      "fraction": 1.0
+    },
+    "sequenceID": "",
+    "img": "Skill_Battleth",
+    "description": "Data_Skill_JadziaDax_Skill2_description_level2",
+    "controller": "Forced_Skill2",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_skill2",
+      "level": 2
+    },
+    "isSingleTarget": true,
+    "isMultiRandom": false,
+    "isAOE": false
+  },
+  "GSSkillKey(id = \"jadziadax_skill3\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_JadziaDax_Skill3_displayName",
+    "hidden": false,
+    "cooldown": 4,
+    "startingCooldown": 2,
+    "numTargets": 0,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Skill Lock (1 turn)",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Purge (50% Chance)",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Attack Down",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_TOSPhaser02",
+    "description": "Data_Skill_JadziaDax_Skill3_description_level1",
+    "controller": "Forced_Skill3",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_skill3",
+      "level": 1
+    },
+    "isSingleTarget": false,
+    "isMultiRandom": false,
+    "isAOE": true
+  },
+  "GSSkillKey(id = \"jadziadax_skill3\", level = \"2\")": {
+    "level": 2,
+    "name": "Data_Skill_JadziaDax_Skill3_displayName",
+    "hidden": false,
+    "cooldown": 4,
+    "startingCooldown": 2,
+    "numTargets": 0,
+    "targetType": "Enemies",
+    "targetState": "Alive",
+    "isPassive": false,
+    "effects": [
+      {
+        "effect": "Skill Lock (1 turn)",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Purge",
+        "fraction": 1.0
+      },
+      {
+        "effect": "Attack Down (Major)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "Skill_TOSPhaser02",
+    "description": "Data_Skill_JadziaDax_Skill3_description_level2",
+    "controller": "Forced_Skill3",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_skill3",
+      "level": 2
+    },
+    "isSingleTarget": false,
+    "isMultiRandom": false,
+    "isAOE": true
+  },
+  "GSSkillKey(id = \"jadziadax_bridge\", level = \"1\")": {
+    "level": 1,
+    "name": "Data_Skill_JadziaDax_Bridge_displayName",
+    "hidden": true,
+    "cooldown": 0,
+    "startingCooldown": 0,
+    "numTargets": 1,
+    "targetType": "Caster",
+    "targetState": "Alive",
+    "isPassive": true,
+    "effects": [
+      {
+        "effect": "Tech if Starfleet (5%) (Passive)",
+        "fraction": 1.0
+      }
+    ],
+    "casterEffect": {
+      "fraction": 0.0
+    },
+    "sequenceID": "",
+    "img": "",
+    "description": "Data_Skill_JadziaDax_Bridge_description",
+    "controller": "",
+    "aiUsable": true,
+    "id": {
+      "id": "jadziadax_bridge",
       "level": 1
     },
     "isSingleTarget": true,

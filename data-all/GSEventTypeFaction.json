@@ -13,6 +13,13 @@
     ],
     "id": "Event_Faction_FedRomu_PicardTomalak"
   },
+  "Event_Faction_FedCard_SiskoDukat": {
+    "factionIds": [
+      "Faction_FedCard_Sisko",
+      "Faction_FedCard_Dukat"
+    ],
+    "id": "Event_Faction_FedCard_SiskoDukat"
+  },
   "FactionEvent_FederationKlingons": {
     "factionIds": [
       "Faction_Klingon",

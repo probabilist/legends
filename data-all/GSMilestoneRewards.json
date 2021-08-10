@@ -1516,5 +1516,35 @@
       "IsEmpty": true
     },
     "id": "solo_reward_Elnor"
+  },
+  "solo_reward_Chekov": {
+    "pointsRequirement": 1500,
+    "tooltipId": "Events_Solo",
+    "reward": {
+      "Characters": [
+        "Chekov"
+      ],
+      "Accessories": {},
+      "Gears": {},
+      "AllItems": {},
+      "FirstAmount": 0,
+      "IsEmpty": true
+    },
+    "id": "solo_reward_Chekov"
+  },
+  "solo_reward_Troi": {
+    "pointsRequirement": 1500,
+    "tooltipId": "Events_Solo",
+    "reward": {
+      "Characters": [
+        "Troi"
+      ],
+      "Accessories": {},
+      "Gears": {},
+      "AllItems": {},
+      "FirstAmount": 0,
+      "IsEmpty": true
+    },
+    "id": "solo_reward_Troi"
   }
 }

@@ -356,16 +356,6 @@
     "schedule": [],
     "id": "Operation_Event_Solo_Sisko"
   },
-  "Operation_Event_Solo_Soji": {
-    "operationType": "Hidden",
-    "name": "UI_Events_SoloEvent_Title",
-    "description": "UI_Events_SoloEvent_Desc",
-    "icon": "Kirk_FullBody",
-    "uiIndex": 10,
-    "dailyLimit": 5,
-    "schedule": [],
-    "id": "Operation_Event_Solo_Soji"
-  },
   "Operation_Event_Solo_Spock": {
     "operationType": "Hidden",
     "name": "UI_Events_SoloEvent_Title",
@@ -565,6 +555,56 @@
     "dailyLimit": 5,
     "schedule": [],
     "id": "Operation_Event_Solo_Elnor"
+  },
+  "Operations_Event_Faction_FedCard_Sisko": {
+    "operationType": "Hidden",
+    "name": "Operations_FactionEvent_TitleFull_Fed",
+    "description": "Operations_FactionEvent_Desc_Fed",
+    "icon": "Sisko",
+    "uiIndex": 1,
+    "dailyLimit": 5,
+    "schedule": [],
+    "id": "Operations_Event_Faction_FedCard_Sisko"
+  },
+  "Operations_Event_Faction_FedCard_Dukat": {
+    "operationType": "Hidden",
+    "name": "Operations_FactionEvent_TitleFull_Card",
+    "description": "Operations_FactionEvent_Desc_Card",
+    "icon": "Dukat",
+    "uiIndex": 1,
+    "dailyLimit": 5,
+    "schedule": [],
+    "id": "Operations_Event_Faction_FedCard_Dukat"
+  },
+  "Operation_Event_Solo_Chekov": {
+    "operationType": "Hidden",
+    "name": "UI_Events_SoloEvent_Title",
+    "description": "UI_Events_SoloEvent_Desc",
+    "icon": "Chekov",
+    "uiIndex": 10,
+    "dailyLimit": 5,
+    "schedule": [],
+    "id": "Operation_Event_Solo_Chekov"
+  },
+  "Operation_Event_Solo_Soji": {
+    "operationType": "Hidden",
+    "name": "UI_Events_SoloEvent_Title",
+    "description": "UI_Events_SoloEvent_Desc",
+    "icon": "Soji",
+    "uiIndex": 10,
+    "dailyLimit": 5,
+    "schedule": [],
+    "id": "Operation_Event_Solo_Soji"
+  },
+  "Operation_Event_Solo_Troi": {
+    "operationType": "Hidden",
+    "name": "UI_Events_SoloEvent_Title",
+    "description": "UI_Events_SoloEvent_Desc",
+    "icon": "Troi",
+    "uiIndex": 10,
+    "dailyLimit": 5,
+    "schedule": [],
+    "id": "Operation_Event_Solo_Troi"
   },
   "Operation_Event_FactionEvent_Federation": {
     "operationType": "Hidden",

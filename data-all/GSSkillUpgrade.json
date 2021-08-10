@@ -5563,5 +5563,185 @@
       "id": "shinzon_skill3",
       "level": 2
     }
+  },
+  "GSSkillKey(id = \"gowron_attack\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Command 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "gowron_attack",
+      "level": 2
+    }
+  },
+  "GSSkillKey(id = \"gowron_skill1\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Command 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "gowron_skill1",
+      "level": 2
+    }
+  },
+  "GSSkillKey(id = \"gowron_skill2\", level = \"1\")": {
+    "level": 1,
+    "price": {
+      "AllItems": {
+        "Latinum": 500,
+        "Proto Command 01": 10
+      },
+      "FirstAmount": 500,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "gowron_skill2",
+      "level": 1
+    }
+  },
+  "GSSkillKey(id = \"gowron_skill2\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Command 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "gowron_skill2",
+      "level": 2
+    }
+  },
+  "GSSkillKey(id = \"gowron_skill3\", level = \"1\")": {
+    "level": 1,
+    "price": {
+      "AllItems": {
+        "Latinum": 500,
+        "Proto Command 01": 10
+      },
+      "FirstAmount": 500,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "gowron_skill3",
+      "level": 1
+    }
+  },
+  "GSSkillKey(id = \"gowron_skill3\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Command 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "gowron_skill3",
+      "level": 2
+    }
+  },
+  "GSSkillKey(id = \"jadziadax_attack\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Science 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "jadziadax_attack",
+      "level": 2
+    }
+  },
+  "GSSkillKey(id = \"jadziadax_skill1\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Science 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "jadziadax_skill1",
+      "level": 2
+    }
+  },
+  "GSSkillKey(id = \"jadziadax_skill2\", level = \"1\")": {
+    "level": 1,
+    "price": {
+      "AllItems": {
+        "Latinum": 500,
+        "Proto Science 01": 10
+      },
+      "FirstAmount": 500,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "jadziadax_skill2",
+      "level": 1
+    }
+  },
+  "GSSkillKey(id = \"jadziadax_skill2\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Science 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "jadziadax_skill2",
+      "level": 2
+    }
+  },
+  "GSSkillKey(id = \"jadziadax_skill3\", level = \"1\")": {
+    "level": 1,
+    "price": {
+      "AllItems": {
+        "Latinum": 500,
+        "Proto Science 01": 10
+      },
+      "FirstAmount": 500,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "jadziadax_skill3",
+      "level": 1
+    }
+  },
+  "GSSkillKey(id = \"jadziadax_skill3\", level = \"2\")": {
+    "level": 2,
+    "price": {
+      "AllItems": {
+        "Latinum": 1000,
+        "Proto Science 01": 10
+      },
+      "FirstAmount": 1000,
+      "IsEmpty": false
+    },
+    "id": {
+      "id": "jadziadax_skill3",
+      "level": 2
+    }
   }
 }

@@ -83,6 +83,48 @@
     ],
     "id": "Faction_FedRomu_Tomalak"
   },
+  "Faction_FedCard_Sisko": {
+    "name": "Events_Faction_f1_name",
+    "rewardHero": "Sisko",
+    "reward": {
+      "Characters": [
+        "Sisko"
+      ],
+      "Accessories": {},
+      "Gears": {},
+      "AllItems": {
+        "Sisko": 10,
+        "Shards Basic": 150
+      },
+      "FirstAmount": 10,
+      "IsEmpty": false
+    },
+    "operations": [
+      "Operations_Event_Faction_FedCard_Sisko"
+    ],
+    "id": "Faction_FedCard_Sisko"
+  },
+  "Faction_FedCard_Dukat": {
+    "name": "Common_Tag_Plural_Cardassians",
+    "rewardHero": "Dukat",
+    "reward": {
+      "Characters": [
+        "Dukat"
+      ],
+      "Accessories": {},
+      "Gears": {},
+      "AllItems": {
+        "Dukat": 10,
+        "Shards Basic": 150
+      },
+      "FirstAmount": 10,
+      "IsEmpty": false
+    },
+    "operations": [
+      "Operations_Event_Faction_FedCard_Dukat"
+    ],
+    "id": "Faction_FedCard_Dukat"
+  },
   "Faction_Federation": {
     "name": "Events_Faction_f1_name",
     "rewardHero": "Kirk",
