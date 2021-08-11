@@ -1,5 +1,10 @@
 # Change log
 
+## Version 1.2.2
+
+* Updated game data for v1.0.11.
+* Updated the `surviveHits` method in the `SelaStatCalc` class to account for in-game changes to Sela's Surprise Attack.
+
 ## Version 1.2.1
 
 * Added a 'data-all' folder containing all extracted text assets to the project repository.

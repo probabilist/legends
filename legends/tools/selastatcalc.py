@@ -319,15 +319,15 @@ class SelaStatCalc():
         selaTech = self.sela.tech
 
         dmgWhenCrit = max(
-            1.5 * selaTech * selaCD - 0.38 * tech,
+            0.65 * selaTech * selaCD - 0.38 * tech,
             1
         )
         dmgWhenNormal = max(
-            1.5 * selaTech - 0.38 * tech,
+            0.65 * selaTech - 0.38 * tech,
             1
         )
         dmgWhenGlance = max(
-            1.5 * selaTech * (1 - gd) - 0.38 * tech,
+            0.65 * selaTech * (1 - gd) - 0.38 * tech,
             1
         )
         dmgTotal = (
