@@ -5,7 +5,9 @@
 from types import MappingProxyType
 from itertools import combinations
 from legends.utils.pool import Pool, PoolChangeEvent
-from legends.constants import PART_STAT_VALUES, SUMMONABLE, SUMMON_POOL
+from legends.constants import (
+    PART_STAT_VALUES, SUMMONABLE, SUMMON_POOL, ENABLED, PLAYABLE
+)
 from legends.classes.particle import Particle
 from legends.classes.character import Character
 
@@ -49,13 +51,16 @@ class Roster(Pool):
 
     """
 
-    def __init__(self, maxed=False):
+    def __init__(self, maxed=False, allChars=False):
         """Creates the Roster object.
 
         Args:
             maxed (bool): Set to True to create a full roster of all
                 summonable characters with max rank, level, skills, and
                 gear.
+            allChars (bool): If `maxed` is True, set `all` to True to
+                summon all characters from PLAYABLE, rather than
+                ENABLED.
 
         """
         Pool.__init__(self)
@@ -63,10 +68,11 @@ class Roster(Pool):
         self._ignoreCharChange = False  # set to True to prevent calls
                                         # to the `onCharChange` method
         if maxed:
-            self.summonAll()
+            self.summonAll(allChars)
             self.maxRankAll()
             self.maxLevelAll()
-            self.maxSkillsAll()
+            if not allChars:
+                self.maxSkillsAll()
             self.maxGearAll()
         self.makeStats()
 
@@ -199,18 +205,23 @@ class Roster(Pool):
         for char in self.items.values():
             selaStatCalc.registerChar(char, safe=False)
 
-    def summonAll(self):
-        """For each name in `SUMMONABLE` that is not already in the
-        roster, creates and adds a new Rank 1, Level 1 character of that
-        name, and sets its attack skill to Level 1. Characters are added
-        with the `update` flag set to false, to suppress stat
-        recalculations and subscriber notifications with each summon.
-        At the end, stats are recalculated once and subscribers are
-        notified of a global change.
+    def summonAll(self, allChars=False):
+        """For each name in `ENABLED` that is not already in the roster,
+        creates and adds a new Rank 1, Level 1 character of that name,
+        and sets its attack skill to Level 1. Characters are added with
+        the `update` flag set to false, to suppress stat recalculations
+        and subscriber notifications with each summon. At the end, stats
+        are recalculated once and subscribers are notified of a global
+        change.
+
+        Args:
+            allChars (bool): Set to True to summon all characters from
+                PLAYABLE instead of ENABLED.
 
         """
+        chars = PLAYABLE if allChars else ENABLED
         rosterNames = [char.name for char in self._items.values()]
-        for name in SUMMONABLE:
+        for name in chars:
             if name not in rosterNames:
                 char = Character(name, 1, 1)
                 for skill in char.skills:

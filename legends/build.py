@@ -222,12 +222,12 @@ def getPowerFunc(baseStats):
         )
     return grad, root
 
-def getSkillIDs(chars, disabled=False):
+def getSkillIDs(chars):
     """Gathers and returns the skill IDs for all skills of all
-    enabled characters.
+    characters in `chars`.
 
     Args:
-        chars (dict): Should be a dictionary representation of
+        chars (dict): Should be a subdictionary representation of
             'GSCharacter.json'.
         disabled (bool): If set to true, will gather skill IDs for
             disabled characters as well.
@@ -238,8 +238,7 @@ def getSkillIDs(chars, disabled=False):
     """
     skillIDs = []
     for v in chars.values():
-        if disabled or v['Type'] == 'Normal':
-            skillIDs.extend(v['SkillIDs'])
+        skillIDs.extend(v['SkillIDs'])
     return skillIDs
 
 def exportData():

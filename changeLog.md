@@ -1,5 +1,21 @@
 # Change log
 
+## Version 1.2.3
+
+* Updated data to reflect an unannounced hotfix:
+    - The timing of the Chekov and Troi events has been swapped. (Previously, Chevok was scheduled to come up first; now Troi is scheduled to come up first.)
+    - The Level 2 version of Troi's basic attack was changed from 125% damage to 150% damage.
+* Changed the default settings in the `EffStatCalc` class to reflect changes in version 1.0.11 of the game.
+* Added three new constants:
+    - `ENABLED`: A dictionary of all characters in the game, even those not yet in the summon pool.
+    - `PLAYABLE`: A dictionary that includes ENABLED as well as hidden characters that are presumable meant for a future update.
+    - `UPCOMING`: A list of characters in PLAYABLE but not in ENABLED.
+* Added an `allChars` boolean argument to the `summonaAll` method in the `Roster` class. If set to `True`, will summon all characters in `PLAYABLE`; otherwise will summon all characters in `ENABLED`.
+* Added an `allChars` boolean argument to the `Roster` class constructor. If set to `True` when `maxed` is also set to `True`, will build a roster of maxed characters in `PLAYABLE`.
+* The `Skill` class constructor now raises a more informative error message when the skill ID is not recognized.
+* Edited a typo in the docstring for the `EffStatCalc` class.
+* Minor change to the `getSkillIDs` function in `build.py`. Does not affect current usage.
+
 ## Version 1.2.2
 
 * Updated game data for v1.0.11.

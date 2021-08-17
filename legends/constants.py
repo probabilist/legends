@@ -23,8 +23,13 @@ released.
 
 Attributes:
     CHARACTER (dict): A direct parsing of `data/GSCharacter.json`
-    SUMMONABLE (dict): A subdictionary of CHARACTER that includes only
-        those that have been enabled for player use.
+    UPCOMING (list of str): A list of names of upcoming characters.
+    PLAYABLE (dict): A subdictionary of CHARACTER that includes only
+        those that are potentially usable by the player.
+    ENABLED (dict): A subdictionary of PLAYABLE that includes only
+        those that are currently enabled for player use.
+    SUMMONABLE (dict): A subdictionary of ENABLED that includes only
+        those that are summonable.
     SUMMON_POOL (dict of str:(dict of str:float)): A dictionary mapping
         pool names (either 'Crew' or a role) to a dictionary mapping
         character names in that summon pool to the probability of
@@ -115,14 +120,23 @@ from legends.build import (
 )
 
 CHARACTER = readData('GSCharacter', ROOT)
-SUMMONABLE = {k:v for k,v in CHARACTER.items() if v['Type'] == 'Normal'}
+UPCOMING = ['Tuvok', 'Garak', 'Shinzon', 'Gowron', 'JadziaDax']
+ENABLED = {k:v for k,v in CHARACTER.items() if v['Type'] == 'Normal'}
+PLAYABLE = ENABLED.copy()
+PLAYABLE.update({
+    name:CHARACTER[name] for name in UPCOMING if name not in ENABLED
+    })
+SUMMONABLE = ENABLED.copy()
+del SUMMONABLE['Elnor']
+del SUMMONABLE['Chekov']
+del SUMMONABLE['Troi']
 SUMMON_POOL = getSummonPool(SUMMONABLE)
 LEVEL = readData('GSLevel', ROOT)
 RANK = readData('GSRank', ROOT)
 GEAR = readData('GSGear', ROOT)
 GEAR_LEVEL = readData('GSGearLevel', ROOT)
 SKILL = readData('GSSkill', ROOT)
-SKILL_IDS = getSkillIDs(CHARACTER)
+SKILL_IDS = getSkillIDs(PLAYABLE)
 BASE_STAT = {'Health': None}
 BASE_STAT.update(readData('GSBaseStat', ROOT))
 BASE_STAT['Health'] = BASE_STAT['MaxHealth']

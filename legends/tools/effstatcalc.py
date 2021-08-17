@@ -29,10 +29,9 @@ class EffStatCalc(Printable):
         receive 0.71 hits from Sela's Surprise Attack, 0.25 hits from
         T'Pol's boot, and 1 hit from Riker's AOE. All three enemies are
         assumed to be maxed with optimal offensive particles and no
-        gear. Amplify Force is assumed to be broken. And the number 0.71
-        is computed assuming you are behind cover half the time.
-        Character stats used in computing these defaults come from
-        version 1.0.9 of the game.
+        gear. And the number 0.71 is computed assuming you are behind
+        cover half the time. Character stats used in computing these
+        defaults come from version 1.0.11 of the game.
 
         Args:
             roster (Roster): If provided, all characters in the roster
@@ -46,12 +45,12 @@ class EffStatCalc(Printable):
                             # stored for quick retrieval; they are given
                             # an ID when registering
         self._registrants = {}  # a dictionary of registrants by ID
-        self._attDmg = 2762
-        self._techDmg = 3192
+        self._attDmg = 4143
+        self._techDmg = 1383
         self._techChance = 0.362
         self._cloak = False
         self._undoDmgRounds = 1.25
-        self._firstRound = False
+        self._firstRound = True
         self._effHealth = {}
         self._effAttDmg = {}
         self._effTechDmg = {}
@@ -133,10 +132,8 @@ class EffStatCalc(Printable):
 
     @property
     def firstRound(self):
-        """EventHandler: When the settings change, this event handler
-        sends the EffStatCalc object to subscribers. When this property
-        changes, all effective stats are recalculated and subscribers
-        are notified of the change.
+        """bool: Set to true to take into account any Amplify Force
+        particles that may be equipped.
         """
         return self._firstRound
 

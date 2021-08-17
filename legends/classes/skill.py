@@ -44,7 +44,7 @@ class Skill(Printable):
         """
         Printable.__init__(self)
         if skillID not in SKILL_IDS:
-            raise ValueError('skill ID not recognized')
+            raise ValueError('skill ID ' + repr(skillID) + ' not recognized')
         self._skillDict = Skill._template.copy()
         self._skillDict['skillID'] = skillID
         if level != 0:

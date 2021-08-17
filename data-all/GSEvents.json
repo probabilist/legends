@@ -662,14 +662,14 @@
     ],
     "id": "Event_Faction_FedCard_SiskoDukat_01"
   },
-  "Event_Solo_Chekov_01": {
+  "Event_Solo_Troi_01": {
     "hasDateStart": true,
     "dateStart": "2021-08-23T07:00:00Z",
     "mainPeriodDuration": "7.00:00:00",
     "prePeriodDuration": "3.00:00:00",
     "postPeriodDuration": "4.00:00:00",
     "eventType": "Solo",
-    "eventTypeId": "SoloEvent_Chekov",
+    "eventTypeId": "SoloEvent_Troi",
     "name": "UI_Events_SoloEvent_Title",
     "descriptions": {
       "Pre": "UI_Events_SoloEvent_Desc_Pre",
@@ -679,7 +679,7 @@
     "isEnabled": true,
     "prefab": "EventTypeSolo",
     "operations": [
-      "Operation_Event_Solo_Chekov"
+      "Operation_Event_Solo_Troi"
     ],
     "goals": [],
     "conditions": [
@@ -689,7 +689,7 @@
         "operand": "MoreOrEqual"
       }
     ],
-    "id": "Event_Solo_Chekov_01"
+    "id": "Event_Solo_Troi_01"
   },
   "Event_Solo_Soji_01": {
     "hasDateStart": true,
@@ -720,14 +720,14 @@
     ],
     "id": "Event_Solo_Soji_01"
   },
-  "Event_Solo_Troi_01": {
+  "Event_Solo_Chekov_01": {
     "hasDateStart": true,
     "dateStart": "2021-09-06T07:00:00Z",
     "mainPeriodDuration": "7.00:00:00",
     "prePeriodDuration": "3.00:00:00",
     "postPeriodDuration": "4.00:00:00",
     "eventType": "Solo",
-    "eventTypeId": "SoloEvent_Troi",
+    "eventTypeId": "SoloEvent_Chekov",
     "name": "UI_Events_SoloEvent_Title",
     "descriptions": {
       "Pre": "UI_Events_SoloEvent_Desc_Pre",
@@ -737,7 +737,7 @@
     "isEnabled": true,
     "prefab": "EventTypeSolo",
     "operations": [
-      "Operation_Event_Solo_Troi"
+      "Operation_Event_Solo_Chekov"
     ],
     "goals": [],
     "conditions": [
@@ -747,7 +747,7 @@
         "operand": "MoreOrEqual"
       }
     ],
-    "id": "Event_Solo_Troi_01"
+    "id": "Event_Solo_Chekov_01"
   },
   "Event_Faction_FederationKlingon_01": {
     "hasDateStart": true,

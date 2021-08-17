@@ -21506,7 +21506,7 @@
     "effects": [
       {
         "effect": "100% Damage (1 hit)",
-        "fraction": 1.25
+        "fraction": 1.5
       }
     ],
     "casterEffect": {
