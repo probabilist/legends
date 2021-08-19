@@ -1,5 +1,9 @@
 # Change log
 
+## Version 1.2.4
+
+* Updated game data and package code to account for an incoming hotfix that added both Elnor and Troi to the summon pool.
+
 ## Version 1.2.3
 
 * Updated data to reflect an unannounced hotfix:
@@ -8,7 +12,7 @@
 * Changed the default settings in the `EffStatCalc` class to reflect changes in version 1.0.11 of the game.
 * Added three new constants:
     - `ENABLED`: A dictionary of all characters in the game, even those not yet in the summon pool.
-    - `PLAYABLE`: A dictionary that includes ENABLED as well as hidden characters that are presumable meant for a future update.
+    - `PLAYABLE`: A dictionary that includes ENABLED as well as hidden characters that are presumably meant for a future update.
     - `UPCOMING`: A list of characters in PLAYABLE but not in ENABLED.
 * Added an `allChars` boolean argument to the `summonaAll` method in the `Roster` class. If set to `True`, will summon all characters in `PLAYABLE`; otherwise will summon all characters in `ENABLED`.
 * Added an `allChars` boolean argument to the `Roster` class constructor. If set to `True` when `maxed` is also set to `True`, will build a roster of maxed characters in `PLAYABLE`.

@@ -127,9 +127,8 @@ PLAYABLE.update({
     name:CHARACTER[name] for name in UPCOMING if name not in ENABLED
     })
 SUMMONABLE = ENABLED.copy()
-del SUMMONABLE['Elnor']
 del SUMMONABLE['Chekov']
-del SUMMONABLE['Troi']
+# del SUMMONABLE['Troi']
 SUMMON_POOL = getSummonPool(SUMMONABLE)
 LEVEL = readData('GSLevel', ROOT)
 RANK = readData('GSRank', ROOT)
