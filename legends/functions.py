@@ -121,7 +121,7 @@ def decryptSaveFile():
     del saveFile['CloudKitAccountInfoCache']
     for i in range(3):
         key = str(i) + ' data'
-        if len(saveFile[key]) == 0:
+        if len(saveFile.get(key, '')) == 0:
             saveFile[key] = {}
             continue
         saveFile[key] = loads(AESdecrypt(

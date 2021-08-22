@@ -2,6 +2,7 @@
 *.sublime*
 _archive
 __pycache__
+extracted
 constants
 AssetStudio-legends
 assetList.txt
@@ -15,3 +16,4 @@ daily.py
 .python-version
 saveslot.json
 notes.txt
+startrek.json

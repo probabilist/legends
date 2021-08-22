@@ -1,5 +1,11 @@
 # Change log
 
+## Version 1.2.5
+
+* Added `tabulate` to `requirements.txt`.
+* Modified the `decryptSaveFile` so it would not raise an error when encountering a missing save slot.
+* Fixed typos in docstrings.
+
 ## Version 1.2.4
 
 * Updated game data and package code to account for an incoming hotfix that added both Elnor and Troi to the summon pool.

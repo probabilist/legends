@@ -429,7 +429,7 @@ class GuruIPT(Printable):
         Args:
             charName (str): The character to pass to the guru.
             slot (int): The slot to pass to the guru.
-            allParts (bool): If True, dominated particles are omitted.
+            allParts (bool): If False, dominated particles are omitted.
             logodds (bool): If True, probabilities are displayed as
                 log-odds.
 
@@ -507,7 +507,7 @@ class GuruIPT(Printable):
             print(line)
 
     def move(self, partID, charName, slot, force=False):
-        """Moves the given particle to the give slot on the given
+        """Moves the given particle to the given slot on the given
         character.
 
         Args:
