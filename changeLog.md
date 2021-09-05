@@ -1,9 +1,16 @@
 # Change log
 
+## Version 1.2.6
+
+* Added `PicardOld` to the `UPCOMING` list.
+* Added an exception handler to the `incompleteMission` property getter of the `SaveSlot` class. This is intended to prevent a fatal exception that sometimes occurs when trying to view incomplete missions.
+* Corrected an error that sometimes caused the roster to fail to print to CSV. The error was related to the fact that a character without particles would be instantiated without any particle effect stats, rather than with those stats present and equal to 0. A change was made in the constructor of the `Character` class to correct for this.
+* Corrected a typo in an error message raised when setting a character's xp to an invalid value.
+
 ## Version 1.2.5
 
 * Added `tabulate` to `requirements.txt`.
-* Modified the `decryptSaveFile` so it would not raise an error when encountering a missing save slot.
+* Modified the `decryptSaveFile` function so it would not raise an error when encountering a missing save slot.
 * Fixed typos in docstrings.
 
 ## Version 1.2.4

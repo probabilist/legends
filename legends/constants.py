@@ -120,7 +120,7 @@ from legends.build import (
 )
 
 CHARACTER = readData('GSCharacter', ROOT)
-UPCOMING = ['Tuvok', 'Garak', 'Shinzon', 'Gowron', 'JadziaDax']
+UPCOMING = ['Tuvok', 'Garak', 'Shinzon', 'Gowron', 'JadziaDax', 'PicardOld']
 ENABLED = {k:v for k,v in CHARACTER.items() if v['Type'] == 'Normal'}
 PLAYABLE = ENABLED.copy()
 PLAYABLE.update({

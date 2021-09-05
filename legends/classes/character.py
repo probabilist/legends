@@ -85,6 +85,8 @@ class Character(Item):
             self.level = level
         else:
             self.xp = xp
+        self.makeGearStats()
+        self.makeParticleStats()
 
     @property
     def name(self):
@@ -135,7 +137,7 @@ class Character(Item):
     @xp.setter
     def xp(self, value):
         if type(value) != type(0) or value < 0:
-            raise ValueError('rank must be a nonnegative integer')
+            raise ValueError('xp must be a nonnegative integer')
         self._xp = value
         self.makeLevelFromXP()
 

@@ -8,7 +8,7 @@ AssetStudio-legends
 assetList.txt
 pconfigdata.json
 gurudata.json
-*.csv
+*.csv*
 _legendsplus.py
 README.html
 tests.py

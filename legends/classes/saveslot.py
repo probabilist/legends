@@ -120,7 +120,10 @@ class SaveSlot(Printable):
                         percent = 0
                     else:
                         data = self.saveDict['missions'][dataKey]
-                        percent = data[dataDiff]['complete_pct']
+                        try:
+                            percent = data[dataDiff]['complete_pct']
+                        except KeyError:
+                            percent = 0
                     if percent < 100:
                         key = str(ep) + '-' + str(miss) + ' ' + inGameDiff
                         incompleteMissions[key] = percent/100
