@@ -2,6 +2,8 @@
 
 A Python package for Star Trek: Legends.
 
+This package uses text assets from Star Trek: Legends. For extracting/updating these text assets, see https://github.com/probabilist/legends-assets.
+
 ## Installation instructions
 
 This package is developed and tested in Python 3.7.11. Unless you already use Python, you will probably need to install it. For example, may Mac came with Python 2.7 pre-installed. This package will not run on Python 2.7.

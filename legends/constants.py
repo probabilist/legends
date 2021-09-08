@@ -1,25 +1,7 @@
-"""This module contains the constants used in the `legends` package.
+"""This module contains the constants used in the `legendscli` package.
 Most data is read from the json files in the 'data' folder, which were
 parsed from the Unity game assets. They need to be updated each time an
 update to the game is released.
-
-Instructions for updating game assets on a Mac: Download the Asset
-Studios C# solution (available at
-https://github.com/TemporalAgent7/AssetStudio/tree/legends). Replace
-'AssetStudio-legends/LegendsData/Program.cs' with the 'Program.cs' file
-from this repository. Open Star Trek: Legends and let it play a while,
-giving it time for all the assets to be downloaded. Run the
-'LegendsData' project. Extracted assets will be in
-'AssetStudio-legends/LegendsData/bin/Debug/net5.0/extracted'. Compare
-them to what is in 'legends/data' and copy over as needed.
-
-Optional: First call the `getAssetList` function in `extract-assets.py`
-to obtain a list of all text assets currently in the game. Then copy
-this list into 'Program.cs'. This would only be necessary if a new text
-asset were introduced in a future update.
-
-Note: In 'Program.cs', `download` should be set to `true` if a hotfix is
-released.
 
 Attributes:
     CHARACTER (dict): A direct parsing of `data/GSCharacter.json`

@@ -1,9 +1,9 @@
 """This module contains custom utility functions used to parse the data
-files and create the constants needed in the `legends` package.
+files and create the constants needed in the `legendscli` package.
 
 Attributes:
 
-    ROOT (str): The full, absolute path of the legends package.
+    ROOT (str): The full, absolute path of the legendscli package.
 
 """
 
@@ -23,7 +23,7 @@ ROOT = abspath(dirname(__file__))
 
 def getItems():
     """Parses `GSItem.json` as a dictionary. Restructures that
-    dictionary so it is more useful to the `legends` package. Then
+    dictionary so it is more useful to the `legendscli` package. Then
     returns the restructured dictionary.
 
     Returns:
@@ -242,10 +242,10 @@ def getSkillIDs(chars):
     return skillIDs
 
 def exportData():
-    """Copies the `data` folder from inside the `legends` package to a
-    folder named `data-current` in the current directory. The `data`
-    folder contains the deserialized game assets used by the `legends`
-    package.
+    """Copies the `data` folder from inside the `legendscli` package to
+    a folder named `data-current` in the current directory. The `data`
+    folder contains the deserialized game assets used by the
+    `legendscli` package.
 
     """
     if Path(getcwd() + '/data-current').is_dir():
@@ -253,16 +253,16 @@ def exportData():
     copy_tree(ROOT + '/data', getcwd() + '/data-current')
 
 def restoreData():
-    """Replaces the `data` folder inside the `legends` package with a
+    """Replaces the `data` folder inside the `legendscli` package with a
     folder in the current working directory named `data-old`.
 
     """
     copy_tree(getcwd() + '/data-old', ROOT + '/data')
 
 def updateData():
-    """Copies the 'data' folder that is inside the legends package to a
-    new folder named 'data-old' in the current working directory. Then
-    replaces the `data` folder inside the `legends` package with a
+    """Copies the 'data' folder that is inside the legendscli package to
+    a new folder named 'data-old' in the current working directory. Then
+    replaces the `data` folder inside the `legendscli` package with a
     folder in the current working directory named `data-new`.
 
     """

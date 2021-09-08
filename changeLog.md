@@ -1,5 +1,10 @@
 # Change log
 
+## Version 1.3
+
+* Moved asset extraction component to a separate repository: https://github.com/probabilist/legends-assets
+* Edited comments in package code in preparation to change the name of the `legends` package to `legendscli` (Legends Command Line Interface).
+
 ## Version 1.2.6
 
 * Added `PicardOld` to the `UPCOMING` list.

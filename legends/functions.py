@@ -1,4 +1,4 @@
-"""This module contains the functions used in the `legends` package.
+"""This module contains the functions used in the `legendscli` package.
 
 """
 
@@ -72,8 +72,8 @@ def maxParticleStats():
     return maxStats
 
 def exportConstants():
-    """Exports the constants in the `legends.constants` module to json
-    files. Places them in a folder named 'constants' in the current
+    """Exports the constants in the `legendscli.constants` module to
+    json files. Places them in a folder named 'constants' in the current
     working directory.
  
     """
@@ -142,17 +142,3 @@ def saveFileToJson(fileName='startrek'):
     """
     with open(fileName + '.json', 'w') as f:
         dump(decryptSaveFile(), f, indent=4, sort_keys=True)
-
-def getDatacoreJson(link):
-    """Opens a browser and downloads a json file of the player's
-    profile.
-
-    link (text): The link to the player profile on legends.datacore.app.
-
-    """
-    profileID = link.split('=')[1]
-    url = 'https://apilegends.datacore.app/get_profile?id=' + profileID
-    webbrowser.open(url)
-
-
-

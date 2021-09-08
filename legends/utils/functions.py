@@ -1,4 +1,4 @@
-"""Generic utility functions used by the legends package.
+"""Generic utility functions used by the legendscli package.
 
 """
 
@@ -16,13 +16,13 @@ __all__ = [
 ]
 
 def readData(fileName, root):
-    """Finds a json file in 'legends/data', then parses it and creates a
+    """Finds a json file in 'legendscli/data', then parses it and creates a
     dictionary out of it.
 
     Args:
         fileName (str): The name of the data file (without extension) to
             be read.
-        root (str): The full, absolute path of the legends package.
+        root (str): The full, absolute path of the legendscli package.
 
     Returns:
         dict: The file parsed as a dictionary.

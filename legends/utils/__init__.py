@@ -1,4 +1,4 @@
-"""Generic coding structures needed in the `legends` package.
+"""Generic coding structures needed in the `legendscli` package.
 
 Namespaces:
     utils

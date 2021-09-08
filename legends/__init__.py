@@ -1,15 +1,15 @@
 """A package for working with data from Star Trek: Legends.
 
 Namespaces:
-    legends.utils
-    legends.build
-    legends
-    legends.tools
+    legendscli.utils
+    legendscli.build
+    legendscli
+    legendscli.tools
 
 Aliases:
-    legends.[constant]  = legends.constants.[constant]
-    legends.[function]  = legends.functions.[function]
-    legends.[class]     = legends.classes.[class]
+    legendscli.[constant]  = legends.constants.[constant]
+    legendscli.[function]  = legends.functions.[function]
+    legendscli.[class]     = legends.classes.[class]
 
 """
 
