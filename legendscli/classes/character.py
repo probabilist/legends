@@ -3,14 +3,14 @@
 """
 
 from types import MappingProxyType
-from legends.utils.eventhandler import EventHandler
-from legends.utils.pool import Item
-from legends.constants import (
+from legendscli.utils.eventhandler import EventHandler
+from legendscli.utils.pool import Item
+from legendscli.constants import (
     CHARACTER, RARITIES, BASE_STAT, LEVEL, RANK, GEAR_NAMES
 )
-from legends.functions import power
-from legends.classes.skill import Skill
-from legends.classes.gearpiece import GearPiece
+from legendscli.functions import power
+from legendscli.classes.skill import Skill
+from legendscli.classes.gearpiece import GearPiece
 
 class Character(Item):
     """A character in Star Trek: Legends. Characters can equip instances

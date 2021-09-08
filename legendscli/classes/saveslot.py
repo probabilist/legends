@@ -8,15 +8,15 @@ from pyperclip import paste
 from base64 import encode, b64decode
 from zlib import decompress
 from copy import deepcopy
-from legends.utils.printable import Printable
-from legends.constants import ITEMS
-from legends.functions import decryptSaveFile
-from legends.classes.particle import Particle
-from legends.classes.collections import Laboratory
-from legends.classes.gearpiece import GearPiece
-from legends.classes.collections import Armory
-from legends.classes.character import Character
-from legends.classes.collections import Roster
+from legendscli.utils.printable import Printable
+from legendscli.constants import ITEMS
+from legendscli.functions import decryptSaveFile
+from legendscli.classes.particle import Particle
+from legendscli.classes.collections import Laboratory
+from legendscli.classes.gearpiece import GearPiece
+from legendscli.classes.collections import Armory
+from legendscli.classes.character import Character
+from legendscli.classes.collections import Roster
 
 PATH = abspath(dirname(__file__))
 

@@ -3,8 +3,8 @@
 """
 
 from types import MappingProxyType
-from legends.utils.pool import PoolChangeEvent
-from legends.classes.collections import Roster
+from legendscli.utils.pool import PoolChangeEvent
+from legendscli.classes.collections import Roster
 
 class AwayTeam(Roster):
     """A subclass of Roster that can have only 4 members.

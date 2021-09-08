@@ -17,7 +17,7 @@ Aliases:
 
 """
 
-from legends.utils.functions import *
-from legends.utils.printable import *
-from legends.utils.eventhandler import *
-from legends.utils.pool import *
+from legendscli.utils.functions import *
+from legendscli.utils.printable import *
+from legendscli.utils.eventhandler import *
+from legendscli.utils.pool import *

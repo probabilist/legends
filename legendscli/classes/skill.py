@@ -3,8 +3,8 @@
 """
 
 from types import MappingProxyType
-from legends.utils.printable import Printable
-from legends.constants import SKILL, SKILL_IDS
+from legendscli.utils.printable import Printable
+from legendscli.constants import SKILL, SKILL_IDS
 
 class Skill(Printable):
     """A skill in Star Trek: Legends.

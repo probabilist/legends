@@ -3,10 +3,10 @@
 """
 
 from types import MappingProxyType
-from legends.utils.pool import Item
-from legends.utils.eventhandler import EventHandler
-from legends.constants import GEAR, GEAR_LEVEL, RARITIES
-from legends.functions import powerDelta
+from legendscli.utils.pool import Item
+from legendscli.utils.eventhandler import EventHandler
+from legendscli.constants import GEAR, GEAR_LEVEL, RARITIES
+from legendscli.functions import powerDelta
 
 class GearPiece(Item):
     """A piece of gear in Star Trek: Legends.

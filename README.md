@@ -1,4 +1,4 @@
-# legends
+# legendscli (Legends Command Line Interface)
 
 A Python package for Star Trek: Legends.
 
@@ -14,7 +14,7 @@ There are many ways to install Python, so google around for one that works for y
 
 1. Create a new folder somewhere. For the sake of the example, let's say your new folder is 'Documents/StarTrek'.
 
-2. Copy the 'legends' folder and the 'requirements.txt' text file from this repository into your new folder, 'Documents/StarTrek'.
+2. Copy the 'legendscli' folder and the 'requirements.txt' text file from this repository into your new folder, 'Documents/StarTrek'.
 
 3. Open a command prompt at 'Documents/StarTrek'. There are many ways to do this. On a Mac, you can open Finder, navigate to 'Documents', right click on 'StarTrek', and select 'Services > New Terminal at Folder'.
 
@@ -22,13 +22,13 @@ There are many ways to install Python, so google around for one that works for y
 ```
 % pip install -r requirements.txt
 ```
-This will install the packages needed to run the `legends` package.
+This will install the packages needed to run the `legendscli` package.
 
 5. (optional) At the command prompt, enter
 ```
 % python -m pydoc -b
 ```
-This will open a browser page with Python documentation. Find the "**legends** (package)" link and click it. You can now explore all the package documentation.
+This will open a browser page with Python documentation. Find the "**legendscli** (package)" link and click it. You can now explore all the package documentation.
 
 6. At the command prompt, enter
 ```
@@ -38,9 +38,9 @@ This will open the `Python` interpreter in interactive mode. Your command prompt
 
 7. At the Python prompt, enter
 ```
->>> from legends import *
+>>> from legendscli import *
 ```
-You are now ready to explore the functionality of the `legends` package.
+You are now ready to explore the functionality of the `legendscli` package.
 
 Note: Depending on how you installed Python, you may need to replace `pip` and `python` with `pip3` and `python3`.
 

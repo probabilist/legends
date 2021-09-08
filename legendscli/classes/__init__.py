@@ -16,10 +16,10 @@ Aliases:
 
 """
 
-from legends.classes.skill import Skill
-from legends.classes.gearpiece import GearPiece
-from legends.classes.particle import Particle
-from legends.classes.character import Character
-from legends.classes.collections import *
-from legends.classes.awayteam import AwayTeam
-from legends.classes.saveslot import SaveSlot
+from legendscli.classes.skill import Skill
+from legendscli.classes.gearpiece import GearPiece
+from legendscli.classes.particle import Particle
+from legendscli.classes.character import Character
+from legendscli.classes.collections import *
+from legendscli.classes.awayteam import AwayTeam
+from legendscli.classes.saveslot import SaveSlot

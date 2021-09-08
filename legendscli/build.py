@@ -12,7 +12,7 @@ from os.path import abspath, dirname
 from os import getcwd
 from pathlib import Path
 from distutils.dir_util import copy_tree
-from legends.utils.functions import readData
+from legendscli.utils.functions import readData
 
 __all__ = [
     'ROOT', 'getItems', 'getSummonPool', 'getPartStats', 'getPowerFunc',

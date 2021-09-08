@@ -95,8 +95,8 @@ Attributes:
 
 """
 
-from legends.utils.functions import readData
-from legends.build import (
+from legendscli.utils.functions import readData
+from legendscli.build import (
     ROOT, getItems, getSummonPool, getPartStats, getPartUpgrading,
     getPowerFunc, getSkillIDs
 )

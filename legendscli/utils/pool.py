@@ -3,9 +3,9 @@
 """
 
 from types import MappingProxyType
-from legends.utils.printable import Printable
-from legends.utils.eventhandler import Event, EventHandler
-from legends.utils.functions import writeToCSV
+from legendscli.utils.printable import Printable
+from legendscli.utils.eventhandler import Event, EventHandler
+from legendscli.utils.functions import writeToCSV
 
 class PoolChangeEvent(Event):
     """An event indicating the pool has changed.

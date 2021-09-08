@@ -3,8 +3,8 @@
 """
 
 from types import MappingProxyType
-from legends.utils.printable import Printable
-from legends.utils.eventhandler import EventHandler
+from legendscli.utils.printable import Printable
+from legendscli.utils.eventhandler import EventHandler
 
 class EffStatCalc(Printable):
     """An Effective Stat Calculator for stats that denote averages.

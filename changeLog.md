@@ -1,5 +1,9 @@
 # Change log
 
+## Version 2.0
+
+* The `legends` package is now the `legendscli` package.
+
 ## Version 1.3.1
 
 * Updated 'README.md' to reflect the Sela nerf.

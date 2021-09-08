@@ -4,12 +4,12 @@
 
 from types import MappingProxyType
 from itertools import combinations
-from legends.utils.pool import Pool, PoolChangeEvent
-from legends.constants import (
+from legendscli.utils.pool import Pool, PoolChangeEvent
+from legendscli.constants import (
     PART_STAT_VALUES, SUMMONABLE, SUMMON_POOL, ENABLED, PLAYABLE
 )
-from legends.classes.particle import Particle
-from legends.classes.character import Character
+from legendscli.classes.particle import Particle
+from legendscli.classes.character import Character
 
 __all__ = ['Armory', 'Laboratory', 'Roster']
 

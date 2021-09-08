@@ -12,8 +12,8 @@ Aliases:
 
 """
 
-from legends.tools.rosterviewer import RosterViewer
-from legends.tools.laboratoryviewer import LaboratoryViewer
-from legends.tools.effstatcalc import EffStatCalc
-from legends.tools.selastatcalc import SelaStatCalc
-from legends.tools.guruipt import GuruIPT
+from legendscli.tools.rosterviewer import RosterViewer
+from legendscli.tools.laboratoryviewer import LaboratoryViewer
+from legendscli.tools.effstatcalc import EffStatCalc
+from legendscli.tools.selastatcalc import SelaStatCalc
+from legendscli.tools.guruipt import GuruIPT

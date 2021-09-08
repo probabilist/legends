@@ -14,9 +14,9 @@ from tabulate import tabulate
 from os.path import abspath, dirname
 from json import load, dump
 from math import log
-from legends.utils.functions import printProgressBar, roundSigFig
-from legends.utils.printable import Printable
-from legends.tools.particleguru import ParticleGuru, Filter, Stat
+from legendscli.utils.functions import printProgressBar, roundSigFig
+from legendscli.utils.printable import Printable
+from legendscli.tools.particleguru import ParticleGuru, Filter, Stat
 
 ABBREVIATIONS = {
     'Accelerated Coagulation': 'Coag',

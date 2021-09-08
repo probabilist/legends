@@ -3,12 +3,12 @@
 """
 
 from types import MappingProxyType
-from legends.utils.pool import Item
-from legends.utils.eventhandler import EventHandler
-from legends.constants import (
+from legendscli.utils.pool import Item
+from legendscli.utils.eventhandler import EventHandler
+from legendscli.constants import (
     PART_STAT_UNLOCKED, PART_STAT_VALUES, PART_EFFECTS, RARITIES
 )
-from legends.functions import powerDelta
+from legendscli.functions import powerDelta
 
 class Particle(Item):
     """A particle in Star Trek: Legends.

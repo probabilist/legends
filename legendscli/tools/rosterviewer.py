@@ -3,7 +3,7 @@
 """
 
 from types import MappingProxyType
-from legends.utils.pool import PoolViewer
+from legendscli.utils.pool import PoolViewer
 
 class RosterViewer(PoolViewer):
     """A PoolViewer subclass for Roster objects.

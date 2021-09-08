@@ -9,9 +9,11 @@ from getpass import getuser
 from shutil import copyfile
 from plistlib import load
 import webbrowser
-from legends.utils.functions import AESdecrypt
-from legends import constants
-from legends.constants import POWER_GRADIENT, POWER_AT_ORIGIN, PART_STAT_VALUES
+from legendscli.utils.functions import AESdecrypt
+from legendscli import constants
+from legendscli.constants import (
+    POWER_GRADIENT, POWER_AT_ORIGIN, PART_STAT_VALUES
+)
 
 __all__ = [
     'powerDelta', 'power', 'maxParticleStats', 'exportConstants',

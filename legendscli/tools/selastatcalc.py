@@ -4,11 +4,11 @@
 
 from types import MappingProxyType
 from itertools import combinations
-from legends.utils.functions import fixedSum, powerset
-from legends.utils.eventhandler import EventHandler
-from legends.classes.character import Character
-from legends.classes.particle import Particle
-from legends.classes.awayteam import AwayTeam
+from legendscli.utils.functions import fixedSum, powerset
+from legendscli.utils.eventhandler import EventHandler
+from legendscli.classes.character import Character
+from legendscli.classes.particle import Particle
+from legendscli.classes.awayteam import AwayTeam
 
 __all__ = ['SelaStatCalc']
 
