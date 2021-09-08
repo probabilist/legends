@@ -15,8 +15,7 @@ from legends.constants import POWER_GRADIENT, POWER_AT_ORIGIN, PART_STAT_VALUES
 
 __all__ = [
     'powerDelta', 'power', 'maxParticleStats', 'exportConstants',
-    'saveFilePath', 'copySaveFile', 'decryptSaveFile', 'saveFileToJson',
-    'getDatacoreJson'
+    'saveFilePath', 'copySaveFile', 'decryptSaveFile', 'saveFileToJson'
 ]
 
 def powerDelta(stats):

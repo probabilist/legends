@@ -118,6 +118,8 @@ The effective stat calculator comes with default settings, but we can adjust the
 
 ### Sela stat calculator
 
+> **NOTE:** This tool is no longer relevant to the game, since Sela was nerfed in version 1.0.11 of Star Trek: Legends. I have updated this section and the next with the numbers that it produces now, post-nerf. These numbers show that the tool is effectively useless now, since there is little to no chance of dying to Sela's Surprise Attack now.
+
 Another calculator is the Sela stat calculator, which computes things like the chance of surviving Sela's Surprise Attack.
 ```
 >>> ssc = tools.SelaStatCalc(mySave.roster)
@@ -126,19 +128,19 @@ Our characters now have several stats related to facing an enemy Sela. Like the 
 ```
 >>> picard = mySave.roster.get('Picard')
 >>> picard.selaStats
-mappingproxy({'survSelaCover': 0.973897150195,
-              'survSelaNoCover': 0.8498565792165685,
+mappingproxy({'survSelaCover': 0.9999675807119638,
+              'survSelaNoCover': 0.9992945521153624,
               'survSelaCrit': True,
               'survSelaTwoHits': True})
 ```
-My Picard has a 97.4% of surviving Sela's Surprise Attack when behind cover, and an 85.0% chance of surviving out of cover. He can survive a single critical hit from Surprise Attack, and can also survive two non-critical hits.
+My Picard has a 99.997% of surviving Sela's Surprise Attack when behind cover, and a 99.93% chance of surviving out of cover. He can survive a single critical hit from Surprise Attack, and can also survive two non-critical hits.
 
 These stats depend, of course, on what we assume about the enemy Sela. By default, the Sela stat calculator assumes the enemy Sela is Rank 9, Level 99, with no gear and two maxed particles with tech, crit chance, and crit damage. But these settings can be adjusted. If the enemies we're facing are only Level 50, we can change that.
 ```
 >>> ssc.sela.level = 50
 >>> picard.selaStats
 mappingproxy({'survSelaCover': 1.0,
-              'survSelaNoCover': 0.9997716658511571,
+              'survSelaNoCover': 1.0,
               'survSelaCrit': True,
               'survSelaTwoHits': True})
 >>> ssc.sela.level = 99
@@ -163,12 +165,12 @@ Finally, we'll connect our away team to the Sela stat calculator.
 Our away team now has a number of team-specific stats related to facing an enemy Sela. For example:
 ```
 >>> team.selaNumSurvivors
-mappingproxy({('Sela', 'TPol'): 3.334155929514963,
-              ('Sela', 'Geordi'): 3.2894552124626872,
-              ('Sela', 'Tomalak'): 3.187458769932807,
-              ('TPol', 'Geordi'): 3.3001377713212223,
-              ('TPol', 'Tomalak'): 3.1981413287913427,
-              ('Geordi', 'Tomalak'): 3.1534406117390663})
+mappingproxy({('Sela', 'TPol'): 3.9699480695743325,
+              ('Sela', 'Geordi'): 3.8669220097728267,
+              ('Sela', 'Tomalak'): 3.8679353592341528,
+              ('TPol', 'Geordi'): 3.9474516634454777,
+              ('TPol', 'Tomalak'): 3.9484650129068033,
+              ('Geordi', 'Tomalak'): 3.8454389531052975})
 ```
 What we see here is the average number of survivors of Sela's Surprise Attack, as a function of who we put behind cover. As we see, this is maximized by placing Sela and T'Pol  behind cover.
 
@@ -176,7 +178,7 @@ What we see here is the average number of survivors of Sela's Surprise Attack, a
 
 Player inventory is available in the `SaveSlot` object. To view your inventory, type
 ```
-save.inventory
+>>> mySave.inventory
 ```
 The inventory contains latinum, power cells, alliance currency, bio-gel, protomatter, pvp medals, orbs, gear leveling mats, and gear ranking mats.
 
@@ -184,11 +186,13 @@ The inventory contains latinum, power cells, alliance currency, bio-gel, protoma
 
 The `SaveSlot` object can also give you a list of missions that are not yet 100% complete. Typing
 ```
-save.incompleteMissions
+>>> mySave.incompleteMissions
 ```
 will bring up this list, which includes the mission names and the percent complete (formatted as a decimal).
 
 ### Particle guru
+
+> **NOTE:** This part of the tour was written before the Sela nerf in version 1.0.11 of Star Trek: Legends. I have not updated it, so below you will see the particle guru being used to optimize the chances of surviving Sela's Surprise Attack. Post-nerf, there is no reason to use it that way. But the tool is still relevant and effective. You just have to tell it to optimize different stats--whichever ones you feel are most effective for your purposes.
 
 Our save slot also contains all our particles.
 ```

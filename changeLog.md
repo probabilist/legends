@@ -1,5 +1,10 @@
 # Change log
 
+## Version 1.3.1
+
+* Updated 'README.md' to reflect the Sela nerf.
+* Deleted the `getDatacoreJson` function from 'functions.py', which was used to download save data using a link to player's datacore profile. (This was actually partially deleted in v1.3, but didn't make it into the change log. Now it is fully deleted.)
+
 ## Version 1.3
 
 * Moved asset extraction component to a separate repository: https://github.com/probabilist/legends-assets
