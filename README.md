@@ -22,7 +22,7 @@ Option 1 should not require you to even have Python installed. The app itself co
 
 The other options require you to have Python installed. This repository is built and tested with Python 3.7.11.
 
-## Downloading the app
+## 1. Downloading the app
 
 You can download 'STL PLanner.app.zip' from my Google Drive with this link: https://drive.google.com/file/d/1co-I9lxzeiUUGcwZTFNaq76km2AyHcC9/view?usp=sharing.
 
@@ -54,7 +54,7 @@ This will install the packages needed to run the `legends` package.
 ```
 This will open a browser page with Python documentation. Find the "**legends** (package)" link and click it. You can now explore all the package documentation.
 
-### Starting the app from Terminal
+### 2. Starting the app from Terminal
 
 Copy the file, `stlplannerapp.py`, to 'Documents/StarTrek'. At the command prompt, enter
 ```
@@ -62,7 +62,7 @@ Copy the file, `stlplannerapp.py`, to 'Documents/StarTrek'. At the command promp
 ```
 That's it.
 
-### Starting the app interactively
+### 3. Starting the app interactively
 
 At the command prompt, enter
 ```
@@ -74,7 +74,7 @@ This will open the `Python` interpreter in interactive mode. Your command prompt
 >>> STLPlanner().mainloop()
 ```
 
-### Building the app yourself
+### 4. Building the app yourself
 
 If you do not already have `pyinstaller` installed, then at the command prompt, enter
 ```

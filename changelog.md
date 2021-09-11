@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.0.3
+
+* Added numbering to the README.
+
 ## Version 0.0.2
 
 * Added a download link to the README.
