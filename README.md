@@ -13,7 +13,7 @@ The `legends` Python package is an all-new, streamlined version of the old `lege
 
 There are four ways you can run the STL Planner app:
 
-1. Simply copy the app to your Mac and run it.
+1. Simply download the app to your Mac and run it.
 2. Install the `legends` package and start the app from a Terminal command prompt.
 3. Install the `legends` package and start the app from inside a Python interactive session.
 4. Install the `legends` package and build the app yourself.
@@ -21,6 +21,16 @@ There are four ways you can run the STL Planner app:
 Option 1 should not require you to even have Python installed. The app itself contains a copy of everything it needs, including Python.
 
 The other options require you to have Python installed. This repository is built and tested with Python 3.7.11.
+
+## Downloading the app
+
+You can download 'STL PLanner.app.zip' from my Google Drive with this link: https://drive.google.com/file/d/1co-I9lxzeiUUGcwZTFNaq76km2AyHcC9/view?usp=sharing.
+
+Once downloaded you will need to extract 'STL Planner.app' from the zip file.
+
+Finally, you will need to right click on the app and select 'Open'. A dialog will pop up, warning you of the security risk. You can then agree to run the app anyway.
+
+If you try to double-click the app after extracting it, the security warning will appear, but you will not have the option to run it anyway. You will simply be blocked from using the app.
 
 ## Installing the `legends` package
 
