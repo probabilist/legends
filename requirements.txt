@@ -1,3 +1,0 @@
-pycryptodome==3.10.1
-pyperclip==1.8.2
-tabulate==0.8.9
