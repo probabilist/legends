@@ -1,10 +1,12 @@
 .DS_Store
 *.sublime*
-_archive
 __pycache__
+_archive
+build
 constants
-pconfigdata.json
-gurudata.json
-_legendsplus.py
-daily.py
+dist
 .python-version
+commands.md
+pythonref.pdf
+tests.py
+tests2.py
