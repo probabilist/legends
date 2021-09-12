@@ -6,7 +6,6 @@ build
 constants
 dist
 .python-version
-commands.md
+_notes.md
 pythonref.pdf
 tests.py
-tests2.py

@@ -54,9 +54,9 @@ class StatObject():
         return result
 
     def __repr__(self):
-        return formatDict({
+        return 'StatObject({})'.format(formatDict({
             statName: getattr(self, statName) for statName in self.statAbbrs
-        })
+        }))
 
 class Stats(StatObject):
     """Stores the basic stats in STL.
@@ -80,7 +80,7 @@ class Stats(StatObject):
         StatObject.__init__(self)
         self.statAbbrs = STAT_ABBREVIATIONS.values()
         if initDict is None:
-            initDict = {statName: 0 for statName in self.statAbbrs}
+            initDict = {statName: 0 for statName in STAT_ABBREVIATIONS}
         self.update(initDict)
 
     @property

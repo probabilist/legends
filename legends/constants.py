@@ -21,6 +21,14 @@ Attributes:
     ROLES (list of str): A list of roles in the game.
     RARITY_COLORS (dict of str:str): A dictionary mapping character
         rarities to color names in tkinter.
+    PART_STAT_VALUES (dict of str:(dict of str:(list of float))): A
+        dictionary mapping stat names to a dictionary mapping rarity
+        names to a list whose indices denote the 0-based level of the
+        particle and whose values denote the value of the given stat on
+        a particle of the given rarity and level.
+
+        Example: `PART_STAT_VALUES['Attack']['Epic'][0]` is the value of
+        the attack stat on a Level 1, Epic particle.
 
 """
 
@@ -87,3 +95,16 @@ RARITY_COLORS = {
     'Epic': 'MediumPurple1',
     'Legendary': 'yellow'
 }
+
+PART_STAT_VALUES = {
+    statName: {rarity: [0] * 5 for rarity in RARITIES}
+    for statName in
+    GSAccessoryStatGeneration # pylint: disable=undefined-variable
+}
+# pylint: disable-next=undefined-variable
+for data in GSAccessoryStatGrowth.values():
+    statName = data['Stat']
+    level = data['Level']
+    rarity = data['Rarity']
+    statVal = data['StatIncrease']
+    PART_STAT_VALUES[statName][rarity][level - 1] = statVal

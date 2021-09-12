@@ -122,7 +122,12 @@ class SaveSlot():
     """
 
     def __init__(self, slot=0):
-        """
+        """Constructs a SaveSlot object by extracting data from the
+        user's Star Trek: Legends save file, stored on the local HD.
+
+        Args:
+            slot (int): The 0-based index of the save slot from which to
+                draw the data.
 
         Raises:
             ValueError: If no save data is found in the given slot.
@@ -214,13 +219,14 @@ class SaveSlot():
 
         """
         parts = {}
-        for indexStr, data in self.slotData['accessories'].items():
-            index = int(indexStr)
+        for saveIndexStr, data in self.slotData['accessories'].items():
+            saveIndex = int(saveIndexStr)
             name = DESCRIPTIONS[GSAccessoryItems[data['accessoryid']]['Name']]
             rarity = GSAccessoryItems[data['accessoryid']]['Rarity']
             part = Particle(name, rarity, data['level'], data['locked'])
-            part.statNames = list(data['stats'].values())
-            parts[index] = part
+            for statIndex, statName in enumerate(data['stats'].values()):
+                part.setStatName(statIndex, statName)
+            parts[saveIndex] = part
         return parts
 
     def readChars(self):
