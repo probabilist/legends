@@ -21,6 +21,13 @@ Attributes:
     ROLES (list of str): A list of roles in the game.
     RARITY_COLORS (dict of str:str): A dictionary mapping character
         rarities to color names in tkinter.
+    PART_STAT_UNLOCKED (dict of str:(list of int)): A dictionary mapping
+        particle rarities to a list whose indices denote the 0-based
+        level of the particle and whose values denote the number of
+        unlocked stats on a particle of that rarity and level.
+
+        Example: `PART_STAT_UNLOCKED['VeryRare'][2]` is the number of
+        unlocked stats on a Level 3, Very Rare particle.
     PART_STAT_VALUES (dict of str:(dict of str:(list of float))): A
         dictionary mapping stat names to a dictionary mapping rarity
         names to a list whose indices denote the 0-based level of the
@@ -96,6 +103,13 @@ RARITY_COLORS = {
     'Legendary': 'yellow'
 }
 
+PART_STAT_UNLOCKED = {
+    'Common': [1, 2, 2, 2, 2],
+    'Rare': [1, 2, 2, 2, 2],
+    'VeryRare': [1, 2, 2, 3, 3],
+    'Epic': [2, 3, 3, 4, 4],
+    'Legendary': [2, 3, 3, 4, 4]
+}
 PART_STAT_VALUES = {
     statName: {rarity: [0] * 5 for rarity in RARITIES}
     for statName in

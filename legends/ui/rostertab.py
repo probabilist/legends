@@ -4,11 +4,13 @@
 
 from re import findall
 import tkinter as tk
-from tkinter import ttk, X, BOTH, GROOVE, LEFT, NSEW, YES
+from tkinter import ttk, X, BOTH, GROOVE, LEFT, NSEW, YES, W
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
-from legends.constants import GSLevel
-from legends.constants import RARITY_COLORS
+from legends.constants import GSLevel, GSBaseStat
+from legends.constants import (
+    RARITY_COLORS, STAT_ABBREVIATIONS, POWER_AT_ORIGIN
+)
 from legends.ui.dialogs import askRosterFilter, RosterFilter
 
 __all__ = ['CharCard', 'RosterTab', 'RosterFilter', 'RosterTab']
@@ -75,6 +77,11 @@ class RosterTab(tk.Frame):
         self.infoBar = RosterInfoBar(self)
 
         # pack frame content
+        tk.Label(
+            self,
+            text='TIP: Click a character name to mark it as a favorite.',
+            anchor=W
+        ).pack(expand=YES, fill=X)
         self.actionBar().pack(fill=X)
         self.scrollArea.pack(expand=YES, fill=BOTH)
         self.infoBar.pack()
@@ -117,7 +124,7 @@ class RosterTab(tk.Frame):
         and places it in the scroll area's content frame.
 
         """
-        columns = 9
+        columns = 5
         for j in range(columns):
             self.scrollArea.content.columnconfigure(
                 j, weight=1, uniform='roster'
@@ -132,7 +139,7 @@ class RosterTab(tk.Frame):
                 row=count // columns, column=count % columns, sticky=NSEW
             )
             count += 1
-        self.infoBar.makeStats(chars)
+        self.infoBar.makeStats(chars, self.saveslot.roster)
 
     def actionBar(self):
         """Builds and returns an action bar that allows the user to
@@ -149,6 +156,13 @@ class RosterTab(tk.Frame):
             'Tokens': lambda c,s: s.tokens[c.nameID],
             'Tokens needed': lambda c,s: c.tokensNeeded - s.tokens[c.nameID]
         }
+        for statName in GSBaseStat:
+            self.sortFuncs[statName] = lambda c,s,n=statName: (
+                s.roster.charStats(c.nameID).get(n)
+            )
+        self.sortFuncs['Power'] = lambda c,s: (
+            POWER_AT_ORIGIN + s.roster.charStats(c.nameID).power
+        )
         fields = list(self.sortFuncs.keys())
         self.sortField = tk.StringVar()
         self.descending = tk.BooleanVar()
@@ -239,41 +253,23 @@ class CharCard(tk.Frame):
         """
         # build card and initialize variables
         tk.Frame.__init__(self, parent, **options)
+        self.config(width=230, height=120)
+        self.pack_propagate(0)
         self.char = char
         self.saveslot = saveslot
-        bgColor = RARITY_COLORS[char.rarity]
 
-        # build name label
-        self.nameLabel = tk.Label(
-            self, text=makeShortName(char), bg=bgColor, font=(None, 16, 'bold')
-        )
-        self.nameLabel.bind('<Button-1>', self.toggleFav)
+        # build name and stat plates
+        bgColor = RARITY_COLORS[char.rarity]
+        namePlate = self.namePlate(bgColor)
+        statPlate = self.statPlate(bgColor)
 
         # set card color configuration
         self.config(bg=bgColor, highlightthickness=2)
         self.colorByFav()
 
         # pack card contents
-        tk.Label(
-            self,
-            text='{}\nRank {}\nTokens: {}/{}'.format(
-                char.role,
-                char.rank,
-                saveslot.tokens[char.nameID],
-                char.tokensNeeded
-            ),
-            bg=bgColor,
-            font=(None, 11, 'italic')
-        ).pack()
-        self.nameLabel.pack(expand=YES, fill=X)
-        tk.Label(
-            self,
-            text=('Level {}\nXP: {:,}\n({:.1%})'.format(
-                char.level, char.xp, char.xp/maxXP(char.rarity)
-            )),
-            bg=bgColor,
-            font=(None, 11, 'italic')
-        ).pack()
+        namePlate.pack(side=LEFT)
+        statPlate.pack()
 
     @property
     def favorite(self):
@@ -281,6 +277,102 @@ class CharCard(tk.Frame):
         favorite.
         """
         return self.char in self.saveslot.favorites
+
+    def namePlate(self, bgColor):
+        """Build and returns the character name plate with the given
+        background color.
+
+        Args:
+            bgColor (str): The tkinter name of the given background
+                color.
+
+        Returns:
+            tk.Frame: The constructed name plate.
+
+        """
+        plate = tk.Frame(self, bg=bgColor)
+
+        # build name label
+        self.nameLabel = tk.Label(
+            plate, text=makeShortName(self.char), bg=bgColor,
+            font=(None, 16, 'bold')
+        )
+        self.nameLabel.bind('<Button-1>', self.toggleFav)
+
+        # pack name plate contents and return the plate
+        tk.Label(
+            plate,
+            text='{}\nRank {}\nTokens: {}/{}'.format(
+                self.char.role,
+                self.char.rank,
+                self.saveslot.tokens[self.char.nameID],
+                self.char.tokensNeeded
+            ),
+            bg=bgColor,
+            font=(None, 11, 'italic')
+        ).pack()
+        self.nameLabel.pack(expand=YES, fill=X)
+        tk.Label(
+            plate,
+            text=('Level {}\nXP: {:,}\n({:.1%})'.format(
+                self.char.level,
+                self.char.xp,
+                self.char.xp/maxXP(self.char.rarity)
+            )),
+            bg=bgColor,
+            font=(None, 11, 'italic')
+        ).pack()
+        return plate
+
+    def statPlate(self, bgColor):
+        """Build and returns the character stat plate with the given
+        background color.
+
+        Args:
+            bgColor (str): The tkinter name of the given background
+                color.
+
+        Returns:
+            tk.Frame: The constructed stat plate.
+
+        """
+        plate = tk.Frame(self, bg=bgColor)
+        statObj = self.saveslot.roster.charStats(self.char.nameID)
+
+        # cycle through the 10 basic stats
+        for index, statAbbr in enumerate(STAT_ABBREVIATIONS.values()):
+            # build the stat label
+            initial = statAbbr if len(statAbbr) == 2 else statAbbr[0]
+            initial = initial.upper()
+
+            # format the stat value
+            statVal = getattr(statObj, statAbbr)
+            if index == 2: # the speed stat
+                statText = '{:.2f}'.format(statVal)
+            elif index > 4: # the percentage stats
+                statText = (
+                    '{:.2f}'.format(100 * statVal).rstrip('0').rstrip('.')
+                    + '%'
+                )
+            else:
+                statText = '{:.0f}'.format(statVal)
+
+            # grid the 10 basic stats
+            row, col = index % 5, 2 * int(index/5)
+            tk.Label(
+                plate, text=initial + ':', bg=bgColor, font=(None, 11)
+            ).grid(row=row, column=col, sticky=W)
+            tk.Label(
+                plate, text=statText, bg=bgColor, font=(None, 11)
+            ).grid(row=row, column=col + 1, sticky=W)
+
+        # grid the power stat and return the plate
+        tk.Label(
+            plate,
+            text='POWER: {:.0f}'.format(POWER_AT_ORIGIN + statObj.power),
+            bg=bgColor, font=(None, 11)
+        ).grid(row=5, column=0, columnspan=4)
+        return plate
 
     def toggleFav(self, event): # pylint: disable=unused-argument
         """Toggles the character's `favorite` attribute and recolors the
@@ -314,16 +406,23 @@ class RosterInfoBar(tk.Frame):
         tk.Frame.__init__(self, parent, **options)
         self.totalXP = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
         self.totalXP.pack(side=LEFT)
+        self.totalPower = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.totalPower.pack(side=LEFT)
 
-    def makeStats(self, chars):
+    def makeStats(self, chars, roster):
         """Computes and redisplays roster statistics using the given
         collection of characters.
 
         Args:
             chars (iterable of Character): The characters to use when
                 computing statistics.
+            roster (Roster): The roster to which the characters belong.
 
         """
-        self.totalXP.config(
-            text='Total XP: {:,}'.format(sum(char.xp for char in chars))
-        )
+        self.totalXP.config(text='Total XP: {:,}'.format(sum(
+            char.xp for char in chars
+        )))
+        self.totalPower.config(text='Total power: {:,.0f}'.format(sum(
+            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+            for char in chars
+        )))

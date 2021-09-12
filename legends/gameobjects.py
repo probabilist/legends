@@ -8,7 +8,9 @@ from legends.utils.objrelations import Managed, OneToOne
 from legends.constants import (
     GSSkill, GSCharacter, GSLevel, GSGear, GSRank, GSBaseStat, GSGearLevel
 )
-from legends.constants import DESCRIPTIONS, RARITIES, PART_STAT_VALUES
+from legends.constants import (
+    DESCRIPTIONS, RARITIES, PART_STAT_VALUES, PART_STAT_UNLOCKED
+)
 from legends.stats import Stats
 
 __all__ = [
@@ -224,6 +226,11 @@ class Particle(Managed):
         self.updateStats()
 
     @property
+    def numStats(self):
+        """int: The number of unlocked stats on the particle."""
+        return PART_STAT_UNLOCKED[self.rarity][self.level - 1]
+
+    @property
     def statNames(self):
         """tuple of str: The names, as they appear in GSBaseStat, of the
         stats that are on the particle.
@@ -248,7 +255,8 @@ class Particle(Managed):
 
         """
         statList = [
-            statName for statName in self.statNames if statName is not None
+            statName for statName in self.statNames[:self.numStats]
+            if statName is not None
         ]
         self.stats.update(getPartStats(self.rarity, self.level, statList))
 

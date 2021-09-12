@@ -35,7 +35,12 @@ class ScrollFrame(tk.Frame):
         self.canvas = tk.Canvas(self, highlightthickness=0)
         self.scrollbar = tk.Scrollbar(self, command=self.canvas.yview)
         self.canvas.config(yscrollcommand=self.scrollbar.set)
-        self.canvas.bind_all('<MouseWheel>', self.onMouseWheel)
+        self.canvas.bind('<Enter>', lambda event: (
+            self.canvas.bind_all('<MouseWheel>', self.onMouseWheel)
+        ))
+        self.canvas.bind('<Leave>', lambda event: (
+            self.canvas.unbind_all('<MouseWheel>')
+        ))
         self.scrollbar.pack(side=RIGHT, fill=Y)
         self.canvas.pack(side=LEFT, expand=YES, fill=BOTH)
         self.content = tk.Frame(self.canvas)

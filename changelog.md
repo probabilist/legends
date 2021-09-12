@@ -1,5 +1,21 @@
 # Change log
 
+## Version 0.2.0
+
+* Changes made to the `rostertab` module:
+    - Added the 11 basic stats (Health, Attack, Speed, Defense, Tech, Crit Chance, Crit Damage, Glancing Chance, Glancing Damage, and Power) to the character cards.
+    - Characters can now be sorted by stats.
+    - Added total roster power to the info bar at the bottom.
+    - Added a tip to the user about toggling favorites.
+    - Reduced the number of columns to 5 to account for wider character cards.
+    - Character cards now have fixed dimensions for more consistency when filtering.
+    - Added a `roster` argument to the `RosterTab.makeStats` method to allow for the computing of total power; modified its use in the `RosterTab.fillCards` method.
+* Added the constant, `PART_STAT_UNLOCKED`, that stores the number of unlocked stats on a particle by rarity and level.
+* Added a `get` method to the `Stats` class to allow for stat retrieval by stat name.
+* Changed the binding in the `ScrollFrame` class, so that the mouse wheel will only control one object at a time. (As it was, it was controlling both the roster tab and the sorting combobox simultaneously.)
+* Added a `numStats` property to the `Particle` class that returns the number of unlocked stats on the particle.
+* Modified the `Particle.updateStats` method to account of the `numStats` property.
+
 ## Version 0.1.0
 
 * Added the constant, `PART_STAT_VALUES`, that stores the stat values of particles according to their rarity and level.

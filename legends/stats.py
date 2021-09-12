@@ -90,10 +90,23 @@ class Stats(StatObject):
         object.
         """
         powerDelta = 0
-        for statName, statAbbr in STAT_ABBREVIATIONS.items():
-            statVal = getattr(self, statAbbr)
+        for statName in STAT_ABBREVIATIONS:
+            statVal = self.get(statName)
             powerDelta += POWER_GRADIENT[statName] * statVal
         return powerDelta
+
+    def get(self, statName):
+        """Returns a stat value by its full name, as it appears in
+        `GSBaseStat`.
+
+        Args:
+            statName (str): A stat name, as it appears in `GSBaseStat`.
+
+        Returns:
+            int or float: The value of the given stat.
+
+        """
+        return getattr(self, STAT_ABBREVIATIONS[statName])
 
     def update(self, statDict):
         """Sets the stat attributes to those contained in the given stat
