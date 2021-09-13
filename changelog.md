@@ -1,9 +1,15 @@
 # Change log
 
+## Version 0.3.0
+
+* Added the constants `SUMMON_POOL` and `SUMMON_POOL_IDS`.
+* Edited the README instructions for launching the app interactively. It now suggests to use `STLPlanner()` instead of `STLPlanner().mainloop()`. There is no need to call `mainloop()` interactively, and omitting it allows you to do interactive testing while the app is running.
+* Corrected a typo in the change log for version 0.2.0. (It failed to mention that Resolve was added to character cards.)
+
 ## Version 0.2.0
 
 * Changes made to the `rostertab` module:
-    - Added the 11 basic stats (Health, Attack, Speed, Defense, Tech, Crit Chance, Crit Damage, Glancing Chance, Glancing Damage, and Power) to the character cards.
+    - Added the 11 basic stats (Health, Attack, Speed, Defense, Tech, Crit Chance, Crit Damage, Glancing Chance, Glancing Damage, Resolve, and Power) to the character cards.
     - Characters can now be sorted by stats.
     - Added total roster power to the info bar at the bottom.
     - Added a tip to the user about toggling favorites.

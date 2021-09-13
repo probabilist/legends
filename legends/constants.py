@@ -36,16 +36,26 @@ Attributes:
 
         Example: `PART_STAT_VALUES['Attack']['Epic'][0]` is the value of
         the attack stat on a Level 1, Epic particle.
+    SUMMON_POOL (dict): A dictionary mapping pool names ('Core' or one
+        the roles in ROLES) to a dictionary with two keys: 'nameIDs',
+        which maps to a list of name IDs of the characters in that
+        particular summon pool, and 'rarityChances', which maps to the
+        probabilities of summoning the available rarities.
+    SUMMON_POOL_IDS (bidict): An invertible dictionary mapping pool
+        names their summon IDs, which are used by the game data to
+        identify particular summon pools.
 
 """
 
 from os import listdir
 from os.path import abspath, dirname
 from json import load
+from legends.utils import bidict
 
 __all__ = [
     'ROOT', 'STAT_ABBREVIATIONS', 'POWER_GRADIENT', 'POWER_AT_ORIGIN',
-    'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS'
+    'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS', 'SUMMON_POOL',
+    'SUMMON_POOL_IDS'
 ]
 
 ROOT = abspath(dirname(__file__))
@@ -110,11 +120,14 @@ PART_STAT_UNLOCKED = {
     'Epic': [2, 3, 3, 4, 4],
     'Legendary': [2, 3, 3, 4, 4]
 }
+
+# initialize PART_STAT_VALUES
 PART_STAT_VALUES = {
     statName: {rarity: [0] * 5 for rarity in RARITIES}
     for statName in
     GSAccessoryStatGeneration # pylint: disable=undefined-variable
 }
+# fill PART_STAT_VALUES
 # pylint: disable-next=undefined-variable
 for data in GSAccessoryStatGrowth.values():
     statName = data['Stat']
@@ -122,3 +135,44 @@ for data in GSAccessoryStatGrowth.values():
     rarity = data['Rarity']
     statVal = data['StatIncrease']
     PART_STAT_VALUES[statName][rarity][level - 1] = statVal
+
+# initialize SUMMON_POOL and SUMMON_POOL_IDS
+SUMMON_POOL = {'Core': {'nameIDs': []}}
+SUMMON_POOL.update({role: {'nameIDs': []} for role in ROLES})
+SUMMON_POOL_IDS = bidict()
+# build SUMMON_POOL_IDS; keep only highest unlocked summon pools
+for pool in SUMMON_POOL:
+    summonID = max(
+        (
+            # pylint: disable-next=undefined-variable
+            v['summonId'] for k,v in GSSummonSetup.items()
+            if k[7:10] == pool[:3]
+        ),
+        key=lambda k:int(k[-2:])
+    )
+    SUMMON_POOL_IDS[pool] = summonID
+# retrieve rarity chances
+for data in GSSummonPools.values(): # pylint: disable=undefined-variable
+    summonID = data['summonID']
+    if summonID in SUMMON_POOL_IDS.values():
+        pool = SUMMON_POOL_IDS.inverse[summonID]
+        SUMMON_POOL[pool]['rarityChances'] = data['rarityChances']
+# retrieve characters in each summon pool
+for data in GSSummonItems.values(): # pylint: disable=undefined-variable
+    for summonID in data['filterGroups']:
+        if summonID in SUMMON_POOL_IDS.values():
+            pool = SUMMON_POOL_IDS.inverse[summonID]
+            SUMMON_POOL[pool]['nameIDs'].append(data['itemID'])
+# looks for errors
+for pool, data in SUMMON_POOL.items():
+    # raise an error if there are duplicates
+    if len(data['nameIDs']) > len(set(data['nameIDs'])):
+        raise ValueError('duplicates in {} summon pool'.format(pool))
+    if pool == 'Core':
+        continue
+    # raise an error if Core does not contain everyone in other pools
+    for nameID in data['nameIDs']:
+        if nameID not in SUMMON_POOL['Core']['nameIDs']:
+            raise ValueError(
+                '{} in {} summon pool but not in Core'.format(nameID, pool)
+            )

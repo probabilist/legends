@@ -71,7 +71,7 @@ At the command prompt, enter
 This will open the `Python` interpreter in interactive mode. Your command prompt ought to change to the Python prompt `>>>`. Now enter
 ```
 >>> from legends.ui import STLPlanner
->>> STLPlanner().mainloop()
+>>> STLPlanner()
 ```
 
 ### 4. Building the app yourself
