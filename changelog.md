@@ -1,5 +1,14 @@
 # Change log
 
+## Version 0.4.0
+
+* The character cards now show (and can be sorted by) the following stats: missing gear levels, missing gear ranks, missing skill levels.
+* Added a 'Stat glossary' button that pops up an information dialog.
+* Added `STAT_INITIALS` to the `constants` module.
+* Added `rarity` and `rarityIndex` properties to the `Gear` class.
+* Added `maxGearLevel` and `missingSkillLevels` properties to the `Character` class.
+* Added `missingGearLevels` and `missingGearRanks` methods to the `Roster` class.
+
 ## Version 0.3.0
 
 * Added the constants `SUMMON_POOL` and `SUMMON_POOL_IDS`.

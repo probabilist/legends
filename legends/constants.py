@@ -53,9 +53,9 @@ from json import load
 from legends.utils import bidict
 
 __all__ = [
-    'ROOT', 'STAT_ABBREVIATIONS', 'POWER_GRADIENT', 'POWER_AT_ORIGIN',
-    'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS', 'SUMMON_POOL',
-    'SUMMON_POOL_IDS'
+    'ROOT', 'STAT_ABBREVIATIONS', 'STAT_INITIALS', 'POWER_GRADIENT',
+    'POWER_AT_ORIGIN', 'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS',
+    'SUMMON_POOL', 'SUMMON_POOL_IDS'
 ]
 
 ROOT = abspath(dirname(__file__))
@@ -87,6 +87,19 @@ STAT_ABBREVIATIONS = {
     'GlancingChance': 'gc',
     'Resolve': 'res'
 }
+STAT_INITIALS = {
+    'Health': 'H',
+    'Attack': 'A',
+    'Speed': 'S',
+    'Defense': 'D',
+    'Tech': 'T',
+    'CritDamage': 'CD',
+    'CritChance': 'CC',
+    'GlancingDamage': 'GD',
+    'GlancingChance': 'GC',
+    'Resolve': 'RES'
+}
+
 
 POWER_GRADIENT = {}
 POWER_AT_ORIGIN = 0

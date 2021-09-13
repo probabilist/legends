@@ -8,4 +8,5 @@ dist
 .python-version
 _notes.md
 pythonref.pdf
+startrek.json
 tests.py

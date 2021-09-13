@@ -4,12 +4,13 @@
 
 from re import findall
 import tkinter as tk
-from tkinter import ttk, X, BOTH, GROOVE, LEFT, NSEW, YES, W
+from tkinter import ttk, X, BOTH, GROOVE, LEFT, RIGHT, NSEW, YES, W
+from tkinter.messagebox import showinfo
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
-from legends.constants import GSLevel, GSBaseStat
+from legends.constants import GSLevel
 from legends.constants import (
-    RARITY_COLORS, STAT_ABBREVIATIONS, POWER_AT_ORIGIN
+    RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN
 )
 from legends.ui.dialogs import askRosterFilter, RosterFilter
 
@@ -77,12 +78,8 @@ class RosterTab(tk.Frame):
         self.infoBar = RosterInfoBar(self)
 
         # pack frame content
-        tk.Label(
-            self,
-            text='TIP: Click a character name to mark it as a favorite.',
-            anchor=W
-        ).pack(expand=YES, fill=X)
-        self.actionBar().pack(fill=X)
+        self.helpBar().pack(expand=YES, fill=X)
+        self.actionBar().pack(expand=YES, fill=X)
         self.scrollArea.pack(expand=YES, fill=BOTH)
         self.infoBar.pack()
 
@@ -124,7 +121,7 @@ class RosterTab(tk.Frame):
         and places it in the scroll area's content frame.
 
         """
-        columns = 5
+        columns = 4
         for j in range(columns):
             self.scrollArea.content.columnconfigure(
                 j, weight=1, uniform='roster'
@@ -141,6 +138,28 @@ class RosterTab(tk.Frame):
             count += 1
         self.infoBar.makeStats(chars, self.saveslot.roster)
 
+    def helpBar(self):
+        """Builds and returns a help bar with information for the user.
+
+        """
+        bar = tk.Frame(self)
+        glossary = '\n'.join(
+            '{} = {}'.format(v, k) for k,v in STAT_INITIALS.items()
+        )
+        glossary += (
+            '\nMGL = Missing gear levels'
+            + '\nMGR = Missing gear ranks'
+            + '\nMSL = Missing skill levels'
+        )
+        tk.Label(
+            bar, text='TIP: Click a character name to mark it as a favorite.'
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text='Stat glossary',
+            command=lambda:showinfo('Stat glossary', glossary)
+        ).pack(side=RIGHT)
+        return bar
+
     def actionBar(self):
         """Builds and returns an action bar that allows the user to
         interact with the RosterTab.
@@ -156,13 +175,22 @@ class RosterTab(tk.Frame):
             'Tokens': lambda c,s: s.tokens[c.nameID],
             'Tokens needed': lambda c,s: c.tokensNeeded - s.tokens[c.nameID]
         }
-        for statName in GSBaseStat:
+        for statName in STAT_INITIALS:
             self.sortFuncs[statName] = lambda c,s,n=statName: (
                 s.roster.charStats(c.nameID).get(n)
             )
         self.sortFuncs['Power'] = lambda c,s: (
             POWER_AT_ORIGIN + s.roster.charStats(c.nameID).power
         )
+        self.sortFuncs.update({
+            'Missing gear levels': lambda c,s: (
+                s.roster.missingGearLevels(c.nameID)
+            ),
+            'Missing gear ranks': lambda c,s: (
+                s.roster.missingGearRanks(c.nameID)
+            ),
+            'Missing skill levels': lambda c,s: c.missingSkillLevels
+        })
         fields = list(self.sortFuncs.keys())
         self.sortField = tk.StringVar()
         self.descending = tk.BooleanVar()
@@ -253,7 +281,7 @@ class CharCard(tk.Frame):
         """
         # build card and initialize variables
         tk.Frame.__init__(self, parent, **options)
-        self.config(width=230, height=120)
+        self.config(width=281, height=118)
         self.pack_propagate(0)
         self.char = char
         self.saveslot = saveslot
@@ -338,15 +366,12 @@ class CharCard(tk.Frame):
         """
         plate = tk.Frame(self, bg=bgColor)
         statObj = self.saveslot.roster.charStats(self.char.nameID)
+        font = (None, 10)
 
         # cycle through the 10 basic stats
-        for index, statAbbr in enumerate(STAT_ABBREVIATIONS.values()):
-            # build the stat label
-            initial = statAbbr if len(statAbbr) == 2 else statAbbr[0]
-            initial = initial.upper()
-
+        for index, statName in enumerate(STAT_INITIALS):
             # format the stat value
-            statVal = getattr(statObj, statAbbr)
+            statVal = statObj.get(statName)
             if index == 2: # the speed stat
                 statText = '{:.2f}'.format(statVal)
             elif index > 4: # the percentage stats
@@ -360,11 +385,27 @@ class CharCard(tk.Frame):
             # grid the 10 basic stats
             row, col = index % 5, 2 * int(index/5)
             tk.Label(
-                plate, text=initial + ':', bg=bgColor, font=(None, 11)
+                plate, text=STAT_INITIALS[statName] + ':',
+                bg=bgColor, font=font
             ).grid(row=row, column=col, sticky=W)
             tk.Label(
-                plate, text=statText, bg=bgColor, font=(None, 11)
+                plate, text=statText, bg=bgColor, font=font
             ).grid(row=row, column=col + 1, sticky=W)
+
+        # grid the extra stats
+        moreStats = {
+            'MGL:': self.saveslot.roster.missingGearLevels(self.char.nameID),
+            'MGR:': self.saveslot.roster.missingGearRanks(self.char.nameID),
+            'MSL:': self.char.missingSkillLevels
+        }
+        for row, item in enumerate(moreStats.items()):
+            text, statVal = item
+            tk.Label(
+                plate, text=text, bg=bgColor, font=font
+            ).grid(row=row, column=5, sticky=W)
+            tk.Label(
+                plate, text=str(statVal), bg=bgColor, font=font
+            ).grid(row=row, column=6, sticky=W)
 
         # grid the power stat and return the plate
         tk.Label(

@@ -180,6 +180,16 @@ class Gear(Managed):
         self.updateStats()
 
     @property
+    def rarityIndex(self):
+        """int: The index of the rarity in RARITIES."""
+        return int((self.level - 1)/5)
+
+    @property
+    def rarity(self):
+        """str: The rarity of the gear piece."""
+        return RARITIES[self.rarityIndex]
+
+    @property
     def slot(self):
         """The slot index into which the gear must be placed."""
         return GSGear[self.gearID]['m_Slot']
@@ -397,8 +407,25 @@ class Character():
 
     @property
     def role(self):
-        """str:The role of the character."""
+        """str: The role of the character."""
         return GSCharacter[self.nameID]['Role']
+
+    @property
+    def maxGearLevel(self):
+        """int: The maximum level of gear this character can equip."""
+        return 5 + 5 * self.rarityIndex
+
+    @property
+    def missingSkillLevels(self):
+        """int: The number of missing skill levels. Assumes the maximum
+        level for every skill is 2.
+        """
+        missingLevels = 0
+        for skill in self.skills.values():
+            missingLevels += 2
+            if skill.unlocked:
+                missingLevels -= skill.level
+        return missingLevels
 
     @property
     def tokensNeeded(self):
@@ -474,8 +501,7 @@ class Roster():
         def validate(slf, gear, gearSlot): # pylint: disable=unused-argument
             char = gearSlot.char
             index = gearSlot.index
-            maxGearLevel = 5 + 5 * char.rarityIndex
-            if gear.level > maxGearLevel or gear.slot != index:
+            if gear.level > char.maxGearLevel or gear.slot != index:
                 raise ValueError((gear, gearSlot))
             return True
         self.inGearSlot.validate = MethodType(validate, self.inGearSlot)
@@ -523,3 +549,43 @@ class Roster():
             Stats()
         )
         return nakedStats + gearStats + partStats
+
+    def missingGearLevels(self, nameID):
+        """Computes and returns the number of missing gear levels for
+        the character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character.
+
+        Returns:
+            int: The number of missing gear levels.
+
+        """
+        char = self.chars[nameID]
+        gearLevels = 0
+        for slot in char.gearSlots:
+            try:
+                gearLevels += self.containsGear[slot].level
+            except (KeyError, AttributeError):
+                pass
+        return 4 * char.maxGearLevel - gearLevels
+
+    def missingGearRanks(self, nameID):
+        """Computes and returns the number of missing gear ranks for the
+        character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character.
+
+        Returns:
+            int: The number of missing gear ranks.
+
+        """
+        char = self.chars[nameID]
+        gearRanks = 0
+        for slot in char.gearSlots:
+            try:
+                gearRanks += self.containsGear[slot].rarityIndex + 1
+            except (KeyError, AttributeError):
+                pass
+        return 4 * (char.rarityIndex + 1) - gearRanks

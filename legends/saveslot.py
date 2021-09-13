@@ -110,7 +110,7 @@ def ticksToDatetime(ticks):
 class SaveSlot():
     """One of three player save slots.
 
-    Args:
+    Attributes:
         slot (int): The 0-based save slot in the player's save file that
             this SaveSlot object represents.
         save (dict): The dictionary representation of the player's
