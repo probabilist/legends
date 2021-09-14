@@ -1,6 +1,6 @@
 # `legends`
 
-This repository contains the `legends` Python package, which offer tools for managing *Star Trek: Legends* player data using Python. The subpackage `legends.ui`contains a complete GUI coded with `tkinter`. From this, a standalone Mac app, *STL Planner*, has been built and is available for download.
+This repository contains the `legends` Python package, which offers tools for managing *Star Trek: Legends* player data using Python. The subpackage, `legends.ui`, contains a complete GUI coded with `tkinter`. From this, a standalone Mac app, *STL Planner*, has been built and is available for download.
 
 * [The *STL Planner* app](#the-stl-planner-app)
 * [The `legends` package](#the-legends-package)
