@@ -1,5 +1,14 @@
 # Change log
 
+## Version 0.4.1
+
+* Adjusted character cards in roster view for more consistent alignment of text.
+* Added a character count to the info bar at the bottom of the roster view.
+* Completely rewrote the README file for clarity, and added a screenshot.
+* Added the constant, `ENABLED`, that lists all characters in the Crew screen.
+* Added the constant `UPCOMING`, that lists all characters believed to be intended for future release.
+* Manually edited `GSCharacter` to enable Garak and Shinzon. (Can remove this manual edit when and if current hotfix data becomes accessible again.)
+
 ## Version 0.4.0
 
 * The character cards now show (and can be sorted by) the following stats: missing gear levels, missing gear ranks, missing skill levels.

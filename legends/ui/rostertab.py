@@ -10,7 +10,7 @@ from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSLevel
 from legends.constants import (
-    RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN
+    RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED
 )
 from legends.ui.dialogs import askRosterFilter, RosterFilter
 
@@ -281,8 +281,6 @@ class CharCard(tk.Frame):
         """
         # build card and initialize variables
         tk.Frame.__init__(self, parent, **options)
-        self.config(width=281, height=118)
-        self.pack_propagate(0)
         self.char = char
         self.saveslot = saveslot
 
@@ -318,7 +316,8 @@ class CharCard(tk.Frame):
             tk.Frame: The constructed name plate.
 
         """
-        plate = tk.Frame(self, bg=bgColor)
+        plate = tk.Frame(self, bg=bgColor, height=118, width=105)
+        plate.pack_propagate(0)
 
         # build name label
         self.nameLabel = tk.Label(
@@ -364,7 +363,8 @@ class CharCard(tk.Frame):
             tk.Frame: The constructed stat plate.
 
         """
-        plate = tk.Frame(self, bg=bgColor)
+        plate = tk.Frame(self, bg=bgColor, height=118, width=178)
+        plate.grid_propagate(0)
         statObj = self.saveslot.roster.charStats(self.char.nameID)
         font = (None, 10)
 
@@ -449,6 +449,8 @@ class RosterInfoBar(tk.Frame):
         self.totalXP.pack(side=LEFT)
         self.totalPower = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
         self.totalPower.pack(side=LEFT)
+        self.charCount = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.charCount.pack(side=LEFT)
 
     def makeStats(self, chars, roster):
         """Computes and redisplays roster statistics using the given
@@ -467,3 +469,6 @@ class RosterInfoBar(tk.Frame):
             POWER_AT_ORIGIN + roster.charStats(char.nameID).power
             for char in chars
         )))
+        self.charCount.config(text='Characters: {}/{}'.format(
+            len(list(chars)), len(ENABLED)
+        ))

@@ -36,6 +36,10 @@ Attributes:
 
         Example: `PART_STAT_VALUES['Attack']['Epic'][0]` is the value of
         the attack stat on a Level 1, Epic particle.
+    ENABLED (list of str): A list of name IDs of characters that appear
+        on the Crew screen.
+    UPCOMING (list of str): A list of name IDs of characters believed to
+        be in the queue for future release.
     SUMMON_POOL (dict): A dictionary mapping pool names ('Core' or one
         the roles in ROLES) to a dictionary with two keys: 'nameIDs',
         which maps to a list of name IDs of the characters in that
@@ -148,6 +152,17 @@ for data in GSAccessoryStatGrowth.values():
     rarity = data['Rarity']
     statVal = data['StatIncrease']
     PART_STAT_VALUES[statName][rarity][level - 1] = statVal
+
+# manual changes to GSCharacter due to missing hotfix data
+# pylint: disable-next=undefined-variable
+GSCharacter['Garak']['Type'] = 'Normal'
+# pylint: disable-next=undefined-variable
+GSCharacter['Shinzon']['Type'] = 'Normal'
+ENABLED = [
+    # pylint: disable-next=undefined-variable
+    nameID for nameID, data in GSCharacter.items() if data['Type'] == 'Normal'
+]
+UPCOMING = ['Tuvok', 'Gowron', 'JadziaDax', 'PicardOld']
 
 # initialize SUMMON_POOL and SUMMON_POOL_IDS
 SUMMON_POOL = {'Core': {'nameIDs': []}}

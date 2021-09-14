@@ -1,95 +1,100 @@
-# legends
+# `legends`
 
-This repository features two key items:
+This repository contains the `legends` Python package, which offer tools for managing *Star Trek: Legends* player data using Python. The subpackage `legends.ui`contains a complete GUI coded with `tkinter`. From this, a standalone Mac app, *STL Planner*, has been built and is available for download.
 
-* The STL Planner app
-* The `legends` Python package
+* [The *STL Planner* app](#the-stl-planner-app)
+* [The `legends` package](#the-legends-package)
 
-The STL Planner app is a very rudimentary incarnation (version 0.0.1) of what will eventually become a full-featured app that can help manage and optimize all of your Star Trek: Legends data. It must be run on a Mac that also has Star Trek: Legends installed.
+## The *STL Planner* app
 
-The `legends` Python package is an all-new, streamlined version of the old `legends` Python package. The old package has been renamed to `legendscli` and can be found at https://github.com/probabilist/legendscli. The differences between this new package and the old one are discussed at the end of this document.
+![STL Planner](https://github.com/probabilist/legends/blob/main/screenshot.png)
 
-## Running the app
+The *STL Planner* app is a tool to manage and optimize all of your *Star Trek: Legends* data.
 
-There are four ways you can run the STL Planner app:
+### Requirements
 
-1. Simply download the app to your Mac and run it.
-2. Install the `legends` package and start the app from a Terminal command prompt.
-3. Install the `legends` package and start the app from inside a Python interactive session.
-4. Install the `legends` package and build the app yourself.
+The *STL Planner* app must be run on a Mac on which *Star Trek: Legends* is installed.
 
-Option 1 should not require you to even have Python installed. The app itself contains a copy of everything it needs, including Python.
+### Download
 
-The other options require you to have Python installed. This repository is built and tested with Python 3.7.11.
+Version 0.4.1: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1co-I9lxzeiUUGcwZTFNaq76km2AyHcC9/view?usp=sharing)
 
-## 1. Downloading the app
+### Install
 
-You can download 'STL PLanner.app.zip' from my Google Drive with this link: https://drive.google.com/file/d/1co-I9lxzeiUUGcwZTFNaq76km2AyHcC9/view?usp=sharing.
+There is no install required, but you will need to follow these steps:
 
-Once downloaded you will need to extract 'STL Planner.app' from the zip file.
+1. Unzip the file downloaded above.
+2. Right click on "STL Planner.app" and select "Open" from the contextual menu.
+3. A dialog will pop up, warning you of the security risk. You can then agree to run the app anyway.
 
-Finally, you will need to right click on the app and select 'Open'. A dialog will pop up, warning you of the security risk. You can then agree to run the app anyway.
+In Step 2, if you accidentally double-click, the security dialog will not allow you to run the app.
 
-If you try to double-click the app after extracting it, the security warning will appear, but you will not have the option to run it anyway. You will simply be blocked from using the app.
+## The legends package
 
-## Installing the `legends` package
+This package uses text assets from Star Trek: Legends. For extracting/updating these text assets, see https://github.com/probabilist/legends-assets.
 
-Note: Depending on how you installed Python, you may need to replace `pip` and `python` with `pip3` and `python3` in everything below.
+* [Installing the package](#installing-the-package)
+* [Documentation](#documentation)
+* [Running *STL Planner* from a command line](#running-stl-planner-from-a-command-line)
+* [Building the *STL Planner* app](#building-the-stl-planner-app)
+* [Comparison to the `legendscli` package](#comparison-to-the-legendscli-package)
 
-1. Create a new folder somewhere. For the sake of the example, let's say your new folder is 'Documents/StarTrek'.
+### Installing the package
 
-2. Copy the 'legends' folder and the 'requirements.txt' text file from this repository into your new folder, 'Documents/StarTrek'.
+You will need to have Python installed to use the `legends` package. This package is built and tested with Python 3.7.11.
 
-3. Open a command prompt at 'Documents/StarTrek'. There are many ways to do this. On a Mac, you can open Finder, navigate to 'Documents', right click on 'StarTrek', and select 'Services > New Terminal at Folder'.
+To use the `legends` package, simply copy the "legends" folder from this repository to your current working directory.
 
-4. At the command prompt, enter
+The `legends` package uses other packages that you might not have installed. To ensure that you have the required packages installed, also copy the file, 'requirements.txt' to your current working directory. Then, at the command prompt, enter
 ```
 % pip install -r requirements.txt
 ```
-This will install the packages needed to run the `legends` package.
 
-5. (optional) At the command prompt, enter
+### Documentation
+
+This package is fully documented with docstrings. At the command prompt, enter
 ```
 % python -m pydoc -b
 ```
 This will open a browser page with Python documentation. Find the "**legends** (package)" link and click it. You can now explore all the package documentation.
 
-### 2. Starting the app from Terminal
+### Running *STL Planner* from a command line
 
-Copy the file, `stlplannerapp.py`, to 'Documents/StarTrek'. At the command prompt, enter
-```
-% python stlplannerapp.py
-```
-That's it.
+With the `legends` package installed, you can run *STL Planner* directly, without downloading the app. There are two ways to do this: from inside a Python interactive session, or from a command prompt in Terminal.
 
-### 3. Starting the app interactively
-
-At the command prompt, enter
+To run *STL Planner* from inside a Python interactive session, first enter
 ```
 % python
 ```
-This will open the `Python` interpreter in interactive mode. Your command prompt ought to change to the Python prompt `>>>`. Now enter
+at the command prompt. This will open the `Python` interpreter in interactive mode. Your command prompt should to change to the Python prompt `>>>`. Now enter
 ```
 >>> from legends.ui import STLPlanner
 >>> STLPlanner()
 ```
 
-### 4. Building the app yourself
+To run *STL Planner* from a command prompt in Terminal, first copy the script, "stlplannerapp.py" to your current working directory (the same location where the "legends" folder is). Then, at the command prompt, enter
+```
+% python stlplannerapp.py
+```
+
+### Building the *STL Planner* app
 
 If you do not already have `pyinstaller` installed, then at the command prompt, enter
 ```
 % pip install pyinstaller
 ```
-Then enter
+Now, copy the files, "stlplannerapp.py" and "stlplannerapp.spec" to your current working directory (the same location where the "legends" folder is). Then, at the command prompt, enter
 ```
 % pyinstaller stlplannerapp.spec
 ```
-When the process is finished, you will find the app inside the newly created 'dist' folder.
+When the process is finished, you will find the app inside the newly created "dist" folder.
 
-## About the new `legends` package
+### Comparison to the legendscli package
 
-The `legends` package in this repository is completely different from the old `legends` package, which has been renamed to `legendscli` and moved to https://github.com/probabilist/legendscli.
+There is another Python package, `legendscli`, that is also designed to manage and optimize data in Star Trek: Legends. Unlike the `legends` package, `legendscli` is designed to be used from a command line. It has no GUI component.
 
-The `legendscli` package contains many features designed solely for making it easy to use at a Python interactive prompt. Most of those have been stripped away in the new `legends` package. That means the new package is more streamlined and efficient, but it also requires more Python experience to use.
+The `legends` package is intended to have the same core tools and functionality as `legendscli`, but accessible through a GUI. It is a work in progress, with features being ported slowly over time.
 
-Since the new `legends` package is being rebuilt from the ground up, it does not yet have all the features that `legendscli` has. Those will all be added eventually (except possibly the Sela Stat Calculator).
+The `legends` package is not an extension of `legendscli`. It is being rebuilt from the ground up. The `legendscli` package has many features whose sole purpose is to facilitate easy command-line operation. Most of those are stripped away in `legends`. That means `legends` is more streamlined and efficient, but it also requires more Python experience to use.
+
+The `legendscli` package can be found at https://github.com/probabilist/legendscli. It may be worth noting, in case you want to dig into the historical revisions of the `legendscli` package, that it used to be called "legends", and it used to reside here, in this repository.
