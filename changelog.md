@@ -1,5 +1,29 @@
 # Change log
 
+## Version 0.5.0
+
+* Menu options were not being automatically disabled when modal dialog windows would appear. Made a number of changes to correct this.
+    - Added `disableOnModal` attribute and `setMenuState` method to the `STLPlanner` class.
+    - Restructured `StartFrame` and `RosterTab` constructor to receive the `STLPlanner` instance.
+    - Edited all objects in `dialogs` module, and included custom versions of `showerror` and `showinfo`.
+    - Edited references to dialogs to account for these changes.
+* Removed all attributes of `SaveSlot` that reference the actual raw data from the save slot. This was necessary in order to allow for virtual save slots, such as one composed of maxed characters. The following changes relate to this:
+    - Added an `STLTimeStamps` class to store and manage timestamp data. Consolidated timestamp-related properties in `SaveSlot` class into an instance of `STLTimeStamps`.
+    - Restructured `SaveSlot` constructor to build an empty instance if no slot is passed.
+    - Moved `Roster` class to its own module, `roster`.
+    - The `SaveSlot` instance no longer populates the roster with gear, particles, and characters. This is now handled by the `Roster` instance.
+    - Moved the `readGear` and `readParts` methods from the `SaveSlot` class to the `roster` module, and made them functions.
+    - Moved the `readChars` method from the `SaveSlot` class to the the `Roster` class, making it part of the new `fromSaveData` method.
+    - Deleted an error where the old `SaveSlot.readChars` method was adding a `tokens` attribute to character instances.
+    - Converted `gear` and `parts` attributes of `Roster` class from dictionaries to lists, so that `Roster` class no longer stores the arbitrary gear and particle ID numbers from the save file.
+    - Added a `clear` method to the `Roster` class.
+    - Added a `fillChars` method to the `Roster` class that adds missing characters.
+* Changed the stat initial of Resolve from 'RES' to 'R'.
+* Edited the `CharCard` class for improved visual display.
+* Added `makeMax` method to `StartFrame` class, and a corresponding button.
+* Fixed an error that incorrectly calculated the number of tokens needed for a character to rank up.
+* Added the ability to sort characters by name.
+
 ## Version 0.4.1
 
 * Adjusted character cards in roster view for more consistent alignment of text.

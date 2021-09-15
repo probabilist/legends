@@ -2,8 +2,7 @@
 
 """
 
-from types import MethodType
-from legends.utils.objrelations import Managed, OneToOne
+from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
 from legends.constants import (
     GSSkill, GSCharacter, GSLevel, GSGear, GSRank, GSBaseStat, GSGearLevel
@@ -16,7 +15,7 @@ from legends.stats import Stats
 __all__ = [
     'levelFromXP', 'xpFromLevel', 'tokensNeeded', 'getCharStats',
     'getGearStats', 'getPartStats', 'Gear', 'Particle', 'GearSlot', 'PartSlot',
-    'Character', 'Skill', 'Roster'
+    'Character', 'Skill'
 ]
 
 def levelFromXP(xp, rarity='Common'):
@@ -60,7 +59,7 @@ def tokensNeeded(rarity, rank):
     if rank == 9:
         return 0
     # pylint: disable-next=undefined-variable
-    return GSRank['{}_{}'.format(rarity, rank)]['RequiredTokenCount']
+    return GSRank['{}_{}'.format(rarity, rank + 1)]['RequiredTokenCount']
 
 def getCharStats(nameID, rank, level):
     """Calculates a character's naked stats from its nameID, rank, and
@@ -325,6 +324,10 @@ class Character():
             or particles).
         skills (dict): A dictionary mapping skill IDs (found in
             `GSSkill`) to Skill objects.
+        gearSlots (list of GearSlot): The list of  the character's gear
+            slots.
+        partSlots (list of PartSlot): The list of  the character's
+            particle slots.
 
     """
     def __init__(self, nameID, rank=1, xp=0):
@@ -476,116 +479,3 @@ class Skill():
             '<Skill: ' + self.name + ', Level ' + str(self.level) + ', '
             + ('unlocked' if self.unlocked else 'locked') + '>'
         )
-
-class Roster():
-    """A collection of related Characters, Gear, and Particles.
-
-    Attributes:
-        gear (dict of int:Gear): A dictionary mapping id numbers to Gear
-            objects.
-        parts (dict of int:Particle): A dictionary mapping id numbers to
-            Particle objects.
-        chars (dict of str:Character): A dictionary mapping nameIDs to
-            Character objects.
-        inGearSlot (OneToOne): A relation mapping Gear objects to
-            GearSlot objects.
-        inPartSlot (OneToOne): A relation mapping Particle objects to
-            PartSlot objects.
-
-    """
-    def __init__(self):
-        self.gear = {}
-        self.parts = {}
-        self.chars = {}
-        self.inGearSlot = OneToOne()
-        def validate(slf, gear, gearSlot): # pylint: disable=unused-argument
-            char = gearSlot.char
-            index = gearSlot.index
-            if gear.level > char.maxGearLevel or gear.slot != index:
-                raise ValueError((gear, gearSlot))
-            return True
-        self.inGearSlot.validate = MethodType(validate, self.inGearSlot)
-        self.inPartSlot = OneToOne()
-
-    @property
-    def containsGear(self):
-        """OneToOne: The inverse of `inGearSlot`."""
-        return self.inGearSlot.inverse
-
-    @property
-    def containsPart(self):
-        """OneToOne: The inverse of `inPartSlot`."""
-        return self.inPartSlot.inverse
-
-    def charStats(self, nameID):
-        """Constructs and returns a Stats object containing the total
-        stats (including gear and particles) of the character with the
-        given name ID.
-
-        Args:
-            nameID (str): The name ID of the character whose stats to
-                build.
-
-        Returns:
-            Stats: The constructed Stats object.
-
-        """
-        char = self.chars[nameID]
-        nakedStats = char.stats
-        gears = (
-            self.containsGear[gearSlot] for gearSlot in char.gearSlots
-            if gearSlot in self.containsGear
-        )
-        gearStats = sum(
-            (gear.stats for gear in gears if gear is not None),
-            Stats()
-        )
-        parts = (
-            self.containsPart[partSlot] for partSlot in char.partSlots
-            if partSlot in self.containsPart
-        )
-        partStats = sum(
-            (part.stats for part in parts if part is not None),
-            Stats()
-        )
-        return nakedStats + gearStats + partStats
-
-    def missingGearLevels(self, nameID):
-        """Computes and returns the number of missing gear levels for
-        the character with the given name ID.
-
-        Args:
-            nameID (str): The name ID of the character.
-
-        Returns:
-            int: The number of missing gear levels.
-
-        """
-        char = self.chars[nameID]
-        gearLevels = 0
-        for slot in char.gearSlots:
-            try:
-                gearLevels += self.containsGear[slot].level
-            except (KeyError, AttributeError):
-                pass
-        return 4 * char.maxGearLevel - gearLevels
-
-    def missingGearRanks(self, nameID):
-        """Computes and returns the number of missing gear ranks for the
-        character with the given name ID.
-
-        Args:
-            nameID (str): The name ID of the character.
-
-        Returns:
-            int: The number of missing gear ranks.
-
-        """
-        char = self.chars[nameID]
-        gearRanks = 0
-        for slot in char.gearSlots:
-            try:
-                gearRanks += self.containsGear[slot].rarityIndex + 1
-            except (KeyError, AttributeError):
-                pass
-        return 4 * (char.rarityIndex + 1) - gearRanks

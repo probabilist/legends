@@ -5,14 +5,13 @@
 from re import findall
 import tkinter as tk
 from tkinter import ttk, X, BOTH, GROOVE, LEFT, RIGHT, NSEW, YES, W
-from tkinter.messagebox import showinfo
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSLevel
 from legends.constants import (
     RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED
 )
-from legends.ui.dialogs import askRosterFilter, RosterFilter
+from legends.ui.dialogs import showinfo, askRosterFilter, RosterFilter
 
 __all__ = ['CharCard', 'RosterTab', 'RosterFilter', 'RosterTab']
 
@@ -48,8 +47,6 @@ class RosterTab(tk.Frame):
     """Displays the player's character collection.
 
     Attributes:
-        saveslot (SaveSlot): The SaveSlot object from which this roster
-            is drawn.
         filter (RosterFilter): The RosterFilter object storing the
             current filter settings.
         scrollArea (ScrollFrame): The ScrollFrame used to hold the
@@ -66,10 +63,16 @@ class RosterTab(tk.Frame):
 
     """
 
-    def __init__(self, saveslot, parent=None, **options):
+    def __init__(self, root, **options):
+        """Creates the RosterTab instance.
+
+        Args:
+            root (STLPlanner): The currently running STLPlanner
+                instance. Will be assigned as the RosterTab instance's parent.
+
+        """
         # build frame and initialize variables
-        tk.Frame.__init__(self, parent, **options)
-        self.saveslot = saveslot
+        tk.Frame.__init__(self, root, **options)
         self.filter = RosterFilter()
 
         # build widgets
@@ -128,15 +131,17 @@ class RosterTab(tk.Frame):
             )
         count = 0
         chars = [
-            char for char in self.saveslot.roster.chars.values()
+            char for char in self.master.saveslot.roster.chars.values()
             if self.checkFilter(char)
         ]
         for char in chars:
-            CharCard(char, self.saveslot, self.scrollArea.content).grid(
+            CharCard(
+                char, self.master.saveslot, self.scrollArea.content
+            ).grid(
                 row=count // columns, column=count % columns, sticky=NSEW
             )
             count += 1
-        self.infoBar.makeStats(chars, self.saveslot.roster)
+        self.infoBar.makeStats(chars, self.master.saveslot.roster)
 
     def helpBar(self):
         """Builds and returns a help bar with information for the user.
@@ -156,7 +161,7 @@ class RosterTab(tk.Frame):
         ).pack(side=LEFT)
         tk.Button(
             bar, text='Stat glossary',
-            command=lambda:showinfo('Stat glossary', glossary)
+            command=lambda:showinfo(self.master, 'Stat glossary', glossary)
         ).pack(side=RIGHT)
         return bar
 
@@ -167,6 +172,7 @@ class RosterTab(tk.Frame):
         """
         # define and initialize variables
         self.sortFuncs = {
+            'Name': lambda c,s: makeShortName(c),
             'Favorite': lambda c,s: c in s.favorites,
             'Level': lambda c,s: c.xp,
             'Rank': lambda c,s: c.rank,
@@ -229,11 +235,11 @@ class RosterTab(tk.Frame):
             return
         func = self.sortFuncs[field]
         sortedChars = dict(sorted(
-            self.saveslot.roster.chars.items(),
-            key=lambda item:func(item[1], self.saveslot),
+            self.master.saveslot.roster.chars.items(),
+            key=lambda item:func(item[1], self.master.saveslot),
             reverse=self.descending.get()
         ))
-        self.saveslot.roster.chars = sortedChars
+        self.master.saveslot.roster.chars = sortedChars
         self.refresh()
 
     def refresh(self):
@@ -250,7 +256,7 @@ class RosterTab(tk.Frame):
         cards and info bar.
 
         """
-        filt = askRosterFilter(self.filter)
+        filt = askRosterFilter(self.master, self.filter)
         if filt != self.filter:
             self.filter = filt
             self.refresh()
@@ -295,7 +301,7 @@ class CharCard(tk.Frame):
 
         # pack card contents
         namePlate.pack(side=LEFT)
-        statPlate.pack()
+        statPlate.pack(side=RIGHT)
 
     @property
     def favorite(self):
@@ -363,10 +369,9 @@ class CharCard(tk.Frame):
             tk.Frame: The constructed stat plate.
 
         """
-        plate = tk.Frame(self, bg=bgColor, height=118, width=178)
-        plate.grid_propagate(0)
+        plate = tk.Frame(self, bg=bgColor)
         statObj = self.saveslot.roster.charStats(self.char.nameID)
-        font = (None, 10)
+        font = (None, 9)
 
         # cycle through the 10 basic stats
         for index, statName in enumerate(STAT_INITIALS):
@@ -376,7 +381,7 @@ class CharCard(tk.Frame):
                 statText = '{:.2f}'.format(statVal)
             elif index > 4: # the percentage stats
                 statText = (
-                    '{:.2f}'.format(100 * statVal).rstrip('0').rstrip('.')
+                    '{:.1f}'.format(100 * statVal).rstrip('0').rstrip('.')
                     + '%'
                 )
             else:
@@ -389,7 +394,8 @@ class CharCard(tk.Frame):
                 bg=bgColor, font=font
             ).grid(row=row, column=col, sticky=W)
             tk.Label(
-                plate, text=statText, bg=bgColor, font=font
+                plate, text=statText, bg=bgColor, font=font,
+                width=4 + col, anchor=W
             ).grid(row=row, column=col + 1, sticky=W)
 
         # grid the extra stats
@@ -404,14 +410,15 @@ class CharCard(tk.Frame):
                 plate, text=text, bg=bgColor, font=font
             ).grid(row=row, column=5, sticky=W)
             tk.Label(
-                plate, text=str(statVal), bg=bgColor, font=font
+                plate, text=str(statVal), bg=bgColor, font=font,
+                width=5, anchor=W
             ).grid(row=row, column=6, sticky=W)
 
         # grid the power stat and return the plate
         tk.Label(
             plate,
             text='POWER: {:.0f}'.format(POWER_AT_ORIGIN + statObj.power),
-            bg=bgColor, font=(None, 11)
+            bg=bgColor, font=(None, 11) + ('bold',)
         ).grid(row=5, column=0, columnspan=4)
         return plate
 

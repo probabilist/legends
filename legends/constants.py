@@ -101,7 +101,7 @@ STAT_INITIALS = {
     'CritChance': 'CC',
     'GlancingDamage': 'GD',
     'GlancingChance': 'GC',
-    'Resolve': 'RES'
+    'Resolve': 'R'
 }
 
 

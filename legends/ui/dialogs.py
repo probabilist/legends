@@ -4,12 +4,41 @@
 
 import tkinter as tk
 from tkinter import ttk, E, W, HORIZONTAL, LEFT, RIGHT, YES, X
+from tkinter.messagebox import showerror as _showerror
+from tkinter.messagebox import showinfo as _showinfo
 from legends.constants import RARITIES, ROLES
 
 __all__ = ['askSlot', 'askRosterFilter', 'RosterFilter']
 
-def askSlot():
+def showerror(root, *args, **kargs):
+    """A wrapper around tkinter.messagebox.showerror that disables menu
+    items while the dialog is open.
+
+    Args:
+        root (STLPlanner): The currently running STLPlanner instance.
+
+    """
+    root.setMenuState(False)
+    _showerror(*args, **kargs)
+    root.setMenuState(True)
+
+def showinfo(root, *args, **kargs):
+    """A wrapper around tkinter.messagebox.showinfo that disables menu
+    items while the dialog is open.
+
+    Args:
+        root (STLPlanner): The currently running STLPlanner instance.
+
+    """
+    root.setMenuState(False)
+    _showinfo(*args, **kargs)
+    root.setMenuState(True)
+
+def askSlot(root):
     """Raised a dialog window, prompting the user to select a save slot.
+
+    Args:
+        root (STLPlanner): The currently running STLPlanner instance.
 
     Returns:
         int or None: Returns the 0-based index of the user's selected
@@ -17,16 +46,17 @@ def askSlot():
 
     """
     intVar = tk.IntVar()
-    AskSlot(intVar)
+    AskSlot(root, intVar)
     slot = intVar.get()
     return None if slot == -1 else slot
 
-def askRosterFilter(filt):
+def askRosterFilter(root, filt):
     """Raises a dialog window, prompting the user to adjust the filters
     for the RosterTab. The dialog window is initialized to display the
     filters passed by the `filt` argument.
 
     Args:
+        root (STLPlanner): The currently running STLPlanner instance.
         filt (RosterFilter): The filter used to initialize the dialog
             window. This filter is not modified.
 
@@ -36,7 +66,7 @@ def askRosterFilter(filt):
 
     """
     filtCopy = RosterFilter(filt)
-    AskRosterFilter(filtCopy)
+    AskRosterFilter(root, filtCopy)
     return filtCopy
 
 class AskSlot(tk.Toplevel):
@@ -57,7 +87,16 @@ class AskSlot(tk.Toplevel):
             is displayed in the window.
 
     """
-    def __init__(self, intVar, *args, **kargs):
+    def __init__(self, root, intVar, *args, **kargs):
+        """Creates and launches an AskSlot dialog window.
+
+        Args:
+            root (STLPlanner): The currently running STLPlanner
+                instance.
+            intVar (tk.IntVar): The tkinter variable that stores the
+                user's choice.
+
+        """
         # create the window and keep it in front of others
         tk.Toplevel.__init__(self, *args, **kargs)
         self.attributes('-topmost', True)
@@ -103,9 +142,11 @@ class AskSlot(tk.Toplevel):
         mainFrame.pack(padx=10, pady=10)
 
         # force user to respond to window before continuing
+        root.setMenuState(False)
         self.focus_set()
         self.grab_set()
         self.wait_window()
+        root.setMenuState(True)
 
     def choose(self):
         """Sets the linked tkinter variable to the 0-based index
@@ -206,6 +247,7 @@ class AskRosterFilter(tk.Toplevel):
     during the window's lifetime.
 
     Attributes:
+        root (STLPlanner): The currently running STLPlanner instance.
         filt (RosterFilter): The RosterFilter object passed to the
             constructor; it is the object that will be modified with
             each action taken in this dialog window.
@@ -215,7 +257,16 @@ class AskRosterFilter(tk.Toplevel):
             for adjusting the filter.
 
     """
-    def __init__(self, rosterFilter, *args, **kargs):
+    def __init__(self, root, rosterFilter, *args, **kargs):
+        """Creates and launches an AskSlot dialog window.
+
+        Args:
+            root (STLPlanner): The currently running STLPlanner
+                instance.
+            rosterFilter (RosterFilter): The RosterFilter instance that
+                stores the user's choices.
+
+        """
         # create the window and keep it in front of others
         tk.Toplevel.__init__(self, *args, **kargs)
         self.attributes('-topmost', True)
@@ -272,9 +323,11 @@ class AskRosterFilter(tk.Toplevel):
         ).pack(side=LEFT)
 
         # force user to respond to window before continuing
+        root.setMenuState(False)
         self.focus_set()
         self.grab_set()
         self.wait_window()
+        root.setMenuState(True)
 
     def makeLinkedScales(self, attrName, maxVal):
         """Creates and returns a pair of linked Scale widgets. Each

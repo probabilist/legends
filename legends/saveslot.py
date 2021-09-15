@@ -7,17 +7,15 @@ from datetime import datetime, timedelta, timezone
 from getpass import getuser
 from json import loads
 from plistlib import load
-from warnings import warn
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
-#pylint: disable-next=no-name-in-module
-from legends.constants import GSAccessoryItems
-from legends.constants import DESCRIPTIONS
-from legends.gameobjects import Gear, Particle, Character, Roster
+# pylint: disable-next=no-name-in-module
+from legends.constants import GSCharacter
+from legends.roster import Roster
 
 __all__ = [
     'saveFilePath', 'AESdecrypt', 'decryptSaveFile', 'ticksToTimedelta',
-    'ticksToDatetime', 'SaveSlot'
+    'ticksToDatetime', 'SaveSlot', 'STLTimeStamps'
 ]
 
 def saveFilePath():
@@ -111,17 +109,18 @@ class SaveSlot():
     """One of three player save slots.
 
     Attributes:
-        slot (int): The 0-based save slot in the player's save file that
-            this SaveSlot object represents.
-        save (dict): The dictionary representation of the player's
-            entire (decrypted) save file.
+        timestamps (STLTimeStamps): Stores the timestamp data for the
+            save slot.
         roster (Roster): A Roster object built from the save slot data.
+        tokens (dict of str:int0: A dictionary mapping a character
+            nameID to the number of tokens for that character in the
+            player's possession.
         favorites (list of Character): A list of characters the player
             has marked as 'favorite'.
 
     """
 
-    def __init__(self, slot=0):
+    def __init__(self, slot=None):
         """Constructs a SaveSlot object by extracting data from the
         user's Star Trek: Legends save file, stored on the local HD.
 
@@ -133,144 +132,81 @@ class SaveSlot():
             ValueError: If no save data is found in the given slot.
 
         """
-        self.save = decryptSaveFile()
-        key = '{} data'.format(slot)
-        if key not in self.save or not self.save[key]:
-            raise ValueError(slot)
-        self.slot = slot
+        self.timestamps = STLTimeStamps()
         self.roster = Roster()
-        self.roster.gear = self.readGear()
-        self.roster.parts = self.readParts()
-        self.roster.chars = self.readChars()
+        self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
+        if slot is not None:
+            self.fromFile(slot)
 
-    @property
-    def slotData(self):
-        """The portion of the save file contained in the save slot."""
-        return self.save[str(self.slot) + ' data']
+    def fromFile(self, slot):
+        """Populates the calling instance's attribute with data from the
+        locally stored save file.
 
-    @property
-    def startDate(self):
-        """datetime: The save slot's start date."""
-        return datetime.fromtimestamp(
-            self.slotData['createts'],
-            tz=timezone.utc
-        )
+        Args:
+            slot (int): The 0-based index of the save slot from which to
+                draw the data.
 
-    @property
-    def timeLastPlayed(self):
-        """datetime: The last time this save slot was played."""
-        return ticksToDatetime(
-            int(self.save[str(self.slot) + ' timeLastPlayed'])
-        )
+        """
+        save = decryptSaveFile()
+        key = '{} data'.format(slot)
+        if key not in save or not save[key]:
+            raise ValueError(slot)
+        self.timestamps.fromSaveData(save, slot)
+        self.roster.fromSaveData(save, slot)
+        for nameID in self.tokens:
+            self.tokens[nameID] = save[key]['items'].get(nameID, 0)
 
-    @property
-    def playDuration(self):
-        """timedelta: The amount of time spent on this save slot."""
-        return ticksToTimedelta(
-            int(self.save[str(self.slot) + ' playDuration'])
-        )
+class STLTimeStamps():
+    """An object for storing and managing Star Trek: Legends timestamps.
+
+    An STLTimeStamps object is associated to a specific save slot in a
+    particular user's save file.
+
+    Attributes:
+        startDate (datetime): The time the user first played the
+            associated save slot. Defaults to launch of Star Trek:
+            Legends.
+        timeLastPlayed (datetime): The time the user last played the
+            associated save slot. Defaults to the time the STLTimeStamps
+            instance is created.
+        playDuration (timedelta): The amount of time the user has spent
+            playing the associated save slot. Defaults to 0.
+
+    """
+
+    def __init__(self):
+        self.startDate = datetime(2021, 4, 2, 12, tzinfo=timezone.utc)
+        self.timeLastPlayed = datetime.now(tz=timezone.utc)
+        self.playDuration = timedelta()
 
     @property
     def playTimePerDay(self):
-        """timedelta: The amount of time per day spent on this save
-        slot.
+        """timedelta: The amount of time per day spent on the associated
+        save slot.
         """
         return (
             self.playDuration/(self.timeLastPlayed - self.startDate).days
         )
 
-    @property
-    def tokens(self):
-        """dict of str:int: A dictionary mapping a character nameID to
-        the number of tokens for that character in the player's
-        possession.
-        """
-        return {
-            nameID: self.slotData['items'].get(nameID, 0)
-            for nameID in self.roster.chars
-        }
+    def fromSaveData(self, save, slot):
+        """Sets the attributes of the calling instance to match the data
+        contained in the given save slot of the give save file data.
 
-    def readGear(self):
-        """The save slot contains a list of gear, each one having a
-        unique ID number. This method makes a Gear object for each
-        gear piece, and builds a dictionary mapping its ID number to the
-        associated Gear object.
-
-        Returns:
-            dict of int:Gear: The dictionary mapping IDs to gear.
+        Args:
+            save (dict): A decrypted dictionary representation of the
+                player's save file, as returned by the `decryptSaveFile`
+                function.
+            slot (int): The 0-based index of the save slot from which to
+                read the time stamps.
 
         """
-        gear = {}
-        for indexStr, data in self.slotData['gears'].items():
-            index = int(indexStr)
-            gear[index] = Gear(data['gearid'], data['level'])
-        return gear
-
-    def readParts(self):
-        """The save slot contains a list of particles, each one having a
-        unique ID number. This method makes a Particle object for each
-        particle, and builds a dictionary mapping its ID number to the
-        associated Particle object.
-
-        Returns:
-            dict of int:Particle: The dictionary mapping IDs to
-                particles.
-
-        """
-        parts = {}
-        for saveIndexStr, data in self.slotData['accessories'].items():
-            saveIndex = int(saveIndexStr)
-            name = DESCRIPTIONS[GSAccessoryItems[data['accessoryid']]['Name']]
-            rarity = GSAccessoryItems[data['accessoryid']]['Rarity']
-            part = Particle(name, rarity, data['level'], data['locked'])
-            for statIndex, statName in enumerate(data['stats'].values()):
-                part.setStatName(statIndex, statName)
-            parts[saveIndex] = part
-        return parts
-
-    def readChars(self):
-        """The save slot contains a list of characters, indexed by the
-        in-data name of the character. (These names are the keys in
-        `GSCharacter`.) This method makes a Character object for each
-        character, and builds a dictionary mapping its in-data name to
-        the associated Character object.
-
-        It also associates each Character with the Gear and Particles
-        that it has equipped. So this method should not be called until
-        the calling instances `roster` attribute has been set and filled
-        with gear and particles from the save file.
-
-        Returns:
-            dict of str:Character: The dictionary mapping in-data names
-                to characters.
-
-        """
-        chars = {}
-        for nameID, data in self.slotData['units'].items():
-            char = Character(nameID, data['rank'], data['xp'])
-            char.tokens = self.slotData['items'].get(char.nameID, 0)
-            for skillID, level in data['skills'].items():
-                if level > 0:
-                    try:
-                        char.skills[skillID].unlocked = True
-                        char.skills[skillID].level = level
-                    except KeyError:
-                        warn(
-                            repr(skillID)
-                            + ' found in save file but not in game data'
-                        )
-            for slotIndex, gearSaveIndex in enumerate(data['gears'].values()):
-                if gearSaveIndex > 0:
-                    gear = self.roster.gear[gearSaveIndex]
-                    slot = char.gearSlots[slotIndex]
-                    self.roster.inGearSlot[gear] = slot
-            for slotIndex, partSaveIndex in (
-                enumerate(data['accessories'].values())
-            ):
-                if partSaveIndex > 0:
-                    part = self.roster.parts[partSaveIndex]
-                    slot = char.partSlots[slotIndex]
-                    self.roster.inPartSlot[part] = slot
-            chars[nameID] = char
-        return chars
+        self.startDate = datetime.fromtimestamp(
+            save['{} data'.format(slot)]['createts'], tz=timezone.utc
+        )
+        self.timeLastPlayed = ticksToDatetime(
+            int(save['{} timeLastPlayed'.format(slot)])
+        )
+        self.playDuration = ticksToTimedelta(
+            int(save['{} playDuration'.format(slot)])
+        )

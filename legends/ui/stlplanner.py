@@ -3,10 +3,10 @@
 """
 
 import tkinter as tk
-from tkinter import GROOVE, LEFT, Y, YES
-from tkinter.messagebox import showerror
+from tkinter import GROOVE, LEFT, X, Y, YES, DISABLED, NORMAL
+from legends.constants import ENABLED
 from legends.saveslot import SaveSlot
-from legends.ui.dialogs import askSlot
+from legends.ui.dialogs import showerror, askSlot
 from legends.ui.rostertab import RosterTab
 
 __all__ = ['STLPlanner']
@@ -36,7 +36,16 @@ class STLPlanner(tk.Tk):
 
     Args:
         saveslot (SaveSlot): The user's save data.
-        button (Button): The 'extract' button shown at app start.
+        disableOnModal (list of (tk.Menu, int)): Each item in this list
+            is a 2-tuple that represents a menu option which should be
+            disabled when a modal dialog is open. The first value is the
+            menu in which the option exists. The second value is the
+            0-based index of the option within that menu.
+        timePerDayLabel (tk.StringVar): The text that appears in the
+            label on the info bar which displays the average amount of
+            time per day the user has spent in the game.
+        timePerDayToggle (tk.BooleanVar): If False, the time-per-day
+            label will show 0; otherwise it shows the correct value.
 
     """
 
@@ -45,6 +54,7 @@ class STLPlanner(tk.Tk):
         tk.Tk.__init__(self, *args, **kargs)
         self.title('STL Planner')
         self.saveslot = None
+        self.disableOnModal = []
         self.timePerDayLabel = tk.StringVar(self, '')
         self.timePerDayToggle = tk.BooleanVar(self, True)
         self.timePerDayToggle.trace('w', self.setTimePerDayLabel)
@@ -56,10 +66,13 @@ class STLPlanner(tk.Tk):
         viewMenu.add_checkbutton(
             label='Show play time per day', variable=self.timePerDayToggle
         )
+        self.disableOnModal.append((viewMenu, 0))
+        # viewMenu.add_command(label='test')
         menuBar.add_cascade(label='View', menu=viewMenu)
+        # viewMenu.entryconfig(1, state=DISABLED) # 0-based index
 
         # show start screen
-        startFrame = StartFrame()
+        startFrame = StartFrame(self)
         startFrame.pack()
         self.wait_variable(startFrame.built)
         self.saveslot = startFrame.saveslot
@@ -67,7 +80,7 @@ class STLPlanner(tk.Tk):
 
         # build info bar and roster tab
         self.infoBar().pack()
-        RosterTab(self.saveslot, self).pack(expand=YES, fill=Y)
+        RosterTab(self).pack(expand=YES, fill=Y)
 
     # pylint: disable-next=unused-argument
     def setTimePerDayLabel(self, *args):
@@ -77,7 +90,8 @@ class STLPlanner(tk.Tk):
         """
         if self.timePerDayToggle.get() and self.saveslot is not None:
             self.timePerDayLabel.set(
-                'play time per day: ' + cleanTime(self.saveslot.playTimePerDay)
+                'play time per day: '
+                + cleanTime(self.saveslot.timestamps.playTimePerDay)
             )
         else:
             self.timePerDayLabel.set('play time per day: 0 hrs 0 min')
@@ -92,16 +106,17 @@ class STLPlanner(tk.Tk):
         """
         # build bar and initialize variables
         bar = tk.Frame(self)
+        timestamps = self.saveslot.timestamps
         start = (
             'start date: '
-            + self.saveslot.startDate.strftime('%b %-d %Y %H:%M %Z')
+            + timestamps.startDate.strftime('%b %-d %Y %H:%M %Z')
         )
         last = (
             'last played: '
-            + self.saveslot.timeLastPlayed.strftime('%b %-d %Y %H:%M %Z')
+            + timestamps.timeLastPlayed.strftime('%b %-d %Y %H:%M %Z')
         )
         total = (
-            'play duration: ' + cleanTime(self.saveslot.playDuration)
+            'play duration: ' + cleanTime(timestamps.playDuration)
         )
         self.setTimePerDayLabel()
 
@@ -118,23 +133,43 @@ class STLPlanner(tk.Tk):
             label.pack(side=LEFT)
         return bar
 
+    def setMenuState(self, enabled):
+        """Sets the state of the menu options in the `disableOnModal`
+        attribute to either `NORMAL` or `DISABLED`.
+
+        Args:
+            enabled (bool): If True, sets state to `NORMAL`, otherwise
+                sets state to `DISABLED`.
+
+        """
+        state = NORMAL if enabled else DISABLED
+        for menu, index in self.disableOnModal:
+            menu.entryconfig(index, state=state)
+
 class StartFrame(tk.Frame):
     """The starting frame of the STL Planner app.
 
     Attributes:
+        root (STLPlanner): The currently running STLPlanner instance.
         built (tk.BooleanVar): True if the `saveslot` property contains
             a SaveSlot object. Used by other UI objects to detect when
             the SaveSlot object has been built.
 
     """
 
-    def __init__(self, parent=None, **options):
+    def __init__(self, root, parent=None, **options):
         tk.Frame.__init__(self, parent, **options)
+        self.root = root
         self.built = tk.BooleanVar()
         self.saveslot = None
+        panel = tk.Frame(self)
         tk.Button(
-            self, text='extract\nsave data', command=self.extractFromHD
-        ).pack(padx=50, pady=50)
+            panel, text='extract save data', command=self.extractFromHD
+        ).pack(expand=YES, fill=X)
+        tk.Button(
+            panel, text='make max', command=self.makeMax
+        ).pack(expand=YES, fill=X)
+        panel.pack(padx=50, pady=50)
 
     @property
     def saveslot(self):
@@ -154,14 +189,20 @@ class StartFrame(tk.Frame):
         SaveSlot object.
 
         """
-        slot = askSlot()
+        slot = askSlot(self.root)
         if slot is None:
             return
         try:
             self.saveslot = SaveSlot(slot)
         except ValueError:
             showerror(
+                self.root,
                 'Slot Error',
                 'No save data found in slot {}.'.format(slot + 1)
             )
             return
+
+    def makeMax(self):
+        saveslot = SaveSlot()
+        saveslot.roster.fillChars(ENABLED)
+        self.saveslot = saveslot
