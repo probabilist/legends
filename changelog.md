@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.5.1
+
+* Added a new base class, `ModalDialog`, which is a subclass of `tkinter.simpledialog.Dialog` that disables root menus while the dialog is open.
+* Rewrote the `AskSlot` class as a subclass of `ModalDialog`, and rewrote the `askSlot` function to better mimic the analogous functions in the `tkinter.simpledialog` module.
+* Added missing items to `__all__` list in the following modules: `constants`, `dialogs`, `rostertab`, `stlplanner`.
+* Edited "legends/__init__.py" to reflect new `roster` module.
+
 ## Version 0.5.0
 
 * Menu options were not being automatically disabled when modal dialog windows would appear. Made a number of changes to correct this.

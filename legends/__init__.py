@@ -6,5 +6,6 @@ from legends import utils
 from legends import ui
 from legends.constants import *
 from legends.gameobjects import *
+from legends.roster import *
 from legends.saveslot import *
 from legends.stats import *

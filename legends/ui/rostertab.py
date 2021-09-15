@@ -13,7 +13,9 @@ from legends.constants import (
 )
 from legends.ui.dialogs import showinfo, askRosterFilter, RosterFilter
 
-__all__ = ['CharCard', 'RosterTab', 'RosterFilter', 'RosterTab']
+__all__ = [
+    'maxXP', 'makeShortName', 'RosterTab', 'CharCard', 'RosterInfoBar'
+]
 
 def maxXP(rarity):
     """Returns the maximum XP of a character of the given rarity."""

@@ -9,7 +9,7 @@ from legends.saveslot import SaveSlot
 from legends.ui.dialogs import showerror, askSlot
 from legends.ui.rostertab import RosterTab
 
-__all__ = ['STLPlanner']
+__all__ = ['cleanTime', 'STLPlanner', 'StartFrame']
 
 def cleanTime(delta):
     """Converts a timedelta object into a string description that shows

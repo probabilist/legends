@@ -6,9 +6,13 @@ import tkinter as tk
 from tkinter import ttk, E, W, HORIZONTAL, LEFT, RIGHT, YES, X
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
+from tkinter.simpledialog import Dialog
 from legends.constants import RARITIES, ROLES
 
-__all__ = ['askSlot', 'askRosterFilter', 'RosterFilter']
+__all__ = [
+    'showerror', 'showinfo', 'askSlot', 'askRosterFilter', 'ModalDialog',
+    'AskSlot', 'RosterFilter', 'AskRosterFilter'
+]
 
 def showerror(root, *args, **kargs):
     """A wrapper around tkinter.messagebox.showerror that disables menu
@@ -45,10 +49,8 @@ def askSlot(root):
             slot. Returns `None` if no slot was selected.
 
     """
-    intVar = tk.IntVar()
-    AskSlot(root, intVar)
-    slot = intVar.get()
-    return None if slot == -1 else slot
+    dialog = AskSlot(root)
+    return dialog.result
 
 def askRosterFilter(root, filt):
     """Raises a dialog window, prompting the user to adjust the filters
@@ -69,93 +71,86 @@ def askRosterFilter(root, filt):
     AskRosterFilter(root, filtCopy)
     return filtCopy
 
-class AskSlot(tk.Toplevel):
+class ModalDialog(Dialog):
+    """A subclass of Dialog that disables menu options.
+
+    Args:
+        root (STLPlanner): The currently running STLPlanner instance.
+
+    """
+    def __init__(self, root, parent=None, title=None):
+        """(override) Disables root menu options before calling
+        superclass constructor.
+
+        """
+        self.root = root
+        self.root.setMenuState(False)
+        if parent is None:
+            parent = tk._default_root
+        Dialog.__init__(self, parent, title)
+
+    def destroy(self):
+        """(override) Enables root menu options before destroying
+        window.
+
+        """
+        self.initial_focus = None
+        self.root.setMenuState(True)
+        tk.Toplevel.destroy(self)
+
+class AskSlot(ModalDialog):
     """A modal dialog that prompts the user to select a save slot.
 
     Save slots are denoted in the game data as 0, 1, or 2. In the
     AskSlot window, they are shown to the user as '1', '2', or '3'.
 
-    The constructor must be given a tkinter integer variable. The
-    AskSlot instance will store the 0-based index of the user's chosen
-    slot in this variable. It will store -1 if the user closes the
-    window without making a choice.
-
     Attributes:
-        intVar (tk.IntVar): The tkinter variable passed to the instance
-            by the constructor. Used to relay the user's choice.
         displaySlot (tk.StringVar): The currently selected slot, as it
             is displayed in the window.
+        result (int or None): Inherited from ModalDialog, which
+            inherited it from Dialog. Defaults to None. Is set by the
+            `validate` method to the 0-based index of the chosen slot.
 
     """
-    def __init__(self, root, intVar, *args, **kargs):
-        """Creates and launches an AskSlot dialog window.
+    def __init__(self, root, parent=None):
+        self.displaySlot = tk.StringVar(None, '1')
+        ModalDialog.__init__(self, root, parent, 'Choose a save slot')
 
-        Args:
-            root (STLPlanner): The currently running STLPlanner
-                instance.
-            intVar (tk.IntVar): The tkinter variable that stores the
-                user's choice.
+    def body(self, parent):
+        """Create the body of the dialog.
 
         """
-        # create the window and keep it in front of others
-        tk.Toplevel.__init__(self, *args, **kargs)
-        self.attributes('-topmost', True)
-        self.title('Choose a save slot')
-
-        # define and initialize variables
-        self.intVar = intVar
-        self.intVar.set(-1)
-        self.displaySlot = tk.StringVar(self, '1')
-
-        # create the main content frame
-        mainFrame = tk.Frame(self)
-
-        # create the subframe used for selecting the slot
-        slotBar = tk.Frame(mainFrame)
-        tk.Label(slotBar, text='Extract from save slot:').pack(side=LEFT)
-        ttk.Combobox(
-            slotBar,
-            textvariable=self.displaySlot,
-            values=['1', '2', '3'],
-            state='readonly',
-            width=1
-        ).pack()
-
-        # create the subframe with OK and Cancel buttons
-        buttonBar = tk.Frame(mainFrame)
-        tk.Button(buttonBar, text='OK', command=self.choose).pack(side=RIGHT)
-        tk.Button(
-            buttonBar, text='Cancel', command=self.destroy
-        ).pack(side=RIGHT)
-        self.bind_all('<Return>', lambda event:self.choose())
-
-        # pack everything, including an information message
+        # create an informational label
         msg = (
             "Open Star Trek: Legends on this Mac and let it load to the "
             + "splash screen. This will allow your cloud save to sync to "
             + "the local hard drive. Then choose the save slot data you would "
             + "like to use."
         )
-        tk.Label(mainFrame, wraplength=250, justify=LEFT, text=msg).pack()
+        tk.Label(parent, wraplength=250, justify=LEFT, text=msg).pack()
+
+        # create the subframe used for selecting the slot
+        slotBar = tk.Frame(parent)
+        tk.Label(slotBar, text='Extract from save slot:').pack(side=LEFT)
+        cbox = ttk.Combobox(
+            slotBar,
+            textvariable=self.displaySlot,
+            values=['1', '2', '3'],
+            state='readonly',
+            width=1
+        )
+        cbox.pack()
+
+        # pack the subframe and return the combobox for focus
         slotBar.pack(pady=10)
-        buttonBar.pack(expand=YES, fill=X)
-        mainFrame.pack(padx=10, pady=10)
+        return cbox
 
-        # force user to respond to window before continuing
-        root.setMenuState(False)
-        self.focus_set()
-        self.grab_set()
-        self.wait_window()
-        root.setMenuState(True)
-
-    def choose(self):
-        """Sets the linked tkinter variable to the 0-based index
-        associated with the current value displayed in the window. Then
-        destroys the window.
+    def validate(self):
+        """Set the `result` attribute and return True.
 
         """
-        self.intVar.set(int(self.displaySlot.get()) - 1)
-        self.destroy()
+        self.result = int(self.displaySlot.get()) - 1
+        return True
 
 class RosterFilter():
     """Stores information about filtering a RosterTab.
