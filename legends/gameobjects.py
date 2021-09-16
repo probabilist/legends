@@ -374,7 +374,9 @@ class Character():
             'Scott': 'Scotty',
             'Torchbearer': 'Torch',
             'BorgQueen': 'Borg Queen',
-            'PicardDixon': 'Dixon'
+            'PicardDixon': 'Dixon',
+            'JadziaDax': 'Jadzia Dax',
+            'PicardOld': 'Old Picard'
         }
         return betterNames.get(self.nameID, self.nameID)
 

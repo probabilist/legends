@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.7.0
+
+* Added short names for Dax and Old Picard.
+* Added a custom `askyesno` function that disables menu options.
+* Added an `AskMaxChars` class and `askMaxChars` function to create a dialog offering options when creating a roster of maxed characters.
+* Added a warning when starting a new session.
+* Deleted the `StartFrame` class and added its logic to the `STLPlanner` constructor.
+* Changed `View` menu name to `Preferences`.
+* Updated README file with new screenshot and new version number.
+
 ## Version 0.6.0
 
 * Temporarily disabled the use of the `StartFrame` class.

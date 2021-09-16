@@ -14,13 +14,19 @@ import tkinter as tk
 from tkinter import ttk, E, W, HORIZONTAL, LEFT, RIGHT, ACTIVE, YES, X
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
+from tkinter.messagebox import askyesno as _askyesno
 from tkinter.simpledialog import Dialog
-from legends.constants import RARITIES, ROLES
+# pylint: disable-next=no-name-in-module
+from legends.constants import GSCharacter
+from legends.constants import (
+    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL
+)
 from legends.saveslot import SaveSlot
 
 __all__ = [
-    'addroot', 'showerror', 'showinfo', 'askSlot', 'askRosterFilter',
-    'ModalDialog', 'AskSlot', 'RosterFilter', 'AskRosterFilter'
+    'addroot', 'showerror', 'showinfo', 'askyesno', 'askSlot',
+    'askRosterFilter', 'askMaxChars', 'ModalDialog', 'AskSlot', 'RosterFilter',
+    'AskRosterFilter', 'AskMaxChars'
 ]
 
 def addroot(func):
@@ -53,6 +59,12 @@ def showinfo(root, *args, **kargs):
 
     """
     return addroot(_showinfo)(root, *args, **kargs)
+
+def askyesno(root, *args, **kargs):
+    """A wrapper around tkinter's askyesno that disables the root menu.
+
+    """
+    return addroot(_askyesno)(root, *args, **kargs)
 
 def askSlot(root, save):
     """Raises a dialog window, prompting the user to select a save slot.
@@ -88,6 +100,24 @@ def askRosterFilter(root, filt):
 
     """
     dialog = AskRosterFilter(root, filt)
+    return dialog.result
+
+def askMaxChars(root):
+    """Raises a dialog window, prompting the user to select from an
+    array of options just prior to creating a roster of maxed
+    characters.
+
+    Args:
+        root (STLPlanner): The currently running STLPlanner instance.
+
+    Returns:
+        tuple of (list of str, bool): The first value in the tuple is
+            the list of name IDs of characters the user wants to include
+            in the roster. The second value is True if the user wants
+            the maxed characters to also have maxed gear.
+
+    """
+    dialog = AskMaxChars(root)
     return dialog.result
 
 class ModalDialog(Dialog):
@@ -402,3 +432,86 @@ class AskRosterFilter(ModalDialog):
 
         """
         self.result = self.filt
+
+class AskMaxChars(ModalDialog):
+    """A modal dialog used for creating a maxed roster.
+
+    Attributes:
+        crew (tk.BooleanVar): True if the user wants to use the
+            characters in the Crew screen (i.e. those that are not
+            disabled).
+        upcoming (tk.BooleanVar): True if the user wants to use upcoming
+            characters.
+        summonableOnly (tk.BooleanVar): True if the user wants to
+            exclude characters that are not summonable.
+        storeOnly (tk.BooleanVar): True if the user wants to exclude
+            characters whose tokens are not in the daily store.
+        maxGear (tk.BooleanVar): True if the user wants to the maxed
+            characters to also have maxed gear.
+        result (tuple of (list of str, bool)): The first value in the
+            tuple is the list of name IDs of characters the user wants
+            to include in the roster. The second value is True if the
+            user wants the maxed characters to also have maxed gear.
+
+    """
+    def __init__(self, root, parent=None):
+        self.crew = tk.BooleanVar(None, True)
+        self.upcoming = tk.BooleanVar(None, False)
+        self.summonableOnly = tk.BooleanVar(None, False)
+        self.storeOnly = tk.BooleanVar(None, False)
+        self.maxGear = tk.BooleanVar(None, True)
+        ModalDialog.__init__(self, root, parent, 'Choose character options')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        tk.Checkbutton(
+            master, text='include characters in Crew screen',
+            variable=self.crew
+        ).pack(anchor=W, padx=5)
+        tk.Checkbutton(
+            master, text='include upcoming characters',
+            variable=self.upcoming
+        ).pack(anchor=W, padx=5)
+        tk.Checkbutton(
+            master, text='exclude non-summonable characters',
+            variable=self.summonableOnly
+        ).pack(anchor=W, padx=5, pady=(15,0))
+        tk.Checkbutton(
+            master, text='exclude characters not in daily store',
+            variable=self.storeOnly
+        ).pack(anchor=W, padx=5)
+        tk.Checkbutton(
+            master, text='equip max gear on characters',
+            variable=self.maxGear
+        ).pack(anchor=W, padx=5, pady=(15,0))
+
+    def validate(self):
+        """Ensure that the user has selected at least one character,
+        then set the result.
+
+        """
+        include = ENABLED if self.crew.get() else []
+        include.extend(UPCOMING if self.upcoming.get() else [])
+        nameIDs = []
+        for nameID in include:
+            if (
+                self.summonableOnly.get()
+                and nameID not in SUMMON_POOL['Core']['nameIDs']
+            ):
+                continue
+            if (
+                self.storeOnly.get()
+                and not GSCharacter[nameID]['DailyTokenVisible']
+            ):
+                continue
+            nameIDs.append(nameID)
+        if len(nameIDs) == 0:
+            showerror(
+                self.root, 'Empty Selection',
+                'These choices produce no characters.'
+            )
+            return False
+        self.result = nameIDs, self.maxGear.get()
+        return True

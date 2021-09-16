@@ -17,7 +17,7 @@ The *STL Planner* app must be run on a Mac on which *Star Trek: Legends* is inst
 
 ### Download
 
-Version 0.4.1: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1co-I9lxzeiUUGcwZTFNaq76km2AyHcC9/view?usp=sharing)
+Version 0.7.0: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1co-I9lxzeiUUGcwZTFNaq76km2AyHcC9/view?usp=sharing)
 
 ### Install
 

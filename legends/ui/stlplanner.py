@@ -3,14 +3,13 @@
 """
 
 import tkinter as tk
-from tkinter import GROOVE, LEFT, X, Y, YES, DISABLED, NORMAL
-from legends.constants import ENABLED
+from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW
 from legends.functions import decryptSaveFile
 from legends.saveslot import SaveSlot
-from legends.ui.dialogs import showerror, askSlot
+from legends.ui.dialogs import showerror, askSlot, askMaxChars, askyesno
 from legends.ui.rostertab import RosterTab
 
-__all__ = ['cleanTime', 'STLPlanner', 'StartFrame']
+__all__ = ['cleanTime', 'STLPlanner']
 
 def cleanTime(delta):
     """Converts a timedelta object into a string description that shows
@@ -37,6 +36,8 @@ class STLPlanner(tk.Tk):
 
     Args:
         saveslot (SaveSlot): The user's save data.
+        activeSession (bool): True if the app has an active session
+            open.
         disableOnModal (list of (tk.Menu, int)): Each item in this list
             is a 2-tuple that represents a menu option which should be
             disabled when a modal dialog is open. The first value is the
@@ -55,19 +56,22 @@ class STLPlanner(tk.Tk):
         tk.Tk.__init__(self, *args, **kargs)
         self.title('STL Planner')
         self.saveslot = None
+        self.activeSession = False
         self.disableOnModal = []
         self.timePerDayLabel = tk.StringVar(self, '')
         self.timePerDayToggle = tk.BooleanVar(self, True)
         self.timePerDayToggle.trace('w', self.setTimePerDayLabel)
         self._menuEnabled = True
+        self.mainFrame = tk.Frame(self)
+        self.mainFrame.pack()
 
         # build menu bar
         menuBar = tk.Menu(self)
         fileMenu = tk.Menu(menuBar)
         newSession = tk.Menu(fileMenu)
-        viewMenu = tk.Menu(menuBar)
+        prefMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label='File', menu=fileMenu)
-        menuBar.add_cascade(label='View', menu=viewMenu)
+        menuBar.add_cascade(label='Preferences', menu=prefMenu)
         fileMenu.add_cascade(label='New session', menu=newSession)
         newSession.add_command(
             label='From save file...', command=self.newFromFile
@@ -75,26 +79,29 @@ class STLPlanner(tk.Tk):
         newSession.add_command(
             label='Maxed characters', command=self.newMaxChars
         )
-        viewMenu.add_checkbutton(
+        prefMenu.add_checkbutton(
             label='Show play time per day', variable=self.timePerDayToggle
         )
         self.config(menu=menuBar)
         self.disableOnModal.append((newSession, 0))
         self.disableOnModal.append((newSession, 1))
-        self.disableOnModal.append((viewMenu, 0))
+        self.disableOnModal.append((prefMenu, 0))
 
         # show start screen
-        self.mainFrame = tk.Frame(self)
-        self.mainFrame.pack()
-        # startFrame = StartFrame(self.mainFrame)
-        # startFrame.pack()
-        # self.wait_variable(startFrame.built)
-        # self.saveslot = startFrame.saveslot
-        # startFrame.destroy()
-
-        # build info bar and roster tab
-        # self.infoBar().pack()
-        # RosterTab(self).pack(expand=YES, fill=Y)
+        buttonbox = tk.Frame(self.mainFrame)
+        tk.Button(
+            buttonbox, text='from HD', command=self.newFromFile
+        ).grid(row=0, column=0, sticky=EW)
+        tk.Button(
+            buttonbox, text='MAX', command=self.newMaxChars
+        ).grid(row=1, column=0, sticky=EW)
+        tk.Label(
+            buttonbox, text='Extract data from your local save file'
+        ).grid(row=0, column=1, sticky=W)
+        tk.Label(
+            buttonbox, text='Create a roster of maxed characters'
+        ).grid(row=1, column=1, sticky=W)
+        buttonbox.pack(padx=50, pady=50)
 
     @property
     def menuEnabled(self):
@@ -175,6 +182,10 @@ class STLPlanner(tk.Tk):
         SaveSlot object.
 
         """
+        if (self.activeSession and not askyesno(
+            self, 'Close Session', 'Close current session?'
+        )):
+            return
         try:
             save = decryptSaveFile()
         except FileNotFoundError:
@@ -187,67 +198,25 @@ class STLPlanner(tk.Tk):
         self.clear()
         self.infoBar().pack()
         RosterTab(self).pack(expand=YES, fill=Y)
+        self.activeSession = True
 
     def newMaxChars(self):
+        """Prompts the user to choose from an array of options, then
+        starts a new session using a roster of maxed characters.
+
+        """
+        if (self.activeSession and not askyesno(
+            self, 'Close Session', 'Close current session?'
+        )):
+            return
+        self.activeSession = True
+        result = askMaxChars(self)
+        if result is None:
+            return
+        chars, maxGear = result
         self.saveslot = SaveSlot()
-        self.saveslot.roster.fillChars(ENABLED)
+        self.saveslot.roster.fillChars(chars, maxGear)
         self.clear()
         self.infoBar().pack()
         RosterTab(self).pack(expand=YES, fill=Y)
-
-class StartFrame(tk.Frame):
-    """The starting frame of the STL Planner app.
-
-    Attributes:
-        root (STLPlanner): The currently running STLPlanner instance.
-        built (tk.BooleanVar): True if the `saveslot` property contains
-            a SaveSlot object. Used by other UI objects to detect when
-            the SaveSlot object has been built.
-
-    """
-
-    def __init__(self, root, parent=None, **options):
-        tk.Frame.__init__(self, parent, **options)
-        self.root = root
-        self.built = tk.BooleanVar()
-        self.saveslot = None
-        panel = tk.Frame(self)
-        tk.Button(
-            panel, text='extract save data', command=self.extractFromHD
-        ).pack(expand=YES, fill=X)
-        tk.Button(
-            panel, text='make max', command=self.makeMax
-        ).pack(expand=YES, fill=X)
-        panel.pack(padx=50, pady=50)
-
-    @property
-    def saveslot(self):
-        """SaveSlot: The SaveSlot object that will be used by the app.
-        When setting this property, the `built` attribute is also
-        changed.
-        """
-        return self._saveslot
-
-    @saveslot.setter
-    def saveslot(self, value):
-        self._saveslot = value
-        self.built.set(isinstance(value, SaveSlot))
-
-    def extractFromHD(self):
-        """Prompts the user for a save slot, then builds and stores a
-        SaveSlot object.
-
-        """
-        try:
-            save = decryptSaveFile()
-        except FileNotFoundError:
-            showerror(self.root, 'File Not Found', 'Save file not found.')
-            return
-        saveslot = askSlot(self.root, save)
-        if saveslot is not None:
-            self.saveslot = saveslot
-
-    def makeMax(self):
-        saveslot = SaveSlot()
-        saveslot.roster.fillChars(ENABLED)
-        self.saveslot = saveslot
+        self.activeSession = True
