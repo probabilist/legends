@@ -2,76 +2,14 @@
 
 """
 
-from base64 import decodebytes
 from datetime import datetime, timedelta, timezone
-from getpass import getuser
-from json import loads
-from plistlib import load
-from Crypto.Cipher import AES
-from Crypto.Util.Padding import unpad
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.roster import Roster
 
 __all__ = [
-    'saveFilePath', 'AESdecrypt', 'decryptSaveFile', 'ticksToTimedelta',
-    'ticksToDatetime', 'SaveSlot', 'STLTimeStamps'
+    'ticksToTimedelta', 'ticksToDatetime', 'SaveSlot', 'STLTimeStamps'
 ]
-
-def saveFilePath():
-    """Creates and return the complete path of the save file.
-
-    Returns:
-        str: The complete path of the save file.
-
-    """
-    return (
-        '/Users/' + getuser() + '/Library/Containers/'
-        + 'com.tiltingpoint.startrek/Data/Library/Preferences/'
-        + 'com.tiltingpoint.startrek.plist'
-    )
-
-def AESdecrypt(cipherText, key, iv):
-    """Decrypts the given cipher text, using the provided key and iv.
-
-    Args:
-        cipherText (str): The message to be decrypted.
-        key (str): The decryption key.
-        iv (str): The iv.
-
-    Returns:
-        str: The decrypted message.
-
-    """
-    keyB = key.encode('ascii')
-    ivB = decodebytes(iv.encode('ascii'))
-    cipherTextB = decodebytes(cipherText.encode('ascii'))
-
-    cipher = AES.new(keyB, AES.MODE_CBC, ivB)
-
-    return unpad(cipher.decrypt(cipherTextB), AES.block_size).decode('UTF-8')
-
-def decryptSaveFile():
-    """Decrypts and parses the save file into a dictionary.
-
-    Returns:
-        dict: The decrypted save file as a dictionary.
-
-    """
-    with open(saveFilePath(), 'rb') as f:
-        saveFile = load(f)
-    saveFile.pop('CloudKitAccountInfoCache', None)
-    for i in range(3):
-        key = str(i) + ' data'
-        if len(saveFile.get(key, '')) == 0:
-            saveFile[key] = {}
-            continue
-        saveFile[key] = loads(AESdecrypt(
-            saveFile[key],
-            'K1FjcmVkc2Vhc29u',
-            'LH75Qxpyf0prVvImu4gqxg=='
-        ))
-    return saveFile
 
 def ticksToTimedelta(ticks):
     """Converts a duration measured in "ticks" to a Python `timedelta`
@@ -120,7 +58,7 @@ class SaveSlot():
 
     """
 
-    def __init__(self, slot=None):
+    def __init__(self):
         """Constructs a SaveSlot object by extracting data from the
         user's Star Trek: Legends save file, stored on the local HD.
 
@@ -136,19 +74,19 @@ class SaveSlot():
         self.roster = Roster()
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
-        if slot is not None:
-            self.fromFile(slot)
 
-    def fromFile(self, slot):
+    def fromFile(self, save, slot):
         """Populates the calling instance's attribute with data from the
         locally stored save file.
 
         Args:
+            save (dict): A decrypted dictionary representation of the
+                player's save file, as returned by the `decryptSaveFile`
+                function.
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
         """
-        save = decryptSaveFile()
         key = '{} data'.format(slot)
         if key not in save or not save[key]:
             raise ValueError(slot)
@@ -156,6 +94,23 @@ class SaveSlot():
         self.roster.fromSaveData(save, slot)
         for nameID in self.tokens:
             self.tokens[nameID] = save[key]['items'].get(nameID, 0)
+
+    def sort(self, func, descending=True):
+        """Sorts the dictionary of characters stored in the associated
+        Roster object according the currently selected sorting field.
+
+        Args:
+            func (function): Should be a function mapping a Character
+                object and a SaveSlot object to a sortable value.
+
+        """
+        self.roster.chars = dict(sorted(
+            self.roster.chars.items(),
+            key=lambda item:func(item[1], self),
+            reverse=descending
+        ))
+        # rewrite sort method in rostertab
+
 
 class STLTimeStamps():
     """An object for storing and managing Star Trek: Legends timestamps.

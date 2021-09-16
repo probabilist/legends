@@ -2,6 +2,7 @@
 
 """
 
+from re import findall
 from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
 from legends.constants import (
@@ -360,6 +361,22 @@ class Character():
     def name(self):
         """The in-game display name of the character."""
         return DESCRIPTIONS[GSCharacter[self.nameID]['Name']]
+
+    @property
+    def shortName(self):
+        """A shortened version of the character's display name."""
+        if self.rarity == 'Common':
+            L = findall('[A-Z][^A-Z]*', self.nameID)
+            return L[1] + ' ' + L[2][:-2]
+        betterNames = {
+            'Nine': 'Seven',
+            'Nerys': 'Kira',
+            'Scott': 'Scotty',
+            'Torchbearer': 'Torch',
+            'BorgQueen': 'Borg Queen',
+            'PicardDixon': 'Dixon'
+        }
+        return betterNames.get(self.nameID, self.nameID)
 
     @property
     def rank(self):

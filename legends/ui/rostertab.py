@@ -2,7 +2,6 @@
 
 """
 
-from re import findall
 import tkinter as tk
 from tkinter import ttk, X, BOTH, GROOVE, LEFT, RIGHT, NSEW, YES, W
 from legends.utils.scrollframe import ScrollFrame
@@ -13,37 +12,11 @@ from legends.constants import (
 )
 from legends.ui.dialogs import showinfo, askRosterFilter, RosterFilter
 
-__all__ = [
-    'maxXP', 'makeShortName', 'RosterTab', 'CharCard', 'RosterInfoBar'
-]
+__all__ = ['maxXP', 'RosterTab', 'CharCard', 'RosterInfoBar']
 
 def maxXP(rarity):
     """Returns the maximum XP of a character of the given rarity."""
     return GSLevel[rarity + '_99']['Experience']
-
-def makeShortName(char):
-    """Returns a short nickname for the given character.
-
-    Args:
-        char (Character): A Character object.
-
-    Returns:
-        str: The nickname for the character.
-
-    """
-    name = char.nameID
-    if char.rarity == 'Common':
-        L = findall('[A-Z][^A-Z]*', name)
-        return L[1] + ' ' + L[2][:-2]
-    betterNames = {
-        'Nine': 'Seven',
-        'Nerys': 'Kira',
-        'Scott': 'Scotty',
-        'Torchbearer': 'Torch',
-        'BorgQueen': 'Borg Queen',
-        'PicardDixon': 'Dixon'
-    }
-    return betterNames.get(name, name)
 
 class RosterTab(tk.Frame):
     """Displays the player's character collection.
@@ -56,7 +29,7 @@ class RosterTab(tk.Frame):
         infoBar (RosterInfoBar): The info bar containing aggregate info
             about the currently displayed characters.
         sortFuncs (dict of str:func): A dictionary mapping field names
-            to functions that map a CharCard object and a SaveSlot
+            to functions that map a Character object and a SaveSlot
             object to a sortable value.
         sortField (StringVar): The currently selected field name by
             which the characters are sorted.
@@ -70,11 +43,12 @@ class RosterTab(tk.Frame):
 
         Args:
             root (STLPlanner): The currently running STLPlanner
-                instance. Will be assigned as the RosterTab instance's parent.
+                instance. It's `mainFrame` attribute will be assigned as
+                the RosterTab instance's parent.
 
         """
         # build frame and initialize variables
-        tk.Frame.__init__(self, root, **options)
+        tk.Frame.__init__(self, root.mainFrame, **options)
         self.filter = RosterFilter()
 
         # build widgets
@@ -90,6 +64,11 @@ class RosterTab(tk.Frame):
 
         # fill scroll area with character cards
         self.fillCards()
+
+    @property
+    def root(self):
+        """STLPlanner: The currently running STLPlanner instance."""
+        return self.master.master
 
     @property
     def cards(self):
@@ -133,17 +112,17 @@ class RosterTab(tk.Frame):
             )
         count = 0
         chars = [
-            char for char in self.master.saveslot.roster.chars.values()
+            char for char in self.root.saveslot.roster.chars.values()
             if self.checkFilter(char)
         ]
         for char in chars:
             CharCard(
-                char, self.master.saveslot, self.scrollArea.content
+                char, self.root.saveslot, self.scrollArea.content
             ).grid(
                 row=count // columns, column=count % columns, sticky=NSEW
             )
             count += 1
-        self.infoBar.makeStats(chars, self.master.saveslot.roster)
+        self.infoBar.makeStats(chars, self.root.saveslot.roster)
 
     def helpBar(self):
         """Builds and returns a help bar with information for the user.
@@ -163,7 +142,8 @@ class RosterTab(tk.Frame):
         ).pack(side=LEFT)
         tk.Button(
             bar, text='Stat glossary',
-            command=lambda:showinfo(self.master, 'Stat glossary', glossary)
+            # pylint: disable-next=too-many-function-args
+            command=lambda:showinfo(self.root, 'Stat glossary', glossary)
         ).pack(side=RIGHT)
         return bar
 
@@ -174,7 +154,7 @@ class RosterTab(tk.Frame):
         """
         # define and initialize variables
         self.sortFuncs = {
-            'Name': lambda c,s: makeShortName(c),
+            'Name': lambda c,s: c.shortName,
             'Favorite': lambda c,s: c in s.favorites,
             'Level': lambda c,s: c.xp,
             'Rank': lambda c,s: c.rank,
@@ -235,13 +215,9 @@ class RosterTab(tk.Frame):
         field = self.sortField.get()
         if field == '':
             return
-        func = self.sortFuncs[field]
-        sortedChars = dict(sorted(
-            self.master.saveslot.roster.chars.items(),
-            key=lambda item:func(item[1], self.master.saveslot),
-            reverse=self.descending.get()
-        ))
-        self.master.saveslot.roster.chars = sortedChars
+        self.root.saveslot.sort(
+            self.sortFuncs[field], self.descending.get()
+        )
         self.refresh()
 
     def refresh(self):
@@ -258,8 +234,8 @@ class RosterTab(tk.Frame):
         cards and info bar.
 
         """
-        filt = askRosterFilter(self.master, self.filter)
-        if filt != self.filter:
+        filt = askRosterFilter(self.root, self.filter)
+        if filt is not None:
             self.filter = filt
             self.refresh()
 
@@ -329,7 +305,7 @@ class CharCard(tk.Frame):
 
         # build name label
         self.nameLabel = tk.Label(
-            plate, text=makeShortName(self.char), bg=bgColor,
+            plate, text=self.char.shortName, bg=bgColor,
             font=(None, 16, 'bold')
         )
         self.nameLabel.bind('<Button-1>', self.toggleFav)

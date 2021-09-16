@@ -1,5 +1,27 @@
 # Change log
 
+## Version 0.6.0
+
+* Temporarily disabled the use of the `StartFrame` class.
+* Added menu items to `STLPlanner` to correspond to the buttons in `StartFrame`.
+* Fixed an error where Modal dialogs would re-enable the main app menu options too soon. This happened because Modal dialogs would re-enable them when they closed. But if one Modal dialog called another, the second one would re-enable the menus while the first was still open. Now, Modal dialogs simply restore the state of the app menu options that existed when the dialog was open.
+    - Added a `menuEnabled` property to the `STLPlanner` class, whose setter toggles the state of the menu options in the `disableOnModal` attribute.
+    - Created a function decorator, `addroot`, to encode the menu toggling logic, and used it to redefine the custom versions of `showerror` and `showinfo`.
+    - Adjusted the logic of the `ModalDialog` base class.
+* Added an overriding `buttonbox` method to the `ModalDialog` base class that puts the 'ok' button on the right and assigns the button box to an attribute so that subclasses can more easily modify it.
+* Rewrote the `AskRosterFilter` class to use the `ModalDialog` base class, and revised the `askRosterFilter` function accordingly.
+* Removed the `slot` argument from the `SaveSlot` constructor.
+* Moved the `saveFilePath`, `AESdecrypt`, and `decryptSaveFile` functions from the `saveslot` module to their own module, `functions`.
+    - Added a `save` argument to the `SaveSlot.fromFile` method that represents the output of the `decryptSaveFile` function.
+    - Added a similar `save` argument to the `AskSlot` constructor and `askSlot` function.
+    - Edited the `AskSlot.validate` method to store the result as a `SaveSlot` object rather than the slot number as a 0-based integer.
+* Added an `STLPlanner.mainFrame` attribute to hold the contents of the app window.
+* Added an `STLPlanner.clear` method to clear the `mainFrame`.
+* Added a `root` property to the `RosterTab` class.
+* Removed the `makeShortName` function from the `rostertab` module, and converted it to a property of the `Character` class.
+* Added a `SaveSlot.sort` method. The `RosterTab.sort` method no longer directly sorts the characters in the save slot, but instead calls the new method.
+* Removed the `ROOT` constant, which was not used outside the `constants` module.
+
 ## Version 0.5.1
 
 * Added a new base class, `ModalDialog`, which is a subclass of `tkinter.simpledialog.Dialog` that disables root menus while the dialog is open.

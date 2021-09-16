@@ -1,55 +1,74 @@
 """Dialog frames and windows for use with the `legends` package.
 
+Attributes:
+    showerror (func): Similar to tkinter.simpledialog.showerror, but
+        with a `root` positional argument in the front. See the
+        docstring for the `addroot` function below for details.
+    showinfo (func): Similar to tkinter.simpledialog.showerror, but
+        with a `root` positional argument in the front. See the
+        docstring for the `addroot` function below for details.
+
 """
 
 import tkinter as tk
-from tkinter import ttk, E, W, HORIZONTAL, LEFT, RIGHT, YES, X
+from tkinter import ttk, E, W, HORIZONTAL, LEFT, RIGHT, ACTIVE, YES, X
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
 from tkinter.simpledialog import Dialog
 from legends.constants import RARITIES, ROLES
+from legends.saveslot import SaveSlot
 
 __all__ = [
-    'showerror', 'showinfo', 'askSlot', 'askRosterFilter', 'ModalDialog',
-    'AskSlot', 'RosterFilter', 'AskRosterFilter'
+    'addroot', 'showerror', 'showinfo', 'askSlot', 'askRosterFilter',
+    'ModalDialog', 'AskSlot', 'RosterFilter', 'AskRosterFilter'
 ]
 
-def showerror(root, *args, **kargs):
-    """A wrapper around tkinter.messagebox.showerror that disables menu
-    items while the dialog is open.
-
-    Args:
-        root (STLPlanner): The currently running STLPlanner instance.
+def addroot(func):
+    """Creates and returns a new function from the given function by
+    adding a `root` positional argument at the front, which should be
+    the currently running STLPlanner instance. The new function will
+    ensure that the menus of `root` are disabled before calling the
+    given function, and will return the menus to their original state
+    after calling the given function.
 
     """
-    root.setMenuState(False)
-    _showerror(*args, **kargs)
-    root.setMenuState(True)
+    def newFunc(root, *args, **kargs):
+        state = root.menuEnabled
+        if state:
+            root.menuEnabled = False
+        result = func(*args, **kargs)
+        if state:
+            root.menuEnabled = True
+        return result
+    return newFunc
+
+def showerror(root, *args, **kargs):
+    """A wrapper around tkinter's showerror that disables the root menu.
+
+    """
+    return addroot(_showerror)(root, *args, **kargs)
 
 def showinfo(root, *args, **kargs):
-    """A wrapper around tkinter.messagebox.showinfo that disables menu
-    items while the dialog is open.
-
-    Args:
-        root (STLPlanner): The currently running STLPlanner instance.
+    """A wrapper around tkinter's showinfo that disables the root menu.
 
     """
-    root.setMenuState(False)
-    _showinfo(*args, **kargs)
-    root.setMenuState(True)
+    return addroot(_showinfo)(root, *args, **kargs)
 
-def askSlot(root):
-    """Raised a dialog window, prompting the user to select a save slot.
+def askSlot(root, save):
+    """Raises a dialog window, prompting the user to select a save slot.
 
     Args:
         root (STLPlanner): The currently running STLPlanner instance.
+        save (dict): A decrypted dictionary representation of the
+            player's save file, as returned by the `decryptSaveFile`
+            function.
 
     Returns:
-        int or None: Returns the 0-based index of the user's selected
-            slot. Returns `None` if no slot was selected.
+        SaveSlot or None: Returns a SaveSlot instance created from the
+            chosen slot number. Returns `None` if no slot was selected.
 
     """
-    dialog = AskSlot(root)
+    dialog = AskSlot(root, save)
     return dialog.result
 
 def askRosterFilter(root, filt):
@@ -63,13 +82,13 @@ def askRosterFilter(root, filt):
             window. This filter is not modified.
 
     Returns:
-        RosterFilter: Returns a new RosterFilter object representing the
-            user's choices.
+        RosterFilter or None: Returns a new RosterFilter object
+            representing the user's choices. Returns None if no choices
+            were confirmed.
 
     """
-    filtCopy = RosterFilter(filt)
-    AskRosterFilter(root, filtCopy)
-    return filtCopy
+    dialog = AskRosterFilter(root, filt)
+    return dialog.result
 
 class ModalDialog(Dialog):
     """A subclass of Dialog that disables menu options.
@@ -84,10 +103,27 @@ class ModalDialog(Dialog):
 
         """
         self.root = root
-        self.root.setMenuState(False)
+        self.initialMenuState = self.root.menuEnabled
+        if self.initialMenuState:
+            self.root.menuEnabled = False
         if parent is None:
             parent = tk._default_root
         Dialog.__init__(self, parent, title)
+
+    def buttonbox(self):
+        self.box = tk.Frame(self)
+
+        tk.Button(
+            self.box, text="OK", width=10, command=self.ok, default=ACTIVE
+        ).pack(side=RIGHT, padx=5, pady=5)
+        tk.Button(
+            self.box, text="Cancel", width=10, command=self.cancel
+        ).pack(side=RIGHT, padx=5, pady=5)
+
+        self.bind("<Return>", self.ok)
+        self.bind("<Escape>", self.cancel)
+
+        self.box.pack()
 
     def destroy(self):
         """(override) Enables root menu options before destroying
@@ -95,7 +131,8 @@ class ModalDialog(Dialog):
 
         """
         self.initial_focus = None
-        self.root.setMenuState(True)
+        if self.initialMenuState:
+            self.root.menuEnabled = True
         tk.Toplevel.destroy(self)
 
 class AskSlot(ModalDialog):
@@ -105,18 +142,23 @@ class AskSlot(ModalDialog):
     AskSlot window, they are shown to the user as '1', '2', or '3'.
 
     Attributes:
+        save (dict): A decrypted dictionary representation of the
+            player's save file, as returned by the `decryptSaveFile`
+            function.
         displaySlot (tk.StringVar): The currently selected slot, as it
             is displayed in the window.
-        result (int or None): Inherited from ModalDialog, which
+        result (SaveSlot or None): Inherited from ModalDialog, which
             inherited it from Dialog. Defaults to None. Is set by the
-            `validate` method to the 0-based index of the chosen slot.
+            `validate` method to a SaveSlot instance created from the
+            chosen slot number.
 
     """
-    def __init__(self, root, parent=None):
+    def __init__(self, root, save, parent=None):
+        self.save = save
         self.displaySlot = tk.StringVar(None, '1')
         ModalDialog.__init__(self, root, parent, 'Choose a save slot')
 
-    def body(self, parent):
+    def body(self, master):
         """Create the body of the dialog.
 
         """
@@ -127,10 +169,10 @@ class AskSlot(ModalDialog):
             + "the local hard drive. Then choose the save slot data you would "
             + "like to use."
         )
-        tk.Label(parent, wraplength=250, justify=LEFT, text=msg).pack()
+        tk.Label(master, wraplength=250, justify=LEFT, text=msg).pack()
 
         # create the subframe used for selecting the slot
-        slotBar = tk.Frame(parent)
+        slotBar = tk.Frame(master)
         tk.Label(slotBar, text='Extract from save slot:').pack(side=LEFT)
         cbox = ttk.Combobox(
             slotBar,
@@ -149,7 +191,17 @@ class AskSlot(ModalDialog):
         """Set the `result` attribute and return True.
 
         """
-        self.result = int(self.displaySlot.get()) - 1
+        slot = int(self.displaySlot.get()) - 1
+        key = '{} data'.format(slot)
+        if key not in self.save or not self.save[key]:
+            showerror(
+                self.root,
+                'Slot Error',
+                'No save data found in slot {}.'.format(slot + 1)
+            )
+            return False
+        self.result = SaveSlot()
+        self.result.fromFile(self.save, slot)
         return True
 
 class RosterFilter():
@@ -233,56 +285,38 @@ class RosterFilter():
     def __repr__(self):
         return 'RosterFilter({})'.format(self.dictify())
 
-class AskRosterFilter(tk.Toplevel):
+class AskRosterFilter(ModalDialog):
     """A modal dialog used for adjusting RosterFilter objects.
 
     The constructor must be given a RosterFilter object. That object
-    will be used to initialize the window. And when the window is
-    destroyed, that object will have been modified by the user's actions
-    during the window's lifetime.
+    will be used to initialize the window, but will not be modified.
 
     Attributes:
-        root (STLPlanner): The currently running STLPlanner instance.
-        filt (RosterFilter): The RosterFilter object passed to the
-            constructor; it is the object that will be modified with
-            each action taken in this dialog window.
-        originalFilt (RosterFilter): A copy of the RosterFilter object
-            passed to the constructor. Used for reverting changes.
-        mainFrame (tk.Frame): The frame that contains the main controls
-            for adjusting the filter.
+        filt (RosterFilter): The RosterFilter object controlled and
+            modified by the dialog window.
+        result (RosterFilter or None): Inherited from ModalDialog, which
+            inherited it from Dialog. Defaults to None. Is set by the
+            `apply` method to the value of the `filt` attribute.
 
     """
-    def __init__(self, root, rosterFilter, *args, **kargs):
-        """Creates and launches an AskSlot dialog window.
+    def __init__(self, root, rosterFilter, parent=None):
+        self.filt = RosterFilter(rosterFilter)
+        ModalDialog.__init__(self, root, parent, 'Filter characters')
 
-        Args:
-            root (STLPlanner): The currently running STLPlanner
-                instance.
-            rosterFilter (RosterFilter): The RosterFilter instance that
-                stores the user's choices.
+    def body(self, master):
+        """Create the body of the dialog.
 
         """
-        # create the window and keep it in front of others
-        tk.Toplevel.__init__(self, *args, **kargs)
-        self.attributes('-topmost', True)
-        self.title('Filter characters')
-
-        # define and initialize variables
-        self.filt = rosterFilter
-        self.originalFilt = RosterFilter(rosterFilter)
         widgets = {}
 
-        # create the main content frame
-        self.mainFrame = tk.Frame(self)
-
         # create the rarity and role checkboxes
-        widgets['rarityCheckboxes'] = tk.Frame(self.mainFrame)
+        widgets['rarityCheckboxes'] = tk.Frame(master)
         for rarity in RARITIES:
             tk.Checkbutton(
                 widgets['rarityCheckboxes'], text=rarity,
                 variable=self.filt.rarities[rarity]
             ).pack(side=LEFT)
-        widgets['roleCheckboxes'] = tk.Frame(self.mainFrame)
+        widgets['roleCheckboxes'] = tk.Frame(master)
         for role in ROLES:
             tk.Checkbutton(
                 widgets['roleCheckboxes'], text=role,
@@ -291,55 +325,42 @@ class AskRosterFilter(tk.Toplevel):
 
         # create the rank and level linked scales
         widgets['rankMinScale'], widgets['rankMaxScale'] = (
-            self.makeLinkedScales('ranks', 9)
+            self.makeLinkedScales(master, 'ranks', 9)
         )
         widgets['levelMinScale'], widgets['levelMaxScale'] = (
-            self.makeLinkedScales('levels', 99)
+            self.makeLinkedScales(master, 'levels', 99)
         )
 
-        # grid the main content
+        # grid the body content
         labels = [
             'Rarity:', 'Role:',
             'Min rank:', 'Max rank:', 'Min level:', 'Max level:'
         ]
         for row, label, widget in zip(range(6), labels, widgets.values()):
-            tk.Label(self.mainFrame, text=label, font=(None, 13, 'bold')).grid(
+            tk.Label(master, text=label, font=(None, 13, 'bold')).grid(
                 row=row, column=0, sticky=E
             )
             widget.grid(row=row, column=1, sticky=W)
 
-        # pack the window, with buttons
-        self.mainFrame.pack()
-        tk.Button(self, text='OK', command=self.destroy).pack(side=RIGHT)
-        tk.Button(self, text='Cancel', command=self.cancel).pack(side=RIGHT)
-        tk.Button(
-            self, text='Clear All',
-            command=lambda: self.filt.set(RosterFilter())
-        ).pack(side=LEFT)
-
-        # force user to respond to window before continuing
-        root.setMenuState(False)
-        self.focus_set()
-        self.grab_set()
-        self.wait_window()
-        root.setMenuState(True)
-
-    def makeLinkedScales(self, attrName, maxVal):
+    def makeLinkedScales(self, master, attrName, maxVal):
         """Creates and returns a pair of linked Scale widgets. Each
         scale has values from 1 to `maxVal`. If `attrName` is 'ranks',
         the scales are associated with the tkinter variables stored in
-        the `ranks` attribute of the calling instance's `returnFilt`
+        the `ranks` attribute of the calling instance's `filt`
         attribute. Similarly if `attrName` is 'levels'.
 
         The first scale controls the minimum value; the second controls
         the maximum. The scales are configured so that the minimum value
-        cannot exceed the maximum.
+        cannot exceed the maximum. The scale values range from 1 to the
+        given maximum value.
 
-        The calling instance's `mainFrame` attribute is assigned as the
-        parent of both scales.
+        The given `master` argument is assigned as the parent of both
+        scales.
 
         Args:
+            master (obj): The tkinter object to assign as parent.
             attrName (str): One of 'ranks' or 'levels'
+            maxVal (int): The maximum value of the linked scales.
 
         Returns:
             list of tk.Scale: The two linked scales.
@@ -351,7 +372,7 @@ class AskRosterFilter(tk.Toplevel):
         for j in (0, 1):
             k = 1 - j
             scales[j] = tk.Scale(
-                self.mainFrame, variable=varTuple[j], from_=1, to=maxVal,
+                master, variable=varTuple[j], from_=1, to=maxVal,
                 length=400, orient=HORIZONTAL
             )
             scales[j].config(command=lambda val, k=k: varTuple[k].set(
@@ -359,10 +380,25 @@ class AskRosterFilter(tk.Toplevel):
             )
         return scales
 
-    def cancel(self):
-        """Reverts the filter to its original state and destroys the
-        window.
+    def buttonbox(self):
+        """Add a 'Clear All' button to the button box.
 
         """
-        self.filt.set(self.originalFilt)
-        self.destroy()
+        ModalDialog.buttonbox(self)
+        self.box.pack_forget()
+        tk.Button(
+            self.box, text="Clear All", width=10, command=self.clear
+        ).pack(side=LEFT, padx=5, pady=5)
+        self.box.pack(expand=YES, fill=X)
+
+    def clear(self):
+        """Reset the `filt` attribute to default values.
+
+        """
+        self.filt.set(RosterFilter())
+
+    def apply(self):
+        """Set the `result` attribute.
+
+        """
+        self.result = self.filt

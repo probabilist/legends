@@ -5,7 +5,6 @@ variable name is the file name without extension, and the variable
 points to a Python dictionary built from the file's contents.
 
 Attributes:
-    ROOT (str): The full, absolute path of the legends package.
     STAT_ABBREVIATIONS (dict): A dictionary mapping stat names as they
         appear in GSBaseStat to abbreviations used throughout this
         package, typically for attribute names.
@@ -57,19 +56,17 @@ from json import load
 from legends.utils import bidict
 
 __all__ = [
-    'ROOT', 'STAT_ABBREVIATIONS', 'STAT_INITIALS', 'POWER_GRADIENT',
-    'POWER_AT_ORIGIN', 'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS',
-    'PART_STAT_UNLOCKED', 'PART_STAT_VALUES', 'ENABLED', 'UPCOMING',
-    'SUMMON_POOL', 'SUMMON_POOL_IDS'
+    'STAT_ABBREVIATIONS', 'STAT_INITIALS', 'POWER_GRADIENT', 'POWER_AT_ORIGIN',
+    'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS', 'PART_STAT_UNLOCKED',
+    'PART_STAT_VALUES', 'ENABLED', 'UPCOMING', 'SUMMON_POOL', 'SUMMON_POOL_IDS'
 ]
-
-ROOT = abspath(dirname(__file__))
 
 # convert all json files in `/data` to dictionaries and assign to a
 # variable whose name is the file name without extension
-for fileName in listdir(ROOT + '/data'):
+rootPath = abspath(dirname(__file__))
+for fileName in listdir(rootPath + '/data'):
     varName = fileName.split('.')[0]
-    with open(ROOT + '/data/' + fileName, encoding='utf-8') as f:
+    with open(rootPath + '/data/' + fileName, encoding='utf-8') as f:
         globals()[varName] = load(f)
     __all__.append(varName)
 

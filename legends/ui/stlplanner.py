@@ -5,6 +5,7 @@
 import tkinter as tk
 from tkinter import GROOVE, LEFT, X, Y, YES, DISABLED, NORMAL
 from legends.constants import ENABLED
+from legends.functions import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import showerror, askSlot
 from legends.ui.rostertab import RosterTab
@@ -58,29 +59,57 @@ class STLPlanner(tk.Tk):
         self.timePerDayLabel = tk.StringVar(self, '')
         self.timePerDayToggle = tk.BooleanVar(self, True)
         self.timePerDayToggle.trace('w', self.setTimePerDayLabel)
+        self._menuEnabled = True
 
         # build menu bar
         menuBar = tk.Menu(self)
-        self.config(menu=menuBar)
+        fileMenu = tk.Menu(menuBar)
+        newSession = tk.Menu(fileMenu)
         viewMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label='File', menu=fileMenu)
+        menuBar.add_cascade(label='View', menu=viewMenu)
+        fileMenu.add_cascade(label='New session', menu=newSession)
+        newSession.add_command(
+            label='From save file...', command=self.newFromFile
+        )
+        newSession.add_command(
+            label='Maxed characters', command=self.newMaxChars
+        )
         viewMenu.add_checkbutton(
             label='Show play time per day', variable=self.timePerDayToggle
         )
+        self.config(menu=menuBar)
+        self.disableOnModal.append((newSession, 0))
+        self.disableOnModal.append((newSession, 1))
         self.disableOnModal.append((viewMenu, 0))
-        # viewMenu.add_command(label='test')
-        menuBar.add_cascade(label='View', menu=viewMenu)
-        # viewMenu.entryconfig(1, state=DISABLED) # 0-based index
 
         # show start screen
-        startFrame = StartFrame(self)
-        startFrame.pack()
-        self.wait_variable(startFrame.built)
-        self.saveslot = startFrame.saveslot
-        startFrame.destroy()
+        self.mainFrame = tk.Frame(self)
+        self.mainFrame.pack()
+        # startFrame = StartFrame(self.mainFrame)
+        # startFrame.pack()
+        # self.wait_variable(startFrame.built)
+        # self.saveslot = startFrame.saveslot
+        # startFrame.destroy()
 
         # build info bar and roster tab
-        self.infoBar().pack()
-        RosterTab(self).pack(expand=YES, fill=Y)
+        # self.infoBar().pack()
+        # RosterTab(self).pack(expand=YES, fill=Y)
+
+    @property
+    def menuEnabled(self):
+        """bool: True if the menu options in `disableOnModal` are
+        enabled. Upon setting this property, those menu options' states
+        are set accordingly.
+        """
+        return self._menuEnabled
+
+    @menuEnabled.setter
+    def menuEnabled(self, value):
+        self._menuEnabled = value
+        state = NORMAL if value else DISABLED
+        for menu, index in self.disableOnModal:
+            menu.entryconfig(index, state=state)
 
     # pylint: disable-next=unused-argument
     def setTimePerDayLabel(self, *args):
@@ -96,6 +125,14 @@ class STLPlanner(tk.Tk):
         else:
             self.timePerDayLabel.set('play time per day: 0 hrs 0 min')
 
+    def clear(self):
+        """Destroys, rebuild, and packs the `mainFrame` frame.
+
+        """
+        self.mainFrame.destroy()
+        self.mainFrame = tk.Frame(self)
+        self.mainFrame.pack()
+
     def infoBar(self):
         """Builds and returns an info bar frame containing basic
         timestamp information about the embedded save slot.
@@ -105,7 +142,7 @@ class STLPlanner(tk.Tk):
 
         """
         # build bar and initialize variables
-        bar = tk.Frame(self)
+        bar = tk.Frame(self.mainFrame)
         timestamps = self.saveslot.timestamps
         start = (
             'start date: '
@@ -133,18 +170,30 @@ class STLPlanner(tk.Tk):
             label.pack(side=LEFT)
         return bar
 
-    def setMenuState(self, enabled):
-        """Sets the state of the menu options in the `disableOnModal`
-        attribute to either `NORMAL` or `DISABLED`.
-
-        Args:
-            enabled (bool): If True, sets state to `NORMAL`, otherwise
-                sets state to `DISABLED`.
+    def newFromFile(self):
+        """Prompts the user for a save slot, then builds and stores a
+        SaveSlot object.
 
         """
-        state = NORMAL if enabled else DISABLED
-        for menu, index in self.disableOnModal:
-            menu.entryconfig(index, state=state)
+        try:
+            save = decryptSaveFile()
+        except FileNotFoundError:
+            showerror(self, 'File Not Found', 'Save file not found.')
+            return
+        saveslot = askSlot(self, save)
+        if saveslot is None:
+            return
+        self.saveslot = saveslot
+        self.clear()
+        self.infoBar().pack()
+        RosterTab(self).pack(expand=YES, fill=Y)
+
+    def newMaxChars(self):
+        self.saveslot = SaveSlot()
+        self.saveslot.roster.fillChars(ENABLED)
+        self.clear()
+        self.infoBar().pack()
+        RosterTab(self).pack(expand=YES, fill=Y)
 
 class StartFrame(tk.Frame):
     """The starting frame of the STL Planner app.
@@ -189,18 +238,14 @@ class StartFrame(tk.Frame):
         SaveSlot object.
 
         """
-        slot = askSlot(self.root)
-        if slot is None:
-            return
         try:
-            self.saveslot = SaveSlot(slot)
-        except ValueError:
-            showerror(
-                self.root,
-                'Slot Error',
-                'No save data found in slot {}.'.format(slot + 1)
-            )
+            save = decryptSaveFile()
+        except FileNotFoundError:
+            showerror(self.root, 'File Not Found', 'Save file not found.')
             return
+        saveslot = askSlot(self.root, save)
+        if saveslot is not None:
+            self.saveslot = saveslot
 
     def makeMax(self):
         saveslot = SaveSlot()

@@ -7,7 +7,8 @@ constants
 dist
 .python-version
 _notes.md
-pythonref.pdf
+daily.py
+pythonref*
 startrek.json
 tests.py
 tkinter
