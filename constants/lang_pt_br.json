@@ -1487,6 +1487,14 @@
             "value": "Contagem de fichas"
         },
         {
+            "key": "Common_Checkpoint",
+            "value": "Ponto de controle"
+        },
+        {
+            "key": "Common_Checkpoint_Plural",
+            "value": "Pontos de controle"
+        },
+        {
             "key": "Common_ChestCurrency",
             "value": "Replicadores"
         },
@@ -1505,6 +1513,10 @@
         {
             "key": "Common_Computer",
             "value": "Computador"
+        },
+        {
+            "key": "Common_CoverSlot",
+            "value": "ESPA\u00c7O DE COBERTURA"
         },
         {
             "key": "Common_Create",
@@ -1555,12 +1567,28 @@
             "value": "Dukat"
         },
         {
+            "key": "Common_DungeonCurrency",
+            "value": "Cr\u00e9ditos de sobreviv\u00eancia"
+        },
+        {
+            "key": "Common_DungeonStamina",
+            "value": "Energia de sobreviv\u00eancia"
+        },
+        {
+            "key": "Common_Duration",
+            "value": "Dura\u00e7\u00e3o"
+        },
+        {
             "key": "Common_Edit",
             "value": "Editar"
         },
         {
             "key": "Common_Elnor",
             "value": "Elnor"
+        },
+        {
+            "key": "Common_EmptySlot",
+            "value": "ESPA\u00c7O VAZIO"
         },
         {
             "key": "Common_EventPoint",
@@ -2339,8 +2367,28 @@
             "value": "Rar\u00edssimo"
         },
         {
+            "key": "Common_Reinforcement",
+            "value": "Refor\u00e7o"
+        },
+        {
+            "key": "Common_Reinforcements",
+            "value": "Refor\u00e7os"
+        },
+        {
+            "key": "Common_ReinforceSlot",
+            "value": "ESPA\u00c7O DE REFOR\u00c7O"
+        },
+        {
             "key": "Common_RequiredLevel",
             "value": "N\u00edvel exigido"
+        },
+        {
+            "key": "Common_Reserves",
+            "value": "Reservas"
+        },
+        {
+            "key": "Common_ReserveSlot",
+            "value": "ESPA\u00c7O RESERVA"
         },
         {
             "key": "Common_RomulanCommander",
@@ -16987,6 +17035,14 @@
             "value": "Use para recuperar recursos durante as miss\u00f5es."
         },
         {
+            "key": "Data_Item_Description_DungeonCurrency",
+            "value": "Serve para comprar aprimoramentos de sobreviv\u00eancia."
+        },
+        {
+            "key": "Data_Item_Description_DungeonStamina",
+            "value": "Serve para participar de n\u00edveis de sobreviv\u00eancia."
+        },
+        {
             "key": "Data_Item_Description_EventPoint",
             "value": "Os pontos de evento s\u00e3o coletados durante os eventos"
         },
@@ -26799,6 +26855,210 @@
             "value": "Este n\u00famero representa o poder combinado de todos os personagens da equipe de explora\u00e7\u00e3o! Quando maior o poder da equipe de explora\u00e7\u00e3o, maior a chance de ela cumprir sua miss\u00e3o."
         },
         {
+            "key": "Dungeon_Main_Title_Long",
+            "value": "Programa de sobreviv\u00eancia Artemis"
+        },
+        {
+            "key": "Dungeon_Main_Title_Short",
+            "value": "Sobreviv\u00eancia"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Body",
+            "value": "Selecione ao menos {0} tripulante para continuar."
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Header",
+            "value": "Sobreviv\u00eancia bloqueada"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackDown_Desc",
+            "value": "O <color=#FFCE00>ataque</color> do inimigo reduzir\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackUp_Desc",
+            "value": "O <color=#FFCE00>ataque</color> da equipe aumentar\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_Cloak_Desc",
+            "value": "Sua equipe ganha <color=#FFCE00>encobrir</color> por 3 turnos nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_CritChanceUp_Desc",
+            "value": "A <color=#FFCE00>chance de cr\u00edt.</color> da equipe aumentar\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseDown_Desc",
+            "value": "A <color=#FFCE00>defesa</color> do inimigo reduzir\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseUp_Desc",
+            "value": "A <color=#FFCE00>defesa</color> da equipe aumentar\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_Heal_Desc",
+            "value": "Sua equipe <color=#FFCE00>cura</color> {0}% do PV na pr\u00f3xima batalha de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleDown_Desc",
+            "value": "O <color=#FFCE00>moral</color> do inimigo reduzir\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleUp_Desc",
+            "value": "O <color=#FFCE00>moral</color> da equipe aumentar\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_RedAlert_Desc",
+            "value": "Sua equipe ganha <color=#FFCE00>alerta vermelho</color> por 3 turnos nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_Regenerate_Desc",
+            "value": "Sua equipe <color=#FFCE00>regenera</color> {0}% do PV nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_Scan_Desc",
+            "value": "A equipe inimiga \u00e9 <color=#FFCE00>analisada</color> por 3 turnos nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_Shield_Desc",
+            "value": "Sua equipe ganha <color=#FFCE00>escudos</color> por 3 turnos nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechDown_Desc",
+            "value": "A <color=#FFCE00>tecnologia</color> do inimigo reduzir\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechUp_Desc",
+            "value": "A <color=#FFCE00>tecnologia</color> da equipe aumentar\u00e1 nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Tab_Main_Title",
+            "value": "Principal"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Generic_Title",
+            "value": "B\u00f4nus De Ataque"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level1_Desc",
+            "value": "Ganhe <b>+5% de ataque</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level2_Desc",
+            "value": "Ganhe <b>+10% de ataque</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level3_Desc",
+            "value": "Ganhe <b>+15% de ataque</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level4_Desc",
+            "value": "Ganhe <b>+20% de ataque</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Generic_Title",
+            "value": "B\u00f4nus De Defesa"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level1_Desc",
+            "value": "Ganhe <b>+5% de defesa</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level2_Desc",
+            "value": "Ganhe <b>+10% de defesa</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level3_Desc",
+            "value": "Ganhe <b>+15% de defesa</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level4_Desc",
+            "value": "Ganhe <b>+20% de defesa</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level1_Desc",
+            "value": "Ganhe <b>+5% de PV</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level2_Desc",
+            "value": "Ganhe <b>+10% de PV</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level3_Desc",
+            "value": "Ganhe <b>+15% de PV</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level4_Desc",
+            "value": "Ganhe <b>+20% de PV</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_HP_Generic_Title",
+            "value": "B\u00f4nus De Vida"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
+            "value": "Desbloqueie {0} <i>espa\u00e7o reserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Title",
+            "value": "Espa\u00e7o Reserva"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
+            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
+            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
+            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
+            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Generic_Title",
+            "value": "Escudos"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level1_Desc",
+            "value": "Comece com <b>50 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level2_Desc",
+            "value": "Comece com <b>100 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level3_Desc",
+            "value": "Comece com <b>150 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level4_Desc",
+            "value": "Comece com <b>200 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Generic_Title",
+            "value": "B\u00f4nus De Tecnologia"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level1_Desc",
+            "value": "Ganhe <b>+5% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level2_Desc",
+            "value": "Ganhe <b>+10% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level3_Desc",
+            "value": "Ganhe <b>+15% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level4_Desc",
+            "value": "Ganhe <b>+20% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+        },
+        {
             "key": "e1_ending_00",
             "value": "Capit\u00e3o, estamos prontos para saltar ao seu comando."
         },
@@ -30023,6 +30283,82 @@
             "value": "Tempo esgotado"
         },
         {
+            "key": "Tooltip_Dungeon_Checkpoint_Desc",
+            "value": "Os pontos de controle s\u00e3o desbloqueados permanentemente a cada {0} n\u00edveis para que seja poss\u00edvel iniciar de n\u00edveis mais altos em sess\u00f5es futuras de sobreviv\u00eancia."
+        },
+        {
+            "key": "Tooltip_Dungeon_Checkpoint_Title",
+            "value": "Pontos de controle"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Desc",
+            "value": "Selecione o caminho a tomar. Cada caminho leva a inimigos diferentes."
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Title",
+            "value": "Op\u00e7\u00e3o de caminho"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Desc",
+            "value": "Cada n\u00edvel de sobreviv\u00eancia consiste numa s\u00e9rie de batalhas, com recompensas e dificuldades crescentes conforme o seu avan\u00e7o."
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Title",
+            "value": "N\u00edvel de sobreviv\u00eancia"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Desc",
+            "value": "Os itens especiais concedem b\u00f4nus tempor\u00e1rios para a sua equipe ou penalidades para os inimigos."
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Title",
+            "value": "Itens especiais"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Desc",
+            "value": "Os aprimoramentos de refor\u00e7o permitem expandir a sua equipe at\u00e9 um total de 8 tripulantes: 4 ativos em combate e 4 em espa\u00e7os reserva \u00e0 espera para substituir eventuais baixas.\n \u00c9 poss\u00edvel preencher o primeiro espa\u00e7o reserva durante a sele\u00e7\u00e3o de equipe ap\u00f3s a compra do aprimoramento de refor\u00e7o. Conclua n\u00edveis de sobreviv\u00eancia para preencher espa\u00e7os reservas adicionais."
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Title",
+            "value": "Refor\u00e7os"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Desc",
+            "value": "Adquira o aprimoramento de refor\u00e7o para desbloquear este espa\u00e7o reserva."
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Title",
+            "value": "Espa\u00e7o reserva bloqueado"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotUnavailable_Desc",
+            "value": "Para preencher este espa\u00e7o reserva, conclua n\u00edveis de sobreviv\u00eancia."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Desc",
+            "value": "Componha uma equipe com tripulantes designados aleatoriamente da sua lista de tripulantes. O primeiro espa\u00e7o reserva fica dispon\u00edvel logo ap\u00f3s a aquisi\u00e7\u00e3o de um aprimoramento de refor\u00e7o."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Title",
+            "value": "Sele\u00e7\u00e3o de equipe"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Desc",
+            "value": "Os aprimoramentos concedem b\u00f4nus permanentes ao lutar em n\u00edveis de sobreviv\u00eancia."
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Title",
+            "value": "Aprimoramentos"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Desc",
+            "value": "O aumento das configura\u00e7\u00f5es de qualidade acima do padr\u00e3o recomendado pode levar a experi\u00eancias de jogo indesejadas ou negativas."
+        },
+        {
+            "key": "Tooltip_QualityWarning_Title",
+            "value": "Aviso"
+        },
+        {
             "key": "triggered_bundle_00_desc",
             "value": "Agora que voc\u00ea resgatou Burnham do Nexus, \u00e9 hora de aprimor\u00e1-la com este conjunto por tempo limitado."
         },
@@ -30185,6 +30521,38 @@
         {
             "key": "tutorial_directiveexplanation02_00",
             "value": "As <color=#fff15c>diretivas da Frota Estelar</color> fornecem orienta\u00e7\u00e3o para fortalecer sua tripula\u00e7\u00e3o e prepar\u00e1-lo para as pr\u00f3ximas miss\u00f5es."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line01_Worf",
+            "value": "Capit\u00e3o, boas-vindas ao <color=#fff15c>programa de sobreviv\u00eancia Artemis</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line02_Worf",
+            "value": "Um verdadeiro guerreiro deve aprimorar constantemente suas habilidades para n\u00e3o sofrer de inatividade. Para isso, projetei este <color=#fff15c>programa</color> de holodeck para desafiar a tripula\u00e7\u00e3o contra as v\u00e1rias amea\u00e7as dentro do Nexus."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line03_Narrator",
+            "value": "Os <color=#fff15c>n\u00edveis de sobreviv\u00eancia</color> consistem numa s\u00e9rie de batalhas, com recompensas e dificuldades crescentes conforme o seu avan\u00e7o."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line04_Narrator",
+            "value": "Componha a sua equipe usando tripulantes atribu\u00eddos aleatoriamente da sua lista de tripulantes. Para aumentar o tamanho da equipe, conclua <color=#fff15c>n\u00edveis de sobreviv\u00eancia</color> e compre <color=#fff15c>aprimoramentos de refor\u00e7o</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line05_Narrator",
+            "value": "Os <color=#fff15c>aprimoramentos de refor\u00e7o</color> permitem expandir a sua equipe at\u00e9 um total de 8 tripulantes: 4 ativos em combate e 4 em <color=#fff15c>espa\u00e7os reservas</color> \u00e0 espera para substituir eventuais baixas."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line06_Narrator",
+            "value": "\u00c9 poss\u00edvel preencher o primeiro <color=#fff15c>espa\u00e7o reserva</color> imediatamente durante a sele\u00e7\u00e3o de equipe ap\u00f3s a compra. Para preencher <color=#fff15c>espa\u00e7os reservas</color> adicionais, conclua <color=#fff15c>n\u00edveis de sobreviv\u00eancia</color> adicionais."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line07_Narrator",
+            "value": "\u00c9 poss\u00edvel comprar <color=#fff15c>aprimoramentos</color> que concedem b\u00f4nus permanentes em <color=#fff15c>n\u00edveis de sobreviv\u00eancia</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line08_Narrator",
+            "value": "Os <color=#fff15c>pontos de controle</color> s\u00e3o desbloqueados permanentemente a cada <color=#fff15c>{0} n\u00edveis</color> para que seja poss\u00edvel iniciar de n\u00edveis mais altos em sess\u00f5es futuras de sobreviv\u00eancia."
         },
         {
             "key": "tutorial_firstlossreaction_00",
@@ -31101,6 +31469,166 @@
         {
             "key": "UI_DownloadConfirmation_Popup_Header",
             "value": "ALERTA: DOWNLOAD NECESS\u00c1RIO"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Body",
+            "value": "<b><color=#F3E54D>ABANDONAR</color></b> este n\u00edvel de sobreviv\u00eancia? Voc\u00ea <b>perder\u00e1</b> todo o progresso e poder\u00e1 reiniciar de qualquer ponto de controle desbloqueado anteriormente."
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Title",
+            "value": "ABANDONAR N\u00cdVEL?"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels",
+            "value": "{0} n\u00edvel"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels_Plural",
+            "value": "{0} n\u00edveis"
+        },
+        {
+            "key": "UI_Dungeon_Back_Popup_Body",
+            "value": "<b><color=#F3E54D>VOLTAR PARA A PONTE</color></b> e retomar este n\u00edvel de sobreviv\u00eancia mais tarde? Todo o seu progresso ficar\u00e1 <b>salvo</b>."
+        },
+        {
+            "key": "UI_Dungeon_BestScore",
+            "value": "RECORDE"
+        },
+        {
+            "key": "UI_Dungeon_CheckpointUnlocked",
+            "value": "Ponto de controle desbloqueado!"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam",
+            "value": "EQUIPE ATUAL"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam_Null",
+            "value": "Inicie um n\u00edvel de sobreviv\u00eancia para selecionar uma equipe"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel",
+            "value": "N\u00cdVEL MAIS ALTO"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel_Null",
+            "value": "Participe de ao menos 1 n\u00edvel de sobreviv\u00eancia."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectReinforcement",
+            "value": "Selecione um tripulante para refor\u00e7ar a sua equipe."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectTeam",
+            "value": "Selecione um tripulante de cada fun\u00e7\u00e3o."
+        },
+        {
+            "key": "Ui_Dungeon_LevelComplete",
+            "value": "N\u00edvel {0} conclu\u00eddo"
+        },
+        {
+            "key": "Ui_Dungeon_LevelFailed",
+            "value": "Falha no n\u00edvel {0}"
+        },
+        {
+            "key": "UI_Dungeon_LevelSuccess",
+            "value": "Sucesso no n\u00edvel {0}"
+        },
+        {
+            "key": "UI_Dungeon_NextCheckpoint",
+            "value": "Ponto de controle em:"
+        },
+        {
+            "key": "UI_Dungeon_NextReinforcement",
+            "value": "Refor\u00e7o em:"
+        },
+        {
+            "key": "UI_Dungeon_PersonalBest",
+            "value": "MELHOR MARCA PESSOAL"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Header",
+            "value": "OP\u00c7\u00c3O DE CAMINHO"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Lower",
+            "value": "CAMINHO DE BAIXO"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Main",
+            "value": "Selecione o caminho a tomar."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_MinChoice",
+            "value": "Para continuar, selecione um <b>caminho</b>."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Upper",
+            "value": "CAMINHO DE CIMA"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Duration",
+            "value": "para {0} batalhas"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Header",
+            "value": "ITEM ESPECIAL"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Main",
+            "value": "Selecione um item especial"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
+            "value": "Para continuar, selecione um <b>item especial</b>."
+        },
+        {
+            "key": "UI_Dungeon_Powerup_Duration",
+            "value": "{0} batalhas"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_MinSelect",
+            "value": "Selecione um tripulante para continuar."
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
+            "value": "Nenhum espa\u00e7o reserva dispon\u00edvel. Selecione um item especial b\u00f4nus."
+        },
+        {
+            "key": "UI_Dungeon_SelectCheckpoint",
+            "value": "Selecione o n\u00edvel de sobreviv\u00eancia para iniciar."
+        },
+        {
+            "key": "UI_Dungeon_ViewPowerUps",
+            "value": "VER ITENS ESPECIAIS"
+        },
+        {
+            "key": "UI_Dungeon_ViewReinforcements",
+            "value": "VER REFOR\u00c7OS"
+        },
+        {
+            "key": "UI_Dungeon_ViewReserves",
+            "value": "VER RESERVAS"
+        },
+        {
+            "key": "UI_Dungeon_ViewRoster",
+            "value": "VER LISTA DE TRIPULANTES"
+        },
+        {
+            "key": "UI_Dungeon_ViewTeam",
+            "value": "VER EQUIPE"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Choice",
+            "value": "OP\u00c7\u00c3O"
+        },
+        {
+            "key": "UI_DungeonNode_Label_PowerUp",
+            "value": "ITEM ESPECIAL"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Split",
+            "value": "DIVIDIR"
         },
         {
             "key": "UI_Emote_Description",
@@ -32213,6 +32741,10 @@
         {
             "key": "UI_Menu_TooltipLocked_Shuttlecraft_Title",
             "value": "NAVE AUXILIAR (BLOQUEADA)"
+        },
+        {
+            "key": "UI_Menu_TooltipLocked_Survival_Title",
+            "value": "SOBREVIV\u00caNCIA (BLOQUEADA)"
         },
         {
             "key": "UI_Mission_Abandon_Popup_Abandon_Button",

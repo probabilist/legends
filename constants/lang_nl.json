@@ -1487,6 +1487,14 @@
             "value": "Aantal tokens"
         },
         {
+            "key": "Common_Checkpoint",
+            "value": "Checkpoint"
+        },
+        {
+            "key": "Common_Checkpoint_Plural",
+            "value": "Checkpoints"
+        },
+        {
             "key": "Common_ChestCurrency",
             "value": "Replicatoren"
         },
@@ -1505,6 +1513,10 @@
         {
             "key": "Common_Computer",
             "value": "Computer"
+        },
+        {
+            "key": "Common_CoverSlot",
+            "value": "DEKKINGSPLEK"
         },
         {
             "key": "Common_Create",
@@ -1555,12 +1567,28 @@
             "value": "Dukat"
         },
         {
+            "key": "Common_DungeonCurrency",
+            "value": "Overlevingskrediet"
+        },
+        {
+            "key": "Common_DungeonStamina",
+            "value": "Overlevingsenergie"
+        },
+        {
+            "key": "Common_Duration",
+            "value": "Duur"
+        },
+        {
             "key": "Common_Edit",
             "value": "Bewerken"
         },
         {
             "key": "Common_Elnor",
             "value": "Elnor"
+        },
+        {
+            "key": "Common_EmptySlot",
+            "value": "LEGE PLEK"
         },
         {
             "key": "Common_EventPoint",
@@ -2339,8 +2367,28 @@
             "value": "Zeer zeldzaam"
         },
         {
+            "key": "Common_Reinforcement",
+            "value": "Versterking"
+        },
+        {
+            "key": "Common_Reinforcements",
+            "value": "Versterkingen"
+        },
+        {
+            "key": "Common_ReinforceSlot",
+            "value": "VERSTERKINGSPLEK"
+        },
+        {
             "key": "Common_RequiredLevel",
             "value": "Vereist level"
+        },
+        {
+            "key": "Common_Reserves",
+            "value": "Reserves"
+        },
+        {
+            "key": "Common_ReserveSlot",
+            "value": "RESERVEPLEK"
         },
         {
             "key": "Common_RomulanCommander",
@@ -16987,6 +17035,14 @@
             "value": "Wordt gebruikt om middelen terug te winnen tijdens missies."
         },
         {
+            "key": "Data_Item_Description_DungeonCurrency",
+            "value": "Wordt gebruikt om overlevingsupgrades te kopen."
+        },
+        {
+            "key": "Data_Item_Description_DungeonStamina",
+            "value": "Wordt gebruikt om deel te nemen aan overlevingslevels."
+        },
+        {
             "key": "Data_Item_Description_EventPoint",
             "value": "Evenementpunten worden verzameld gedurende evenementen"
         },
@@ -26799,6 +26855,210 @@
             "value": "Dit getal is de gecombineerde kracht van alle leden van het uitteam! Hoe meer kracht je team heeft, hoe groter de kans dat ze hun missie zullen volbrengen."
         },
         {
+            "key": "Dungeon_Main_Title_Long",
+            "value": "Artemis-overlevingsprogramma"
+        },
+        {
+            "key": "Dungeon_Main_Title_Short",
+            "value": "Overleving"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Body",
+            "value": "Selecteer minimaal {0} bemanning om verder te gaan."
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Header",
+            "value": "Overleving vergrendeld"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackDown_Desc",
+            "value": "De <color=#FFCE00>aanval</color> van de vijand wordt verlaagd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackUp_Desc",
+            "value": "De <color=#FFCE00>aanval</color> van je team wordt verhoogd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_Cloak_Desc",
+            "value": "Je team krijgt <color=#FFCE00>verhullen</color> gedurende 3 beurten voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_CritChanceUp_Desc",
+            "value": "De <color=#FFCE00>kritieke kans</color> van je team wordt verhoogd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseDown_Desc",
+            "value": "De <color=#FFCE00>verdediging</color> van de vijand wordt verlaagd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseUp_Desc",
+            "value": "De <color=#FFCE00>verdediging</color> van je team wordt verhoogd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_Heal_Desc",
+            "value": "Je team <color=#FFCE00>herstelt</color> {0}% GP voor het volgende overlevingsgevecht."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleDown_Desc",
+            "value": "Het <color=#FFCE00>moreel</color> van de vijand wordt verlaagd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleUp_Desc",
+            "value": "Het <color=#FFCE00>moreel</color> van je team wordt verhoogd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_RedAlert_Desc",
+            "value": "Je team krijgt <color=#FFCE00>rood alarm</color> gedurende 3 beurten voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_Regenerate_Desc",
+            "value": "Je team <color=#FFCE00>regenereert</color> {0}% GP voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_Scan_Desc",
+            "value": "Het team van de vijand wordt gedurende 3 beurten <color=#FFCE00>gescand</color> voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_Shield_Desc",
+            "value": "Je team krijgt <color=#FFCE00>schilden</color> gedurende 3 beurten voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechDown_Desc",
+            "value": "De <color=#FFCE00>technologie</color> van de vijand wordt verlaagd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechUp_Desc",
+            "value": "De <color=#FFCE00>technologie</color> van je team wordt verhoogd voor komende overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Tab_Main_Title",
+            "value": "Hoofd"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Generic_Title",
+            "value": "Aanvalsbonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level1_Desc",
+            "value": "Krijg <b>+5% aanval</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level2_Desc",
+            "value": "Krijg <b>+10% aanval</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level3_Desc",
+            "value": "Krijg <b>+15% aanval</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level4_Desc",
+            "value": "Krijg <b>+20% aanval</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Generic_Title",
+            "value": "Verdedigingsbonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level1_Desc",
+            "value": "Krijg <b>+5% verdediging</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level2_Desc",
+            "value": "Krijg <b>+10% verdediging</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level3_Desc",
+            "value": "Krijg <b>+15% verdediging</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level4_Desc",
+            "value": "Krijg <b>+20% verdediging</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level1_Desc",
+            "value": "Krijg <b>+5% GP</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level2_Desc",
+            "value": "Krijg <b>+10% GP</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level3_Desc",
+            "value": "Krijg <b>+15% GP</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level4_Desc",
+            "value": "Krijg <b>+20% GP</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_HP_Generic_Title",
+            "value": "Gezondheidsbonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
+            "value": "{0} <i>reserveplek</i> ontgrendelen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Title",
+            "value": "Reserveplek"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
+            "value": "1 <i>reserveplek</i> ontgrendelen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
+            "value": "1 <i>reserveplek</i> ontgrendelen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
+            "value": "1 <i>reserveplek</i> ontgrendelen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
+            "value": "1 <i>reserveplek</i> ontgrendelen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Generic_Title",
+            "value": "Schilden"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level1_Desc",
+            "value": "Start met <b>50 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level2_Desc",
+            "value": "Start met <b>100 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level3_Desc",
+            "value": "Start met <b>150 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level4_Desc",
+            "value": "Start met <b>200 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Generic_Title",
+            "value": "Technologiebonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level1_Desc",
+            "value": "Krijg <b>+5% technologie</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level2_Desc",
+            "value": "Krijg <b>+10% technologie</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level3_Desc",
+            "value": "Krijg <b>+15% technologie</b> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level4_Desc",
+            "value": "Krijg <b>+20% technologie</b> tijdens overlevingsgevechten."
+        },
+        {
             "key": "e1_ending_00",
             "value": "Kapitein, we zijn klaar om naar warp te gaan op uw bevel."
         },
@@ -30023,6 +30283,82 @@
             "value": "Tijd om"
         },
         {
+            "key": "Tooltip_Dungeon_Checkpoint_Desc",
+            "value": "Checkpoints worden elke {0} levels permanent ontgrendeld, zodat je vanaf hogere levels kunt beginnen voor toekomstige overlevingspogingen."
+        },
+        {
+            "key": "Tooltip_Dungeon_Checkpoint_Title",
+            "value": "Checkpoints"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Desc",
+            "value": "Kies welk pad je wilt volgen. Verschillende paden kunnen verschillende vijanden hebben."
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Title",
+            "value": "Keuze pad"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Desc",
+            "value": "Elk overlevingslevel bestaat uit een reeks gevechten, waarbij beloningen en de moeilijkheidsgraad verhoogd worden naarmate je vordert."
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Title",
+            "value": "Overlevingslevel"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Desc",
+            "value": "Krachtverhogingen bieden tijdelijke bonussen voor je team of straffen voor vijanden."
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Title",
+            "value": "Krachtverhogingen"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Desc",
+            "value": "Versterkingsupgrades maken het mogelijk om de omvang van je team te vergroten, tot maximaal 8 bemanningsleden: 4 actief tijdens gevechten en 4 in reserveplekken in afwachting om eventuele verliezen te vervangen.\n De eerste reserveplek kan direct gevuld worden tijdens de teamselectie zodra de versterkingsupgrade gekocht is. Extra reserveplekken kunnen gevuld worden door overlevingslevels te voltooien."
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Title",
+            "value": "Versterkingen"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Desc",
+            "value": "Ontgrendel deze reserveplek door de versterkingsupgrade te kopen."
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Title",
+            "value": "Reserveplek ontgrendeld"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotUnavailable_Desc",
+            "value": "Deze reserveplek kan gevuld worden door overlevingslevels te voltooien."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Desc",
+            "value": "Stel je team samen met een willekeurig toegewezen bemanning uit je lijst. De eerste reserveplek kan gebruikt worden zodra een versterkingsupgrade gekocht is."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Title",
+            "value": "Teamselectie"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Desc",
+            "value": "Upgrades bieden permanente bonussen tijdens het strijden in overlevingslevels."
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Title",
+            "value": "Upgrades"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Desc",
+            "value": "De kwaliteitsinstellingen verder verhogen dan de aanbevolen standaardinstelling kan leiden tot ongewilde of negatieve gameplay-ervaringen."
+        },
+        {
+            "key": "Tooltip_QualityWarning_Title",
+            "value": "Waarschuwing"
+        },
+        {
             "key": "triggered_bundle_00_desc",
             "value": "Nu je Burnham hebt gered van de Nexus, is het tijd voor een upgrade met deze tijdelijke bundel."
         },
@@ -30185,6 +30521,38 @@
         {
             "key": "tutorial_directiveexplanation02_00",
             "value": "<color=#fff15c>Starfleet-instructies</color> helpen je om je bemanning te versterken en je voor te bereiden op komende missies."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line01_Worf",
+            "value": "Ah kapitein, welkom bij het <color=#fff15c>Artemis-overlevingsprogramma</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line02_Worf",
+            "value": "Echte strijders moeten hun vaardigheden constant verbeteren, zodat ze niet verzwakken door niets te doen. Om deze reden heb ik dit <color=#fff15c>holodeckprogramma</color> ontwikkeld om de bemanning uit te dagen tegen de vele bedreigingen in de Nexus."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line03_Narrator",
+            "value": "<color=#fff15c>Overlevingslevels</color> bestaan elk uit een reeks gevechten, waarbij beloningen en de moeilijkheidsgraad verhoogd worden naarmate je vordert."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line04_Narrator",
+            "value": "Stel je team samen met een willekeurig toegewezen bemanning uit je lijst. Vergroot de omvang van je team door <color=#fff15c>overlevingslevels</color> te voltooien en <color=#fff15c>versterkingsupgrades</color> te kopen."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line05_Narrator",
+            "value": "<color=#fff15c>Versterkingsupgrades</color> maken het mogelijk om de omvang van je team te vergroten, tot maximaal 8 bemanningsleden: 4 actief tijdens gevechten en 4 in <color=#fff15c>reserveplekken</color> in afwachting om eventuele verliezen te vervangen."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line06_Narrator",
+            "value": "De eerste <color=#fff15c>reserveplek</color> kan direct gevuld worden na aanschaf tijdens de teamselectie. Extra <color=#fff15c>reserveplekken</color> kunnen gevuld worden na het voltooien van extra <color=#fff15c>overlevingslevels</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line07_Narrator",
+            "value": "<color=#fff15c>Upgrades</color> kunnen gekocht worden en bieden permanente bonussen tijdens <color=#fff15c>overlevingslevels</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line08_Narrator",
+            "value": "<color=#fff15c>Checkpoints</color> worden elke <color=#fff15c>{0} levels</color> permanent ontgrendeld, zodat je vanaf hogere levels kunt beginnen voor toekomstige overlevingspogingen."
         },
         {
             "key": "tutorial_firstlossreaction_00",
@@ -31101,6 +31469,166 @@
         {
             "key": "UI_DownloadConfirmation_Popup_Header",
             "value": "LET OP: DOWNLOAD VEREIST"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Body",
+            "value": "Weet je het zeker dat je dit overlevingslevel wilt <b><color=#F3E54D>VERLATEN</color></b>? Alle voortgang <b>gaat verloren</b>. Je kunt herstarten vanaf een eerder ontgrendeld checkpoint."
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Title",
+            "value": "LEVEL VERLATEN?"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels",
+            "value": "{0} Level"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels_Plural",
+            "value": "{0} Levels"
+        },
+        {
+            "key": "UI_Dungeon_Back_Popup_Body",
+            "value": "Wil je <b><color=#F3E54D>TERUGKEREN NAAR DE BRUG</color></b> en dit overlevingslevel later hervatten? Alle voortgang wordt <b>opgeslagen</b>."
+        },
+        {
+            "key": "UI_Dungeon_BestScore",
+            "value": "BESTE SCORE"
+        },
+        {
+            "key": "UI_Dungeon_CheckpointUnlocked",
+            "value": "Checkpoint ontgrendeld!"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam",
+            "value": "HUIDIG TEAM"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam_Null",
+            "value": "Start een overlevingslevel om een team te selecteren"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel",
+            "value": "HOOGSTE LEVEL"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel_Null",
+            "value": "Neem deel aan minimaal 1 overlevingslevel."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectReinforcement",
+            "value": "Selecteer \u00e9\u00e9n bemanning om je team te versterken."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectTeam",
+            "value": "Selecteer \u00e9\u00e9n bemanning uit elke rol."
+        },
+        {
+            "key": "Ui_Dungeon_LevelComplete",
+            "value": "Level {0} voltooid"
+        },
+        {
+            "key": "Ui_Dungeon_LevelFailed",
+            "value": "Level {0} gefaald"
+        },
+        {
+            "key": "UI_Dungeon_LevelSuccess",
+            "value": "Level {0} voltooid"
+        },
+        {
+            "key": "UI_Dungeon_NextCheckpoint",
+            "value": "Checkpoint over:"
+        },
+        {
+            "key": "UI_Dungeon_NextReinforcement",
+            "value": "Versterkingen over:"
+        },
+        {
+            "key": "UI_Dungeon_PersonalBest",
+            "value": "PERSOONLIJK RECORD"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Header",
+            "value": "KEUZE PAD"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Lower",
+            "value": "ONDERSTE PAD"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Main",
+            "value": "Selecteer welk pad je wilt nemen."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_MinChoice",
+            "value": "Selecteer een <b>pad</b> om verder te gaan."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Upper",
+            "value": "BOVENSTE PAD"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Duration",
+            "value": "voor {0} gevechten"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Header",
+            "value": "KRACHTVERHOGING"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Main",
+            "value": "Selecteer \u00e9\u00e9n krachtverhoging"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
+            "value": "Selecteer een <b>krachtverhoging</b> om verder te gaan."
+        },
+        {
+            "key": "UI_Dungeon_Powerup_Duration",
+            "value": "{0} gevechten"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_MinSelect",
+            "value": "Selecteer \u00e9\u00e9n bemanning om verder te gaan."
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
+            "value": "Geen reserveplekken beschikbaar. Kies een krachtverhogingsbonus."
+        },
+        {
+            "key": "UI_Dungeon_SelectCheckpoint",
+            "value": "Selecteer vanaf welk overlevingslevel je wilt beginnen."
+        },
+        {
+            "key": "UI_Dungeon_ViewPowerUps",
+            "value": "KRACHTVERHOGINGEN WEERGEVEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewReinforcements",
+            "value": "VERSTERKINGEN WEERGEVEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewReserves",
+            "value": "RESERVES WEERGEVEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewRoster",
+            "value": "LIJST WEERGEVEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewTeam",
+            "value": "TEAM WEERGEVEN"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Choice",
+            "value": "KEUZE"
+        },
+        {
+            "key": "UI_DungeonNode_Label_PowerUp",
+            "value": "KRACHTVERHOGING"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Split",
+            "value": "SPLITSING"
         },
         {
             "key": "UI_Emote_Description",
@@ -32213,6 +32741,10 @@
         {
             "key": "UI_Menu_TooltipLocked_Shuttlecraft_Title",
             "value": "SHUTTLE (VERGRENDELD)"
+        },
+        {
+            "key": "UI_Menu_TooltipLocked_Survival_Title",
+            "value": "OVERLEVING (VERGRENDELD)"
         },
         {
             "key": "UI_Mission_Abandon_Popup_Abandon_Button",

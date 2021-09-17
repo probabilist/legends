@@ -1487,6 +1487,14 @@
             "value": "Markenanzahl"
         },
         {
+            "key": "Common_Checkpoint",
+            "value": "Checkpoint"
+        },
+        {
+            "key": "Common_Checkpoint_Plural",
+            "value": "Checkpoints"
+        },
+        {
             "key": "Common_ChestCurrency",
             "value": "Replikatoren"
         },
@@ -1505,6 +1513,10 @@
         {
             "key": "Common_Computer",
             "value": "Computer"
+        },
+        {
+            "key": "Common_CoverSlot",
+            "value": "DECKUNGSPLATZ"
         },
         {
             "key": "Common_Create",
@@ -1555,12 +1567,28 @@
             "value": "Dukat"
         },
         {
+            "key": "Common_DungeonCurrency",
+            "value": "\u00dcberlebenscredits"
+        },
+        {
+            "key": "Common_DungeonStamina",
+            "value": "\u00dcberlebensenergie"
+        },
+        {
+            "key": "Common_Duration",
+            "value": "Dauer"
+        },
+        {
             "key": "Common_Edit",
             "value": "Bearbeiten"
         },
         {
             "key": "Common_Elnor",
             "value": "Elnor"
+        },
+        {
+            "key": "Common_EmptySlot",
+            "value": "LEERER PLATZ"
         },
         {
             "key": "Common_EventPoint",
@@ -2339,8 +2367,28 @@
             "value": "Sehr selten"
         },
         {
+            "key": "Common_Reinforcement",
+            "value": "Verst\u00e4rkung"
+        },
+        {
+            "key": "Common_Reinforcements",
+            "value": "Verst\u00e4rkungen"
+        },
+        {
+            "key": "Common_ReinforceSlot",
+            "value": "VERST\u00c4RKUNGSPLATZ"
+        },
+        {
             "key": "Common_RequiredLevel",
             "value": "Erforderliches Level"
+        },
+        {
+            "key": "Common_Reserves",
+            "value": "Reserven"
+        },
+        {
+            "key": "Common_ReserveSlot",
+            "value": "RESERVEPLATZ"
         },
         {
             "key": "Common_RomulanCommander",
@@ -16987,6 +17035,14 @@
             "value": "Wird verwendet, um Ressourcen auf Missionen zu bergen."
         },
         {
+            "key": "Data_Item_Description_DungeonCurrency",
+            "value": "Wird verwendet, um \u00dcberlebensaufwertungen zu kaufen."
+        },
+        {
+            "key": "Data_Item_Description_DungeonStamina",
+            "value": "Wird verwendet, um an \u00dcberlebensleveln teilzunehmen."
+        },
+        {
             "key": "Data_Item_Description_EventPoint",
             "value": "Event-Punkte werden w\u00e4hrend Events gesammelt"
         },
@@ -26799,6 +26855,210 @@
             "value": "Diese Zahl errechnet sich aus der kombinierten Kraft aller Au\u00dfenteam-Mitglieder Je mehr Kraft dein Au\u00dfenteam hat, desto gr\u00f6\u00dfer ist die Wahrscheinlichkeit, dass es seine Mission absolviert."
         },
         {
+            "key": "Dungeon_Main_Title_Long",
+            "value": "Artemis \u00dcberlebensprogramm"
+        },
+        {
+            "key": "Dungeon_Main_Title_Short",
+            "value": "\u00dcberleben"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Body",
+            "value": "Zum Fortfahren bitte mindestens {0} Crewmitglied(er) ausw\u00e4hlen."
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Header",
+            "value": "\u00dcberleben Gesperrt"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackDown_Desc",
+            "value": "Der <color=#FFCE00>Angriff</color> des Feinds wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe gesenkt."
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackUp_Desc",
+            "value": "Der <color=#FFCE00>Angriff</color> deines Teams wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe erh\u00f6ht."
+        },
+        {
+            "key": "Dungeon_PowerUp_Cloak_Desc",
+            "value": "Dein Team bekommt f\u00fcr kommende \u00dcberlebensk\u00e4mpfe 3 Runden lang <color=#FFCE00>Tarnung</color>."
+        },
+        {
+            "key": "Dungeon_PowerUp_CritChanceUp_Desc",
+            "value": "Die <color=#FFCE00>Krit. Chance</color> deines Teams wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe erh\u00f6ht."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseDown_Desc",
+            "value": "Die <color=#FFCE00>Verteidigung</color> des Feinds wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe gesenkt."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseUp_Desc",
+            "value": "Die <color=#FFCE00>Verteidigung</color> deines Teams wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe erh\u00f6ht."
+        },
+        {
+            "key": "Dungeon_PowerUp_Heal_Desc",
+            "value": "Dein Team <color=#FFCE00>heilt</color> f\u00fcr den n\u00e4chsten \u00dcberlebenskampf {0} % LP."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleDown_Desc",
+            "value": "Die <color=#FFCE00>Moral</color> des Feinds wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe gesenkt."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleUp_Desc",
+            "value": "Die <color=#FFCE00>Moral</color> deines Teams wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe erh\u00f6ht."
+        },
+        {
+            "key": "Dungeon_PowerUp_RedAlert_Desc",
+            "value": "Dein Team bekommt f\u00fcr kommende \u00dcberlebensk\u00e4mpfe 3 Runden lang <color=#FFCE00>Alarmstufe Rot</color>."
+        },
+        {
+            "key": "Dungeon_PowerUp_Regenerate_Desc",
+            "value": "Dein Team <color=#FFCE00>regeneriert</color> f\u00fcr kommende \u00dcberlebensk\u00e4mpfe {0} % LP."
+        },
+        {
+            "key": "Dungeon_PowerUp_Scan_Desc",
+            "value": "Dein Team wird f\u00fcr kommende \u00dcberlebensk\u00e4mpfe 3 Runden lang <color=#FFCE00>gescannt</color>."
+        },
+        {
+            "key": "Dungeon_PowerUp_Shield_Desc",
+            "value": "Dein Team bekommt f\u00fcr kommende \u00dcberlebensk\u00e4mpfe 3 Runden lang <color=#FFCE00>Schilde</color>."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechDown_Desc",
+            "value": "Die <color=#FFCE00>Tech</color> des Feinds wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe gesenkt."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechUp_Desc",
+            "value": "Die <color=#FFCE00>Tech</color> deines Teams wurde f\u00fcr kommende \u00dcberlebensk\u00e4mpfe erh\u00f6ht."
+        },
+        {
+            "key": "Dungeon_Tab_Main_Title",
+            "value": "Haupt"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Generic_Title",
+            "value": "Angriffsbonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level1_Desc",
+            "value": "Erhalte <b>+5 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level2_Desc",
+            "value": "Erhalte <b>+10 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level3_Desc",
+            "value": "Erhalte <b>+15 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level4_Desc",
+            "value": "Erhalte <b>+20 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Generic_Title",
+            "value": "Verteidigungsbonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level1_Desc",
+            "value": "Erhalte <b>+5 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level2_Desc",
+            "value": "Erhalte <b>+10 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level3_Desc",
+            "value": "Erhalte <b>+15 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level4_Desc",
+            "value": "Erhalte <b>+20 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level1_Desc",
+            "value": "Erhalte <b>+5 % LP</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level2_Desc",
+            "value": "Erhalte <b>+10 % LP</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level3_Desc",
+            "value": "Erhalte <b>+15 % LP</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level4_Desc",
+            "value": "Erhalte <b>+20 % LP</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_HP_Generic_Title",
+            "value": "Gesundheitsbonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
+            "value": "Schalte {0} <i>Reserveplatz</i> frei."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Title",
+            "value": "Reserveplatz"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
+            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
+            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
+            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
+            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Generic_Title",
+            "value": "Schilde"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level1_Desc",
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>50 Schilden</b>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level2_Desc",
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>100 Schilden</b>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level3_Desc",
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>150 Schilden</b>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level4_Desc",
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>200 Schilden</b>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Generic_Title",
+            "value": "Techbonus"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level1_Desc",
+            "value": "Erhalte <b>+5 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level2_Desc",
+            "value": "Erhalte <b>+10 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level3_Desc",
+            "value": "Erhalte <b>+15 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level4_Desc",
+            "value": "Erhalte <b>+20 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
             "key": "e1_ending_00",
             "value": "Captain, wir erwarten Ihren Befehl zum Warp."
         },
@@ -30023,6 +30283,82 @@
             "value": "Zeit abgelaufen"
         },
         {
+            "key": "Tooltip_Dungeon_Checkpoint_Desc",
+            "value": "Checkpoints werden alle {0} Level permanent freigeschaltet und erlauben es, zuk\u00fcnftige \u00dcberlebens-Versuche von h\u00f6heren Leveln zu beginnen."
+        },
+        {
+            "key": "Tooltip_Dungeon_Checkpoint_Title",
+            "value": "Checkpoints"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Desc",
+            "value": "W\u00e4hle den zu verfolgenden Weg. Verschiedene Wege k\u00f6nnen unterschiedliche Feinde haben."
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Title",
+            "value": "Weg-Auswahl"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Desc",
+            "value": "Jeder \u00dcberlebenslevel besteht aus einer Reihe von K\u00e4mpfen, die immer schwieriger werden und dabei h\u00f6here Belohnungen einbringen."
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Title",
+            "value": "\u00dcberlebenslevel"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Desc",
+            "value": "Power-Ups geben dem Team tempor\u00e4re Boni oder den Feinden Nachteile."
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Title",
+            "value": "Power-Ups"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Desc",
+            "value": "Verst\u00e4rkungsaufwertungen erlauben die Vergr\u00f6\u00dferung des Teams auf bis zu 8 Crewmitglieder: 4 im Kampf aktive und 4, die in Reservepl\u00e4tzen darauf warten, bei Ausf\u00e4llen einzuspringen.\n Der erste Reserveplatz kann sofort nach dem Kauf einer Verst\u00e4rkungsaufwertung w\u00e4hrend der Teamauswahl gef\u00fcllt werden. Zus\u00e4tzliche Reservepl\u00e4tze k\u00f6nnen durch das Beenden von \u00dcberlebensleveln gef\u00fcllt werden."
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Title",
+            "value": "Verst\u00e4rkungen"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Desc",
+            "value": "Dieser Reserveplatz l\u00e4sst sich durch Kauf der Verst\u00e4rkungsaufwertung freischalten."
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Title",
+            "value": "Reserveplatz Gesperrt"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotUnavailable_Desc",
+            "value": "Dieser Reserveplatz kann durch Erledigen von \u00dcberlebensleveln gef\u00fcllt werden."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Desc",
+            "value": "Die Auswahl des Teams erfolgt mittels zuf\u00e4llig aus der Crewliste zugewiesener Crewmitglieder. Der erste Reserveplatz kann sofort nach dem Kauf einer Verst\u00e4rkungsaufwertung verwendet werden."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Title",
+            "value": "Teamauswahl"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Desc",
+            "value": "Aufwertungen bringen permanente Boni, wenn man in \u00dcberlebensleveln k\u00e4mpft."
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Title",
+            "value": "Aufwertungen"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Desc",
+            "value": "Die Qualit\u00e4tseinstellungen \u00fcber die empfohlene Voreinstellung hinaus zu erh\u00f6hen kann unbeabsichtigte oder negative Spiel-Erfahrungen mit sich bringen."
+        },
+        {
+            "key": "Tooltip_QualityWarning_Title",
+            "value": "Warnung"
+        },
+        {
             "key": "triggered_bundle_00_desc",
             "value": "Nachdem du Burnham aus dem Nexus gerettet hast, ist es Zeit f\u00fcr ein Upgrade - mit diesem zeitlich begrenzten Paket."
         },
@@ -30185,6 +30521,38 @@
         {
             "key": "tutorial_directiveexplanation02_00",
             "value": "<color=#fff15c>Sternenflotten-Anweisungen</color> f\u00fchren dich bei der St\u00e4rkung deiner Crew und bereiten dich auf kommende Missionen vor."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line01_Worf",
+            "value": "Ah Captain, willkommen zum <color=#fff15c>Artemis \u00dcberlebensprogramm</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line02_Worf",
+            "value": "Ein wahrer Krieger muss st\u00e4ndig seine F\u00e4higkeiten verfeinern, damit sie nicht durch Unt\u00e4tigkeit verk\u00fcmmern. Deshalb habe ich ein Holodeck-<color=#fff15c>Programm</color> entworfen, um die Crew mit den vielen Bedrohungen innerhalb des Nexus zu konfrontieren."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line03_Narrator",
+            "value": "<color=#fff15c>\u00dcberlebenslevel</color> bestehen aus einer Reihe von K\u00e4mpfen, die immer schwieriger werden und dabei h\u00f6here Belohnungen einbringen."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line04_Narrator",
+            "value": "Die Auswahl des Teams erfolgt mittels zuf\u00e4llig aus der Crewliste zugewiesener Crewmitglieder. Man kann das Team vergr\u00f6\u00dfern, indem man <color=#fff15c>\u00dcberlebenslevel</color> beendet und <color=#fff15c>Verst\u00e4rkungsaufwertungen</color> kauft."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line05_Narrator",
+            "value": "<color=#fff15c>Verst\u00e4rkungsaufwertungen</color> erlauben die Vergr\u00f6\u00dferung des Teams auf bis zu 8 Crewmitglieder: 4 im Kampf aktive und 4, die in <color=#fff15c>Reservepl\u00e4tzen</color>, darauf warten, bei Ausf\u00e4llen einzuspringen."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line06_Narrator",
+            "value": "Der erste <color=#fff15c>Reserveplatz</color> kann sofort nach dem Kauf w\u00e4hrend der Teamauswahl gef\u00fcllt werden. Zus\u00e4tzliche <color=#fff15c>Reservepl\u00e4tze</color> k\u00f6nnen nach dem Beenden zus\u00e4tzlicher <color=#fff15c>\u00dcberlebenslevel</color> gef\u00fcllt werden."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line07_Narrator",
+            "value": "<color=#fff15c>Aufwertungen</color> k\u00f6nnen gekauft werden und bringen permanente Boni in <color=#fff15c>\u00dcberlebensleveln</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line08_Narrator",
+            "value": "<color=#fff15c>Checkpoints</color> werden alle <color=#fff15c>{0} Level</color> permanent freigeschaltet und erlauben es, zuk\u00fcnftige \u00dcberlebens-Versuche von h\u00f6heren Leveln zu beginnen."
         },
         {
             "key": "tutorial_firstlossreaction_00",
@@ -31101,6 +31469,166 @@
         {
             "key": "UI_DownloadConfirmation_Popup_Header",
             "value": "ALARM: DOWNLOAD ERFORDERLICH"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Body",
+            "value": "Diesen \u00dcberlebenslevel wirklich <b><color=#F3E54D>ABBRECHEN</color></b>? Jeglicher Fortschritt geht <b>verloren</b>. Du kannst von jedem bereits freigeschalteten Checkpoint neu starten."
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Title",
+            "value": "LEVEL ABBRECHEN?"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels",
+            "value": "{0} Level"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels_Plural",
+            "value": "{0} Level"
+        },
+        {
+            "key": "UI_Dungeon_Back_Popup_Body",
+            "value": "Wirklich <b><color=#F3E54D>ZUR BR\u00dcCKE ZUR\u00dcCKKEHREN</color></b> und sp\u00e4ter mit dem \u00dcberlebenslevel fortfahren? Jeglicher Fortschritt wird <b>gespeichert</b>."
+        },
+        {
+            "key": "UI_Dungeon_BestScore",
+            "value": "BESTE PUNKTZAHL"
+        },
+        {
+            "key": "UI_Dungeon_CheckpointUnlocked",
+            "value": "Checkpoint freigeschaltet!"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam",
+            "value": "AKTUELLES TEAM"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam_Null",
+            "value": "Beginne einen \u00dcberlebenslevel, um ein Team zu w\u00e4hlen"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel",
+            "value": "H\u00d6CHSTER LEVEL"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel_Null",
+            "value": "Nimm an mindestens 1 \u00dcberlebenslevel teil."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectReinforcement",
+            "value": "W\u00e4hle ein Crewmitglied, um dein Team zu verst\u00e4rken."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectTeam",
+            "value": "W\u00e4hle aus jeder Rolle ein Crewmitglied."
+        },
+        {
+            "key": "Ui_Dungeon_LevelComplete",
+            "value": "Level {0}: Abgeschlossen"
+        },
+        {
+            "key": "Ui_Dungeon_LevelFailed",
+            "value": "Level {0}: Fehlgeschlagen"
+        },
+        {
+            "key": "UI_Dungeon_LevelSuccess",
+            "value": "Level {0}: Erfolgreich"
+        },
+        {
+            "key": "UI_Dungeon_NextCheckpoint",
+            "value": "Checkpoint in:"
+        },
+        {
+            "key": "UI_Dungeon_NextReinforcement",
+            "value": "Verst\u00e4rkung in:"
+        },
+        {
+            "key": "UI_Dungeon_PersonalBest",
+            "value": "PERS\u00d6NLICHE BESTLEISTUNG"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Header",
+            "value": "WEG-AUSWAHL"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Lower",
+            "value": "UNTERER WEG"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Main",
+            "value": "W\u00e4hle den Weg, dem du folgen willst."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_MinChoice",
+            "value": "Bitte w\u00e4hle einen <b>Weg</b>, um fortzufahren."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Upper",
+            "value": "OBERER WEG"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Duration",
+            "value": "f\u00fcr {0} K\u00e4mpfe"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Header",
+            "value": "POWER-UP"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Main",
+            "value": "W\u00e4hle das Power-Up aus"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
+            "value": "Bitte w\u00e4hle ein <b>Power-Up</b>, um fortzufahren."
+        },
+        {
+            "key": "UI_Dungeon_Powerup_Duration",
+            "value": "{0} K\u00e4mpfe"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_MinSelect",
+            "value": "W\u00e4hle ein Crewmitglied, um fortzufahren."
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
+            "value": "Keine Reservepl\u00e4tze verf\u00fcgbar. W\u00e4hle ein Bonus-Power-Up."
+        },
+        {
+            "key": "UI_Dungeon_SelectCheckpoint",
+            "value": "W\u00e4hle aus, von welchem \u00dcberlebenslevel begonnen werden soll."
+        },
+        {
+            "key": "UI_Dungeon_ViewPowerUps",
+            "value": "POWER-UPS ANZEIGEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewReinforcements",
+            "value": "VERST\u00c4RKUNGEN ANZEIGEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewReserves",
+            "value": "RESERVEN ANZEIGEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewRoster",
+            "value": "CREWLISTE ANZEIGEN"
+        },
+        {
+            "key": "UI_Dungeon_ViewTeam",
+            "value": "TEAM ANZEIGEN"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Choice",
+            "value": "AUSWAHL"
+        },
+        {
+            "key": "UI_DungeonNode_Label_PowerUp",
+            "value": "POWER-UP"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Split",
+            "value": "GABELUNG"
         },
         {
             "key": "UI_Emote_Description",
@@ -32213,6 +32741,10 @@
         {
             "key": "UI_Menu_TooltipLocked_Shuttlecraft_Title",
             "value": "SHUTTLE (GESPERRT)"
+        },
+        {
+            "key": "UI_Menu_TooltipLocked_Survival_Title",
+            "value": "\u00dcBERLEBEN (GESPERRT)"
         },
         {
             "key": "UI_Mission_Abandon_Popup_Abandon_Button",

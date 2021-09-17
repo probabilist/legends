@@ -1487,6 +1487,14 @@
             "value": "Nombre de jetons"
         },
         {
+            "key": "Common_Checkpoint",
+            "value": "Palier"
+        },
+        {
+            "key": "Common_Checkpoint_Plural",
+            "value": "Paliers"
+        },
+        {
             "key": "Common_ChestCurrency",
             "value": "R\u00e9plicateurs"
         },
@@ -1505,6 +1513,10 @@
         {
             "key": "Common_Computer",
             "value": "Ordinateur"
+        },
+        {
+            "key": "Common_CoverSlot",
+            "value": "EMPLACEMENT DE COUVERTURE"
         },
         {
             "key": "Common_Create",
@@ -1555,12 +1567,28 @@
             "value": "Dukat"
         },
         {
+            "key": "Common_DungeonCurrency",
+            "value": "Cr\u00e9dits de survie"
+        },
+        {
+            "key": "Common_DungeonStamina",
+            "value": "\u00c9nergie de survie"
+        },
+        {
+            "key": "Common_Duration",
+            "value": "Dur\u00e9e"
+        },
+        {
             "key": "Common_Edit",
             "value": "Modifier"
         },
         {
             "key": "Common_Elnor",
             "value": "Elnor"
+        },
+        {
+            "key": "Common_EmptySlot",
+            "value": "EMPLACEMENT VIDE"
         },
         {
             "key": "Common_EventPoint",
@@ -2339,8 +2367,28 @@
             "value": "Tr\u00e8s rare"
         },
         {
+            "key": "Common_Reinforcement",
+            "value": "Renfort"
+        },
+        {
+            "key": "Common_Reinforcements",
+            "value": "Renforts"
+        },
+        {
+            "key": "Common_ReinforceSlot",
+            "value": "EMPLACEMENT DE RENFORT"
+        },
+        {
             "key": "Common_RequiredLevel",
             "value": "Niveau requis"
+        },
+        {
+            "key": "Common_Reserves",
+            "value": "R\u00e9serves"
+        },
+        {
+            "key": "Common_ReserveSlot",
+            "value": "EMPLACEMENT DE R\u00c9SERVE"
         },
         {
             "key": "Common_RomulanCommander",
@@ -16987,6 +17035,14 @@
             "value": "Sert \u00e0 r\u00e9cup\u00e9rer des ressources lors des missions."
         },
         {
+            "key": "Data_Item_Description_DungeonCurrency",
+            "value": "Permet d'acheter des am\u00e9liorations de survie."
+        },
+        {
+            "key": "Data_Item_Description_DungeonStamina",
+            "value": "Permet de participer aux niveaux de survie."
+        },
+        {
             "key": "Data_Item_Description_EventPoint",
             "value": "Les points d'\u00e9v\u00e9nements sont collect\u00e9s pendant les \u00e9v\u00e9nements."
         },
@@ -26799,6 +26855,210 @@
             "value": "Ce nombre repr\u00e9sente la puissance combin\u00e9e de tous les membres de l'\u00e9quipe d'exploration\u00a0! Plus votre \u00e9quipe d'exploration est puissante, plus elle a de chances d'accomplir sa mission."
         },
         {
+            "key": "Dungeon_Main_Title_Long",
+            "value": "Programme de survie d'Artemis"
+        },
+        {
+            "key": "Dungeon_Main_Title_Short",
+            "value": "Survie"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Body",
+            "value": "Veuillez s\u00e9lectionner au moins {0} membre d'\u00e9quipage pour continuer."
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Header",
+            "value": "Survie verrouill\u00e9e"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackDown_Desc",
+            "value": "L'<color=#FFCE00>attaque</color> de l'ennemi est r\u00e9duite lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackUp_Desc",
+            "value": "L'<color=#FFCE00>attaque</color> de votre \u00e9quipe est augment\u00e9e lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_Cloak_Desc",
+            "value": "Votre \u00e9quipe b\u00e9n\u00e9ficie d'<color=#FFCE00>Occultation</color> pendant 3 tours lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_CritChanceUp_Desc",
+            "value": "Les <color=#FFCE00>chances de CRIT</color> de votre \u00e9quipe sont augment\u00e9es lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseDown_Desc",
+            "value": "La <color=#FFCE00>d\u00e9fense</color> de l'ennemi est r\u00e9duite lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseUp_Desc",
+            "value": "La <color=#FFCE00>d\u00e9fense</color> de votre \u00e9quipe est augment\u00e9e lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_Heal_Desc",
+            "value": "Votre \u00e9quipe <color=#FFCE00>r\u00e9cup\u00e8re</color> {0} % des PV pour le prochain combat de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleDown_Desc",
+            "value": "Le <color=#FFCE00>moral</color> de l'ennemi est r\u00e9duit lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleUp_Desc",
+            "value": "La <color=#FFCE00>morale</color> de votre \u00e9quipe est augment\u00e9e lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_RedAlert_Desc",
+            "value": "Votre \u00e9quipe b\u00e9n\u00e9ficie d'<color=#FFCE00>Alerte rouge</color> pendant 3 tours lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_Regenerate_Desc",
+            "value": "Votre \u00e9quipe <color=#FFCE00>r\u00e9g\u00e9n\u00e8re</color> {0} % des PV pour les prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_Scan_Desc",
+            "value": "L'\u00e9quipe ennemie est <color=#FFCE00>scann\u00e9e</color> pendant 3 tours lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_Shield_Desc",
+            "value": "Votre \u00e9quipe b\u00e9n\u00e9ficie de <color=#FFCE00>boucliers</color> pendant 3 tours lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechDown_Desc",
+            "value": "La <color=#FFCE00>tech</color> de l'ennemi est r\u00e9duite lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechUp_Desc",
+            "value": "La <color=#FFCE00>tech</color> de votre \u00e9quipe est augment\u00e9e lors des prochains combats de survie."
+        },
+        {
+            "key": "Dungeon_Tab_Main_Title",
+            "value": "Principal"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Generic_Title",
+            "value": "Bonus D'attaque"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level1_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+5 % d'attaque</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level2_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+10 % d'attaque</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level3_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+15 % d'attaque</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level4_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+20 % d'attaque</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Generic_Title",
+            "value": "Bonus De D\u00e9fense"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level1_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+5 % de d\u00e9fense</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level2_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+10 % de d\u00e9fense</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level3_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+15 % de d\u00e9fense</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level4_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+20 % de d\u00e9fense</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level1_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+5 % de PV</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level2_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+10 % de PV</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level3_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+15 % de PV</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level4_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+20 % de PV</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_HP_Generic_Title",
+            "value": "Bonus De Sant\u00e9"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
+            "value": "D\u00e9verrouiller {0} <i>emplacement de r\u00e9serve</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Title",
+            "value": "Emplacement De R\u00e9serve"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
+            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
+            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
+            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
+            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Generic_Title",
+            "value": "Boucliers"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level1_Desc",
+            "value": "Commencer avec <b>50 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level2_Desc",
+            "value": "Commencer avec <b>100 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level3_Desc",
+            "value": "Commencer avec <b>150 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level4_Desc",
+            "value": "Commencer avec <b>200 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Generic_Title",
+            "value": "Bonus De Tech"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level1_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+5 % de tech</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level2_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+10 % de tech</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level3_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+15 % de tech</b> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level4_Desc",
+            "value": "B\u00e9n\u00e9ficier de <b>+20 % de tech</b> lors des combats de survie."
+        },
+        {
             "key": "e1_ending_00",
             "value": "Capitaine, nous sommes pr\u00eats \u00e0 passer en mode distorsion \u00e0 votre commandement."
         },
@@ -30023,6 +30283,82 @@
             "value": "Temps \u00e9coul\u00e9"
         },
         {
+            "key": "Tooltip_Dungeon_Checkpoint_Desc",
+            "value": "Les paliers sont syst\u00e9matiquement d\u00e9bloqu\u00e9s tous les {0} niveaux. Vous pourrez reprendre vos prochaines parties de survie \u00e0 partir de ces paliers."
+        },
+        {
+            "key": "Tooltip_Dungeon_Checkpoint_Title",
+            "value": "Paliers"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Desc",
+            "value": "Choisissez le chemin \u00e0 emprunter. Diff\u00e9rents ennemis vous attendent sur diff\u00e9rents chemins."
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Title",
+            "value": "Choix du chemin"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Desc",
+            "value": "Chaque niveau de survie consiste en une s\u00e9rie de combats, avec des r\u00e9compenses et une difficult\u00e9 croissante \u00e0 mesure que vous avancez."
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Title",
+            "value": "Niveau de survie"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Desc",
+            "value": "Les boosters offrent des bonus temporaires pour votre \u00e9quipe ou des p\u00e9nalit\u00e9s pour les ennemis."
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Title",
+            "value": "Boosters"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Desc",
+            "value": "L\u2019am\u00e9lioration des renforts vous permet d\u2019agrandir votre \u00e9quipe. Votre \u00e9quipe peut compter jusqu\u2019\u00e0 8 membres d\u2019\u00e9quipage : 4 membres actifs qui combattent et 4 membres qui attendent dans les emplacements de r\u00e9serve pour remplacer les membres tomb\u00e9s au combat. Une fois achet\u00e9, le premier emplacement de r\u00e9serve peut \u00eatre rempli imm\u00e9diatement lors de la s\u00e9lection de l\u2019\u00e9quipe. Vous gagnerez des emplacements de r\u00e9serve suppl\u00e9mentaires en terminant des niveaux de survie."
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Title",
+            "value": "Renforts"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Desc",
+            "value": "D\u00e9verrouillez cet emplacement de r\u00e9serve en achetant l'am\u00e9lioration des renforts."
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Title",
+            "value": "Emplacement de r\u00e9serve verrouill\u00e9"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotUnavailable_Desc",
+            "value": "Vous pourrez remplir cet emplacement de r\u00e9serve en terminant des niveaux de survie."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Desc",
+            "value": "Formez votre \u00e9quipe en utilisant un membre d\u2019\u00e9quipage assign\u00e9 au hasard \u00e0 partir de votre liste. Le premier emplacement de r\u00e9serve peut \u00eatre utilis\u00e9 d\u00e8s l'achat de l'am\u00e9lioration des renforts."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Title",
+            "value": "S\u00e9lection d'\u00e9quipe"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Desc",
+            "value": "Les am\u00e9liorations offrent des bonus permanents lors des combats dans les niveaux de survie."
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Title",
+            "value": "Am\u00e9liorations"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Desc",
+            "value": "Le fait d'augmenter la qualit\u00e9 d'affichage au-del\u00e0 des param\u00e8tres recommand\u00e9s par d\u00e9faut peut affecter votre exp\u00e9rience de jeu de fa\u00e7on inattendue et n\u00e9gative."
+        },
+        {
+            "key": "Tooltip_QualityWarning_Title",
+            "value": "Attention"
+        },
+        {
             "key": "triggered_bundle_00_desc",
             "value": "Maintenant que vous avez sauv\u00e9 Burnham du Nexus, c'est l'heure d'une am\u00e9lioration avec ce lot \u00e0 dur\u00e9e limit\u00e9e."
         },
@@ -30185,6 +30521,38 @@
         {
             "key": "tutorial_directiveexplanation02_00",
             "value": "Les <color=#fff15c>directives de Starfleet</color> vous aident \u00e0 renforcer votre \u00e9quipage et \u00e0 vous pr\u00e9parer aux prochaines missions."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line01_Worf",
+            "value": "Ah, Capitaine, bienvenue dans le <color=#fff15c>Programme de survie d'Artemis</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line02_Worf",
+            "value": "Tout vrai guerrier se doit de parfaire sans cesse ses comp\u00e9tences, pour \u00e9viter qu\u2019elles ne s\u2019\u00e9moussent par manque d\u2019action. Dans cette optique, j\u2019ai con\u00e7u ce <color=#fff15c>programme</color> d\u2019holodeck pour d\u00e9fier l\u2019\u00e9quipage avec les nombreuses menaces du Nexus."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line03_Narrator",
+            "value": "Chaque <color=#fff15c>niveau de survie</color> consiste en une s\u00e9rie de combats, avec des r\u00e9compenses et une difficult\u00e9 croissante \u00e0 mesure que vous avancez."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line04_Narrator",
+            "value": "Formez votre \u00e9quipe en utilisant un membre d\u2019\u00e9quipage assign\u00e9 au hasard \u00e0 partir de votre liste. Augmentez la taille de votre \u00e9quipe en terminant des <color=#fff15c>niveaux de survie</color> et en achetant des <color=#fff15c>am\u00e9liorations des renforts</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line05_Narrator",
+            "value": "<color=#fff15c>L\u2019am\u00e9lioration des renforts</color> vous permet d\u2019agrandir votre \u00e9quipe. Votre \u00e9quipe peut compter jusqu\u2019\u00e0 8 membres d\u2019\u00e9quipage : 4 membres actifs qui combattent et 4 membres qui attendent dans les <color=#fff15c>emplacements de r\u00e9serve</color> pour remplacer les membres tomb\u00e9s au combat."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line06_Narrator",
+            "value": "Une fois achet\u00e9, le premier <color=#fff15c>emplacement de r\u00e9serve</color> peut \u00eatre rempli imm\u00e9diatement lors de la s\u00e9lection de l\u2019\u00e9quipe. Vous gagnerez des <color=#fff15c>emplacements de r\u00e9serve</color> suppl\u00e9mentaires en terminant plus de <color=#fff15c>niveaux de survie</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line07_Narrator",
+            "value": "Vous pouvez acheter des <color=#fff15c>am\u00e9liorations</color> qui offrent des bonus permanents pour les <color=#fff15c>niveaux de survie</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line08_Narrator",
+            "value": "Les <color=#fff15c>paliers</color> sont syst\u00e9matiquement d\u00e9bloqu\u00e9s tous les <color=#fff15c>{0} niveaux</color>. Vous pourrez reprendre vos prochaines parties de survie \u00e0 partir de ces paliers."
         },
         {
             "key": "tutorial_firstlossreaction_00",
@@ -31101,6 +31469,166 @@
         {
             "key": "UI_DownloadConfirmation_Popup_Header",
             "value": "ALERTE\u00a0: T\u00c9L\u00c9CHARGEMENT REQUIS"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Body",
+            "value": "Voulez-vous vraiment <b><color=#F3E54D>ABANDONNER</color></b> ce niveau de survie ? Votre progression sera <b>perdue</b>. Vous pouvez recommencer \u00e0 partir de n'importe quel palier d\u00e9j\u00e0 d\u00e9bloqu\u00e9."
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Title",
+            "value": "ABANDONNER LE NIVEAU ?"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels",
+            "value": "{0} niveau"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels_Plural",
+            "value": "{0} niveaux"
+        },
+        {
+            "key": "UI_Dungeon_Back_Popup_Body",
+            "value": "Souhaitez-vous <b><color=#F3E54D>RETOURNER SUR LE PONT</color></b> et reprendre ce niveau de survie plus tard ? Votre progression sera <b>sauvegard\u00e9e</b>."
+        },
+        {
+            "key": "UI_Dungeon_BestScore",
+            "value": "MEILLEUR SCORE"
+        },
+        {
+            "key": "UI_Dungeon_CheckpointUnlocked",
+            "value": "Palier d\u00e9bloqu\u00e9 !"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam",
+            "value": "\u00c9QUIPE ACTUELLE"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam_Null",
+            "value": "Commencez un niveau de survie pour choisir une \u00e9quipe"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel",
+            "value": "NIVEAU LE PLUS \u00c9LEV\u00c9"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel_Null",
+            "value": "Participez \u00e0 au moins 1 niveau de survie."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectReinforcement",
+            "value": "S\u00e9lectionnez un membre d'\u00e9quipage qui viendra renforcer votre \u00e9quipe"
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectTeam",
+            "value": "S\u00e9lectionnez un membre d'\u00e9quipage de chacun des r\u00f4les."
+        },
+        {
+            "key": "Ui_Dungeon_LevelComplete",
+            "value": "Niveau {0} termin\u00e9"
+        },
+        {
+            "key": "Ui_Dungeon_LevelFailed",
+            "value": "\u00c9chec du niveau {0}"
+        },
+        {
+            "key": "UI_Dungeon_LevelSuccess",
+            "value": "Niveau {0} r\u00e9ussi"
+        },
+        {
+            "key": "UI_Dungeon_NextCheckpoint",
+            "value": "Palier dans :"
+        },
+        {
+            "key": "UI_Dungeon_NextReinforcement",
+            "value": "Renforts dans :"
+        },
+        {
+            "key": "UI_Dungeon_PersonalBest",
+            "value": "RECORD PERSONNEL"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Header",
+            "value": "CHOIX DU CHEMIN"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Lower",
+            "value": "CHEMIN DU BAS"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Main",
+            "value": "Choisissez le chemin \u00e0 emprunter."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_MinChoice",
+            "value": "Veuillez s\u00e9lectionner un <b>chemin</b> pour continuer."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Upper",
+            "value": "CHEMIN DU HAUT"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Duration",
+            "value": "pour {0} combats"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Header",
+            "value": "BOOSTER"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Main",
+            "value": "S\u00e9lectionnez un booster."
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
+            "value": "Veuillez s\u00e9lectionner un <b>booster</b> pour continuer."
+        },
+        {
+            "key": "UI_Dungeon_Powerup_Duration",
+            "value": "{0} combats"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_MinSelect",
+            "value": "Veuillez s\u00e9lectionner un membre d'\u00e9quipage pour commencer"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
+            "value": "Aucun emplacement de r\u00e9serve disponible. S\u00e9lectionnez un booster bonus."
+        },
+        {
+            "key": "UI_Dungeon_SelectCheckpoint",
+            "value": "S\u00e9lectionnez le niveau de survie \u00e0 partir duquel vous souhaitez commencer."
+        },
+        {
+            "key": "UI_Dungeon_ViewPowerUps",
+            "value": "VOIR LES BOOSTERS"
+        },
+        {
+            "key": "UI_Dungeon_ViewReinforcements",
+            "value": "VOIR RENFORTS"
+        },
+        {
+            "key": "UI_Dungeon_ViewReserves",
+            "value": "VOIR R\u00c9SERVES"
+        },
+        {
+            "key": "UI_Dungeon_ViewRoster",
+            "value": "VOIR LISTE"
+        },
+        {
+            "key": "UI_Dungeon_ViewTeam",
+            "value": "VOIR \u00c9QUIPE"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Choice",
+            "value": "CHOIX"
+        },
+        {
+            "key": "UI_DungeonNode_Label_PowerUp",
+            "value": "BOOSTER"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Split",
+            "value": "DIVISION"
         },
         {
             "key": "UI_Emote_Description",
@@ -32213,6 +32741,10 @@
         {
             "key": "UI_Menu_TooltipLocked_Shuttlecraft_Title",
             "value": "NAVETTE (VERROUILL\u00c9E)"
+        },
+        {
+            "key": "UI_Menu_TooltipLocked_Survival_Title",
+            "value": "SURVIE (VERROUILL\u00c9E)"
         },
         {
             "key": "UI_Mission_Abandon_Popup_Abandon_Button",

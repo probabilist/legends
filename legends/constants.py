@@ -65,6 +65,8 @@ __all__ = [
 # variable whose name is the file name without extension
 rootPath = abspath(dirname(__file__))
 for fileName in listdir(rootPath + '/data'):
+    if fileName[0] == '.':
+        continue
     varName = fileName.split('.')[0]
     with open(rootPath + '/data/' + fileName, encoding='utf-8') as f:
         globals()[varName] = load(f)

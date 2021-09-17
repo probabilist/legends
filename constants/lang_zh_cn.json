@@ -1487,6 +1487,14 @@
             "value": "\u5fbd\u8bb0\u6570"
         },
         {
+            "key": "Common_Checkpoint",
+            "value": "\u68c0\u67e5\u70b9"
+        },
+        {
+            "key": "Common_Checkpoint_Plural",
+            "value": "\u68c0\u67e5\u70b9"
+        },
+        {
             "key": "Common_ChestCurrency",
             "value": "\u590d\u5236\u5668"
         },
@@ -1505,6 +1513,10 @@
         {
             "key": "Common_Computer",
             "value": "\u8ba1\u7b97\u673a"
+        },
+        {
+            "key": "Common_CoverSlot",
+            "value": "\u63a9\u62a4\u680f\u4f4d"
         },
         {
             "key": "Common_Create",
@@ -1555,12 +1567,28 @@
             "value": "\u675c\u5361\u7279"
         },
         {
+            "key": "Common_DungeonCurrency",
+            "value": "\u751f\u5b58\u4fe1\u7528\u70b9"
+        },
+        {
+            "key": "Common_DungeonStamina",
+            "value": "\u751f\u5b58\u80fd\u91cf"
+        },
+        {
+            "key": "Common_Duration",
+            "value": "\u6301\u7eed"
+        },
+        {
             "key": "Common_Edit",
             "value": "\u7f16\u8f91"
         },
         {
             "key": "Common_Elnor",
             "value": "\u57c3\u5c14\u8bfa"
+        },
+        {
+            "key": "Common_EmptySlot",
+            "value": "\u7a7a\u680f\u4f4d"
         },
         {
             "key": "Common_EventPoint",
@@ -2339,8 +2367,28 @@
             "value": "\u7f55\u89c1"
         },
         {
+            "key": "Common_Reinforcement",
+            "value": "\u63f4\u519b"
+        },
+        {
+            "key": "Common_Reinforcements",
+            "value": "\u63f4\u519b"
+        },
+        {
+            "key": "Common_ReinforceSlot",
+            "value": "\u63f4\u519b\u680f\u4f4d"
+        },
+        {
             "key": "Common_RequiredLevel",
             "value": "\u8981\u6c42\u7b49\u7ea7"
+        },
+        {
+            "key": "Common_Reserves",
+            "value": "\u9884\u5907"
+        },
+        {
+            "key": "Common_ReserveSlot",
+            "value": "\u9884\u5907\u680f\u4f4d"
         },
         {
             "key": "Common_RomulanCommander",
@@ -16987,6 +17035,14 @@
             "value": "\u7528\u4e8e\u5728\u6267\u884c\u4efb\u52a1\u65f6\u56de\u6536\u8d44\u6e90\u3002"
         },
         {
+            "key": "Data_Item_Description_DungeonCurrency",
+            "value": "\u7528\u4e8e\u8d2d\u4e70\u751f\u5b58\u5347\u7ea7\u3002"
+        },
+        {
+            "key": "Data_Item_Description_DungeonStamina",
+            "value": "\u7528\u4e8e\u53c2\u52a0\u751f\u5b58\u5173\u5361\u3002"
+        },
+        {
             "key": "Data_Item_Description_EventPoint",
             "value": "\u5728\u6d3b\u52a8\u671f\u95f4\u6536\u96c6\u6d3b\u52a8\u79ef\u5206"
         },
@@ -26799,6 +26855,210 @@
             "value": "\u6b64\u6570\u503c\u662f\u6240\u6709\u5916\u9063\u961f\u6210\u5458\u7684\u5b9e\u529b\u603b\u503c\u3002\u5916\u9063\u961f\u5b9e\u529b\u8d8a\u5f3a\uff0c\u5b8c\u6210\u4efb\u52a1\u7684\u53ef\u80fd\u6027\u5c31\u8d8a\u9ad8\u3002"
         },
         {
+            "key": "Dungeon_Main_Title_Long",
+            "value": "\u6708\u795e\u53f7\u751f\u5b58\u8ba1\u5212"
+        },
+        {
+            "key": "Dungeon_Main_Title_Short",
+            "value": "\u751f\u5b58"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Body",
+            "value": "\u8bf7\u81f3\u5c11\u9009\u62e9{0}\u540d\u8239\u5458\u4ee5\u7ee7\u7eed\u3002"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Header",
+            "value": "\u751f\u5b58\u5df2\u9501\u5b9a"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackDown_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u654c\u4eba\u7684<color=#FFCE00>\u653b\u51fb</color>\u964d\u4f4e\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackUp_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u961f\u4f0d\u7684<color=#FFCE00>\u653b\u51fb</color>\u63d0\u9ad8\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_Cloak_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u7684\u961f\u4f0d\u83b7\u5f97<color=#FFCE00>\u9690\u5f62</color>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_CritChanceUp_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u961f\u4f0d\u7684<color=#FFCE00>\u66b4\u51fb\u51e0\u7387</color>\u63d0\u9ad8\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseDown_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u654c\u4eba\u7684<color=#FFCE00>\u9632\u5fa1</color>\u964d\u4f4e\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseUp_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u961f\u4f0d\u7684<color=#FFCE00>\u9632\u5fa1</color>\u63d0\u9ad8\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_Heal_Desc",
+            "value": "\u5728\u4e0b\u4e00\u573a\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u7684\u961f\u4f0d\u83b7\u5f97{0}%\u751f\u547d\u503c\u7684<color=#FFCE00>\u6cbb\u7597</color>\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleDown_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u654c\u4eba\u7684<color=#FFCE00>\u58eb\u6c14</color>\u964d\u4f4e\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleUp_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u961f\u4f0d\u7684<color=#FFCE00>\u58eb\u6c14</color>\u63d0\u9ad8\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_RedAlert_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u7684\u961f\u4f0d\u83b7\u5f97<color=#FFCE00>\u7ea2\u8272\u8b66\u62a5</color>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_Regenerate_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u7684\u961f\u4f0d\u83b7\u5f97{0}%\u751f\u547d\u503c\u7684<color=#FFCE00>\u518d\u751f</color>\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_Scan_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u654c\u4eba\u961f\u4f0d\u906d\u5230<color=#FFCE00>\u626b\u63cf</color>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_Shield_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u7684\u961f\u4f0d\u83b7\u5f97<color=#FFCE00>\u9632\u62a4\u7f69</color>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_TechDown_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u654c\u4eba\u7684<color=#FFCE00>\u79d1\u6280</color>\u964d\u4f4e\u3002"
+        },
+        {
+            "key": "Dungeon_PowerUp_TechUp_Desc",
+            "value": "\u5728\u968f\u540e\u7684\u751f\u5b58\u6218\u6597\u4e2d\uff0c\u4f60\u961f\u4f0d\u7684<color=#FFCE00>\u79d1\u6280</color>\u63d0\u9ad8\u3002"
+        },
+        {
+            "key": "Dungeon_Tab_Main_Title",
+            "value": "\u4e3b\u8981"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Generic_Title",
+            "value": "\u653b\u51fb\u52a0\u6210"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level1_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+5%\u653b\u51fb</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level2_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+10%\u653b\u51fb</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level3_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+15%\u653b\u51fb</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level4_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+20%\u653b\u51fb</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Generic_Title",
+            "value": "\u9632\u5fa1\u52a0\u6210"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level1_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+5%\u9632\u5fa1</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level2_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+10%\u9632\u5fa1</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level3_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+15%\u9632\u5fa1</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level4_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+20%\u9632\u5fa1</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level1_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+5%\u751f\u547d\u503c</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level2_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+10%\u751f\u547d\u503c</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level3_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+15%\u751f\u547d\u503c</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level4_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+20%\u751f\u547d\u503c</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_HP_Generic_Title",
+            "value": "\u751f\u547d\u503c\u52a0\u6210"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
+            "value": "\u89e3\u9501{0}\u4e2a<i>\u9884\u5907\u680f\u4f4d</i>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Title",
+            "value": "\u9884\u5907\u680f\u4f4d"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
+            "value": "\u89e3\u95011\u4e2a<i>\u9884\u5907\u680f\u4f4d</i>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
+            "value": "\u89e3\u95011\u4e2a<i>\u9884\u5907\u680f\u4f4d</i>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
+            "value": "\u89e3\u95011\u4e2a<i>\u9884\u5907\u680f\u4f4d</i>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
+            "value": "\u89e3\u95011\u4e2a<i>\u9884\u5907\u680f\u4f4d</i>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Generic_Title",
+            "value": "\u9632\u62a4\u7f69"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level1_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u5f00\u59cb\u65f6\u83b7\u5f97<b>50\u9632\u62a4\u7f69</b>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level2_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u5f00\u59cb\u65f6\u83b7\u5f97<b>100\u9632\u62a4\u7f69</b>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level3_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u5f00\u59cb\u65f6\u83b7\u5f97<b>150\u9632\u62a4\u7f69</b>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level4_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u5f00\u59cb\u65f6\u83b7\u5f97<b>200\u9632\u62a4\u7f69</b>\uff0c\u6301\u7eed3\u56de\u5408\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Generic_Title",
+            "value": "\u79d1\u6280\u52a0\u6210"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level1_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+5%\u79d1\u6280</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level2_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+10%\u79d1\u6280</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level3_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+15%\u79d1\u6280</b>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level4_Desc",
+            "value": "\u6bcf\u573a\u751f\u5b58\u6218\u6597\u4e2d\u83b7\u5f97<b>+20%\u79d1\u6280</b>\u3002"
+        },
+        {
             "key": "e1_ending_00",
             "value": "\u8230\u957f\uff0c\u6211\u4eec\u5df2\u7ecf\u51c6\u5907\u597d\u542c\u4ece\u4f60\u7684\u547d\u4ee4\u3002"
         },
@@ -30023,6 +30283,82 @@
             "value": "\u65f6\u95f4\u7ed3\u675f"
         },
         {
+            "key": "Tooltip_Dungeon_Checkpoint_Desc",
+            "value": "\u68c0\u67e5\u70b9\u6bcf\u8fdb\u884c{0}\u4e2a\u5173\u5361\u5373\u4f1a\u6c38\u4e45\u89e3\u9501\uff0c\u5141\u8bb8\u5728\u5f80\u540e\u7684\u751f\u5b58\u6e38\u620f\u4e2d\u4ece\u66f4\u9ad8\u7684\u5173\u5361\u5f00\u59cb\u6e38\u73a9\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_Checkpoint_Title",
+            "value": "\u68c0\u67e5\u70b9"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Desc",
+            "value": "\u8bf7\u9009\u62e9\u8d70\u54ea\u6761\u8def\u3002\u4e0d\u540c\u7684\u8def\u53ef\u80fd\u4f1a\u6709\u4e0d\u540c\u7684\u654c\u4eba\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Title",
+            "value": "\u8def\u7ebf\u9009\u62e9"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Desc",
+            "value": "\u6bcf\u4e2a\u751f\u5b58\u5173\u5361\u90fd\u7531\u4e00\u7cfb\u5217\u7684\u6218\u6597\u7ec4\u6210\uff0c\u968f\u7740\u524d\u8fdb\u7684\u6df1\u5ea6\uff0c\u96be\u5ea6\u548c\u5956\u52b1\u90fd\u6c34\u6da8\u8239\u9ad8\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Title",
+            "value": "\u751f\u5b58\u5173\u5361"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Desc",
+            "value": "\u5f3a\u5316\u53ef\u63d0\u4f9b\u9488\u5bf9\u4f60\u961f\u4f0d\u7684\u6682\u65f6\u6027\u52a0\u6210\uff0c\u6216\u9488\u5bf9\u654c\u4eba\u7684\u60e9\u7f5a\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Title",
+            "value": "\u5f3a\u5316"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Desc",
+            "value": "\u901a\u8fc7\u63f4\u519b\u5347\u7ea7\uff0c\u53ef\u4ee5\u6269\u5927\u961f\u4f0d\u7684\u89c4\u6a21\uff0c\u6700\u591a\u53ef\u5305\u542b8\u540d\u8239\u5458\uff1a4\u540d\u6295\u5165\u6218\u6597\uff0c4\u540d\u5217\u4e8e\u9884\u5907\u680f\u4f4d\uff0c\u7b49\u5f85\u66ff\u6362\u51cf\u5458\u3002\n\u9996\u4e2a\u9884\u5907\u680f\u4f4d\u53ef\u5728\u8d2d\u4e70\u63f4\u519b\u5347\u7ea7\u540e\u7acb\u5373\u5728\u961f\u4f0d\u9009\u62e9\u671f\u95f4\u8fdb\u884c\u586b\u5145\u3002\u989d\u5916\u7684\u9884\u7559\u680f\u4f4d\u53ef\u901a\u8fc7\u5b8c\u6210\u751f\u5b58\u5173\u5361\u8fdb\u884c\u586b\u5145\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Title",
+            "value": "\u63f4\u519b"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Desc",
+            "value": "\u8d2d\u4e70\u63f4\u519b\u5347\u7ea7\uff0c\u89e3\u9501\u6b64\u9884\u5907\u680f\u4f4d\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Title",
+            "value": "\u9884\u5907\u680f\u4f4d\u5df2\u89e3\u9501"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotUnavailable_Desc",
+            "value": "\u5b8c\u6210\u751f\u5b58\u5173\u5361\u53ef\u586b\u5145\u6b64\u9884\u5907\u680f\u4f4d\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Desc",
+            "value": "\u4f7f\u7528\u540d\u5355\u4e0a\u968f\u673a\u5206\u914d\u7684\u8239\u5458\u7ec4\u5efa\u961f\u4f0d\u3002\u9996\u4e2a\u9884\u5907\u680f\u4f4d\u53ef\u5728\u63f4\u519b\u5347\u7ea7\u8d2d\u4e70\u540e\u7acb\u5373\u4f7f\u7528\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Title",
+            "value": "\u56e2\u961f\u9009\u62e9"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Desc",
+            "value": "\u5347\u7ea7\u53ef\u63d0\u4f9b\u4e8e\u751f\u5b58\u5173\u5361\u6218\u6597\u65f6\u7684\u6c38\u4e45\u52a0\u6210\u3002"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Title",
+            "value": "\u5347\u7ea7"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Desc",
+            "value": "\u5c06\u753b\u8d28\u8bbe\u7f6e\u63d0\u9ad8\u81f3\u63a8\u8350\u7684\u9ed8\u8ba4\u8bbe\u7f6e\u4e4b\u4e0a\uff0c\u53ef\u80fd\u5bfc\u81f4\u610f\u6599\u4e4b\u5916\u6216\u8d1f\u9762\u7684\u6e38\u73a9\u4f53\u9a8c\u3002"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Title",
+            "value": "\u8b66\u544a"
+        },
+        {
             "key": "triggered_bundle_00_desc",
             "value": "\u4f60\u5df2\u4ece\u65f6\u6c47\u4e2d\u89e3\u6551\u4f2f\u7eb3\u59c6\uff0c\u662f\u65f6\u5019\u4f7f\u7528\u8fd9\u4e2a\u9650\u65f6\u793c\u5305\u5347\u7ea7\u4e86\u3002"
         },
@@ -30185,6 +30521,38 @@
         {
             "key": "tutorial_directiveexplanation02_00",
             "value": "<color=#fff15c>\u661f\u9645\u8230\u961f\u6307\u4ee4</color>\u5c06\u6307\u5bfc\u4f60\u5f3a\u5316\u8239\u5458\uff0c\u4e3a\u5c06\u6765\u7684\u4efb\u52a1\u505a\u597d\u51c6\u5907\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line01_Worf",
+            "value": "\u8230\u957f\uff0c\u6b22\u8fce\u6765\u5230<color=#fff15c>\u6708\u795e\u53f7\u751f\u5b58\u8ba1\u5212</color>\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line02_Worf",
+            "value": "\u771f\u6b63\u7684\u52c7\u58eb\u5fc5\u987b\u65f6\u65f6\u9524\u70bc\u81ea\u5df1\u7684\u6280\u80fd\uff0c\u4e0d\u7136\u5c31\u4f1a\u56e0\u4e3a\u6020\u60f0\u800c\u53d8\u5f97\u8fdf\u949d\u3002\u4e3a\u4e86\u8fd9\u4e2a\u76ee\u7684\uff0c\u6211\u8bbe\u8ba1\u4e86\u8fd9\u4e2a\u5168\u606f\u7532\u677f<color=#fff15c>\u7a0b\u5e8f</color>\uff0c\u8ba9\u8239\u5458\u63a5\u53d7\u6765\u81ea\u65f6\u6c47\u7684\u4f17\u591a\u5a01\u80c1\u7684\u6311\u6218\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line03_Narrator",
+            "value": "<color=#fff15c>\u751f\u5b58\u5173\u5361</color>\u90fd\u5305\u542b\u4e00\u7cfb\u5217\u7684\u6218\u6597\uff0c\u968f\u7740\u524d\u8fdb\u7684\u6df1\u5ea6\uff0c\u96be\u5ea6\u548c\u5956\u52b1\u90fd\u6c34\u6da8\u8239\u9ad8\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line04_Narrator",
+            "value": "\u4f7f\u7528\u540d\u5355\u4e0a\u968f\u673a\u5206\u914d\u7684\u8239\u5458\u7ec4\u5efa\u961f\u4f0d\u3002\u5b8c\u6210<color=#fff15c>\u751f\u5b58\u5173\u5361</color>\u5e76\u8d2d\u4e70<color=#fff15c>\u63f4\u519b\u5347\u7ea7</color>\uff0c\u6269\u5927\u961f\u4f0d\u7684\u89c4\u6a21\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line05_Narrator",
+            "value": "\u901a\u8fc7<color=#fff15c>\u63f4\u519b\u5347\u7ea7</color>\uff0c\u53ef\u4ee5\u6269\u5927\u961f\u4f0d\u7684\u89c4\u6a21\uff0c\u6700\u591a\u53ef\u5305\u542b8\u540d\u8239\u5458\uff1a4\u540d\u6295\u5165\u6218\u6597\uff0c4\u540d\u5217\u4e8e<color=#fff15c>\u9884\u5907\u680f\u4f4d</color>\uff0c\u7b49\u5f85\u66ff\u6362\u51cf\u5458\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line06_Narrator",
+            "value": "\u4e00\u7ecf\u8d2d\u4e70\uff0c\u9996\u4e2a<color=#fff15c>\u9884\u5907\u680f\u4f4d</color>\u5373\u53ef\u7acb\u5373\u5f97\u5230\u586b\u5145\u3002\u989d\u5916\u7684<color=#fff15c>\u9884\u5907\u680f\u4f4d</color>\u53ef\u5728\u5b8c\u6210\u989d\u5916\u7684<color=#fff15c>\u751f\u5b58\u5173\u5361</color>\u540e\u586b\u5145\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line07_Narrator",
+            "value": "<color=#fff15c>\u5347\u7ea7</color>\u53ef\u8d2d\u4e70\u83b7\u5f97\uff0c\u80fd\u5728<color=#fff15c>\u751f\u5b58\u5173\u5361</color>\u4e2d\u63d0\u4f9b\u6c38\u4e45\u6027\u7684\u52a0\u6210\u3002"
+        },
+        {
+            "key": "Tutorial_Dungeon_Line08_Narrator",
+            "value": "<color=#fff15c>\u68c0\u67e5\u70b9</color>\u6bcf\u8fdb\u884c<color=#fff15c>{0}\u4e2a\u5173\u5361</color>\u5373\u4f1a\u6c38\u4e45\u89e3\u9501\uff0c\u5141\u8bb8\u5728\u5f80\u540e\u7684\u751f\u5b58\u6e38\u620f\u4e2d\u4ece\u66f4\u9ad8\u7684\u5173\u5361\u5f00\u59cb\u6e38\u73a9\u3002"
         },
         {
             "key": "tutorial_firstlossreaction_00",
@@ -31101,6 +31469,166 @@
         {
             "key": "UI_DownloadConfirmation_Popup_Header",
             "value": "\u6ce8\u610f\uff1a\u9700\u8981\u4e0b\u8f7d"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Body",
+            "value": "\u786e\u5b9a\u8981<b><color=#F3E54D>\u653e\u5f03</color></b>\u6b64\u751f\u5b58\u5173\u5361\u5417\uff1f\u6240\u6709\u8fdb\u5c55\u5747\u5c06<b>\u4e22\u5931</b>\u3002\u4f60\u53ef\u4ece\u4e4b\u524d\u89e3\u9501\u7684\u4efb\u610f\u68c0\u67e5\u70b9\u91cd\u65b0\u5f00\u59cb\u3002"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Title",
+            "value": "\u662f\u5426\u653e\u5f03\u5173\u5361\uff1f"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels",
+            "value": "{0}\u4e2a\u5173\u5361"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels_Plural",
+            "value": "{0}\u4e2a\u5173\u5361"
+        },
+        {
+            "key": "UI_Dungeon_Back_Popup_Body",
+            "value": "\u662f\u5426<b><color=#F3E54D>\u8fd4\u56de\u8230\u6865</color></b>\uff0c\u7a0d\u540e\u7ee7\u7eed\u6b64\u751f\u5b58\u5173\u5361\uff1f\u6240\u6709\u8fdb\u5ea6\u5c06\u4f1a<b>\u4fdd\u7559</b>\u3002"
+        },
+        {
+            "key": "UI_Dungeon_BestScore",
+            "value": "\u6700\u4f73\u5f97\u5206"
+        },
+        {
+            "key": "UI_Dungeon_CheckpointUnlocked",
+            "value": "\u68c0\u67e5\u70b9\u5df2\u89e3\u9501\uff01"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam",
+            "value": "\u5f53\u524d\u961f\u4f0d"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam_Null",
+            "value": "\u5f00\u59cb\u751f\u5b58\u5173\u5361\u4ee5\u9009\u62e9\u961f\u4f0d"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel",
+            "value": "\u6700\u9ad8\u7b49\u7ea7"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel_Null",
+            "value": "\u53c2\u52a0\u81f3\u5c111\u4e2a\u751f\u5b58\u5173\u5361\u3002"
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectReinforcement",
+            "value": "\u9009\u62e9\u4e00\u540d\u8239\u5458\u4f5c\u4e3a\u961f\u4f0d\u7684\u63f4\u519b\u3002"
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectTeam",
+            "value": "\u4e3a\u6bcf\u4e2a\u804c\u8d23\u9009\u62e9\u4e00\u540d\u8239\u5458\u3002"
+        },
+        {
+            "key": "Ui_Dungeon_LevelComplete",
+            "value": "\u5173\u5361{0}\u5b8c\u6210"
+        },
+        {
+            "key": "Ui_Dungeon_LevelFailed",
+            "value": "\u5173\u5361{0}\u5931\u8d25"
+        },
+        {
+            "key": "UI_Dungeon_LevelSuccess",
+            "value": "\u5173\u5361{0}\u6210\u529f"
+        },
+        {
+            "key": "UI_Dungeon_NextCheckpoint",
+            "value": "\u68c0\u67e5\u70b9\u4e8e\uff1a"
+        },
+        {
+            "key": "UI_Dungeon_NextReinforcement",
+            "value": "\u63f4\u519b\u4e0e\uff1a"
+        },
+        {
+            "key": "UI_Dungeon_PersonalBest",
+            "value": "\u4e2a\u4eba\u6700\u4f73"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Header",
+            "value": "\u8def\u7ebf\u9009\u62e9"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Lower",
+            "value": "\u4e0b\u8def"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Main",
+            "value": "\u8bf7\u9009\u62e9\u8d70\u54ea\u6761\u8def\u3002"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_MinChoice",
+            "value": "\u8bf7\u9009\u62e9\u4e00\u6761<b>\u8def</b>\u524d\u8fdb\u3002"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Upper",
+            "value": "\u4e0a\u8def"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Duration",
+            "value": "\u6301\u7eed{0}\u573a\u6218\u6597"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Header",
+            "value": "\u5f3a\u5316"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Main",
+            "value": "\u9009\u62e9\u4e00\u79cd\u5f3a\u5316"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
+            "value": "\u8bf7\u9009\u62e9\u4e00\u79cd<b>\u5f3a\u5316</b>\u4ee5\u7ee7\u7eed\u3002"
+        },
+        {
+            "key": "UI_Dungeon_Powerup_Duration",
+            "value": "{0}\u573a\u6218\u6597"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_MinSelect",
+            "value": "\u8bf7\u9009\u62e9\u4e00\u540d\u8239\u5458\u4ee5\u7ee7\u7eed\u3002"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
+            "value": "\u6ca1\u6709\u9884\u5907\u680f\u4f4d\u53ef\u7528\uff0c\u8bf7\u9009\u62e9\u4e00\u9879\u5956\u52b1\u5f3a\u5316\u3002"
+        },
+        {
+            "key": "UI_Dungeon_SelectCheckpoint",
+            "value": "\u9009\u62e9\u4ece\u54ea\u4e2a\u751f\u5b58\u5173\u5361\u5f00\u59cb\u3002"
+        },
+        {
+            "key": "UI_Dungeon_ViewPowerUps",
+            "value": "\u67e5\u770b\u5f3a\u5316"
+        },
+        {
+            "key": "UI_Dungeon_ViewReinforcements",
+            "value": "\u67e5\u770b\u589e\u63f4"
+        },
+        {
+            "key": "UI_Dungeon_ViewReserves",
+            "value": "\u67e5\u770b\u9884\u5907"
+        },
+        {
+            "key": "UI_Dungeon_ViewRoster",
+            "value": "\u67e5\u770b\u540d\u5355"
+        },
+        {
+            "key": "UI_Dungeon_ViewTeam",
+            "value": "\u67e5\u770b\u961f\u4f0d"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Choice",
+            "value": "\u9009\u62e9"
+        },
+        {
+            "key": "UI_DungeonNode_Label_PowerUp",
+            "value": "\u5f3a\u5316"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Split",
+            "value": "\u62c6\u5206"
         },
         {
             "key": "UI_Emote_Description",
@@ -32213,6 +32741,10 @@
         {
             "key": "UI_Menu_TooltipLocked_Shuttlecraft_Title",
             "value": "\u7a7f\u68ad\u673a\uff08\u9501\u5b9a\uff09"
+        },
+        {
+            "key": "UI_Menu_TooltipLocked_Survival_Title",
+            "value": "\u751f\u5b58\uff08\u9501\u5b9a\uff09"
         },
         {
             "key": "UI_Mission_Abandon_Popup_Abandon_Button",

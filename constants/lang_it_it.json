@@ -1487,6 +1487,14 @@
             "value": "Gettoni"
         },
         {
+            "key": "Common_Checkpoint",
+            "value": "Checkpoint"
+        },
+        {
+            "key": "Common_Checkpoint_Plural",
+            "value": "Checkpoint"
+        },
+        {
             "key": "Common_ChestCurrency",
             "value": "Replicatori"
         },
@@ -1505,6 +1513,10 @@
         {
             "key": "Common_Computer",
             "value": "Computer"
+        },
+        {
+            "key": "Common_CoverSlot",
+            "value": "SLOT COPERTURA"
         },
         {
             "key": "Common_Create",
@@ -1555,12 +1567,28 @@
             "value": "Dukat"
         },
         {
+            "key": "Common_DungeonCurrency",
+            "value": "Crediti di sopravvivenza"
+        },
+        {
+            "key": "Common_DungeonStamina",
+            "value": "Energia di sopravvivenza"
+        },
+        {
+            "key": "Common_Duration",
+            "value": "Durata"
+        },
+        {
             "key": "Common_Edit",
             "value": "Modifica"
         },
         {
             "key": "Common_Elnor",
             "value": "Elnor"
+        },
+        {
+            "key": "Common_EmptySlot",
+            "value": "SLOT VUOTO"
         },
         {
             "key": "Common_EventPoint",
@@ -2339,8 +2367,28 @@
             "value": "Molto raro"
         },
         {
+            "key": "Common_Reinforcement",
+            "value": "Rinforzo"
+        },
+        {
+            "key": "Common_Reinforcements",
+            "value": "Rinforzi"
+        },
+        {
+            "key": "Common_ReinforceSlot",
+            "value": "SLOT RINFORZO"
+        },
+        {
             "key": "Common_RequiredLevel",
             "value": "Livello richiesto"
+        },
+        {
+            "key": "Common_Reserves",
+            "value": "Riserve"
+        },
+        {
+            "key": "Common_ReserveSlot",
+            "value": "SLOT RISERVA"
         },
         {
             "key": "Common_RomulanCommander",
@@ -16987,6 +17035,14 @@
             "value": "Da usare per recuperare risorse durante le missioni."
         },
         {
+            "key": "Data_Item_Description_DungeonCurrency",
+            "value": "Da usare per acquistare Miglioramenti di sopravvivenza."
+        },
+        {
+            "key": "Data_Item_Description_DungeonStamina",
+            "value": "Da usare per partecipare ai Livelli sopravvivenza."
+        },
+        {
             "key": "Data_Item_Description_EventPoint",
             "value": "Puoi accumulare Punti evento durante gli eventi"
         },
@@ -26799,6 +26855,210 @@
             "value": "Questo numero \u00e8 il Potere combinato di tutti i membri della squadra di ricognizione! Pi\u00f9 potere ha la tua squadra di ricognizione, pi\u00f9 \u00e8 probabile che porti a termine le missioni."
         },
         {
+            "key": "Dungeon_Main_Title_Long",
+            "value": "Programma di sopravvivenza della Artemis"
+        },
+        {
+            "key": "Dungeon_Main_Title_Short",
+            "value": "Sopravvivenza"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Body",
+            "value": "Seleziona almeno {0} equipaggio per procedere."
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Header",
+            "value": "Sopravvivenza bloccata"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackDown_Desc",
+            "value": "L'<color=#FFCE00>Attacco</color> nemico si riduce per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackUp_Desc",
+            "value": "L'<color=#FFCE00>Attacco</color> della tua squadra aumenta per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_Cloak_Desc",
+            "value": "La tua squadra ottiene <color=#FFCE00>Occultamento</color> per 3 turni per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_CritChanceUp_Desc",
+            "value": "La <color=#FFCE00>Probabilit\u00e0 di crit.</color> della tua squadra aumenta per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseDown_Desc",
+            "value": "La <color=#FFCE00>Difesa</color> nemica si riduce per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseUp_Desc",
+            "value": "La <color=#FFCE00>Difesa</color> della tua squadra aumenta per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_Heal_Desc",
+            "value": "La tua squadra <color=#FFCE00>recupera</color> il {0}% di PS per la prossima battaglia di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleDown_Desc",
+            "value": "Il <color=#FFCE00>Morale</color> nemico si riduce per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleUp_Desc",
+            "value": "Il <color=#FFCE00>Morale</color> della tua squadra aumenta per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_RedAlert_Desc",
+            "value": "La tua squadra ottiene <color=#FFCE00>Allarme Rosso</color> per 3 turni per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_Regenerate_Desc",
+            "value": "La tua squadra <color=#FFCE00>rigenera</color> il {0}% di PS per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_Scan_Desc",
+            "value": "La tua squadra ottiene <color=#FFCE00>Scansione</color> per 3 turni per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_Shield_Desc",
+            "value": "La tua squadra ottiene <color=#FFCE00>Scudi</color> per 3 turni per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechDown_Desc",
+            "value": "La <color=#FFCE00>Tech</color> nemica si riduce per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechUp_Desc",
+            "value": "La <color=#FFCE00>Tech</color> della tua squadra aumenta per le prossime battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Tab_Main_Title",
+            "value": "Principale"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Generic_Title",
+            "value": "Bonus Attacco"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level1_Desc",
+            "value": "Ricevi <b>+5% Attacco</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level2_Desc",
+            "value": "Ricevi <b>+10% Attacco</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level3_Desc",
+            "value": "Ricevi <b>+15% Attacco</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level4_Desc",
+            "value": "Ricevi <b>+20% Attacco</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Generic_Title",
+            "value": "Bonus Difesa"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level1_Desc",
+            "value": "Ricevi <b>+5% Difesa</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level2_Desc",
+            "value": "Ricevi <b>+10% Difesa</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level3_Desc",
+            "value": "Ricevi <b>+15% Difesa</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level4_Desc",
+            "value": "Ricevi <b>+20% Difesa</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level1_Desc",
+            "value": "Ricevi <b>+5% PS</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level2_Desc",
+            "value": "Ricevi <b>+10% PS</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level3_Desc",
+            "value": "Ricevi <b>+15% PS</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level4_Desc",
+            "value": "Ricevi <b>+20% PS</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_HP_Generic_Title",
+            "value": "Bonus Salute"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
+            "value": "Sblocca {0} <i>Slot riserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Title",
+            "value": "Slot Riserva"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
+            "value": "Sblocca 1 <i>Slot riserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
+            "value": "Sblocca 1 <i>Slot riserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
+            "value": "Sblocca 1 <i>Slot riserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
+            "value": "Sblocca 1 <i>Slot riserva</i>."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Generic_Title",
+            "value": "Scudi"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level1_Desc",
+            "value": "Inizia con <b>50 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level2_Desc",
+            "value": "Inizia con <b>100 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level3_Desc",
+            "value": "Inizia con <b>150 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level4_Desc",
+            "value": "Inizia con <b>200 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Generic_Title",
+            "value": "Bonus Tech"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level1_Desc",
+            "value": "Ricevi <b>+5% Tech</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level2_Desc",
+            "value": "Ricevi <b>+10% Tech</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level3_Desc",
+            "value": "Ricevi <b>+15% Tech</b> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level4_Desc",
+            "value": "Ricevi <b>+20% Tech</b> nelle battaglie di Sopravvivenza."
+        },
+        {
             "key": "e1_ending_00",
             "value": "Capitano, siamo pronti a curvare al suo ordine."
         },
@@ -30023,6 +30283,82 @@
             "value": "Tempo Esaurito"
         },
         {
+            "key": "Tooltip_Dungeon_Checkpoint_Desc",
+            "value": "I checkpoint vengono sbloccati in maniera permanente ogni {0} Livelli, permettendoti, per le partite in modalit\u00e0 Sopravvivenza successive, di partire dai livelli pi\u00f9 alti."
+        },
+        {
+            "key": "Tooltip_Dungeon_Checkpoint_Title",
+            "value": "Checkpoint"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Desc",
+            "value": "Scegli quale percorso seguire. Percorsi diversi potrebbero avere nemici diversi."
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Title",
+            "value": "Scelta di percorso"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Desc",
+            "value": "Ogni Livello sopravvivenza consiste in una serie di battaglie, con ricompense e difficolt\u00e0 crescenti con l'avanzare."
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Title",
+            "value": "Livello sopravvivenza"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Desc",
+            "value": "I power-up forniscono bonus temporanei alla tua squadra o penalit\u00e0 ai nemici."
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Title",
+            "value": "Power-Up"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Desc",
+            "value": "I Miglioramenti di rinforzo permettono alla tua squadra di espandersi fino a un totale di 8 membri dell'equipaggio: 4 attivi in combattimento e 4 negli Slot riserva, che attendono di sostituire i caduti.\nIl primo Slot riserva, una volta acquistato un Miglioramento di rinforzo, pu\u00f2 essere riempito subito durante la selezione della squadra. Gli Slot riserva aggiuntivi potranno essere riempiti completando i Livelli sopravvivenza."
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Title",
+            "value": "Rinforzi"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Desc",
+            "value": "Sblocca questo Slot riserva acquistando il Miglioramento di rinforzo."
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Title",
+            "value": "Slot riserva bloccato"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotUnavailable_Desc",
+            "value": "Questo Slot riserva pu\u00f2 essere riempito completando i Livelli sopravvivenza."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Desc",
+            "value": "Costruisci la tua squadra usando membri dell'equipaggio assegnati casualmente dalla tua lista. Il primo Slot riserva pu\u00f2 essere utilizzato una volta acquistato un Miglioramento di rinforzo."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Title",
+            "value": "Selezione squadra"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Desc",
+            "value": "I miglioramenti forniscono bonus permanenti durante le battaglie nei Livelli sopravvivenza."
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Title",
+            "value": "Miglioramenti"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Desc",
+            "value": "Aumentare le impostazioni di qualit\u00e0 oltre i limiti consigliati potrebbe portare a esperienze di gioco non intenzionali o negative."
+        },
+        {
+            "key": "Tooltip_QualityWarning_Title",
+            "value": "Attenzione"
+        },
+        {
             "key": "triggered_bundle_00_desc",
             "value": "Ora che hai salvato Burnham dal Nexus, \u00e8 il momento di un miglioramento con questo bundle a tempo limitato."
         },
@@ -30185,6 +30521,38 @@
         {
             "key": "tutorial_directiveexplanation02_00",
             "value": "Gli <color=#fff15c>Ordini della Flotta Stellare</color> aiutano a migliorare l'equipaggio e a prepararsi per le missioni successive."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line01_Worf",
+            "value": "Ah, capitano, benvenuto al <color=#fff15c>Programma di sopravvivenza della Artemis</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line02_Worf",
+            "value": "Un vero guerriero deve affinare costantemente le proprie abilit\u00e0, affinch\u00e9 non affievoliscano con il tempo. A tal fine, ho progettato questo <color=#fff15c>programma</color> a ponte ologramma per sfidare l'equipaggio con le numerose minacce del Nexus."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line03_Narrator",
+            "value": "Ogni <color=#fff15c>Livello sopravvivenza</color> consiste in una serie di battaglie, con ricompense e difficolt\u00e0 crescenti con l'avanzare."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line04_Narrator",
+            "value": "Costruisci la tua squadra usando membri dell'equipaggio assegnati casualmente dalla tua lista. Aumenta la grandezza della tua squadra completando <color=#fff15c>Livelli sopravvivenza</color> e acquistando <color=#fff15c>Miglioramenti di rinforzo</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line05_Narrator",
+            "value": "I <color=#fff15c>Miglioramenti di rinforzo</color> permettono alla tua squadra di espandersi fino a un totale di 8 membri dell'equipaggio: 4 attivi in combattimento e 4 negli <color=#fff15c>Slot riserva</color>, che attendono di sostituire i caduti."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line06_Narrator",
+            "value": "Il primo <color=#fff15c>Slot riserva</color>, una volta acquistato, pu\u00f2 essere riempito subito durante la selezione della squadra. Gli <color=#fff15c>Slot riserva</color> aggiuntivi potranno essere riempiti una volta completati altri <color=#fff15c>Livelli sopravvivenza</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line07_Narrator",
+            "value": "\u00c8 possibile acquistare <color=#fff15c>miglioramenti</color> che forniscono bonus permanenti nei <color=#fff15c>Livelli sopravvivenza</color>."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line08_Narrator",
+            "value": "I <color=#fff15c>checkpoint</color> vengono sbloccati in maniera permanente ogni <color=#fff15c>{0} Livelli</color>, permettendoti, per le partite in modalit\u00e0 Sopravvivenza successive, di partire dai livelli pi\u00f9 alti."
         },
         {
             "key": "tutorial_firstlossreaction_00",
@@ -31101,6 +31469,166 @@
         {
             "key": "UI_DownloadConfirmation_Popup_Header",
             "value": "ALLARME: NECESSARIO DOWNLOAD"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Body",
+            "value": "Vuoi davvero <b><color=#F3E54D>ABBANDONARE</color></b> questo Livello sopravvivenza? Tutti i progressi andranno <b>perduti</b>. Puoi ripartire da un qualsiasi checkpoint gi\u00e0 sbloccato."
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Title",
+            "value": "ABBANDONARE IL LIVELLO?"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels",
+            "value": "{0} Livello"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels_Plural",
+            "value": "{0} Livelli"
+        },
+        {
+            "key": "UI_Dungeon_Back_Popup_Body",
+            "value": "Vorresti <b><color=#F3E54D>TORNARE AL PONTE</color></b> e riprendere il Livello sopravvivenza in seguito? Tutti i progressi saranno <b>salvati</b>."
+        },
+        {
+            "key": "UI_Dungeon_BestScore",
+            "value": "PUNTEGGIO MIGLIORE"
+        },
+        {
+            "key": "UI_Dungeon_CheckpointUnlocked",
+            "value": "Checkpoint sbloccato!"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam",
+            "value": "SQUADRA ATTUALE"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam_Null",
+            "value": "Avvia un Livello sopravvivenza per selezionare una squadra"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel",
+            "value": "LIVELLO PI\u00d9 ALTO"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel_Null",
+            "value": "Partecipa ad almeno 1 Livello sopravvivenza."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectReinforcement",
+            "value": "Seleziona un equipaggio per rinforzare la tua squadra."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectTeam",
+            "value": "Seleziona un equipaggio per ogni ruolo."
+        },
+        {
+            "key": "Ui_Dungeon_LevelComplete",
+            "value": "Livello {0} completato"
+        },
+        {
+            "key": "Ui_Dungeon_LevelFailed",
+            "value": "Livello {0} non superato"
+        },
+        {
+            "key": "UI_Dungeon_LevelSuccess",
+            "value": "Livello {0} superato"
+        },
+        {
+            "key": "UI_Dungeon_NextCheckpoint",
+            "value": "Checkpoint tra:"
+        },
+        {
+            "key": "UI_Dungeon_NextReinforcement",
+            "value": "Rinforzi tra:"
+        },
+        {
+            "key": "UI_Dungeon_PersonalBest",
+            "value": "RECORD PERSONALE"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Header",
+            "value": "SCELTA DI PERCORSO"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Lower",
+            "value": "PERCORSO INFERIORE"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Main",
+            "value": "Scegli quale percorso prendere."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_MinChoice",
+            "value": "Seleziona un <b>percorso</b> per procedere."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Upper",
+            "value": "PERCORSO SUPERIORE"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Duration",
+            "value": "per {0} battaglie"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Header",
+            "value": "POWER-UP"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Main",
+            "value": "Seleziona un power-up"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
+            "value": "Seleziona un <b>power-up</b> per procedere."
+        },
+        {
+            "key": "UI_Dungeon_Powerup_Duration",
+            "value": "{0} battaglie"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_MinSelect",
+            "value": "Seleziona un equipaggio per procedere."
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
+            "value": "Nessuno Slot riserva disponibile. Scegli un power-up bonus."
+        },
+        {
+            "key": "UI_Dungeon_SelectCheckpoint",
+            "value": "Seleziona il Livello sopravvivenza da cui partire."
+        },
+        {
+            "key": "UI_Dungeon_ViewPowerUps",
+            "value": "VEDI POWER-UP"
+        },
+        {
+            "key": "UI_Dungeon_ViewReinforcements",
+            "value": "VEDI RINFORZI"
+        },
+        {
+            "key": "UI_Dungeon_ViewReserves",
+            "value": "VEDI RISERVE"
+        },
+        {
+            "key": "UI_Dungeon_ViewRoster",
+            "value": "VEDI LISTA"
+        },
+        {
+            "key": "UI_Dungeon_ViewTeam",
+            "value": "VEDI SQUADRA"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Choice",
+            "value": "SCELTA"
+        },
+        {
+            "key": "UI_DungeonNode_Label_PowerUp",
+            "value": "POWER-UP"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Split",
+            "value": "DIVISIONE"
         },
         {
             "key": "UI_Emote_Description",
@@ -32213,6 +32741,10 @@
         {
             "key": "UI_Menu_TooltipLocked_Shuttlecraft_Title",
             "value": "NAVICELLA (BLOCCATA)"
+        },
+        {
+            "key": "UI_Menu_TooltipLocked_Survival_Title",
+            "value": "SOPRAVVIVENZA (BLOCCATA)"
         },
         {
             "key": "UI_Mission_Abandon_Popup_Abandon_Button",

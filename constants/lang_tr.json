@@ -1483,6 +1483,14 @@
             "value": "Jeton Say\u0131s\u0131"
         },
         {
+            "key": "Common_Checkpoint",
+            "value": "Kontrol Noktas\u0131"
+        },
+        {
+            "key": "Common_Checkpoint_Plural",
+            "value": "Kontrol Noktas\u0131"
+        },
+        {
             "key": "Common_ChestCurrency",
             "value": "\u00c7o\u011falt\u0131c\u0131lar"
         },
@@ -1501,6 +1509,10 @@
         {
             "key": "Common_Computer",
             "value": "Bilgisayar"
+        },
+        {
+            "key": "Common_CoverSlot",
+            "value": "YUVAYI \u00d6RT"
         },
         {
             "key": "Common_Create",
@@ -1551,12 +1563,28 @@
             "value": "Dukat"
         },
         {
+            "key": "Common_DungeonCurrency",
+            "value": "Hayatta Kalma Kredisi"
+        },
+        {
+            "key": "Common_DungeonStamina",
+            "value": "Hayatta Kalma Enerjisi"
+        },
+        {
+            "key": "Common_Duration",
+            "value": "S\u00fcre"
+        },
+        {
             "key": "Common_Edit",
             "value": "D\u00fczenle"
         },
         {
             "key": "Common_Elnor",
             "value": "Elnor"
+        },
+        {
+            "key": "Common_EmptySlot",
+            "value": "YUVAYI BO\u015eALT"
         },
         {
             "key": "Common_EventPoint",
@@ -2335,8 +2363,28 @@
             "value": "\u00c7ok Nadir"
         },
         {
+            "key": "Common_Reinforcement",
+            "value": "Takviye"
+        },
+        {
+            "key": "Common_Reinforcements",
+            "value": "Takviye"
+        },
+        {
+            "key": "Common_ReinforceSlot",
+            "value": "YUVAYA TAKV\u0130YE ET"
+        },
+        {
             "key": "Common_RequiredLevel",
             "value": "Gerekli Seviye"
+        },
+        {
+            "key": "Common_Reserves",
+            "value": "Yedek"
+        },
+        {
+            "key": "Common_ReserveSlot",
+            "value": "YUVAYI YEDE\u011eE AL"
         },
         {
             "key": "Common_RomulanCommander",
@@ -16983,6 +17031,14 @@
             "value": "G\u00f6revler s\u0131ras\u0131nda kaynaklar\u0131 toplamak i\u00e7in kullan\u0131l\u0131r."
         },
         {
+            "key": "Data_Item_Description_DungeonCurrency",
+            "value": "Hayatta Kalma Y\u00fckseltmelerini sat\u0131n almak i\u00e7in kullan\u0131l\u0131r."
+        },
+        {
+            "key": "Data_Item_Description_DungeonStamina",
+            "value": "Hayatta Kalma Seviyelerine kat\u0131lmak i\u00e7in kullan\u0131l\u0131r."
+        },
+        {
             "key": "Data_Item_Description_EventPoint",
             "value": "Etkinlik Puanlar\u0131, Etkinlikler s\u0131ras\u0131nda toplan\u0131r"
         },
@@ -26795,6 +26851,210 @@
             "value": "Bu say\u0131, t\u00fcm sefer ekibi \u00fcyelerinin toplam G\u00fcc\u00fcn\u00fc ifade eder! Sefer ekibin ne kadar G\u00fc\u00e7l\u00fcyse g\u00f6revlerini ba\u015farma ihtimali o kadar artar."
         },
         {
+            "key": "Dungeon_Main_Title_Long",
+            "value": "Artemis Hayatta Kalma Program\u0131"
+        },
+        {
+            "key": "Dungeon_Main_Title_Short",
+            "value": "Hayatta Kalma"
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Body",
+            "value": "L\u00fctfen devam etmek i\u00e7in en az {0} M\u00fcrettebat se\u00e7."
+        },
+        {
+            "key": "Dungeon_MinPlayer_Requirement_Header",
+            "value": "Hayatta Kalma Kilitli"
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackDown_Desc",
+            "value": "D\u00fc\u015fman\u0131n <color=#FFCE00>Sald\u0131r\u0131s\u0131</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in azalt\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_AttackUp_Desc",
+            "value": "Tak\u0131m\u0131n\u0131n <color=#FFCE00>Sald\u0131r\u0131s\u0131</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in art\u0131r\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_Cloak_Desc",
+            "value": "Tak\u0131m\u0131n, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in 3 tur boyunca <color=#FFCE00>Gizlenme</color> kazan\u0131r."
+        },
+        {
+            "key": "Dungeon_PowerUp_CritChanceUp_Desc",
+            "value": "Tak\u0131m\u0131n\u0131n <color=#FFCE00>Kritik \u015eans\u0131</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in art\u0131r\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseDown_Desc",
+            "value": "D\u00fc\u015fman\u0131n <color=#FFCE00>Savunmas\u0131</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in azalt\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_DefenseUp_Desc",
+            "value": "Tak\u0131m\u0131n\u0131n <color=#FFCE00>Savunmas\u0131</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in art\u0131r\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_Heal_Desc",
+            "value": "Tak\u0131m\u0131n, sonraki Hayatta Kalma sava\u015f\u0131 i\u00e7in %{0} SP <color=#FFCE00>Yeniler</color>."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleDown_Desc",
+            "value": "D\u00fc\u015fman\u0131n <color=#FFCE00>Morali</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in azalt\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_MoraleUp_Desc",
+            "value": "Tak\u0131m\u0131n\u0131n <color=#FFCE00>Morali</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in art\u0131r\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_RedAlert_Desc",
+            "value": "Tak\u0131m\u0131n, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in 3 tur boyunca <color=#FFCE00>K\u0131rm\u0131z\u0131 Alarm</color> kazan\u0131r."
+        },
+        {
+            "key": "Dungeon_PowerUp_Regenerate_Desc",
+            "value": "Tak\u0131m\u0131n, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in %{0} SP <color=#FFCE00>Yeniden \u00dcretir</color>."
+        },
+        {
+            "key": "Dungeon_PowerUp_Scan_Desc",
+            "value": "D\u00fc\u015fman tak\u0131m, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in 3 tur boyunca <color=#FFCE00>Taran\u0131r</color>."
+        },
+        {
+            "key": "Dungeon_PowerUp_Shield_Desc",
+            "value": "Tak\u0131m\u0131n, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in 3 tur boyunca <color=#FFCE00>Kalkanlar</color> kazan\u0131r."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechDown_Desc",
+            "value": "D\u00fc\u015fman\u0131n <color=#FFCE00>Teknolojisi</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in azalt\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_PowerUp_TechUp_Desc",
+            "value": "Tak\u0131m\u0131n\u0131n <color=#FFCE00>Teknolojisi</color>, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in art\u0131r\u0131ld\u0131."
+        },
+        {
+            "key": "Dungeon_Tab_Main_Title",
+            "value": "Ana"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Generic_Title",
+            "value": "Saldiri Bonusu"
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level1_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 Sald\u0131r\u0131</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level2_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 Sald\u0131r\u0131</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level3_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 Sald\u0131r\u0131</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Attack_Level4_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 Sald\u0131r\u0131</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Generic_Title",
+            "value": "Savunma Bonusu"
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level1_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 Savunma</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level2_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 Savunma</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level3_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 Savunma</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Defense_Level4_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 Savunma</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level1_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 SP</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level2_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 SP</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level3_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 SP</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Level4_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 SP</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_HP_Generic_Title",
+            "value": "Sa\u011flik Bonusu"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
+            "value": "{0}. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Generic_Title",
+            "value": "Yuvayi Yede\u011fe Al"
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
+            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
+            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
+            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+        },
+        {
+            "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
+            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Generic_Title",
+            "value": "Kalkanlar"
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level1_Desc",
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>50 Kalkan</b> ile ba\u015fla."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level2_Desc",
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>100 Kalkan</b> ile ba\u015fla."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level3_Desc",
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>150 Kalkan</b> ile ba\u015fla."
+        },
+        {
+            "key": "Dungeon_Upgrade_Shields_Level4_Desc",
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>200 Kalkan</b> ile ba\u015fla."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Generic_Title",
+            "value": "Teknoloj\u0130 Bonusu"
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level1_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 Teknoloji</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level2_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 Teknoloji</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level3_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 Teknoloji</b> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Tech_Level4_Desc",
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 Teknoloji</b> kazan."
+        },
+        {
             "key": "e1_ending_00",
             "value": "Kaptan, emretti\u011finde warp h\u0131z\u0131nda ilerlemeye haz\u0131r\u0131z."
         },
@@ -30019,6 +30279,82 @@
             "value": "Zaman Doldu"
         },
         {
+            "key": "Tooltip_Dungeon_Checkpoint_Desc",
+            "value": "Her {0} Seviyede bir, gelecekteki Hayatta Kalma denemeleri i\u00e7in daha y\u00fcksek seviyelerden ba\u015flamana imkan tan\u0131yan Kontrol Noktalar\u0131n\u0131n kilidi kal\u0131c\u0131 olarak a\u00e7\u0131l\u0131r."
+        },
+        {
+            "key": "Tooltip_Dungeon_Checkpoint_Title",
+            "value": "Kontrol Noktalar\u0131"
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Desc",
+            "value": "Hangi yoldan gitmek istedi\u011fini se\u00e7. Farkl\u0131 yollarda farkl\u0131 d\u00fc\u015fmanlar olabilir."
+        },
+        {
+            "key": "Tooltip_Dungeon_Choice_Title",
+            "value": "Yol Se\u00e7imi"
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Desc",
+            "value": "Her Hayatta Kalma Seviyesi, \u00f6d\u00fcllerin bulundu\u011fu ve zorlu\u011fun ilerledik\u00e7e artt\u0131\u011f\u0131 bir dizi sava\u015ftan olu\u015fur."
+        },
+        {
+            "key": "Tooltip_Dungeon_Level_Title",
+            "value": "Hayatta Kalma Seviyesi"
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Desc",
+            "value": "G\u00fc\u00e7lendiriciler, tak\u0131m\u0131n i\u00e7in ge\u00e7ici bonuslar ya da d\u00fc\u015fmanlar i\u00e7in cezalar verir."
+        },
+        {
+            "key": "Tooltip_Dungeon_PowerUp_Title",
+            "value": "G\u00fc\u00e7lendiriciler"
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Desc",
+            "value": "Takviye Y\u00fckseltmeleri, tak\u0131m\u0131n\u0131 4'\u00fc sava\u015fta etkin ve 4'\u00fc de kay\u0131plar\u0131n yerine ge\u00e7mek i\u00e7in Yedek Yuvalar\u0131nda bekleyen olmak \u00fczere toplamda 8 M\u00fcrettebata kadar geni\u015fletmene imkan tan\u0131r.\n Takviye Y\u00fckseltmesi sat\u0131n al\u0131nd\u0131\u011f\u0131nda Yedek Yuvalar\u0131, Tak\u0131m Se\u00e7imi s\u0131ras\u0131nda an\u0131nda doldurulabilir. Ek Yedek Yuvalar\u0131, Hayatta Kalma Seviyeleri tamamlanarak doldurulabilir."
+        },
+        {
+            "key": "Tooltip_Dungeon_Reinforcement_Title",
+            "value": "Takviyeler"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Desc",
+            "value": "Takviye Y\u00fckseltmesini sat\u0131n alarak bu Yedek Yuvas\u0131n\u0131n kilidini a\u00e7."
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotLocked_Title",
+            "value": "Yedek Yuvas\u0131 Kilitli"
+        },
+        {
+            "key": "Tooltip_Dungeon_ReserveSlotUnavailable_Desc",
+            "value": "Bu Yedek Yuvas\u0131n\u0131n kilidi, Hayatta Kalma Seviyeleri tamamlanarak a\u00e7\u0131labilir."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Desc",
+            "value": "Listenden rastgele atanan M\u00fcrettebatla tak\u0131m\u0131n\u0131 kur. \u0130lk Yedek Yuvas\u0131, bir Takviye Y\u00fckseltmesi sat\u0131n al\u0131nd\u0131\u011f\u0131nda kullan\u0131labilir."
+        },
+        {
+            "key": "Tooltip_Dungeon_TeamSelect_Title",
+            "value": "Tak\u0131m Se\u00e7imi"
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Desc",
+            "value": "Hayatta Kalma Seviyelerinde sava\u015f\u0131rken y\u00fckseltmeler, kal\u0131c\u0131 bonuslar sa\u011flar."
+        },
+        {
+            "key": "Tooltip_Dungeon_Upgrades_Title",
+            "value": "Y\u00fckseltmeler"
+        },
+        {
+            "key": "Tooltip_QualityWarning_Desc",
+            "value": "Kalite ayarlar\u0131n\u0131, tavsiye edilen varsay\u0131lan ayar\u0131n \u00fczerine \u00e7\u0131karmak, istenmeyen veya olumsuz oyun deneyimleriyle sonu\u00e7lanabilir."
+        },
+        {
+            "key": "Tooltip_QualityWarning_Title",
+            "value": "Uyar\u0131"
+        },
+        {
             "key": "triggered_bundle_00_desc",
             "value": "Burnham'\u0131 Neksus'tan kurtard\u0131\u011f\u0131na g\u00f6re bu s\u0131n\u0131rl\u0131 s\u00fcreli paketle onu y\u00fckseltmenin tam zaman\u0131."
         },
@@ -30181,6 +30517,38 @@
         {
             "key": "tutorial_directiveexplanation02_00",
             "value": "<color=#fff15c>Y\u0131ld\u0131z Filosu Direktifleri</color>, m\u00fcrettebat\u0131n\u0131 g\u00fc\u00e7lendirmene yol g\u00f6sterir ve gelecek g\u00f6revlere seni haz\u0131rlar."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line01_Worf",
+            "value": "Aa, Kaptan, <color=#fff15c>Artemis</color> Hayatta Kalma Program\u0131na ho\u015f geldin."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line02_Worf",
+            "value": "Ger\u00e7ek bir sava\u015f\u00e7\u0131, durgunluktan k\u00f6relmemek i\u00e7in s\u00fcrekli becerilerini bilemeli. Bu ama\u00e7la, Neksus'taki bir\u00e7ok tehdide kar\u015f\u0131 m\u00fcrettebata meydan okumak i\u00e7in bu Holodeck <color=#fff15c>Program\u0131n\u0131</color> tasarlad\u0131m."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line03_Narrator",
+            "value": "<color=#fff15c>Hayatta Kalma Seviyeleri</color>: Her biri, \u00f6d\u00fcllerin bulundu\u011fu ve zorlu\u011fun ilerledik\u00e7e artt\u0131\u011f\u0131 bir dizi sava\u015ftan olu\u015fur."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line04_Narrator",
+            "value": "Listenden rastgele atanan M\u00fcrettebatla tak\u0131m\u0131n\u0131 kur. <color=#fff15c>Hayatta Kalma Seviyelerini</color> tamamlayarak ve <color=#fff15c>Takviye Y\u00fckseltmeleri</color> sat\u0131n alarak tak\u0131m\u0131n\u0131 geni\u015flet."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line05_Narrator",
+            "value": "<color=#fff15c>Takviye Y\u00fckseltmeleri</color>, tak\u0131m\u0131n\u0131 4'\u00fc sava\u015fta etkin ve 4'\u00fc de kay\u0131plar\u0131n yerine ge\u00e7mek i\u00e7in <color=#fff15c>Yedek Yuvalar\u0131nda</color> bekleyen olmak \u00fczere toplamda 8 M\u00fcrettebata kadar geni\u015fletmene imkan tan\u0131r."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line06_Narrator",
+            "value": "\u0130lk <color=#fff15c>Yedek Yuvas\u0131</color> sat\u0131n al\u0131nd\u0131\u011f\u0131nda Tak\u0131m Se\u00e7imi s\u0131ras\u0131nda an\u0131nda doldurulabilir. Ek <color=#fff15c>Yedek Yuvalar\u0131</color>, ek <color=#fff15c>Hayatta Kalma Seviyeleri</color> tamamlanarak doldurulabilir."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line07_Narrator",
+            "value": "<color=#fff15c>Hayatta Kalma Seviyelerinde</color> kal\u0131c\u0131 bonuslar sa\u011flayan <color=#fff15c>Y\u00fckseltmeler</color> sat\u0131n al\u0131nabilir."
+        },
+        {
+            "key": "Tutorial_Dungeon_Line08_Narrator",
+            "value": "Her <color=#fff15c>{0} Seviyede</color> bir, gelecekteki Hayatta Kalma denemeleri i\u00e7in daha y\u00fcksek seviyelerden ba\u015flamana imkan tan\u0131yan <color=#fff15c>Kontrol Noktalar\u0131n\u0131n</color> kilidi kal\u0131c\u0131 olarak a\u00e7\u0131l\u0131r."
         },
         {
             "key": "tutorial_firstlossreaction_00",
@@ -31097,6 +31465,166 @@
         {
             "key": "UI_DownloadConfirmation_Popup_Header",
             "value": "UYARI: \u0130ND\u0130RME GEREKL\u0130"
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Body",
+            "value": "Bu Hayatta Kalma Seviyesini <b><color=#F3E54D>BIRAKMAK</color></b> istedi\u011fine emin misin? T\u00fcm ilerlemeni <b>kaybedeceksin</b>. \u00d6nceden kilidini a\u00e7t\u0131\u011f\u0131n herhangi bir Kontrol Noktas\u0131ndan yeniden ba\u015flayabilirsin."
+        },
+        {
+            "key": "UI_Dungeon_Abandon_Popup_Title",
+            "value": "SEV\u0130YE BIRAKILSIN MI?"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels",
+            "value": "{0} Seviye"
+        },
+        {
+            "key": "UI_Dungeon_AmountLevels_Plural",
+            "value": "{0} Seviye"
+        },
+        {
+            "key": "UI_Dungeon_Back_Popup_Body",
+            "value": "<b><color=#F3E54D>KAPTAN K\u00d6\u015eK\u00dcNE D\u00d6N\u00dcP</color></b> bu Hayatta Kalma Seviyesine daha sonra devam etmek ister misin? T\u00fcm ilerlemen <b>kaydedilecektir</b>."
+        },
+        {
+            "key": "UI_Dungeon_BestScore",
+            "value": "EN \u0130Y\u0130 SKOR"
+        },
+        {
+            "key": "UI_Dungeon_CheckpointUnlocked",
+            "value": "Kontrol Noktas\u0131n\u0131n Kilidi A\u00e7\u0131ld\u0131!"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam",
+            "value": "MEVCUT TAKIM"
+        },
+        {
+            "key": "UI_Dungeon_CurrentTeam_Null",
+            "value": "Bir tak\u0131m se\u00e7mek i\u00e7in bir Hayatta Kalma Seviyesine ba\u015fla"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel",
+            "value": "EN Y\u00dcKSEK SEV\u0130YE"
+        },
+        {
+            "key": "UI_Dungeon_HighestLevel_Null",
+            "value": "En az 1 Hayatta Kalma Seviyesine kat\u0131l."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectReinforcement",
+            "value": "Tak\u0131m\u0131na Takviye Etmek i\u00e7in bir M\u00fcrettebat se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_Instruct_SelectTeam",
+            "value": "Her Rol i\u00e7in bir M\u00fcrettebat se\u00e7."
+        },
+        {
+            "key": "Ui_Dungeon_LevelComplete",
+            "value": "{0}. Seviye Tamamland\u0131"
+        },
+        {
+            "key": "Ui_Dungeon_LevelFailed",
+            "value": "{0}. Seviye Ba\u015far\u0131s\u0131z Oldu"
+        },
+        {
+            "key": "UI_Dungeon_LevelSuccess",
+            "value": "{0}. Seviye Ba\u015far\u0131l\u0131"
+        },
+        {
+            "key": "UI_Dungeon_NextCheckpoint",
+            "value": "Kontrol Noktas\u0131na:"
+        },
+        {
+            "key": "UI_Dungeon_NextReinforcement",
+            "value": "Takviyelere:"
+        },
+        {
+            "key": "UI_Dungeon_PersonalBest",
+            "value": "K\u0130\u015e\u0130SEL REKOR"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Header",
+            "value": "YOL SE\u00c7\u0130M\u0130"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Lower",
+            "value": "A\u015eA\u011eI YOL"
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Main",
+            "value": "Hangi yoldan gitmek istedi\u011fini se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_MinChoice",
+            "value": "L\u00fctfen devam etmek i\u00e7in bir <b>Yol</b> se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_Popup_Choice_Upper",
+            "value": "YUKARI YOL"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Duration",
+            "value": "{0} sava\u015f i\u00e7in"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Header",
+            "value": "G\u00dc\u00c7LEND\u0130R\u0130C\u0130"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_Main",
+            "value": "Bir G\u00fc\u00e7lendirici se\u00e7"
+        },
+        {
+            "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
+            "value": "L\u00fctfen devam etmek i\u00e7in bir <b>G\u00fc\u00e7lendirici</b> se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_Powerup_Duration",
+            "value": "{0} sava\u015f"
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_MinSelect",
+            "value": "L\u00fctfen devam etmek i\u00e7in bir M\u00fcrettebat se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
+            "value": "Yedek Yuvas\u0131 mevcut de\u011fil. Bir bonus G\u00fc\u00e7lendirici se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_SelectCheckpoint",
+            "value": "Ba\u015flamak istedi\u011fin Hayatta Kalma Seviyesini se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_ViewPowerUps",
+            "value": "G\u00dc\u00c7LEND\u0130R\u0130C\u0130LER\u0130 G\u00d6R\u00dcNT\u00dcLE"
+        },
+        {
+            "key": "UI_Dungeon_ViewReinforcements",
+            "value": "TAKV\u0130YELER\u0130 G\u00d6R\u00dcNT\u00dcLE"
+        },
+        {
+            "key": "UI_Dungeon_ViewReserves",
+            "value": "YEDEKLER\u0130 G\u00d6R\u00dcNT\u00dcLE"
+        },
+        {
+            "key": "UI_Dungeon_ViewRoster",
+            "value": "L\u0130STEY\u0130 G\u00d6R\u00dcNT\u00dcLE"
+        },
+        {
+            "key": "UI_Dungeon_ViewTeam",
+            "value": "TAKIMI G\u00d6R\u00dcNT\u00dcLE"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Choice",
+            "value": "SE\u00c7\u0130M"
+        },
+        {
+            "key": "UI_DungeonNode_Label_PowerUp",
+            "value": "G\u00dc\u00c7LEND\u0130R\u0130C\u0130"
+        },
+        {
+            "key": "UI_DungeonNode_Label_Split",
+            "value": "AYIRIM"
         },
         {
             "key": "UI_Emote_Description",
@@ -32209,6 +32737,10 @@
         {
             "key": "UI_Menu_TooltipLocked_Shuttlecraft_Title",
             "value": "MEK\u0130K (K\u0130L\u0130TL\u0130)"
+        },
+        {
+            "key": "UI_Menu_TooltipLocked_Survival_Title",
+            "value": "YA\u015eAM M\u00dcCADELES\u0130 (K\u0130L\u0130TL\u0130)"
         },
         {
             "key": "UI_Mission_Abandon_Popup_Abandon_Button",
