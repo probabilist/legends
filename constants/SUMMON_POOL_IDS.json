@@ -1,0 +1,8 @@
+{
+    "Core": "Core_07",
+    "Command": "Summon_Command_06",
+    "Engineering": "Summon_Engineer_06",
+    "Medical": "Summon_Medic_06",
+    "Science": "Summon_Science_06",
+    "Security": "Summon_Security_07"
+}

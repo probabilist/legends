@@ -1,0 +1,12 @@
+{
+    "Health": "hlth",
+    "Attack": "att",
+    "Speed": "spd",
+    "Defense": "dfn",
+    "Tech": "tech",
+    "CritDamage": "cd",
+    "CritChance": "cc",
+    "GlancingDamage": "gd",
+    "GlancingChance": "gc",
+    "Resolve": "res"
+}
