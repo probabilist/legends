@@ -520,10 +520,16 @@ class AskMaxChars(ModalDialog):
         return True
 
 class HelpScreen(ModalDialog):
+    """A message dialog giving help on the STL Planner app.
+
+    """
     def __init__(self, root, parent=None):
         ModalDialog.__init__(self, root, parent, 'Roster Help')
 
     def body(self, master):
+        """Create the body of the dialog.
+
+        """
         text = ScrolledText(master)
         glossary = '\n'.join(
             '    {} = {}'.format(v.rjust(3), k)
@@ -540,6 +546,9 @@ class HelpScreen(ModalDialog):
         text.pack()
 
     def buttonbox(self):
+        """Remove the 'Cancel' button.
+
+        """
         self.box = tk.Frame(self)
 
         tk.Button(

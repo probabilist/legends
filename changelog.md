@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.7.4
+
+* Added the ability to export a roster to a spreadsheet.
+
 ## Version 0.7.3
 
 * Moved the help bar in the roster screen to a help dialog accessible from the menu bar.

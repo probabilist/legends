@@ -4,13 +4,16 @@
 
 import tkinter as tk
 from tkinter import ttk, X, BOTH, GROOVE, LEFT, RIGHT, NSEW, YES, W
+from tkinter.filedialog import asksaveasfilename
+from getpass import getuser
+from csv import DictWriter
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSLevel
 from legends.constants import (
     RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED
 )
-from legends.ui.dialogs import showinfo, askRosterFilter, RosterFilter
+from legends.ui.dialogs import askRosterFilter, RosterFilter
 
 __all__ = ['maxXP', 'RosterTab', 'CharCard', 'RosterInfoBar']
 
@@ -114,9 +117,7 @@ class RosterTab(tk.Frame):
             if self.checkFilter(char)
         ]
         for char in chars:
-            CharCard(
-                char, self.master.saveslot, self.scrollArea.content
-            ).grid(
+            CharCard(char, self).grid(
                 row=count // columns, column=count % columns, sticky=NSEW
             )
             count += 1
@@ -136,7 +137,8 @@ class RosterTab(tk.Frame):
             'Rarity': lambda c,s: c.rarityIndex,
             'Role': lambda c,s: c.role,
             'Tokens': lambda c,s: s.tokens[c.nameID],
-            'Tokens needed': lambda c,s: c.tokensNeeded - s.tokens[c.nameID]
+            'Tokens needed': lambda c,s: c.tokensNeeded - s.tokens
+            [c.nameID]
         }
         for statName in STAT_INITIALS:
             self.sortFuncs[statName] = lambda c,s,n=statName: (
@@ -177,7 +179,10 @@ class RosterTab(tk.Frame):
             bar, text='descending', variable=self.descending, command=self.sort
         ).pack(side=LEFT)
         tk.Button(
-            bar, text='filter', command=self.adjustFilter
+            bar, text='filter', width=6, command=self.adjustFilter
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text='export', width=6, command=self.export
         ).pack(side=LEFT)
         return bar
 
@@ -214,34 +219,45 @@ class RosterTab(tk.Frame):
             self.filter = filt
             self.refresh()
 
+    def export(self):
+        filename = asksaveasfilename(
+            defaultextension='csv',
+            initialdir='/Users/' + getuser() + '/Documents/',
+            initialfile='roster.csv'
+        )
+        if not filename:
+            return
+        cardDicts = [card.dictify() for card in self.cards.values()]
+        fields = cardDicts[0].keys()
+        with open(filename, 'w', newline='', encoding='utf-8') as f:
+            writer = DictWriter(f, fields)
+            writer.writeheader()
+            writer.writerows(cardDicts)
+
 class CharCard(tk.Frame):
     """A small tile containing basic information about a character.
 
     Attributes:
         char (Character): The character from which the card is built.
-        saveslot (SaveSlot): The save slot in which the character is
-            located.
         nameLabel (Label): The label containing the character's name.
             Clicking it toggles the character's `favorite` attribute.
 
     """
 
-    def __init__(self, char, saveslot, parent=None, **options):
+    def __init__(self, char, rostertab, **options):
         """Builds a character card for the given Character object.
 
         Args:
             char (Character): The character from which to build the
                 card.
-            saveslot (SaveSlot): The SaveSlot object containing the
-                character.
-            nameLabel (tk.Label): The label containing the character's
-                name.
+            rostertab (RosterTab): The RosterTab object to which this
+                card belongs.
 
         """
         # build card and initialize variables
-        tk.Frame.__init__(self, parent, **options)
+        tk.Frame.__init__(self, rostertab.scrollArea.content, **options)
         self.char = char
-        self.saveslot = saveslot
+        # self.saveslot = saveslot
 
         # build name and stat plates
         bgColor = RARITY_COLORS[char.rarity]
@@ -263,6 +279,16 @@ class CharCard(tk.Frame):
         """
         return self.char in self.saveslot.favorites
 
+    @property
+    def saveslot(self):
+        """SaveSlot: The save slot in which the character is located."""
+        content = self.master
+        canvas = content.master
+        scrollArea = canvas.master
+        rostertab = scrollArea.master
+        session = rostertab.master
+        return session.saveslot
+
     def namePlate(self, bgColor):
         """Build and returns the character name plate with the given
         background color.
@@ -277,10 +303,11 @@ class CharCard(tk.Frame):
         """
         plate = tk.Frame(self, bg=bgColor, height=118, width=105)
         plate.pack_propagate(0)
+        data = self.dictify()
 
         # build name label
         self.nameLabel = tk.Label(
-            plate, text=self.char.shortName, bg=bgColor,
+            plate, text=data['name'], bg=bgColor,
             font=(None, 16, 'bold')
         )
         self.nameLabel.bind('<Button-1>', self.toggleFav)
@@ -289,10 +316,10 @@ class CharCard(tk.Frame):
         tk.Label(
             plate,
             text='{}\nRank {}\nTokens: {}/{}'.format(
-                self.char.role,
-                self.char.rank,
-                self.saveslot.tokens[self.char.nameID],
-                self.char.tokensNeeded
+                data['role'],
+                data['rank'],
+                data['tokens'],
+                data['tokensNeeded']
             ),
             bg=bgColor,
             font=(None, 11, 'italic')
@@ -301,9 +328,9 @@ class CharCard(tk.Frame):
         tk.Label(
             plate,
             text=('Level {}\nXP: {:,}\n({:.1%})'.format(
-                self.char.level,
-                self.char.xp,
-                self.char.xp/maxXP(self.char.rarity)
+                data['level'],
+                data['xp'],
+                data['xp']/maxXP(data['rarity'])
             )),
             bg=bgColor,
             font=(None, 11, 'italic')
@@ -323,13 +350,14 @@ class CharCard(tk.Frame):
 
         """
         plate = tk.Frame(self, bg=bgColor)
-        statObj = self.saveslot.roster.charStats(self.char.nameID)
+        data = self.dictify()
+        # statObj = self.saveslot.roster.charStats(self.char.nameID)
         font = (None, 9)
 
         # cycle through the 10 basic stats
         for index, statName in enumerate(STAT_INITIALS):
             # format the stat value
-            statVal = statObj.get(statName)
+            statVal = data[statName]
             if index == 2: # the speed stat
                 statText = '{:.2f}'.format(statVal)
             elif index > 4: # the percentage stats
@@ -352,11 +380,7 @@ class CharCard(tk.Frame):
             ).grid(row=row, column=col + 1, sticky=W)
 
         # grid the extra stats
-        moreStats = {
-            'MGL:': self.saveslot.roster.missingGearLevels(self.char.nameID),
-            'MGR:': self.saveslot.roster.missingGearRanks(self.char.nameID),
-            'MSL:': self.char.missingSkillLevels
-        }
+        moreStats = {k + ':': data[k] for k in ['MGL', 'MGR', 'MSL']}
         for row, item in enumerate(moreStats.items()):
             text, statVal = item
             tk.Label(
@@ -370,7 +394,7 @@ class CharCard(tk.Frame):
         # grid the power stat and return the plate
         tk.Label(
             plate,
-            text='POWER: {:.0f}'.format(POWER_AT_ORIGIN + statObj.power),
+            text='POWER: {:.0f}'.format(data['power']),
             bg=bgColor, font=(None, 11) + ('bold',)
         ).grid(row=5, column=0, columnspan=4)
         return plate
@@ -395,6 +419,32 @@ class CharCard(tk.Frame):
             highlightbackground=color, highlightcolor=color
         )
         self.nameLabel.config(fg=color)
+
+    def dictify(self):
+        """Creates and returns a dictionary representation of the data
+        depicted on this card.
+
+        """
+        D = {
+            'name': self.char.shortName,
+            'rarity': self.char.rarity,
+            'role': self.char.role,
+            'rank': self.char.rank,
+            'tokens': self.saveslot.tokens[self.char.nameID],
+            'tokensNeeded': self.char.tokensNeeded,
+            'level': self.char.level,
+            'xp': self.char.xp
+        }
+        statObj = self.saveslot.roster.charStats(self.char.nameID)
+        for statName in STAT_INITIALS:
+            D[statName] = statObj.get(statName)
+        D['power'] = POWER_AT_ORIGIN + statObj.power
+        D.update({
+            'MGL': self.saveslot.roster.missingGearLevels(self.char.nameID),
+            'MGR': self.saveslot.roster.missingGearRanks(self.char.nameID),
+            'MSL': self.char.missingSkillLevels
+        })
+        return D
 
 class RosterInfoBar(tk.Frame):
     """A frame for displaying aggregate data about the user's roster.
