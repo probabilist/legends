@@ -9,7 +9,7 @@ from legends.saveslot import SaveSlot
 from legends.ui.dialogs import showerror, askSlot, askMaxChars, askyesno
 from legends.ui.rostertab import RosterTab
 
-__all__ = ['cleanTime', 'STLPlanner']
+__all__ = ['cleanTime', 'STLPlanner', 'Session']
 
 def cleanTime(delta):
     """Converts a timedelta object into a string description that shows
@@ -32,23 +32,15 @@ def cleanTime(delta):
 class STLPlanner(tk.Tk):
     """STL Planner main window.
 
-    Run the STL Planner app with `STLPlanner().mainloop()`.
-
     Args:
-        saveslot (SaveSlot): The user's save data.
-        activeSession (bool): True if the app has an active session
-            open.
+        showTimestamps (tk.BooleanVar): True if the info bar with
+            timestamp data should be shown.
         disableOnModal (list of (tk.Menu, int)): Each item in this list
             is a 2-tuple that represents a menu option which should be
             disabled when a modal dialog is open. The first value is the
             menu in which the option exists. The second value is the
             0-based index of the option within that menu.
-        showTimestamps (tk.BooleanVar): True if the info bar with
-            timestamp data should be shown.
-        sessionFrame (tk.Frame): The frame that holds the contents of
-            current session.
-        infoBar (tk.Frame): A bar of timestamp information from the
-            session save file.
+        session (Session): The currently running user session.
 
     """
 
@@ -56,53 +48,12 @@ class STLPlanner(tk.Tk):
         # build window and initialize variables
         tk.Tk.__init__(self, *args, **kargs)
         self.title('STL Planner')
-        self.saveslot = None
-        self.activeSession = False
-        self.disableOnModal = []
         self.showTimestamps = tk.BooleanVar(self, True)
-        self.showTimestamps.trace('w', self.setTimestamps)
+        self.disableOnModal = []
         self._menuEnabled = True
-        self.sessionFrame = tk.Frame(self)
-        self.sessionFrame.pack()
-        self.infoBar = None
-
-        # build menu bar
-        menuBar = tk.Menu(self)
-        fileMenu = tk.Menu(menuBar)
-        newSessionSubmenu = tk.Menu(fileMenu)
-        sessionMenu = tk.Menu(menuBar)
-        menuBar.add_cascade(label='File', menu=fileMenu)
-        menuBar.add_cascade(label='Session', menu=sessionMenu)
-        fileMenu.add_cascade(label='New Session', menu=newSessionSubmenu)
-        newSessionSubmenu.add_command(
-            label='From Save File...', command=self.newFromFile
-        )
-        newSessionSubmenu.add_command(
-            label='Maxed Characters', command=self.newMaxChars
-        )
-        sessionMenu.add_checkbutton(
-            label='Show Timestamps', variable=self.showTimestamps
-        )
-        self.config(menu=menuBar)
-        self.disableOnModal.append((newSessionSubmenu, 0))
-        self.disableOnModal.append((newSessionSubmenu, 1))
-        self.disableOnModal.append((sessionMenu, 0))
-
-        # show start screen
-        buttonbox = tk.Frame(self.sessionFrame)
-        tk.Button(
-            buttonbox, text='from HD', command=self.newFromFile
-        ).grid(row=0, column=0, sticky=EW)
-        tk.Button(
-            buttonbox, text='MAX', command=self.newMaxChars
-        ).grid(row=1, column=0, sticky=EW)
-        tk.Label(
-            buttonbox, text='Extract data from your local save file'
-        ).grid(row=0, column=1, sticky=W)
-        tk.Label(
-            buttonbox, text='Create a roster of maxed characters'
-        ).grid(row=1, column=1, sticky=W)
-        buttonbox.pack(padx=50, pady=50)
+        self.buildMenu()
+        self.session = Session(self)
+        self.session.pack()
 
     @property
     def menuEnabled(self):
@@ -119,25 +70,175 @@ class STLPlanner(tk.Tk):
         for menu, index in self.disableOnModal:
             menu.entryconfig(index, state=state)
 
-    def clear(self):
-        """Destroys, rebuild, and packs the `sessionFrame` frame.
+    def buildMenu(self):
+        """Builds the menu bar.
 
         """
-        self.sessionFrame.destroy()
-        self.infoBar = None
-        self.sessionFrame = tk.Frame(self)
-        self.sessionFrame.pack()
+        menuBar = tk.Menu(self)
+        self.config(menu=menuBar)
 
-    def makeInfoBar(self):
-        """Builds and returns an info bar frame containing basic
-        timestamp information about the embedded save slot.
+        # build the File menu
+        fileMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label='File', menu=fileMenu)
+
+        # build the File > New Session submenu
+        newSessionSubmenu = tk.Menu(fileMenu)
+        fileMenu.add_cascade(label='New Session', menu=newSessionSubmenu)
+
+        # populate the File > New Session submenu
+        newSessionSubmenu.add_command(
+            label='From Save File...', command=self.newFromFile
+        )
+        self.disableOnModal.append((newSessionSubmenu, 0))
+        newSessionSubmenu.add_command(
+            label='Maxed Characters', command=self.newMaxChars
+        )
+        self.disableOnModal.append((newSessionSubmenu, 1))
+
+        # build and populate the Session menu
+        sessionMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label='Session', menu=sessionMenu)
+        sessionMenu.add_checkbutton(
+            label='Show Timestamps', variable=self.showTimestamps,
+            command=self.setTimestamps
+        )
+        self.disableOnModal.append((sessionMenu, 0))
+
+    def newSession(self, saveslot):
+        """Clears the current session and starts a new one with the
+        given SaveSlot object.
+
+        Args:
+            saveslot (SaveSlot): The SaveSlot instance to associate with
+                the new session.
+
+        """
+        self.session.destroy()
+        self.session = Session(self, saveslot)
+        self.session.pack()
+
+    def askCloseSession(self):
+        """Returns True if there is no active session. (An active
+        session is one whose `saveslot` attribute is not None.) If there
+        is an active session, asks the user if it is okay to close it.
 
         Returns:
-            Frame: The info bar. A child of the calling instance.
+            bool: True if it is okay to close the current session.
 
         """
+        if self.session.saveslot is None:
+            return True
+        return askyesno(self, 'Close Session', 'Close current session?')
+
+    def newFromFile(self):
+        """Prompts the user for a save slot, then builds a SaveSlot
+        object and starts a new session.
+
+        """
+        if self.askCloseSession():
+            try:
+                save = decryptSaveFile()
+            except FileNotFoundError:
+                showerror(self, 'File Not Found', 'Save file not found.')
+                return
+            saveslot = askSlot(self, save)
+            if saveslot is None:
+                return
+            self.newSession(saveslot)
+
+    def newMaxChars(self):
+        """Prompts the user to choose from an array of options, then
+        starts a new session using a roster of maxed characters.
+
+        """
+        if self.askCloseSession():
+            result = askMaxChars(self)
+            if result is None:
+                return
+            chars, maxGear = result
+            saveslot = SaveSlot()
+            saveslot.roster.fillChars(chars, maxGear)
+            self.newSession(saveslot)
+
+    def setTimestamps(self, *args): # pylint: disable=unused-argument
+        """Sets the visibility of the timestamps in the active session
+        according to the value of the `showTimestamps` attribute.
+
+        """
+        if self.showTimestamps.get():
+            self.session.makeTimeBar()
+        else:
+            self.session.removeTimeBar()
+
+class Session(tk.Frame):
+    """A user session in the STL Planner app.
+
+    Attributes:
+        saveslot (SaveSlot): The SaveSlot object associated with the
+            session.
+        timeBar (tk.Frame): The horizontal bar at the top of the session
+            frame that displays time stamp info connected with the
+            associated save slot.
+        tab (tk.Frame): The visible tab in the session frame.
+
+    """
+    def __init__(self, stlplanner, saveslot=None, **options):
+        """Creates a new session.
+
+        Args:
+            stlplanner (STLPlanner): The STLPlanner instance to be
+                assigned as the parent of this session.
+            saveslot (SaveSlot): The SaveSlot object to associate with
+                this session. If none is provided, the session displays
+                buttons that activate choices from the File menu.
+
+        """
+        tk.Frame.__init__(self, stlplanner, **options)
+        self.saveslot = saveslot
+        self.timeBar = None
+        self.tab = tk.Frame(self)
+        self.tab.pack()
+        if saveslot is None:
+            self.startFrame()
+        else:
+            self.makeTimeBar()
+            self.rosterTab()
+
+    def startFrame(self):
+        """Build the starting frame, with choices from the File menu.
+
+        """
+        buttonbox = tk.Frame(self.tab)
+        tk.Button(
+            buttonbox, text='from HD', command=self.master.newFromFile
+        ).grid(row=0, column=0, sticky=EW)
+        tk.Button(
+            buttonbox, text='MAX', command=self.master.newMaxChars
+        ).grid(row=1, column=0, sticky=EW)
+        tk.Label(
+            buttonbox, text='Extract data from your local save file'
+        ).grid(row=0, column=1, sticky=W)
+        tk.Label(
+            buttonbox, text='Create a roster of maxed characters'
+        ).grid(row=1, column=1, sticky=W)
+        buttonbox.pack(padx=50, pady=50)
+
+    def makeTimeBar(self):
+        """Builds and returns a horizontal bar containing timestamp
+        information from the associated save slot. If there is no save
+        slot, or the time bar already exists, or the STLPlanner master
+        prohibits it, the method does nothing.
+
+        """
+        if (
+            self.saveslot is None
+            or self.timeBar is not None
+            or not self.master.showTimestamps.get()
+        ):
+            return
+
         # build bar and initialize variables
-        bar = tk.Frame(self.sessionFrame)
+        self.timeBar = tk.Frame(self)
         timestamps = self.saveslot.timestamps
         start = (
             'start date: '
@@ -157,75 +258,31 @@ class STLPlanner(tk.Tk):
         # build labels
         labels = [None] * 4
         for j in range(4):
-            labels[j] = tk.Label(bar, borderwidth=2, relief=GROOVE,padx=10)
+            labels[j] = tk.Label(
+                self.timeBar, borderwidth=2, relief=GROOVE, padx=10
+            )
         for index, text in enumerate([start, last, total, average]):
             labels[index].config(text=text)
 
-        # pack labels and return bar
+        # pack labels and bar
         for label in labels:
             label.pack(side=LEFT)
-        return bar
+        self.timeBar.pack(side=TOP)
 
-    def setTimestamps(self, *args): # pylint: disable=unused-argument
-        """Toggles the visibility of the info bar.
-
-        """
-        if not self.activeSession:
-            return
-        if self.showTimestamps.get():
-            if self.infoBar is None:
-                self.infoBar = self.makeInfoBar()
-                self.infoBar.pack(side=TOP)
-        else:
-            if self.infoBar is not None:
-                self.infoBar.destroy()
-                self.infoBar = None
-
-    def newFromFile(self):
-        """Prompts the user for a save slot, then builds and stores a
-        SaveSlot object.
+    def removeTimeBar(self):
+        """If the time bar exists, it is destroyed and the `timeBar`
+        attribute is set to None.
 
         """
-        if (self.activeSession and not askyesno(
-            self, 'Close Session', 'Close current session?'
-        )):
-            return
-        try:
-            save = decryptSaveFile()
-        except FileNotFoundError:
-            showerror(self, 'File Not Found', 'Save file not found.')
-            return
-        saveslot = askSlot(self, save)
-        if saveslot is None:
-            return
-        self.saveslot = saveslot
-        self.newSession()
+        if self.timeBar is not None:
+            self.timeBar.destroy()
+            self.timeBar = None
 
-    def newSession(self):
-        """Clears the current session, loads the info bar if needed,
-        loads a new roster tab, and sets the `activeSession` attribute
-        to True.
+    def rosterTab(self):
+        """Loads a new RosterTab instance into the `tab` attribute.
 
         """
-        self.clear()
-        self.activeSession = True
-        self.setTimestamps()
-        RosterTab(self).pack(side=BOTTOM, expand=YES, fill=Y)
-
-    def newMaxChars(self):
-        """Prompts the user to choose from an array of options, then
-        starts a new session using a roster of maxed characters.
-
-        """
-        if (self.activeSession and not askyesno(
-            self, 'Close Session', 'Close current session?'
-        )):
-            return
-        self.activeSession = True
-        result = askMaxChars(self)
-        if result is None:
-            return
-        chars, maxGear = result
-        self.saveslot = SaveSlot()
-        self.saveslot.roster.fillChars(chars, maxGear)
-        self.newSession()
+        self.tab.destroy()
+        self.tab = RosterTab(self)
+        self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
+        self.master.title('STL Planner - Roster')

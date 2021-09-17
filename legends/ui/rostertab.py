@@ -38,17 +38,16 @@ class RosterTab(tk.Frame):
 
     """
 
-    def __init__(self, root, **options):
+    def __init__(self, session, **options):
         """Creates the RosterTab instance.
 
         Args:
-            root (STLPlanner): The currently running STLPlanner
-                instance. It's `sessionFrame` attribute will be assigned
-                as the RosterTab instance's parent.
+            session (Session): The Session instance to assign as the
+                RosterTab instance's parent.
 
         """
         # build frame and initialize variables
-        tk.Frame.__init__(self, root.sessionFrame, **options)
+        tk.Frame.__init__(self, session, **options)
         self.filter = RosterFilter()
 
         # build widgets
@@ -112,17 +111,17 @@ class RosterTab(tk.Frame):
             )
         count = 0
         chars = [
-            char for char in self.root.saveslot.roster.chars.values()
+            char for char in self.master.saveslot.roster.chars.values()
             if self.checkFilter(char)
         ]
         for char in chars:
             CharCard(
-                char, self.root.saveslot, self.scrollArea.content
+                char, self.master.saveslot, self.scrollArea.content
             ).grid(
                 row=count // columns, column=count % columns, sticky=NSEW
             )
             count += 1
-        self.infoBar.makeStats(chars, self.root.saveslot.roster)
+        self.infoBar.makeStats(chars, self.master.saveslot.roster)
 
     def helpBar(self):
         """Builds and returns a help bar with information for the user.
@@ -215,7 +214,7 @@ class RosterTab(tk.Frame):
         field = self.sortField.get()
         if field == '':
             return
-        self.root.saveslot.sort(
+        self.master.saveslot.sort(
             self.sortFuncs[field], self.descending.get()
         )
         self.refresh()
