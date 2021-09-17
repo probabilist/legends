@@ -47,6 +47,7 @@ Attributes:
     SUMMON_POOL_IDS (bidict): An invertible dictionary mapping pool
         names their summon IDs, which are used by the game data to
         identify particular summon pools.
+    HELP (str): The contents of the file, 'help.txt'
 
 """
 
@@ -58,12 +59,14 @@ from legends.utils import bidict
 __all__ = [
     'STAT_ABBREVIATIONS', 'STAT_INITIALS', 'POWER_GRADIENT', 'POWER_AT_ORIGIN',
     'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS', 'PART_STAT_UNLOCKED',
-    'PART_STAT_VALUES', 'ENABLED', 'UPCOMING', 'SUMMON_POOL', 'SUMMON_POOL_IDS'
+    'PART_STAT_VALUES', 'ENABLED', 'UPCOMING', 'SUMMON_POOL',
+    'SUMMON_POOL_IDS', 'HELP'
 ]
+
+rootPath = abspath(dirname(__file__))
 
 # convert all json files in `/data` to dictionaries and assign to a
 # variable whose name is the file name without extension
-rootPath = abspath(dirname(__file__))
 for fileName in listdir(rootPath + '/data'):
     if fileName[0] == '.':
         continue
@@ -204,3 +207,7 @@ for pool, data in SUMMON_POOL.items():
             raise ValueError(
                 '{} in {} summon pool but not in Core'.format(nameID, pool)
             )
+
+# read and store the help files
+with open(rootPath + '/help.txt', encoding='utf-8') as f:
+    HELP = f.read()

@@ -56,7 +56,6 @@ class RosterTab(tk.Frame):
         self.infoBar = RosterInfoBar(self)
 
         # pack frame content
-        self.helpBar().pack(expand=YES, fill=X)
         self.actionBar().pack(expand=YES, fill=X)
         self.scrollArea.pack(expand=YES, fill=BOTH)
         self.infoBar.pack()
@@ -122,29 +121,6 @@ class RosterTab(tk.Frame):
             )
             count += 1
         self.infoBar.makeStats(chars, self.master.saveslot.roster)
-
-    def helpBar(self):
-        """Builds and returns a help bar with information for the user.
-
-        """
-        bar = tk.Frame(self)
-        glossary = '\n'.join(
-            '{} = {}'.format(v, k) for k,v in STAT_INITIALS.items()
-        )
-        glossary += (
-            '\nMGL = Missing gear levels'
-            + '\nMGR = Missing gear ranks'
-            + '\nMSL = Missing skill levels'
-        )
-        tk.Label(
-            bar, text='TIP: Click a character name to mark it as a favorite.'
-        ).pack(side=LEFT)
-        tk.Button(
-            bar, text='Stat glossary',
-            # pylint: disable-next=too-many-function-args
-            command=lambda:showinfo(self.root, 'Stat glossary', glossary)
-        ).pack(side=RIGHT)
-        return bar
 
     def actionBar(self):
         """Builds and returns an action bar that allows the user to

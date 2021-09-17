@@ -7,7 +7,9 @@ block_cipher = None
 a = Analysis(['stlplannerapp.py'],
              pathex=['/Users/jason/Documents/Programming/Python/STLPlanner'],
              binaries=[],
-             datas=[('legends/data', 'legends/data')],
+             datas=[
+                ('legends/data', 'legends/data'),
+                ('legends/help.txt', 'legends')],
              hiddenimports=[],
              hookspath=[],
              hooksconfig={},
@@ -42,4 +44,4 @@ app = BUNDLE(exe,
              name='STL Planner.app',
              icon='command.icns',
              bundle_identifier=None,
-             version='0.7.0')
+             version='0.7.3')

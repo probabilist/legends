@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.7.3
+
+* Moved the help bar in the roster screen to a help dialog accessible from the menu bar.
+
 ## Version 0.7.2
 
 * Created a new `Session` class and restructured the `STLPlanner` class to work with it. Small modifications were also made to the `RosterTab` class as a result. The idea is a re-envisioning of the structure of the app. The app loads a "session", which is associated with a save slot--either taken from an actual save file or created virtually. The session can load tabs. Currently, there is only a "roster" tab. But in the future, there will be "particle" and "character" tabs.

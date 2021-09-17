@@ -11,22 +11,25 @@ Attributes:
 """
 
 import tkinter as tk
-from tkinter import ttk, E, W, HORIZONTAL, LEFT, RIGHT, ACTIVE, YES, X
+from tkinter import (
+    ttk, E, W, HORIZONTAL, LEFT, RIGHT, ACTIVE, YES, X, DISABLED
+)
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
 from tkinter.messagebox import askyesno as _askyesno
 from tkinter.simpledialog import Dialog
+from tkinter.scrolledtext import ScrolledText
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.constants import (
-    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL
+    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS
 )
 from legends.saveslot import SaveSlot
 
 __all__ = [
     'addroot', 'showerror', 'showinfo', 'askyesno', 'askSlot',
     'askRosterFilter', 'askMaxChars', 'ModalDialog', 'AskSlot', 'RosterFilter',
-    'AskRosterFilter', 'AskMaxChars'
+    'AskRosterFilter', 'AskMaxChars', 'HelpScreen'
 ]
 
 def addroot(func):
@@ -515,3 +518,34 @@ class AskMaxChars(ModalDialog):
             return False
         self.result = nameIDs, self.maxGear.get()
         return True
+
+class HelpScreen(ModalDialog):
+    def __init__(self, root, parent=None):
+        ModalDialog.__init__(self, root, parent, 'Roster Help')
+
+    def body(self, master):
+        text = ScrolledText(master)
+        glossary = '\n'.join(
+            '    {} = {}'.format(v.rjust(3), k)
+            for k,v in STAT_INITIALS.items()
+        )
+        glossary += (
+            '\n    MGL = Missing gear levels'
+            + '\n    MGR = Missing gear ranks'
+            + '\n    MSL = Missing skill levels'
+        )
+        text.insert('1.0', HELP.format(glossary))
+        text.config(state=DISABLED)
+        text.focus()
+        text.pack()
+
+    def buttonbox(self):
+        self.box = tk.Frame(self)
+
+        tk.Button(
+            self.box, text="OK", width=10, command=self.ok, default=ACTIVE
+        ).pack(side=RIGHT, padx=5, pady=5)
+
+        self.bind("<Return>", self.ok)
+
+        self.box.pack()

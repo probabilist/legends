@@ -6,7 +6,9 @@ import tkinter as tk
 from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
 from legends.functions import decryptSaveFile
 from legends.saveslot import SaveSlot
-from legends.ui.dialogs import showerror, askSlot, askMaxChars, askyesno
+from legends.ui.dialogs import (
+    showerror, askSlot, askMaxChars, askyesno, HelpScreen
+)
 from legends.ui.rostertab import RosterTab
 
 __all__ = ['cleanTime', 'STLPlanner', 'Session']
@@ -103,6 +105,13 @@ class STLPlanner(tk.Tk):
             command=self.setTimestamps
         )
         self.disableOnModal.append((sessionMenu, 0))
+
+        # build and populate the Help menu
+        helpMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label='Help', menu=helpMenu)
+        helpMenu.add_command(
+            label='STL Planner Help', command=lambda: HelpScreen(self)
+        )
 
     def newSession(self, saveslot):
         """Clears the current session and starts a new one with the

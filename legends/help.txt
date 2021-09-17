@@ -1,0 +1,8 @@
+ROSTER SCREEN
+=============
+
+* Click a character's name to select/deselect it as a favorite.
+
+* Stat glossary:
+
+{}
