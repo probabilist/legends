@@ -3,7 +3,7 @@
 """
 
 import tkinter as tk
-from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW
+from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
 from legends.functions import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import showerror, askSlot, askMaxChars, askyesno
@@ -43,11 +43,12 @@ class STLPlanner(tk.Tk):
             disabled when a modal dialog is open. The first value is the
             menu in which the option exists. The second value is the
             0-based index of the option within that menu.
-        timePerDayLabel (tk.StringVar): The text that appears in the
-            label on the info bar which displays the average amount of
-            time per day the user has spent in the game.
-        timePerDayToggle (tk.BooleanVar): If False, the time-per-day
-            label will show 0; otherwise it shows the correct value.
+        showTimestamps (tk.BooleanVar): True if the info bar with
+            timestamp data should be shown.
+        sessionFrame (tk.Frame): The frame that holds the contents of
+            current session.
+        infoBar (tk.Frame): A bar of timestamp information from the
+            session save file.
 
     """
 
@@ -58,37 +59,37 @@ class STLPlanner(tk.Tk):
         self.saveslot = None
         self.activeSession = False
         self.disableOnModal = []
-        self.timePerDayLabel = tk.StringVar(self, '')
-        self.timePerDayToggle = tk.BooleanVar(self, True)
-        self.timePerDayToggle.trace('w', self.setTimePerDayLabel)
+        self.showTimestamps = tk.BooleanVar(self, True)
+        self.showTimestamps.trace('w', self.setTimestamps)
         self._menuEnabled = True
-        self.mainFrame = tk.Frame(self)
-        self.mainFrame.pack()
+        self.sessionFrame = tk.Frame(self)
+        self.sessionFrame.pack()
+        self.infoBar = None
 
         # build menu bar
         menuBar = tk.Menu(self)
         fileMenu = tk.Menu(menuBar)
-        newSession = tk.Menu(fileMenu)
-        prefMenu = tk.Menu(menuBar)
+        newSessionSubmenu = tk.Menu(fileMenu)
+        sessionMenu = tk.Menu(menuBar)
         menuBar.add_cascade(label='File', menu=fileMenu)
-        menuBar.add_cascade(label='Preferences', menu=prefMenu)
-        fileMenu.add_cascade(label='New session', menu=newSession)
-        newSession.add_command(
-            label='From save file...', command=self.newFromFile
+        menuBar.add_cascade(label='Session', menu=sessionMenu)
+        fileMenu.add_cascade(label='New Session', menu=newSessionSubmenu)
+        newSessionSubmenu.add_command(
+            label='From Save File...', command=self.newFromFile
         )
-        newSession.add_command(
-            label='Maxed characters', command=self.newMaxChars
+        newSessionSubmenu.add_command(
+            label='Maxed Characters', command=self.newMaxChars
         )
-        prefMenu.add_checkbutton(
-            label='Show play time per day', variable=self.timePerDayToggle
+        sessionMenu.add_checkbutton(
+            label='Show Timestamps', variable=self.showTimestamps
         )
         self.config(menu=menuBar)
-        self.disableOnModal.append((newSession, 0))
-        self.disableOnModal.append((newSession, 1))
-        self.disableOnModal.append((prefMenu, 0))
+        self.disableOnModal.append((newSessionSubmenu, 0))
+        self.disableOnModal.append((newSessionSubmenu, 1))
+        self.disableOnModal.append((sessionMenu, 0))
 
         # show start screen
-        buttonbox = tk.Frame(self.mainFrame)
+        buttonbox = tk.Frame(self.sessionFrame)
         tk.Button(
             buttonbox, text='from HD', command=self.newFromFile
         ).grid(row=0, column=0, sticky=EW)
@@ -118,29 +119,16 @@ class STLPlanner(tk.Tk):
         for menu, index in self.disableOnModal:
             menu.entryconfig(index, state=state)
 
-    # pylint: disable-next=unused-argument
-    def setTimePerDayLabel(self, *args):
-        """Updates the text of the time-per-day label, according to
-        whether the user has selected the option to show time per day.
-
-        """
-        if self.timePerDayToggle.get() and self.saveslot is not None:
-            self.timePerDayLabel.set(
-                'play time per day: '
-                + cleanTime(self.saveslot.timestamps.playTimePerDay)
-            )
-        else:
-            self.timePerDayLabel.set('play time per day: 0 hrs 0 min')
-
     def clear(self):
-        """Destroys, rebuild, and packs the `mainFrame` frame.
+        """Destroys, rebuild, and packs the `sessionFrame` frame.
 
         """
-        self.mainFrame.destroy()
-        self.mainFrame = tk.Frame(self)
-        self.mainFrame.pack()
+        self.sessionFrame.destroy()
+        self.infoBar = None
+        self.sessionFrame = tk.Frame(self)
+        self.sessionFrame.pack()
 
-    def infoBar(self):
+    def makeInfoBar(self):
         """Builds and returns an info bar frame containing basic
         timestamp information about the embedded save slot.
 
@@ -149,7 +137,7 @@ class STLPlanner(tk.Tk):
 
         """
         # build bar and initialize variables
-        bar = tk.Frame(self.mainFrame)
+        bar = tk.Frame(self.sessionFrame)
         timestamps = self.saveslot.timestamps
         start = (
             'start date: '
@@ -162,20 +150,36 @@ class STLPlanner(tk.Tk):
         total = (
             'play duration: ' + cleanTime(timestamps.playDuration)
         )
-        self.setTimePerDayLabel()
+        average = (
+            'play time per day: ' + cleanTime(timestamps.playTimePerDay)
+        )
 
         # build labels
         labels = [None] * 4
         for j in range(4):
             labels[j] = tk.Label(bar, borderwidth=2, relief=GROOVE,padx=10)
-        for index, text in enumerate([start, last, total]):
+        for index, text in enumerate([start, last, total, average]):
             labels[index].config(text=text)
-        labels[3].config(textvariable=self.timePerDayLabel)
 
         # pack labels and return bar
         for label in labels:
             label.pack(side=LEFT)
         return bar
+
+    def setTimestamps(self, *args): # pylint: disable=unused-argument
+        """Toggles the visibility of the info bar.
+
+        """
+        if not self.activeSession:
+            return
+        if self.showTimestamps.get():
+            if self.infoBar is None:
+                self.infoBar = self.makeInfoBar()
+                self.infoBar.pack(side=TOP)
+        else:
+            if self.infoBar is not None:
+                self.infoBar.destroy()
+                self.infoBar = None
 
     def newFromFile(self):
         """Prompts the user for a save slot, then builds and stores a
@@ -195,10 +199,18 @@ class STLPlanner(tk.Tk):
         if saveslot is None:
             return
         self.saveslot = saveslot
+        self.newSession()
+
+    def newSession(self):
+        """Clears the current session, loads the info bar if needed,
+        loads a new roster tab, and sets the `activeSession` attribute
+        to True.
+
+        """
         self.clear()
-        self.infoBar().pack()
-        RosterTab(self).pack(expand=YES, fill=Y)
         self.activeSession = True
+        self.setTimestamps()
+        RosterTab(self).pack(side=BOTTOM, expand=YES, fill=Y)
 
     def newMaxChars(self):
         """Prompts the user to choose from an array of options, then
@@ -216,7 +228,4 @@ class STLPlanner(tk.Tk):
         chars, maxGear = result
         self.saveslot = SaveSlot()
         self.saveslot.roster.fillChars(chars, maxGear)
-        self.clear()
-        self.infoBar().pack()
-        RosterTab(self).pack(expand=YES, fill=Y)
-        self.activeSession = True
+        self.newSession()

@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.7.1
+
+* Changed "Preferences > Show time per day" menu option to "Session > Show Timestamps".
+
 ## Version 0.7.0
 
 * Added short names for Dax and Old Picard.

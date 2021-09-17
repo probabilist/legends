@@ -43,12 +43,12 @@ class RosterTab(tk.Frame):
 
         Args:
             root (STLPlanner): The currently running STLPlanner
-                instance. It's `mainFrame` attribute will be assigned as
-                the RosterTab instance's parent.
+                instance. It's `sessionFrame` attribute will be assigned
+                as the RosterTab instance's parent.
 
         """
         # build frame and initialize variables
-        tk.Frame.__init__(self, root.mainFrame, **options)
+        tk.Frame.__init__(self, root.sessionFrame, **options)
         self.filter = RosterFilter()
 
         # build widgets
