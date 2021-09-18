@@ -6,8 +6,8 @@ from types import MethodType
 from warnings import warn
 from legends.utils.objrelations import OneToOne
 #pylint: disable-next=no-name-in-module
-from legends.constants import GSAccessoryItems
-from legends.constants import DESCRIPTIONS
+from legends.constants import GSAccessoryItems, GSCharacter
+from legends.constants import DESCRIPTIONS, SUMMON_POOL
 from legends.gameobjects import Gear, Particle, Character
 from legends.stats import Stats
 
@@ -281,3 +281,25 @@ class Roster():
             except (KeyError, AttributeError):
                 pass
         return 4 * (char.rarityIndex + 1) - gearRanks
+
+    def tokensPerOrb(self, pool, excludeCommons=True):
+        """Computes and returns the expected number of tokens per orb
+        the player will receive from using the given summon pool.
+
+        Args:
+            pool (str): One of the keys of SUMMON_POOL.
+            excludeCommons (bool): If True, ignores tokens for common
+                characters.
+
+        Returns:
+            float: The expected number of tokens per orb.
+
+        """
+        tokens = 0
+        for nameID, prob in SUMMON_POOL[pool]['nameIDs'].items():
+            if excludeCommons and GSCharacter[nameID]['Rarity'] == 'Common':
+                continue
+            if nameID in self.chars and self.chars[nameID].rank == 9:
+                continue
+            tokens += 10 * prob
+        return tokens/SUMMON_POOL[pool]['cost']

@@ -40,10 +40,12 @@ Attributes:
     UPCOMING (list of str): A list of name IDs of characters believed to
         be in the queue for future release.
     SUMMON_POOL (dict): A dictionary mapping pool names ('Core' or one
-        the roles in ROLES) to a dictionary with two keys: 'nameIDs',
-        which maps to a list of name IDs of the characters in that
-        particular summon pool, and 'rarityChances', which maps to the
-        probabilities of summoning the available rarities.
+        the roles in ROLES) to a dictionary with three keys: 'nameIDs',
+        which maps to a dictionary connecting name IDs of the characters
+        in that particular summon pool to their summon probabilities;
+        'rarityChances', which maps to the probabilities of summoning
+        the available rarities; and 'cost', which maps to the number of
+        orbs required to summon from that pool.
     SUMMON_POOL_IDS (bidict): An invertible dictionary mapping pool
         names their summon IDs, which are used by the game data to
         identify particular summon pools.
@@ -107,7 +109,6 @@ STAT_INITIALS = {
     'Resolve': 'R'
 }
 
-
 POWER_GRADIENT = {}
 POWER_AT_ORIGIN = 0
 for statName, statData in GSBaseStat.items():
@@ -168,18 +169,18 @@ ENABLED = [
 UPCOMING = ['Tuvok', 'Gowron', 'JadziaDax', 'PicardOld']
 
 # initialize SUMMON_POOL and SUMMON_POOL_IDS
-SUMMON_POOL = {'Core': {'nameIDs': []}}
-SUMMON_POOL.update({role: {'nameIDs': []} for role in ROLES})
+SUMMON_POOL = {'Core': {'nameIDs': {}}}
+SUMMON_POOL.update({role: {'nameIDs': {}} for role in ROLES})
 SUMMON_POOL_IDS = bidict()
 # build SUMMON_POOL_IDS; keep only highest unlocked summon pools
 for pool in SUMMON_POOL:
     summonID = max(
         (
             # pylint: disable-next=undefined-variable
-            v['summonId'] for k,v in GSSummonSetup.items()
-            if k[7:10] == pool[:3]
+            data['summonId'] for key, data in GSSummonSetup.items()
+            if key[7:10] == pool[:3]
         ),
-        key=lambda k:int(k[-2:])
+        key=lambda summonID:int(summonID[-2:])
     )
     SUMMON_POOL_IDS[pool] = summonID
 # retrieve rarity chances
@@ -188,26 +189,40 @@ for data in GSSummonPools.values(): # pylint: disable=undefined-variable
     if summonID in SUMMON_POOL_IDS.values():
         pool = SUMMON_POOL_IDS.inverse[summonID]
         SUMMON_POOL[pool]['rarityChances'] = data['rarityChances']
+# retrieve costs
+for data in GSSummonSetup.values(): # pylint: disable=undefined-variable
+    summonID = data['summonId']
+    if summonID in SUMMON_POOL_IDS.values():
+        pool = SUMMON_POOL_IDS.inverse[summonID]
+        SUMMON_POOL[pool]['cost'] = data['costQuantity']
 # retrieve characters in each summon pool
 for data in GSSummonItems.values(): # pylint: disable=undefined-variable
     for summonID in data['filterGroups']:
         if summonID in SUMMON_POOL_IDS.values():
             pool = SUMMON_POOL_IDS.inverse[summonID]
-            SUMMON_POOL[pool]['nameIDs'].append(data['itemID'])
-# looks for errors
+            SUMMON_POOL[pool]['nameIDs'][data['itemID']] = None
+# raise an error if Core does not contain everyone in other pools
 for pool, data in SUMMON_POOL.items():
-    # raise an error if there are duplicates
-    if len(data['nameIDs']) > len(set(data['nameIDs'])):
-        raise ValueError('duplicates in {} summon pool'.format(pool))
     if pool == 'Core':
         continue
-    # raise an error if Core does not contain everyone in other pools
     for nameID in data['nameIDs']:
         if nameID not in SUMMON_POOL['Core']['nameIDs']:
             raise ValueError(
                 '{} in {} summon pool but not in Core'.format(nameID, pool)
             )
+# add summoning probabilities
+for pool, data in SUMMON_POOL.items():
+    for rarity in RARITIES:
+        nameIDs = [
+            nameID for nameID in data['nameIDs']
+            # pylint: disable-next=undefined-variable
+            if GSCharacter[nameID]['Rarity'] == rarity
+        ]
+        if nameIDs:
+            prob = data['rarityChances'][rarity] / len(nameIDs)
+            for nameID in nameIDs:
+                data['nameIDs'][nameID] = prob
 
-# read and store the help files
+# read and store the help file
 with open(rootPath + '/help.txt', encoding='utf-8') as f:
     HELP = f.read()

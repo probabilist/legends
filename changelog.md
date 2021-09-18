@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.8.0
+
+* Changed the structure of the `SUMMON_POOL` constant so that it contains summon probabilities for individual characters, as well as the orb-cost of each summon pool.
+* Added the `Roster.tokensPerOrb` method.
+* Changes to the `ui.RosterTab` class:
+    - Added a `roster` property for convenience.
+    - Added a 'summon pools' button to the action bar that is linked to a new method, `optimalSummons`.
+    - Created temporary functionality in the `optimalSummons` method to print results to the console.
+    - Added file types and a title to the export dialog.
+
 ## Version 0.7.4
 
 * Added the ability to export a roster to a spreadsheet.
