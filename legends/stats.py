@@ -27,17 +27,19 @@ def formatDict(D):
 class StatObject():
     """An object that stores named statistics as attributes.
 
-    The StatObject class is meant to be subclassed. Subclasses must
-    set `statNames` to an iterable that iterates over the names of the
-    statistics being stored in the subclass. The subclass constructor
-    must be able to accept no arguments, and when it does, should create
-    an object, all of whose statistics are zero.
+    The `StatObject` class is meant to be subclassed. Subclasses must
+    set `statAbbrs` to an iterable that iterates over the names
+    (typically abbreviations) of the statistics being stored in the
+    subclass. The subclass constructor must be able to accept no
+    arguments, and when it does, it should create an object, all of
+    whose statistics are zero.
 
-    Two StatObjects can be added. The result is a new StatObject whose
-    statistics are the sum of the statistics of the given StatObjects.
+    Two `StatObject` instances can be added. The result is a new
+    `StatObject` instance whose statistics are the sum of the statistics
+    of the given instances.
 
     Attributes:
-        statAbbrs (iter of str): Strings that represent the stored
+        statAbbrs (iterable of str): Strings that represent the stored
             statistics. Typically abbreviations. Used to construct
             object attributes.
 
@@ -62,18 +64,18 @@ class Stats(StatObject):
     """Stores the basic stats in STL.
 
     Attributes:
-        statAbbrs (iter of str): The values of STAT_ABBREVIATIONS, which
-            are abbreviation for the keys of `GSBaseStat`.
+        statAbbrs (iterable of str): The values of `STAT_ABBREVIATIONS`,
+            which are abbreviations for the keys of `GSBaseStat`.
 
     """
 
     def __init__(self, initDict=None):
-        """Builds a Stats object from the given dictionary. If None is
-        given, builds a Stats object with all zeros.
+        """If a dictionary of stat values is provided, the constructor
+        initializes the instance with these values.
 
         Args:
-            initDict (dict of str:(int or float)): A dictionary mapping
-                the stat names in the keys of STAT_ABBREVIATIONS to
+            initDict (dict): {`str`:`int or float`} A dictionary mapping
+                the stat names in the keys of `STAT_ABBREVIATIONS` to
                 numerical values.
 
         """
@@ -86,8 +88,8 @@ class Stats(StatObject):
     @property
     def power(self):
         """The additional power that would be added to a character if
-        its stats increased by the amounts given in the this Stats
-        object.
+        its stats increased by the amounts given in the calling
+        instance.
         """
         powerDelta = 0
         for statName in STAT_ABBREVIATIONS:
@@ -96,7 +98,7 @@ class Stats(StatObject):
         return powerDelta
 
     def get(self, statName):
-        """Returns a stat value by its full name, as it appears in
+        """Looks up a stat value by its full name, as it appears in
         `GSBaseStat`.
 
         Args:
@@ -113,8 +115,8 @@ class Stats(StatObject):
         dictionary.
 
         Args:
-            statDict (dict of str:(int or float)): A dictionary mapping
-                the stat names in the keys of STAT_ABBREVIATIONS to
+            statDict (dict): {`str`:`int or float`} A dictionary mapping
+                the stat names in the keys of `STAT_ABBREVIATIONS` to
                 numerical values.
 
         """

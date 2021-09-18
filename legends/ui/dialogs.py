@@ -1,4 +1,4 @@
-"""Dialog frames and windows for use with the `legends` package.
+"""Dialog windows for use with the `legends` package.
 
 Attributes:
     showerror (func): Similar to tkinter.simpledialog.showerror, but

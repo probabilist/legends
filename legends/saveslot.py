@@ -1,4 +1,4 @@
-"""The `legends.saveslot.SaveSlot` class and supporting objects.
+"""The `legends.saveslot.SaveSlot` class and related objects.
 
 """
 

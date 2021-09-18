@@ -1,4 +1,6 @@
-"""The STL Planner main window and supporting objects.
+"""The `legends.ui.stlplanner.STLPlanner` class and related objects.
+
+The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 
 """
 

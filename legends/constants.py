@@ -26,18 +26,14 @@ Attributes:
     PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
         mapping particle rarities to a list whose indices denote the
         0-based level of the particle and whose values denote the number
-        of unlocked stats on a particle of that rarity and level.
-
-        Example: `PART_STAT_UNLOCKED['VeryRare'][2]` is the number of
-        unlocked stats on a Level 3, Very Rare particle.
+        of unlocked stats on a particle of that rarity and level. See
+        the examples below.
     PART_STAT_VALUES (dict): {`str`:{`str`:[`float`]}}: A
         dictionary mapping stat names to a dictionary mapping rarity
         names to a list whose indices denote the 0-based level of the
         particle and whose values denote the value of the given stat on
-        a particle of the given rarity and level.
-
-        Example: `PART_STAT_VALUES['Attack']['Epic'][0]` is the value of
-        the attack stat on a Level 1, Epic particle.
+        a particle of the given rarity and level. See the examples
+        below.
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     UPCOMING (list of str): A list of name IDs of characters believed to
@@ -48,20 +44,35 @@ Attributes:
         of the characters in that particular summon pool to their summon
         probabilities; 'rarityChances', which maps to the probabilities
         of summoning the available rarities; and 'cost', which maps to
-        the number of orbs required to summon from that pool.
-
-        Examples: `SUMMON_POOL['Command']['nameIDs']['Kirk']` is the
-        probability of summoning Kirk in the Command summon pool.
-
-        `SUMMON_POOL['Core']['rarityChance']['Epic']` is probability of
-        summoning an Epic character in the Core summon pool.
-
-        `SUMMON_POOL['Science']['cost']` is the cost in orbs to summon
-        from the Science pool.
+        the number of orbs required to summon from that pool. See the
+        examples below.
     SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
         dictionary mapping pool names their summon IDs, which are used
         by the game data to identify particular summon pools.
-    HELP (str): The contents of the file, 'help.txt'.
+    HELP (str): The contents of the file, `legends/help.txt`.
+
+Examples:
+    A Very Rare, Level 3 particle has 2 stats unlocked:
+    >>> PART_STAT_UNLOCKED['VeryRare'][2]
+    2
+
+    If an Epic, Level 1 particle has Attack as one of its stats, the
+    Attack value will be 32:
+    >>> PART_STAT_VALUES['Attack']['Epic'][0]
+    32.0
+
+    The probability of summoning Kirk from the Command pool is 1%:
+    >>> SUMMON_POOL['Command']['nameIDs']['Kirk']
+    0.01
+
+    The probability of summoning an Epic character from the 'Core' pool
+    is 10%:
+    >>> SUMMON_POOL['Core']['rarityChances']['Epic']
+    0.1
+
+    It costs 75 orbs to summon once from the Science pool:
+    >>> SUMMON_POOL['Science']['cost']
+    75
 
 """
 

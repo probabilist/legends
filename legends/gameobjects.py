@@ -300,7 +300,7 @@ class Particle(Managed):
 
     def __repr__(self):
         return (
-            '<' + repr(self.name) + ', ' + repr(self.rarity)
+            '<' + repr(self.typ) + ', ' + repr(self.rarity)
             + ', level ' + repr(self.level) + '>'
         )
 
@@ -520,10 +520,6 @@ class Skill():
         self.skillID = skillID
         self.level = level
         self.unlocked = unlocked
-        key = (
-            'GSSkillKey(id = "' + self.skillID
-            + '", level = "' + str(self.level) + '")'
-        )
 
     @property
     def name(self):

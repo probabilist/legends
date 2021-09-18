@@ -1,4 +1,4 @@
-"""The RosterTab class and related objects.
+"""The `legends.ui.rostertab.RosterTab` class and related objects.
 
 """
 

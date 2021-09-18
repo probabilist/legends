@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.9.1
+
+* In preparation for publishing detailed package documentation with `pdcoc`, edited docstrings in the following modules:
+    - `constants`
+    - `gameobjects`
+    - `saveslot`
+    - `stats`
+    - `dialogs`
+    - `rostertab`
+    - `stlplanner`
+
 ## Version 0.9.0
 
 * Converted the `data` attribute in the `Skill` class to a property.
