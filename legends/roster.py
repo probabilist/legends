@@ -1,4 +1,4 @@
-"""This module contains the Roster class and related objects.
+"""The `legends.roster.Roster` class and related objects.
 
 """
 
@@ -14,20 +14,22 @@ from legends.stats import Stats
 __all__ = ['readGear', 'readParts', 'Roster']
 
 def readGear(save, slot):
-    """The save slot contains a list of gear, each one having a unique
-    ID number. This method makes a Gear object for each gear piece, and
-    builds a dictionary mapping its ID number to the associated Gear
+    """The STL save file contains a list of gear, each one having a
+    unique ID number. This method makes a `legends.gameobjects.Gear`
+    object for each gear piece, and builds a dictionary mapping its ID
+    number in the save file to the associated `legends.gameobjects.Gear`
     object.
 
     Args:
         save (dict): A decrypted dictionary representation of the
-            player's save file, as returned by the `decryptSaveFile`
-            function.
+            player's save file, as returned by the
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
     Returns:
-        dict of int:Gear: The dictionary mapping IDs to gear.
+        dict: {`int`:`legends.gameobjects.Gear`} The dictionary mapping
+            IDs to gear.
 
     """
     slotData = save['{} data'.format(slot)]
@@ -38,21 +40,22 @@ def readGear(save, slot):
     return gear
 
 def readParts(save, slot):
-    """The save slot contains a list of particles, each one having a
-    unique ID number. This method makes a Particle object for each
-    particle, and builds a dictionary mapping its ID number to the
-    associated Particle object.
+    """The STL save file contains a list of particles, each one having a
+    unique ID number. This method makes a `legends.gameobjects.Particle`
+    object for each particle, and builds a dictionary mapping its ID
+    number in the save file to the associated
+    `legends.gameobjects.Particle` object.
 
     Args:
         save (dict): A decrypted dictionary representation of the
-            player's save file, as returned by the `decryptSaveFile`
-            function.
+            player's save file, as returned by the
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
     Returns:
-        dict of int:Particle: The dictionary mapping IDs to
-            particles.
+        dict: {`int`:`legends.gameobjects.Particle`} The dictionary
+            mapping IDs to particles.
 
     """
     parts = {}
@@ -68,20 +71,36 @@ def readParts(save, slot):
     return parts
 
 class Roster():
-    """A collection of related Characters, Gear, and Particles.
+    """A collection of related characters, gear, and particles.
 
     Attributes:
-        gear (list of Gear): A list of Gear objects.
-        parts (list of Particle): A list of Particle objects.
-        chars (dict of str:Character): A dictionary mapping nameIDs to
-            Character objects.
-        inGearSlot (OneToOne): A relation mapping Gear objects to
-            GearSlot objects.
-        inPartSlot (OneToOne): A relation mapping Particle objects to
-            PartSlot objects.
+        gear (list of legends.gameobjects.Gear): A list of the gear in
+            the roster.
+        parts (list of legends.gameobjects.Particle): A list of the
+            particles in the roster.
+        chars (dict): {`str`:`legends.gameobjects.Character`} A
+            dictionary mapping name IDs to characters.
+        inGearSlot (legends.utils.objrelations.OneToOne): A relation
+            mapping `legends.gameobjects.Gear` objects to
+            `legends.gameobjects.GearSlot` objects.
+        inPartSlot (legends.utils.objrelations.OneToOne): A relation
+            mapping `legends.gameobjects.Particle` objects to
+            `legends.gameobjects.PartSlot` objects.
 
     """
     def __init__(self, save=None, slot=0):
+        """If save data is provided, the constructor will populate the
+        roster with objects built from the save data. Otherwise, an
+        empty roster is created.
+
+        Args:
+            save (dict): A decrypted dictionary representation of the
+                player's save file, as returned by the
+                `legends.functions.decryptSaveFile` function.
+            slot (int): The 0-based index of the save slot from which to
+                read the data.
+
+        """
         self.gear = []
         self.parts = []
         self.chars = {}
@@ -99,12 +118,16 @@ class Roster():
 
     @property
     def containsGear(self):
-        """OneToOne: The inverse of `inGearSlot`."""
+        """`legends.utils.objrelations.OneToOne`: The inverse of
+        `inGearSlot`.
+        """
         return self.inGearSlot.inverse
 
     @property
     def containsPart(self):
-        """OneToOne: The inverse of `inPartSlot`."""
+        """`legends.utils.objrelations.OneToOne`: The inverse of
+        `inPartSlot`.
+        """
         return self.inPartSlot.inverse
 
     def clear(self):
@@ -123,8 +146,8 @@ class Roster():
 
         Args:
             save (dict): A decrypted dictionary representation of the
-                player's save file, as returned by the `decryptSaveFile`
-                function.
+                player's save file, as returned by the
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
@@ -179,7 +202,8 @@ class Roster():
         present. The character is added at maximum rank and level.
 
         If the `maxGear` attribute is True, maxed gear pieces will be
-        created, added to the roster, and equipped to the characters.
+        created, added to the roster, and equipped to the newly added
+        characters.
 
         Args:
             nameIDs (iterable of str): The name IDs of the characters to
@@ -210,16 +234,16 @@ class Roster():
                 self.inGearSlot[gear] = char.gearSlots[slot]
 
     def charStats(self, nameID):
-        """Constructs and returns a Stats object containing the total
-        stats (including gear and particles) of the character with the
-        given name ID.
+        """Constructs and returns a `legends.stats.Stats` object
+        containing the total stats (including gear and particles) of the
+        character with the given name ID.
 
         Args:
             nameID (str): The name ID of the character whose stats to
                 build.
 
         Returns:
-            Stats: The constructed Stats object.
+            legends.stats.Stats: The character's total stats.
 
         """
         char = self.chars[nameID]
@@ -287,7 +311,7 @@ class Roster():
         the player will receive from using the given summon pool.
 
         Args:
-            pool (str): One of the keys of SUMMON_POOL.
+            pool (str): One of the keys of `SUMMON_POOL`.
             excludeCommons (bool): If True, ignores tokens for common
                 characters.
 

@@ -4,11 +4,14 @@ Each json file in `legends/data` is converted to a constant. The
 variable name is the file name without extension, and the variable
 points to a Python dictionary built from the file's contents.
 
+NOTE: The constant `GSBaseStat` differs from the data file
+`GSBaseStat.json`. In the constant, 'MaxHealth' is renamed to 'Health'.
+
 Attributes:
     STAT_ABBREVIATIONS (dict): A dictionary mapping stat names as they
         appear in GSBaseStat to abbreviations used throughout this
         package, typically for attribute names.
-    POWER_GRADIENT (dict of str:float) A dictionary mapping stat
+    POWER_GRADIENT (dict): {`str`:`float`} A dictionary mapping stat
         names to the amount that a character's power would increase if
         that stat were to increase by 1.
     POWER_AT_ORIGIN (float): The theoretical power of a character whose
@@ -18,16 +21,16 @@ Attributes:
     RARITIES (list of str): A list of rarities in the game, from low to
         high.
     ROLES (list of str): A list of roles in the game.
-    RARITY_COLORS (dict of str:str): A dictionary mapping character
+    RARITY_COLORS (dict): {`str`:`str`} A dictionary mapping character
         rarities to color names in tkinter.
-    PART_STAT_UNLOCKED (dict of str:(list of int)): A dictionary mapping
-        particle rarities to a list whose indices denote the 0-based
-        level of the particle and whose values denote the number of
-        unlocked stats on a particle of that rarity and level.
+    PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
+        mapping particle rarities to a list whose indices denote the
+        0-based level of the particle and whose values denote the number
+        of unlocked stats on a particle of that rarity and level.
 
         Example: `PART_STAT_UNLOCKED['VeryRare'][2]` is the number of
         unlocked stats on a Level 3, Very Rare particle.
-    PART_STAT_VALUES (dict of str:(dict of str:(list of float))): A
+    PART_STAT_VALUES (dict): {`str`:{`str`:[`float`]}}: A
         dictionary mapping stat names to a dictionary mapping rarity
         names to a list whose indices denote the 0-based level of the
         particle and whose values denote the value of the given stat on
@@ -39,17 +42,26 @@ Attributes:
         on the Crew screen.
     UPCOMING (list of str): A list of name IDs of characters believed to
         be in the queue for future release.
-    SUMMON_POOL (dict): A dictionary mapping pool names ('Core' or one
-        the roles in ROLES) to a dictionary with three keys: 'nameIDs',
-        which maps to a dictionary connecting name IDs of the characters
-        in that particular summon pool to their summon probabilities;
-        'rarityChances', which maps to the probabilities of summoning
-        the available rarities; and 'cost', which maps to the number of
-        orbs required to summon from that pool.
-    SUMMON_POOL_IDS (bidict): An invertible dictionary mapping pool
-        names their summon IDs, which are used by the game data to
-        identify particular summon pools.
-    HELP (str): The contents of the file, 'help.txt'
+    SUMMON_POOL (dict): {`str`:`dict`} A dictionary mapping pool names
+        ('Core' or one the roles in `ROLES`) to a dictionary with three
+        keys: 'nameIDs', which maps to a dictionary connecting name IDs
+        of the characters in that particular summon pool to their summon
+        probabilities; 'rarityChances', which maps to the probabilities
+        of summoning the available rarities; and 'cost', which maps to
+        the number of orbs required to summon from that pool.
+
+        Examples: `SUMMON_POOL['Command']['nameIDs']['Kirk']` is the
+        probability of summoning Kirk in the Command summon pool.
+
+        `SUMMON_POOL['Core']['rarityChance']['Epic']` is probability of
+        summoning an Epic character in the Core summon pool.
+
+        `SUMMON_POOL['Science']['cost']` is the cost in orbs to summon
+        from the Science pool.
+    SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
+        dictionary mapping pool names their summon IDs, which are used
+        by the game data to identify particular summon pools.
+    HELP (str): The contents of the file, 'help.txt'.
 
 """
 
@@ -157,11 +169,6 @@ for data in GSAccessoryStatGrowth.values():
     statVal = data['StatIncrease']
     PART_STAT_VALUES[statName][rarity][level - 1] = statVal
 
-# manual changes to GSCharacter due to missing hotfix data
-# pylint: disable-next=undefined-variable
-GSCharacter['Garak']['Type'] = 'Normal'
-# pylint: disable-next=undefined-variable
-GSCharacter['Shinzon']['Type'] = 'Normal'
 ENABLED = [
     # pylint: disable-next=undefined-variable
     nameID for nameID, data in GSCharacter.items() if data['Type'] == 'Normal'

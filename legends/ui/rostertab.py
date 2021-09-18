@@ -32,8 +32,7 @@ class RosterTab(tk.Frame):
         infoBar (RosterInfoBar): The info bar containing aggregate info
             about the currently displayed characters.
         sortFuncs (dict of str:func): A dictionary mapping field names
-            to functions that map a Character object and a SaveSlot
-            object to a sortable value.
+            to functions that map Character objects to a sortable value.
         sortField (StringVar): The currently selected field name by
             which the characters are sorted.
         descending (BooleanVar): True if characters should be sorted in
@@ -134,32 +133,35 @@ class RosterTab(tk.Frame):
 
         """
         # define and initialize variables
+        sslot = self.master.saveslot
+        ros = self.roster
         self.sortFuncs = {
-            'Name': lambda c,s: c.shortName,
-            'Favorite': lambda c,s: c in s.favorites,
-            'Level': lambda c,s: c.xp,
-            'Rank': lambda c,s: c.rank,
-            'Rarity': lambda c,s: c.rarityIndex,
-            'Role': lambda c,s: c.role,
-            'Tokens': lambda c,s: s.tokens[c.nameID],
-            'Tokens needed': lambda c,s: c.tokensNeeded - s.tokens
-            [c.nameID]
+            'Name': lambda c: c.shortName,
+            'Favorite': lambda c,s=sslot: c in s.favorites,
+            'Level': lambda c: c.xp,
+            'Rank': lambda c: c.rank,
+            'Rarity': lambda c: c.rarityIndex,
+            'Role': lambda c: c.role,
+            'Tokens': lambda c,s=sslot: s.tokens[c.nameID],
+            'Tokens needed': lambda c,s=sslot: (
+                c.tokensNeeded - s.tokens[c.nameID]
+            )
         }
         for statName in STAT_INITIALS:
-            self.sortFuncs[statName] = lambda c,s,n=statName: (
-                s.roster.charStats(c.nameID).get(n)
+            self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
+                r.charStats(c.nameID).get(n)
             )
-        self.sortFuncs['Power'] = lambda c,s: (
-            POWER_AT_ORIGIN + s.roster.charStats(c.nameID).power
+        self.sortFuncs['Power'] = lambda c,r=ros: (
+            POWER_AT_ORIGIN + r.charStats(c.nameID).power
         )
         self.sortFuncs.update({
-            'Missing gear levels': lambda c,s: (
-                s.roster.missingGearLevels(c.nameID)
+            'Missing gear levels': lambda c,r=ros: (
+                r.missingGearLevels(c.nameID)
             ),
-            'Missing gear ranks': lambda c,s: (
-                s.roster.missingGearRanks(c.nameID)
+            'Missing gear ranks': lambda c,r=ros: (
+                r.missingGearRanks(c.nameID)
             ),
-            'Missing skill levels': lambda c,s: c.missingSkillLevels
+            'Missing skill levels': lambda c: c.missingSkillLevels
         })
         fields = list(self.sortFuncs.keys())
         self.sortField = tk.StringVar()

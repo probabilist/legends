@@ -1,4 +1,4 @@
-"""This module contains the functions used in the `legends` package.
+"""Core functions used in the `legends` package.
 
 """
 
@@ -12,7 +12,7 @@ from Crypto.Util.Padding import unpad
 __all__ = ['saveFilePath', 'AESdecrypt', 'decryptSaveFile']
 
 def saveFilePath():
-    """Creates and return the complete path of the save file.
+    """Creates and return the complete path of the STL save file.
 
     Returns:
         str: The complete path of the save file.
@@ -45,7 +45,8 @@ def AESdecrypt(cipherText, key, iv):
     return unpad(cipher.decrypt(cipherTextB), AES.block_size).decode('UTF-8')
 
 def decryptSaveFile():
-    """Decrypts and parses the save file into a dictionary.
+    """Finds the STL save file on the local hard drive, then decrypts
+    and parses it into a dictionary.
 
     Returns:
         dict: The decrypted save file as a dictionary.

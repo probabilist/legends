@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.9.0
+
+* Converted the `data` attribute in the `Skill` class to a property.
+* Deleted the now unnecessary manual changes to `GSCharacter` that were designed to enable Garak and Shinzon before hotfix data was available.
+* Edited the `SaveSlot.sort()` method to remove redundant self-reference in one of the arguments. Edited the `RosterTab` class to account for this.
+* In preparation for publishing detailed package documentation with `pdcoc`, edited docstrings in the following modules:
+    - `constants`
+    - `functions`
+    - `gameobjects`
+    - `roster`
+    - `saveslot`
+
 ## Version 0.8.0
 
 * Changed the structure of the `SUMMON_POOL` constant so that it contains summon probabilities for individual characters, as well as the orb-cost of each summon pool.

@@ -1,4 +1,4 @@
-"""This module contains the character class and related objects.
+"""The `legends.gameobjects.Character` class and related objects.
 
 """
 
@@ -20,7 +20,7 @@ __all__ = [
 ]
 
 def levelFromXP(xp, rarity='Common'):
-    """Calculates the level of the character from its XP.
+    """Calculates the level of a character from its XP.
 
     Args:
         xp (int): The XP of the character.
@@ -41,7 +41,7 @@ def levelFromXP(xp, rarity='Common'):
     return level
 
 def xpFromLevel(level, rarity='Common'):
-    """Calculates the minimum XP of the character from its level.
+    """Calculates the minimum XP of a character from its level.
 
     Args:
         level (int): The level of the character.
@@ -56,6 +56,15 @@ def xpFromLevel(level, rarity='Common'):
 def tokensNeeded(rarity, rank):
     """Returns the number of tokens needed by a character of the given
     rarity and rank to move up to the next rank.
+
+    Args:
+        rarity (str): The rarity of the character.
+        rank (int): The current rank of the character.
+
+    Returns:
+        int: The total number of tokens need for the character to
+            advance to the next rank.
+
     """
     if rank == 9:
         return 0
@@ -103,9 +112,7 @@ def getGearStats(gearID, level):
 
     Args:
         gearID (str): The gear ID as it appears in `GSGear`.
-        level (int): The level of the gear. Level is 1-based and
-            includes rarity. For example, a Level 17 gear piece displays
-            in game as "Epic, Level 2".
+        level (int): The level of the gear. (See `Gear.level`.)
 
     Returns:
         dict: A dictionary mapping stat names, as they appear in
@@ -151,15 +158,20 @@ class Gear(Managed):
     Attributes:
         gearID (str): The in-code ID of the gear piece. Should be a key
             in `GSGear`.
-        level (int): The level of the gear. Level is 1-based and
-            includes rarity. For example, a Level 17 gear piece displays
-            in game as "Epic, Level 2".
-        stats (Stats): The Stats object that stores the gear's total
-            stats.
+        stats (legends.stats.Stats): The Stats object that stores the
+            gear's total stats.
 
     """
 
     def __init__(self, gearID, level):
+        """The constructor stores the given level in a private attribute
+        that is managed by a class property.
+
+        Args:
+            gearID (str): The gearID of the piece to create.
+            level (int): The level of the piece to create.
+
+        """
         self.gearID = gearID
         self._level = level
         self.stats = Stats()
@@ -167,10 +179,10 @@ class Gear(Managed):
 
     @property
     def level(self):
-        """int: The level of the gear. Level is 1-based and includes
+        """`int`: The level of the gear. Level is 1-based and includes
         rarity. For example, a Level 17 gear piece displays in game as
         "Epic, Level 2". Modifying this property also calls the
-        `updateStats` method.
+        `Gear.updateStats` method.
         """
         return self._level
 
@@ -181,17 +193,19 @@ class Gear(Managed):
 
     @property
     def rarityIndex(self):
-        """int: The index of the rarity in RARITIES."""
+        """`int`: The index of the rarity in `RARITIES`."""
         return int((self.level - 1)/5)
 
     @property
     def rarity(self):
-        """str: The rarity of the gear piece."""
+        """`str`: The rarity of the gear piece."""
         return RARITIES[self.rarityIndex]
 
     @property
     def slot(self):
-        """The slot index into which the gear must be placed."""
+        """`int`: The 0-based index of the slot into which the gear must
+        be placed.
+        """
         return GSGear[self.gearID]['m_Slot']
 
     def updateStats(self):
@@ -208,15 +222,28 @@ class Particle(Managed):
 
     Attributes:
         typ (str): The type of the particle. This is what the data
-            refers to as the particle's "display name".
+            refers to as the particle's "display name". Should be one of
+            'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
+            'Temporal Flux', or 'Undo Damage'.
         rarity (str): The particle's rarity.
-        level (str): The particle's level.
         locked (bool): True if the particle is locked.
+        stats (legends.stats.Stats): The Stats object that stores the
+            particle's total stats.
 
     """
 
-    def __init__(self, name, rarity, level, locked=False):
-        self.name = name
+    def __init__(self, typ, rarity, level, locked=False):
+        """The constructor passes the given level to a private attribute
+        that is managed by a class property.
+
+        Args:
+            typ (str): The type of particle to create.
+            rarity (str): The rarity of the created particle.
+            level (int): The level of the created particle.
+            locked (bool): True if the new particle should be locked.
+
+        """
+        self.typ = typ
         self.rarity = rarity
         self._level = level
         self.locked = locked
@@ -225,8 +252,8 @@ class Particle(Managed):
 
     @property
     def level(self):
-        """str: The particle's level. Modifying this property also calls
-        the `updateStats` method.
+        """`str`: The particle's level. Modifying this property also
+        calls the `Particle.updateStats` method.
         """
         return self._level
 
@@ -237,13 +264,14 @@ class Particle(Managed):
 
     @property
     def numStats(self):
-        """int: The number of unlocked stats on the particle."""
+        """`int`: The number of unlocked stats on the particle."""
         return PART_STAT_UNLOCKED[self.rarity][self.level - 1]
 
     @property
     def statNames(self):
-        """tuple of str: The names, as they appear in GSBaseStat, of the
-        stats that are on the particle.
+        """`tuple of str`: The names, as they appear in `GSBaseStat`, of
+        the stats that are on the particle. It is always a 4-tuple,
+        though some values may be `None`.
         """
         return tuple(self._statNames)
 
@@ -280,7 +308,8 @@ class GearSlot(Managed): # pylint: disable=too-few-public-methods
     """A slot into which a piece of gear can be placed.
 
     Must be implemented as a class, rather than a tuple, so that it can
-    be a Managed instance, eligible to be part of an object relation.
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
 
     Attributes:
         char (Character): The character that owns the slot.
@@ -299,7 +328,8 @@ class PartSlot(Managed): # pylint: disable=too-few-public-methods
     """A slot into which a particle can be placed.
 
     Must be implemented as a class, rather than a tuple, so that it can
-    be a Managed instance, eligible to be part of an object relation.
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
 
     Attributes:
         char (Character): The character that owns the slot.
@@ -318,20 +348,28 @@ class Character():
     """A character in STL.
 
     Attributes:
-        nameID (str): The in-data name of the character. Should match a
-            key in `GSCharacter`.
-        stats (Stats): The Stats object that stores the character's
-            naked stats (i.e. the stats they would have without any gear
-            or particles).
-        skills (dict): A dictionary mapping skill IDs (found in
-            `GSSkill`) to Skill objects.
-        gearSlots (list of GearSlot): The list of  the character's gear
+        stats (legends.stats.Stats): The Stats object that stores the
+            character's naked stats (i.e. the stats they would have
+            without any gear or particles).
+        skills (dict): {`str`:`Skill`} A dictionary mapping skill IDs
+            (found in `GSSkill`) to Skill objects.
+        gearSlots (list of GearSlot): The list of the character's gear
             slots.
-        partSlots (list of PartSlot): The list of  the character's
+        partSlots (list of PartSlot): The list of the character's
             particle slots.
 
     """
     def __init__(self, nameID, rank=1, xp=0):
+        """The constructor stores the passed arguments in a private
+        dictionary, whose values are accessed and managed by class
+        properties.
+
+        Args:
+            nameID (str): The name ID of the character to create.
+            rank (int): The rank to assign on creation.
+            xp (int): The xp to assign on creation.
+
+        """
         self._data = {
             'nameID': nameID,
             'rank': rank,
@@ -352,19 +390,20 @@ class Character():
 
     @property
     def nameID(self):
-        """str: The in-data name of the character. Should match a key in
+        """`str`: The in-data name of the character. Should match a key in
         `GSCharacter`.
         """
         return self._data['nameID']
 
     @property
     def name(self):
-        """The in-game display name of the character."""
+        """`str`: The in-game display name of the character."""
         return DESCRIPTIONS[GSCharacter[self.nameID]['Name']]
 
     @property
     def shortName(self):
-        """A shortened version of the character's display name."""
+        """`str`: A shortened version of the character's display name.
+        """
         if self.rarity == 'Common':
             L = findall('[A-Z][^A-Z]*', self.nameID)
             return L[1] + ' ' + L[2][:-2]
@@ -382,8 +421,8 @@ class Character():
 
     @property
     def rank(self):
-        """int: The rank of the character. Modifying this property also
-        calls the `updateStats` method.
+        """`int`: The rank of the character. Modifying this property
+        also calls the `Character.updateStats` method.
         """
         return self._data['rank']
 
@@ -394,8 +433,8 @@ class Character():
 
     @property
     def xp(self):
-        """int: The xp of the character. Modifying this property also
-        calls the `updateStats` method.
+        """`int`: The xp of the character. Modifying this property also
+        calls the `Character.updateStats` method.
         """
         return self._data['xp']
 
@@ -406,9 +445,9 @@ class Character():
 
     @property
     def level(self):
-        """int: The level of the character. Setting this to a value
+        """`int`: The level of the character. Setting this to a value
         different from its current value will change the `xp` property
-        to minimum xp required to attain the new level.
+        to the minimum xp required to attain the new level.
         """
         return levelFromXP(self.xp)
 
@@ -419,28 +458,28 @@ class Character():
 
     @property
     def rarity(self):
-        """str: The rarity of the character."""
+        """`str`: The rarity of the character."""
         return GSCharacter[self.nameID]['Rarity']
 
     @property
     def rarityIndex(self):
-        """int: The index of the rarity in RARITIES."""
+        """`int`: The index of the rarity in `RARITIES`."""
         return RARITIES.index(self.rarity)
 
     @property
     def role(self):
-        """str: The role of the character."""
+        """`str`: The role of the character."""
         return GSCharacter[self.nameID]['Role']
 
     @property
     def maxGearLevel(self):
-        """int: The maximum level of gear this character can equip."""
+        """`int`: The maximum level of gear this character can equip."""
         return 5 + 5 * self.rarityIndex
 
     @property
     def missingSkillLevels(self):
-        """int: The number of missing skill levels. Assumes the maximum
-        level for every skill is 2.
+        """`int`: The number of missing skill levels. Assumes the
+        maximum level for every skill is 2.
         """
         missingLevels = 0
         for skill in self.skills.values():
@@ -451,7 +490,7 @@ class Character():
 
     @property
     def tokensNeeded(self):
-        """int: The total number of tokens needed for the character to
+        """`int`: The total number of tokens needed for the character to
         reach the next rank.
         """
         return tokensNeeded(self.rarity, self.rank)
@@ -475,7 +514,6 @@ class Skill():
         skillID (str): The skill's ID, as it appears in `GSSkill`.
         level (int): The level of the skill.
         unlocked (bool): True if the character has unlocked this skill.
-        data (dict): The skill data from `GSSkill`.
 
     """
     def __init__(self, skillID, level=1, unlocked=False):
@@ -486,12 +524,19 @@ class Skill():
             'GSSkillKey(id = "' + self.skillID
             + '", level = "' + str(self.level) + '")'
         )
-        self.data = GSSkill[key]
 
     @property
     def name(self):
         """The in-game display name of the skill."""
         return DESCRIPTIONS[self.data['name']]
+
+    @property
+    def data(self):
+        """`dict`: The skill data from `GSSkill`."""
+        key = 'GSSkillKey(id = "{}", level = "{}")'.format(
+            self.skillID, self.level
+        )
+        return GSSkill[key]
 
     def __repr__(self):
         return (
