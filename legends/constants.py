@@ -21,7 +21,7 @@ Attributes:
     RARITIES (list of str): A list of rarities in the game, from low to
         high.
     RARITY_COLORS (dict): {`str`:`str`} A dictionary mapping character
-        rarities to color names in tkinter.
+        rarities to color names in `tkinter`.
     ROLES (list of str): A list of roles in the game.
     STAT_ABBREVIATIONS (dict): A dictionary mapping stat names as they
         appear in `GSBaseStat` to abbreviations used throughout this
