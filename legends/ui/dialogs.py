@@ -20,8 +20,9 @@ from legends.saveslot import SaveSlot
 
 __all__ = [
     'addroot', 'showerror', 'showinfo', 'askyesno', 'askSlot',
-    'askRosterFilter', 'askMaxChars', 'ModalDialog', 'AskSlot', 'RosterFilter',
-    'AskRosterFilter', 'AskMaxChars', 'HelpScreen'
+    'askRosterFilter', 'askMaxChars', 'ModalMessage', 'ModalDialog', 'AskSlot',
+    'RosterFilter', 'AskRosterFilter', 'AskMaxChars', 'HelpScreen',
+    'OptimalSummons'
 ]
 
 def addroot(func):
@@ -135,16 +136,16 @@ def askMaxChars(root):
     dialog = AskMaxChars(root)
     return dialog.result
 
-class ModalDialog(Dialog):
-    """A subclass of `tk.simpledialog.Dialog` that disables menus.
+class ModalMessage(Dialog):
+    """A subclass of `tk.simpledialog.Dialog` that disables menus. Has
+    an 'OK' button, but no 'Cancel' button.
 
     Attributes:
         root (legends.ui.stlplanner.STLPlanner): The currently running
             `legends.ui.stlplanner.STLPlanner` instance.
         initialMenuState (bool): `True` if the root menu is enabled at
             the moment the dialog opens.
-        box (tk.Frame): The frame that holds the 'OK' and 'Cancel'
-            buttons.
+        box (tk.Frame): The frame that holds the buttons.
 
     """
     def __init__(self, root, parent=None, title=None):
@@ -161,17 +162,17 @@ class ModalDialog(Dialog):
         Dialog.__init__(self, parent, title)
 
     def buttonbox(self):
+        """Builds the standard 'OK' button of the
+        `tk.simpledialog.Dialog` class.
+
+        """
         self.box = tk.Frame(self)
 
         tk.Button(
             self.box, text="OK", width=10, command=self.ok, default=ACTIVE
         ).pack(side=RIGHT, padx=5, pady=5)
-        tk.Button(
-            self.box, text="Cancel", width=10, command=self.cancel
-        ).pack(side=RIGHT, padx=5, pady=5)
 
         self.bind("<Return>", self.ok)
-        self.bind("<Escape>", self.cancel)
 
         self.box.pack()
 
@@ -184,6 +185,34 @@ class ModalDialog(Dialog):
         if self.initialMenuState:
             self.root.menuEnabled = True
         tk.Toplevel.destroy(self)
+
+class ModalDialog(ModalMessage):
+    """A subclass of `ModalMessage` that has a 'Cancel' button.
+
+    Attributes:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+        initialMenuState (bool): `True` if the root menu is enabled at
+            the moment the dialog opens.
+        box (tk.Frame): The frame that holds the 'OK' and 'Cancel'
+            buttons.
+
+    """
+    def __init__(self, root, parent=None, title=None):
+        ModalMessage.__init__(self, root, parent, title)
+
+    def buttonbox(self):
+        """Adds the standard 'Cancel' button of the
+        `tk.simpledialog.Dialog` class.
+
+        """
+        ModalMessage.buttonbox(self)
+
+        tk.Button(
+            self.box, text="Cancel", width=10, command=self.cancel
+        ).pack(side=RIGHT, padx=5, pady=5)
+
+        self.bind("<Escape>", self.cancel)
 
 class AskSlot(ModalDialog):
     """A modal dialog that prompts the user to select a save slot.
@@ -551,12 +580,12 @@ class AskMaxChars(ModalDialog):
         self.result = nameIDs, self.maxGear.get()
         return True
 
-class HelpScreen(ModalDialog):
+class HelpScreen(ModalMessage):
     """A message dialog giving help on the *STL Planner* app.
 
     """
     def __init__(self, root, parent=None):
-        ModalDialog.__init__(self, root, parent, 'Roster Help')
+        ModalMessage.__init__(self, root, parent, 'Roster Help')
 
     def body(self, master):
         """Create the body of the dialog.
@@ -577,16 +606,85 @@ class HelpScreen(ModalDialog):
         text.focus()
         text.pack()
 
-    def buttonbox(self):
-        """Remove the 'Cancel' button.
+class OptimalSummons(ModalMessage):
+    """A message dialog showing the summon pool rates.
+
+    Attributes:
+        excludeCommons (tk.BooleanVar): `True` is the summon rate
+            calculations should exclude Common characters.
+        values (dict): {`str`:`tk.StringVar`} A dictionary mapping pool
+            names to a formatted string representation of the average
+            number of tokens per 150 orbs received from the pool.
+        labels (dict): {`str`:(`tk.Label`,`tk.Label`)} A dictionary
+            mapping pool names to the pair of labels associated with
+            that pool in the body of the message dialog.
+
+    """
+    def __init__(self, root, parent=None):
+        self.excludeCommons = tk.BooleanVar(None, True)
+        self.values = {}
+        self.labels = {}
+        for pool in SUMMON_POOL:
+            self.values[pool] = tk.StringVar()
+        ModalMessage.__init__(self, root, parent, 'Summon Rates')
+
+    def body(self, master):
+        """Create the body of the dialog.
 
         """
-        self.box = tk.Frame(self)
+        tk.Label(
+            master,
+            text='Average Tokens per 150 Orbs',
+            font=(None, 13, 'bold')
+        ).pack(pady=(0,10))
+        results = tk.Frame(master)
+        results.pack()
+        for row, pool in enumerate(SUMMON_POOL):
+            self.labels[pool] = (
+                tk.Label(
+                    results, text='{} Pool:'.format(pool)
+                ),
+                tk.Label(
+                    results, textvariable=self.values[pool], width=5
+                )
+            )
+            self.labels[pool][0].grid(row=row, column=0, sticky=W)
+            self.labels[pool][1].grid(row=row, column=1, sticky=E)
+        tk.Checkbutton(
+            master,
+            text='exclude Common characters',
+            variable=self.excludeCommons, command=self.refresh
+        ).pack(pady=(10,0))
+        self.refresh()
 
-        tk.Button(
-            self.box, text="OK", width=10, command=self.ok, default=ACTIVE
-        ).pack(side=RIGHT, padx=5, pady=5)
+    def refresh(self):
+        """Updates the values in the `values` attribute and sets the
+        font emphasis of the labels so that the highest summon rate is
+        bold and the others are normal.
 
-        self.bind("<Return>", self.ok)
+        """
+        bestPool = ''
+        bestPoolTokens = -1
+        tokens = {}
+        for pool in SUMMON_POOL:
+            roster = self.root.session.saveslot.roster
+            tokens[pool] = 150 * roster.tokensPerOrb(
+                pool, self.excludeCommons.get()
+            )
+            self.values[pool].set('{:.2f}'.format(tokens[pool]))
+            self.setPoolEmphasis(pool, 'normal')
+            if tokens[pool] > bestPoolTokens:
+                bestPool, bestPoolTokens = pool, tokens[pool]
+        self.setPoolEmphasis(bestPool, 'bold')
 
-        self.box.pack()
+    def setPoolEmphasis(self, pool, emphasis):
+        """Finds the labels associated with the given pool and sets
+        their font to have the given emphasis.
+
+        Args:
+            pool (str): The name of a summon pool.
+            emphasis (str): One of 'normal' or 'bold'.
+
+        """
+        self.labels[pool][0].config(font=(None, 11, emphasis))
+        self.labels[pool][1].config(font=(None, 11, emphasis))

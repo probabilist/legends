@@ -1,5 +1,13 @@
 # Change log
 
+## Version 0.10.0
+
+* Added a `ModalMessage` class, which is the same as `ModalDialog` but has no 'Cancel' button.
+* Changed `ModalDialog` to inherit from `ModalMessage`.
+* Changed `HelpScreen` to inherit from `ModalMessage`.
+* Created an `OptimalSummons` subclass of `ModalMessage` for displaying summon rates. Edited the `RosterTab.optimalSummons` method accordingly.
+* Added help menu option to `disableOnModal` list.
+
 ## Version 0.9.3
 
 * Alphabetized constants in docstring.

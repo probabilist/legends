@@ -11,9 +11,9 @@ from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSLevel
 from legends.constants import (
-    RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED, SUMMON_POOL
+    RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED
 )
-from legends.ui.dialogs import askRosterFilter, RosterFilter
+from legends.ui.dialogs import askRosterFilter, RosterFilter, OptimalSummons
 
 __all__ = ['maxXP', 'RosterTab', 'CharCard', 'RosterInfoBar']
 
@@ -211,8 +211,12 @@ class RosterTab(tk.Frame):
         return bar
 
     def optimalSummons(self):
-        for pool in SUMMON_POOL:
-            print(pool, 150 * self.roster.tokensPerOrb(pool))
+        """Raises an `legends.ui.dialogs.OptimalSummons` message window
+        showing the summon rates for the various summon pools.
+
+        """
+        OptimalSummons(self.root)
+
 
     def sort(self):
         """Sorts the dictionary of characters stored in the associated

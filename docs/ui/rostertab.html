@@ -42,7 +42,7 @@ from legends.constants import GSLevel
 from legends.constants import (
     RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED, SUMMON_POOL
 )
-from legends.ui.dialogs import askRosterFilter, RosterFilter
+from legends.ui.dialogs import askRosterFilter, RosterFilter, OptimalSummons
 
 __all__ = [&#39;maxXP&#39;, &#39;RosterTab&#39;, &#39;CharCard&#39;, &#39;RosterInfoBar&#39;]
 
@@ -240,8 +240,12 @@ class RosterTab(tk.Frame):
         return bar
 
     def optimalSummons(self):
-        for pool in SUMMON_POOL:
-            print(pool, 150 * self.roster.tokensPerOrb(pool))
+        &#34;&#34;&#34;Raises an `legends.ui.dialogs.OptimalSummons` message window
+        showing the summon rates for the various summon pools.
+
+        &#34;&#34;&#34;
+        OptimalSummons(self.root)
+
 
     def sort(self):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the associated
@@ -1495,8 +1499,12 @@ assign as the instance's parent.</dd>
         return bar
 
     def optimalSummons(self):
-        for pool in SUMMON_POOL:
-            print(pool, 150 * self.roster.tokensPerOrb(pool))
+        &#34;&#34;&#34;Raises an `legends.ui.dialogs.OptimalSummons` message window
+        showing the summon rates for the various summon pools.
+
+        &#34;&#34;&#34;
+        OptimalSummons(self.root)
+
 
     def sort(self):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the associated
@@ -1836,14 +1844,18 @@ and places it in the scroll area's content frame.</p></div>
 <span>def <span class="ident">optimalSummons</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Raises an <code><a title="legends.ui.dialogs.OptimalSummons" href="dialogs.html#legends.ui.dialogs.OptimalSummons">OptimalSummons</a></code> message window
+showing the summon rates for the various summon pools.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def optimalSummons(self):
-    for pool in SUMMON_POOL:
-        print(pool, 150 * self.roster.tokensPerOrb(pool))</code></pre>
+    &#34;&#34;&#34;Raises an `legends.ui.dialogs.OptimalSummons` message window
+    showing the summon rates for the various summon pools.
+
+    &#34;&#34;&#34;
+    OptimalSummons(self.root)</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.rostertab.RosterTab.refresh"><code class="name flex">

@@ -43,14 +43,16 @@ from tkinter.scrolledtext import ScrolledText
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.constants import (
-    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS
+    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS,
+    SUMMON_POOL
 )
 from legends.saveslot import SaveSlot
 
 __all__ = [
     &#39;addroot&#39;, &#39;showerror&#39;, &#39;showinfo&#39;, &#39;askyesno&#39;, &#39;askSlot&#39;,
-    &#39;askRosterFilter&#39;, &#39;askMaxChars&#39;, &#39;ModalDialog&#39;, &#39;AskSlot&#39;, &#39;RosterFilter&#39;,
-    &#39;AskRosterFilter&#39;, &#39;AskMaxChars&#39;, &#39;HelpScreen&#39;
+    &#39;askRosterFilter&#39;, &#39;askMaxChars&#39;, &#39;ModalMessage&#39;, &#39;ModalDialog&#39;, &#39;AskSlot&#39;,
+    &#39;RosterFilter&#39;, &#39;AskRosterFilter&#39;, &#39;AskMaxChars&#39;, &#39;HelpScreen&#39;,
+    &#39;OptimalSummons&#39;
 ]
 
 def addroot(func):
@@ -164,16 +166,16 @@ def askMaxChars(root):
     dialog = AskMaxChars(root)
     return dialog.result
 
-class ModalDialog(Dialog):
-    &#34;&#34;&#34;A subclass of `tk.simpledialog.Dialog` that disables menus.
+class ModalMessage(Dialog):
+    &#34;&#34;&#34;A subclass of `tk.simpledialog.Dialog` that disables menus. Has
+    an &#39;OK&#39; button, but no &#39;Cancel&#39; button.
 
     Attributes:
         root (legends.ui.stlplanner.STLPlanner): The currently running
             `legends.ui.stlplanner.STLPlanner` instance.
         initialMenuState (bool): `True` if the root menu is enabled at
             the moment the dialog opens.
-        box (tk.Frame): The frame that holds the &#39;OK&#39; and &#39;Cancel&#39;
-            buttons.
+        box (tk.Frame): The frame that holds the buttons.
 
     &#34;&#34;&#34;
     def __init__(self, root, parent=None, title=None):
@@ -190,17 +192,17 @@ class ModalDialog(Dialog):
         Dialog.__init__(self, parent, title)
 
     def buttonbox(self):
+        &#34;&#34;&#34;Builds the standard &#39;OK&#39; button of the
+        `tk.simpledialog.Dialog` class.
+
+        &#34;&#34;&#34;
         self.box = tk.Frame(self)
 
         tk.Button(
             self.box, text=&#34;OK&#34;, width=10, command=self.ok, default=ACTIVE
         ).pack(side=RIGHT, padx=5, pady=5)
-        tk.Button(
-            self.box, text=&#34;Cancel&#34;, width=10, command=self.cancel
-        ).pack(side=RIGHT, padx=5, pady=5)
 
         self.bind(&#34;&lt;Return&gt;&#34;, self.ok)
-        self.bind(&#34;&lt;Escape&gt;&#34;, self.cancel)
 
         self.box.pack()
 
@@ -213,6 +215,34 @@ class ModalDialog(Dialog):
         if self.initialMenuState:
             self.root.menuEnabled = True
         tk.Toplevel.destroy(self)
+
+class ModalDialog(ModalMessage):
+    &#34;&#34;&#34;A subclass of `ModalMessage` that has a &#39;Cancel&#39; button.
+
+    Attributes:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+        initialMenuState (bool): `True` if the root menu is enabled at
+            the moment the dialog opens.
+        box (tk.Frame): The frame that holds the &#39;OK&#39; and &#39;Cancel&#39;
+            buttons.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, parent=None, title=None):
+        ModalMessage.__init__(self, root, parent, title)
+
+    def buttonbox(self):
+        &#34;&#34;&#34;Adds the standard &#39;Cancel&#39; button of the
+        `tk.simpledialog.Dialog` class.
+
+        &#34;&#34;&#34;
+        ModalMessage.buttonbox(self)
+
+        tk.Button(
+            self.box, text=&#34;Cancel&#34;, width=10, command=self.cancel
+        ).pack(side=RIGHT, padx=5, pady=5)
+
+        self.bind(&#34;&lt;Escape&gt;&#34;, self.cancel)
 
 class AskSlot(ModalDialog):
     &#34;&#34;&#34;A modal dialog that prompts the user to select a save slot.
@@ -580,7 +610,7 @@ class AskMaxChars(ModalDialog):
         self.result = nameIDs, self.maxGear.get()
         return True
 
-class HelpScreen(ModalDialog):
+class HelpScreen(ModalMessage):
     &#34;&#34;&#34;A message dialog giving help on the *STL Planner* app.
 
     &#34;&#34;&#34;
@@ -606,19 +636,88 @@ class HelpScreen(ModalDialog):
         text.focus()
         text.pack()
 
-    def buttonbox(self):
-        &#34;&#34;&#34;Remove the &#39;Cancel&#39; button.
+class OptimalSummons(ModalMessage):
+    &#34;&#34;&#34;A message dialog showing the summon pool rates.
+
+    Attributes:
+        excludeCommons (tk.BooleanVar): `True` is the summon rate
+            calculations should exclude Common characters.
+        values (dict): {`str`:`tk.StringVar`} A dictionary mapping pool
+            names to a formatted string representation of the average
+            number of tokens per 150 orbs received from the pool.
+        labels (dict): {`str`:(`tk.Label`,`tk.Label`)} A dictionary
+            mapping pool names to the pair of labels associated with
+            that pool in the body of the message dialog.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, parent=None):
+        self.excludeCommons = tk.BooleanVar(None, True)
+        self.values = {}
+        self.labels = {}
+        for pool in SUMMON_POOL:
+            self.values[pool] = tk.StringVar()
+        ModalDialog.__init__(self, root, parent, &#39;Summon Rates&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
 
         &#34;&#34;&#34;
-        self.box = tk.Frame(self)
+        tk.Label(
+            master,
+            text=&#39;Average Tokens per 150 Orbs&#39;,
+            font=(None, 13, &#39;bold&#39;)
+        ).pack(pady=(0,10))
+        results = tk.Frame(master)
+        results.pack()
+        for row, pool in enumerate(SUMMON_POOL):
+            self.labels[pool] = (
+                tk.Label(
+                    results, text=&#39;{} Pool:&#39;.format(pool)
+                ),
+                tk.Label(
+                    results, textvariable=self.values[pool], width=5
+                )
+            )
+            for j in (0,1):
+                self.labels[pool][j].grid(row=row, column=j, sticky=W)
+        tk.Checkbutton(
+            master,
+            text=&#39;exclude Common characters&#39;,
+            variable=self.excludeCommons, command=self.refresh
+        ).pack(pady=(10,0))
+        self.refresh()
 
-        tk.Button(
-            self.box, text=&#34;OK&#34;, width=10, command=self.ok, default=ACTIVE
-        ).pack(side=RIGHT, padx=5, pady=5)
+    def refresh(self):
+        &#34;&#34;&#34;Updates the values in the `values` attribute and sets the
+        font emphasis of the labels so that the highest summon rate is
+        bold and the others are normal.
 
-        self.bind(&#34;&lt;Return&gt;&#34;, self.ok)
+        &#34;&#34;&#34;
+        bestPool = &#39;&#39;
+        bestPoolTokens = -1
+        tokens = {}
+        for pool in SUMMON_POOL:
+            roster = self.root.session.saveslot.roster
+            tokens[pool] = 150 * roster.tokensPerOrb(
+                pool, self.excludeCommons.get()
+            )
+            self.values[pool].set(&#39;{:.2f}&#39;.format(tokens[pool]))
+            self.setPoolEmphasis(pool, &#39;normal&#39;)
+            if tokens[pool] &gt; bestPoolTokens:
+                bestPool, bestPoolTokens = pool, tokens[pool]
+        self.setPoolEmphasis(bestPool, &#39;bold&#39;)
 
-        self.box.pack()</code></pre>
+    def setPoolEmphasis(self, pool, emphasis):
+        &#34;&#34;&#34;Finds the labels associated with the given pool and sets
+        their font to have the given emphasis.
+
+        Args:
+            pool (str): The name of a summon pool.
+            emphasis (str): One of &#39;normal&#39; or &#39;bold&#39;.
+
+        &#34;&#34;&#34;
+        self.labels[pool][0].config(font=(None, 11, emphasis))
+        self.labels[pool][1].config(font=(None, 11, emphasis))</code></pre>
 </details>
 </section>
 <section>
@@ -1014,6 +1113,7 @@ the maxed characters to also have maxed gear.</dd>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
 <li>tkinter.simpledialog.Dialog</li>
 <li>tkinter.Toplevel</li>
 <li>tkinter.BaseWidget</li>
@@ -1103,7 +1203,7 @@ then set the result.</p></div>
 <li><code><b><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
 <ul class="hlist">
 <li><code><a title="legends.ui.dialogs.ModalDialog.buttonbox" href="#legends.ui.dialogs.ModalDialog.buttonbox">buttonbox</a></code></li>
-<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalDialog.destroy">destroy</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1275,6 +1375,7 @@ is assigned a copy of this argument.</dd>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
 <li>tkinter.simpledialog.Dialog</li>
 <li>tkinter.Toplevel</li>
 <li>tkinter.BaseWidget</li>
@@ -1460,7 +1561,7 @@ scales.</p>
 <ul class="hlist">
 <li><code><b><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
 <ul class="hlist">
-<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalDialog.destroy">destroy</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1566,6 +1667,7 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
 <li>tkinter.simpledialog.Dialog</li>
 <li>tkinter.Toplevel</li>
 <li>tkinter.BaseWidget</li>
@@ -1646,7 +1748,7 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 <li><code><b><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
 <ul class="hlist">
 <li><code><a title="legends.ui.dialogs.ModalDialog.buttonbox" href="#legends.ui.dialogs.ModalDialog.buttonbox">buttonbox</a></code></li>
-<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalDialog.destroy">destroy</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1663,7 +1765,7 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class HelpScreen(ModalDialog):
+<pre><code class="python">class HelpScreen(ModalMessage):
     &#34;&#34;&#34;A message dialog giving help on the *STL Planner* app.
 
     &#34;&#34;&#34;
@@ -1687,25 +1789,11 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
         text.insert(&#39;1.0&#39;, HELP.format(glossary))
         text.config(state=DISABLED)
         text.focus()
-        text.pack()
-
-    def buttonbox(self):
-        &#34;&#34;&#34;Remove the &#39;Cancel&#39; button.
-
-        &#34;&#34;&#34;
-        self.box = tk.Frame(self)
-
-        tk.Button(
-            self.box, text=&#34;OK&#34;, width=10, command=self.ok, default=ACTIVE
-        ).pack(side=RIGHT, padx=5, pady=5)
-
-        self.bind(&#34;&lt;Return&gt;&#34;, self.ok)
-
-        self.box.pack()</code></pre>
+        text.pack()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
 <li>tkinter.simpledialog.Dialog</li>
 <li>tkinter.Toplevel</li>
 <li>tkinter.BaseWidget</li>
@@ -1743,36 +1831,13 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
     text.pack()</code></pre>
 </details>
 </dd>
-<dt id="legends.ui.dialogs.HelpScreen.buttonbox"><code class="name flex">
-<span>def <span class="ident">buttonbox</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Remove the 'Cancel' button.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def buttonbox(self):
-    &#34;&#34;&#34;Remove the &#39;Cancel&#39; button.
-
-    &#34;&#34;&#34;
-    self.box = tk.Frame(self)
-
-    tk.Button(
-        self.box, text=&#34;OK&#34;, width=10, command=self.ok, default=ACTIVE
-    ).pack(side=RIGHT, padx=5, pady=5)
-
-    self.bind(&#34;&lt;Return&gt;&#34;, self.ok)
-
-    self.box.pack()</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
+<li><code><b><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></b></code>:
 <ul class="hlist">
-<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalDialog.destroy">destroy</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalMessage.buttonbox" href="#legends.ui.dialogs.ModalMessage.buttonbox">buttonbox</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalMessage.destroy" href="#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1782,7 +1847,7 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 <span>(</span><span>root, parent=None, title=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A subclass of <code>tk.simpledialog.Dialog</code> that disables menus.</p>
+<div class="desc"><p>A subclass of <code><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></code> that has a 'Cancel' button.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>root</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></dt>
@@ -1801,8 +1866,8 @@ buttons.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class ModalDialog(Dialog):
-    &#34;&#34;&#34;A subclass of `tk.simpledialog.Dialog` that disables menus.
+<pre><code class="python">class ModalDialog(ModalMessage):
+    &#34;&#34;&#34;A subclass of `ModalMessage` that has a &#39;Cancel&#39; button.
 
     Attributes:
         root (legends.ui.stlplanner.STLPlanner): The currently running
@@ -1811,6 +1876,109 @@ buttons.</dd>
             the moment the dialog opens.
         box (tk.Frame): The frame that holds the &#39;OK&#39; and &#39;Cancel&#39;
             buttons.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, parent=None, title=None):
+        ModalMessage.__init__(self, root, parent, title)
+
+    def buttonbox(self):
+        &#34;&#34;&#34;Adds the standard &#39;Cancel&#39; button of the
+        `tk.simpledialog.Dialog` class.
+
+        &#34;&#34;&#34;
+        ModalMessage.buttonbox(self)
+
+        tk.Button(
+            self.box, text=&#34;Cancel&#34;, width=10, command=self.cancel
+        ).pack(side=RIGHT, padx=5, pady=5)
+
+        self.bind(&#34;&lt;Escape&gt;&#34;, self.cancel)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
+<li>tkinter.simpledialog.Dialog</li>
+<li>tkinter.Toplevel</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.AskMaxChars" href="#legends.ui.dialogs.AskMaxChars">AskMaxChars</a></li>
+<li><a title="legends.ui.dialogs.AskRosterFilter" href="#legends.ui.dialogs.AskRosterFilter">AskRosterFilter</a></li>
+<li><a title="legends.ui.dialogs.AskSlot" href="#legends.ui.dialogs.AskSlot">AskSlot</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.dialogs.ModalDialog.buttonbox"><code class="name flex">
+<span>def <span class="ident">buttonbox</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds the standard 'Cancel' button of the
+<code>tk.simpledialog.Dialog</code> class.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buttonbox(self):
+    &#34;&#34;&#34;Adds the standard &#39;Cancel&#39; button of the
+    `tk.simpledialog.Dialog` class.
+
+    &#34;&#34;&#34;
+    ModalMessage.buttonbox(self)
+
+    tk.Button(
+        self.box, text=&#34;Cancel&#34;, width=10, command=self.cancel
+    ).pack(side=RIGHT, padx=5, pady=5)
+
+    self.bind(&#34;&lt;Escape&gt;&#34;, self.cancel)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalMessage.destroy" href="#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.ui.dialogs.ModalMessage"><code class="flex name class">
+<span>class <span class="ident">ModalMessage</span></span>
+<span>(</span><span>root, parent=None, title=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A subclass of <code>tk.simpledialog.Dialog</code> that disables menus. Has
+an 'OK' button, but no 'Cancel' button.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>root</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></dt>
+<dd>The currently running
+<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> instance.</dd>
+<dt><strong><code>initialMenuState</code></strong> :&ensp;<code>bool</code></dt>
+<dd><code>True</code> if the root menu is enabled at
+the moment the dialog opens.</dd>
+<dt><strong><code>box</code></strong> :&ensp;<code>tk.Frame</code></dt>
+<dd>The frame that holds the buttons.</dd>
+</dl>
+<p>The constructor disables the root menu before calling the
+<code>tk.simpledialog.Dialog</code> constructor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ModalMessage(Dialog):
+    &#34;&#34;&#34;A subclass of `tk.simpledialog.Dialog` that disables menus. Has
+    an &#39;OK&#39; button, but no &#39;Cancel&#39; button.
+
+    Attributes:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+        initialMenuState (bool): `True` if the root menu is enabled at
+            the moment the dialog opens.
+        box (tk.Frame): The frame that holds the buttons.
 
     &#34;&#34;&#34;
     def __init__(self, root, parent=None, title=None):
@@ -1827,17 +1995,17 @@ buttons.</dd>
         Dialog.__init__(self, parent, title)
 
     def buttonbox(self):
+        &#34;&#34;&#34;Builds the standard &#39;OK&#39; button of the
+        `tk.simpledialog.Dialog` class.
+
+        &#34;&#34;&#34;
         self.box = tk.Frame(self)
 
         tk.Button(
             self.box, text=&#34;OK&#34;, width=10, command=self.ok, default=ACTIVE
         ).pack(side=RIGHT, padx=5, pady=5)
-        tk.Button(
-            self.box, text=&#34;Cancel&#34;, width=10, command=self.cancel
-        ).pack(side=RIGHT, padx=5, pady=5)
 
         self.bind(&#34;&lt;Return&gt;&#34;, self.ok)
-        self.bind(&#34;&lt;Escape&gt;&#34;, self.cancel)
 
         self.box.pack()
 
@@ -1861,40 +2029,39 @@ buttons.</dd>
 </ul>
 <h3>Subclasses</h3>
 <ul class="hlist">
-<li><a title="legends.ui.dialogs.AskMaxChars" href="#legends.ui.dialogs.AskMaxChars">AskMaxChars</a></li>
-<li><a title="legends.ui.dialogs.AskRosterFilter" href="#legends.ui.dialogs.AskRosterFilter">AskRosterFilter</a></li>
-<li><a title="legends.ui.dialogs.AskSlot" href="#legends.ui.dialogs.AskSlot">AskSlot</a></li>
 <li><a title="legends.ui.dialogs.HelpScreen" href="#legends.ui.dialogs.HelpScreen">HelpScreen</a></li>
+<li><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.OptimalSummons" href="#legends.ui.dialogs.OptimalSummons">OptimalSummons</a></li>
 </ul>
 <h3>Methods</h3>
 <dl>
-<dt id="legends.ui.dialogs.ModalDialog.buttonbox"><code class="name flex">
+<dt id="legends.ui.dialogs.ModalMessage.buttonbox"><code class="name flex">
 <span>def <span class="ident">buttonbox</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>add standard button box.</p>
-<p>override if you do not want the standard buttons</p></div>
+<div class="desc"><p>Builds the standard 'OK' button of the
+<code>tk.simpledialog.Dialog</code> class.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def buttonbox(self):
+    &#34;&#34;&#34;Builds the standard &#39;OK&#39; button of the
+    `tk.simpledialog.Dialog` class.
+
+    &#34;&#34;&#34;
     self.box = tk.Frame(self)
 
     tk.Button(
         self.box, text=&#34;OK&#34;, width=10, command=self.ok, default=ACTIVE
     ).pack(side=RIGHT, padx=5, pady=5)
-    tk.Button(
-        self.box, text=&#34;Cancel&#34;, width=10, command=self.cancel
-    ).pack(side=RIGHT, padx=5, pady=5)
 
     self.bind(&#34;&lt;Return&gt;&#34;, self.ok)
-    self.bind(&#34;&lt;Escape&gt;&#34;, self.cancel)
 
     self.box.pack()</code></pre>
 </details>
 </dd>
-<dt id="legends.ui.dialogs.ModalDialog.destroy"><code class="name flex">
+<dt id="legends.ui.dialogs.ModalMessage.destroy"><code class="name flex">
 <span>def <span class="ident">destroy</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -1916,6 +2083,238 @@ destroys the window.</p></div>
 </details>
 </dd>
 </dl>
+</dd>
+<dt id="legends.ui.dialogs.OptimalSummons"><code class="flex name class">
+<span>class <span class="ident">OptimalSummons</span></span>
+<span>(</span><span>root, parent=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A message dialog showing the summon pool rates.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>excludeCommons</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd><code>True</code> is the summon rate
+calculations should exclude Common characters.</dd>
+<dt><strong><code>values</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>tk.StringVar</code>} A dictionary mapping pool
+names to a formatted string representation of the average
+number of tokens per 150 orbs received from the pool.</dd>
+<dt><strong><code>labels</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:(<code>tk.Label</code>,<code>tk.Label</code>)} A dictionary
+mapping pool names to the pair of labels associated with
+that pool in the body of the message dialog.</dd>
+</dl>
+<p>The constructor disables the root menu before calling the
+<code>tk.simpledialog.Dialog</code> constructor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class OptimalSummons(ModalMessage):
+    &#34;&#34;&#34;A message dialog showing the summon pool rates.
+
+    Attributes:
+        excludeCommons (tk.BooleanVar): `True` is the summon rate
+            calculations should exclude Common characters.
+        values (dict): {`str`:`tk.StringVar`} A dictionary mapping pool
+            names to a formatted string representation of the average
+            number of tokens per 150 orbs received from the pool.
+        labels (dict): {`str`:(`tk.Label`,`tk.Label`)} A dictionary
+            mapping pool names to the pair of labels associated with
+            that pool in the body of the message dialog.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, parent=None):
+        self.excludeCommons = tk.BooleanVar(None, True)
+        self.values = {}
+        self.labels = {}
+        for pool in SUMMON_POOL:
+            self.values[pool] = tk.StringVar()
+        ModalDialog.__init__(self, root, parent, &#39;Summon Rates&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        tk.Label(
+            master,
+            text=&#39;Average Tokens per 150 Orbs&#39;,
+            font=(None, 13, &#39;bold&#39;)
+        ).pack(pady=(0,10))
+        results = tk.Frame(master)
+        results.pack()
+        for row, pool in enumerate(SUMMON_POOL):
+            self.labels[pool] = (
+                tk.Label(
+                    results, text=&#39;{} Pool:&#39;.format(pool)
+                ),
+                tk.Label(
+                    results, textvariable=self.values[pool], width=5
+                )
+            )
+            for j in (0,1):
+                self.labels[pool][j].grid(row=row, column=j, sticky=W)
+        tk.Checkbutton(
+            master,
+            text=&#39;exclude Common characters&#39;,
+            variable=self.excludeCommons, command=self.refresh
+        ).pack(pady=(10,0))
+        self.refresh()
+
+    def refresh(self):
+        &#34;&#34;&#34;Updates the values in the `values` attribute and sets the
+        font emphasis of the labels so that the highest summon rate is
+        bold and the others are normal.
+
+        &#34;&#34;&#34;
+        bestPool = &#39;&#39;
+        bestPoolTokens = -1
+        tokens = {}
+        for pool in SUMMON_POOL:
+            roster = self.root.session.saveslot.roster
+            tokens[pool] = 150 * roster.tokensPerOrb(
+                pool, self.excludeCommons.get()
+            )
+            self.values[pool].set(&#39;{:.2f}&#39;.format(tokens[pool]))
+            self.setPoolEmphasis(pool, &#39;normal&#39;)
+            if tokens[pool] &gt; bestPoolTokens:
+                bestPool, bestPoolTokens = pool, tokens[pool]
+        self.setPoolEmphasis(bestPool, &#39;bold&#39;)
+
+    def setPoolEmphasis(self, pool, emphasis):
+        &#34;&#34;&#34;Finds the labels associated with the given pool and sets
+        their font to have the given emphasis.
+
+        Args:
+            pool (str): The name of a summon pool.
+            emphasis (str): One of &#39;normal&#39; or &#39;bold&#39;.
+
+        &#34;&#34;&#34;
+        self.labels[pool][0].config(font=(None, 11, emphasis))
+        self.labels[pool][1].config(font=(None, 11, emphasis))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
+<li>tkinter.simpledialog.Dialog</li>
+<li>tkinter.Toplevel</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.dialogs.OptimalSummons.body"><code class="name flex">
+<span>def <span class="ident">body</span></span>(<span>self, master)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the body of the dialog.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def body(self, master):
+    &#34;&#34;&#34;Create the body of the dialog.
+
+    &#34;&#34;&#34;
+    tk.Label(
+        master,
+        text=&#39;Average Tokens per 150 Orbs&#39;,
+        font=(None, 13, &#39;bold&#39;)
+    ).pack(pady=(0,10))
+    results = tk.Frame(master)
+    results.pack()
+    for row, pool in enumerate(SUMMON_POOL):
+        self.labels[pool] = (
+            tk.Label(
+                results, text=&#39;{} Pool:&#39;.format(pool)
+            ),
+            tk.Label(
+                results, textvariable=self.values[pool], width=5
+            )
+        )
+        for j in (0,1):
+            self.labels[pool][j].grid(row=row, column=j, sticky=W)
+    tk.Checkbutton(
+        master,
+        text=&#39;exclude Common characters&#39;,
+        variable=self.excludeCommons, command=self.refresh
+    ).pack(pady=(10,0))
+    self.refresh()</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.OptimalSummons.refresh"><code class="name flex">
+<span>def <span class="ident">refresh</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the values in the <code>values</code> attribute and sets the
+font emphasis of the labels so that the highest summon rate is
+bold and the others are normal.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def refresh(self):
+    &#34;&#34;&#34;Updates the values in the `values` attribute and sets the
+    font emphasis of the labels so that the highest summon rate is
+    bold and the others are normal.
+
+    &#34;&#34;&#34;
+    bestPool = &#39;&#39;
+    bestPoolTokens = -1
+    tokens = {}
+    for pool in SUMMON_POOL:
+        roster = self.root.session.saveslot.roster
+        tokens[pool] = 150 * roster.tokensPerOrb(
+            pool, self.excludeCommons.get()
+        )
+        self.values[pool].set(&#39;{:.2f}&#39;.format(tokens[pool]))
+        self.setPoolEmphasis(pool, &#39;normal&#39;)
+        if tokens[pool] &gt; bestPoolTokens:
+            bestPool, bestPoolTokens = pool, tokens[pool]
+    self.setPoolEmphasis(bestPool, &#39;bold&#39;)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.OptimalSummons.setPoolEmphasis"><code class="name flex">
+<span>def <span class="ident">setPoolEmphasis</span></span>(<span>self, pool, emphasis)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds the labels associated with the given pool and sets
+their font to have the given emphasis.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>pool</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of a summon pool.</dd>
+<dt><strong><code>emphasis</code></strong> :&ensp;<code>str</code></dt>
+<dd>One of 'normal' or 'bold'.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setPoolEmphasis(self, pool, emphasis):
+    &#34;&#34;&#34;Finds the labels associated with the given pool and sets
+    their font to have the given emphasis.
+
+    Args:
+        pool (str): The name of a summon pool.
+        emphasis (str): One of &#39;normal&#39; or &#39;bold&#39;.
+
+    &#34;&#34;&#34;
+    self.labels[pool][0].config(font=(None, 11, emphasis))
+    self.labels[pool][1].config(font=(None, 11, emphasis))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalMessage.buttonbox" href="#legends.ui.dialogs.ModalMessage.buttonbox">buttonbox</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalMessage.destroy" href="#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="legends.ui.dialogs.RosterFilter"><code class="flex name class">
 <span>class <span class="ident">RosterFilter</span></span>
@@ -2171,14 +2570,27 @@ given filter.</p>
 <h4><code><a title="legends.ui.dialogs.HelpScreen" href="#legends.ui.dialogs.HelpScreen">HelpScreen</a></code></h4>
 <ul class="">
 <li><code><a title="legends.ui.dialogs.HelpScreen.body" href="#legends.ui.dialogs.HelpScreen.body">body</a></code></li>
-<li><code><a title="legends.ui.dialogs.HelpScreen.buttonbox" href="#legends.ui.dialogs.HelpScreen.buttonbox">buttonbox</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="legends.ui.dialogs.ModalDialog" href="#legends.ui.dialogs.ModalDialog">ModalDialog</a></code></h4>
 <ul class="">
 <li><code><a title="legends.ui.dialogs.ModalDialog.buttonbox" href="#legends.ui.dialogs.ModalDialog.buttonbox">buttonbox</a></code></li>
-<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="#legends.ui.dialogs.ModalDialog.destroy">destroy</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.dialogs.ModalMessage" href="#legends.ui.dialogs.ModalMessage">ModalMessage</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.dialogs.ModalMessage.buttonbox" href="#legends.ui.dialogs.ModalMessage.buttonbox">buttonbox</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalMessage.destroy" href="#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.dialogs.OptimalSummons" href="#legends.ui.dialogs.OptimalSummons">OptimalSummons</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.dialogs.OptimalSummons.body" href="#legends.ui.dialogs.OptimalSummons.body">body</a></code></li>
+<li><code><a title="legends.ui.dialogs.OptimalSummons.refresh" href="#legends.ui.dialogs.OptimalSummons.refresh">refresh</a></code></li>
+<li><code><a title="legends.ui.dialogs.OptimalSummons.setPoolEmphasis" href="#legends.ui.dialogs.OptimalSummons.setPoolEmphasis">setPoolEmphasis</a></code></li>
 </ul>
 </li>
 <li>

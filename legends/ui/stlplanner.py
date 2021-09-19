@@ -120,6 +120,7 @@ class STLPlanner(tk.Tk):
         helpMenu.add_command(
             label='STL Planner Help', command=lambda: HelpScreen(self)
         )
+        self.disableOnModal.append((helpMenu, 0))
 
     def newSession(self, saveslot):
         """Clears the current session and starts a new one with the

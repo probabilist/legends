@@ -4,6 +4,7 @@ __pycache__
 _archive
 build
 dist
+docs/legends
 .python-version
 _notes.md
 daily.py

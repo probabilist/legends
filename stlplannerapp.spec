@@ -44,4 +44,4 @@ app = BUNDLE(exe,
              name='STL Planner.app',
              icon='command.icns',
              bundle_identifier=None,
-             version='0.7.4')
+             version='0.10.0')
