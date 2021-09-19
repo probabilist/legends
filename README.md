@@ -54,11 +54,7 @@ The `legends` package uses other packages that you might not have installed. To 
 
 ### Documentation
 
-This package is fully documented with docstrings. At the command prompt, enter
-```
-% python -m pydoc -b
-```
-This will open a browser page with Python documentation. Find the "**legends** (package)" link and click it. You can now explore all the package documentation.
+Complete documentation can be found at https://probabilist.github.io/legends/.
 
 ### Running *STL Planner* from a command line
 
