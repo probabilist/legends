@@ -1,0 +1,1959 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>legends.ui.rostertab API documentation</title>
+<meta name="description" content="The `legends.ui.rostertab.RosterTab` class and related objects." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legends.ui.rostertab</code></h1>
+</header>
+<section id="section-intro">
+<p>The <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code> class and related objects.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;The `legends.ui.rostertab.RosterTab` class and related objects.
+
+&#34;&#34;&#34;
+
+import tkinter as tk
+from tkinter import ttk, X, BOTH, GROOVE, LEFT, RIGHT, NSEW, YES, W
+from tkinter.filedialog import asksaveasfilename
+from getpass import getuser
+from csv import DictWriter
+from legends.utils.scrollframe import ScrollFrame
+# pylint: disable-next=no-name-in-module
+from legends.constants import GSLevel
+from legends.constants import (
+    RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED, SUMMON_POOL
+)
+from legends.ui.dialogs import askRosterFilter, RosterFilter
+
+__all__ = [&#39;maxXP&#39;, &#39;RosterTab&#39;, &#39;CharCard&#39;, &#39;RosterInfoBar&#39;]
+
+def maxXP(rarity):
+    &#34;&#34;&#34;Returns the maximum XP of a character of the given rarity.
+
+    Args:
+        rarity (str): The rarity of the character.
+
+    &#34;&#34;&#34;
+    return GSLevel[rarity + &#39;_99&#39;][&#39;Experience&#39;]
+
+class RosterTab(tk.Frame):
+    &#34;&#34;&#34;Displays the player&#39;s character collection.
+
+    Attributes:
+        filter (legends.ui.dialogs.RosterFilter): The
+            `legends.ui.dialogs.RosterFilter` object storing the current
+            filter settings.
+        scrollArea (legends.utils.scrollframe.ScrollFrame): The
+            `legends.utils.scrollframe.ScrollFrame` used to hold the
+            character cards.
+        infoBar (RosterInfoBar): The info bar containing aggregate info
+            about the currently displayed characters.
+        sortFuncs (dict): {`str`:`func`} A dictionary mapping field
+            names to functions that map `legends.gameobjects.Character`
+            objects to a sortable value.
+        sortField (tk.StringVar): The currently selected field name by
+            which the characters are sorted.
+        descending (tk.BooleanVar): `True` if characters should be
+            sorted in descending order.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, session, **options):
+        &#34;&#34;&#34;The constructor creates an instance as a child of the given
+        session.
+
+        Args:
+            session (legends.ui.stlplanner.Session): The session to
+                assign as the instance&#39;s parent.
+
+        &#34;&#34;&#34;
+        # build frame and initialize variables
+        tk.Frame.__init__(self, session, **options)
+        self.filter = RosterFilter()
+
+        # build widgets
+        self.scrollArea = ScrollFrame(self)
+        self.scrollArea.canvas.config(height=0.7 * self.winfo_screenheight())
+        self.infoBar = RosterInfoBar(self)
+
+        # pack frame content
+        self.actionBar().pack(expand=YES, fill=X)
+        self.scrollArea.pack(expand=YES, fill=BOTH)
+        self.infoBar.pack()
+
+        # fill scroll area with character cards
+        self.fillCards()
+
+    @property
+    def root(self):
+        &#34;&#34;&#34;`legends.ui.stlplanner.STLPlanner`: The currently running
+        `legends.ui.stlplanner.STLPlanner` instance.
+        &#34;&#34;&#34;
+        return self.master.master
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with this
+        roster tab.
+        &#34;&#34;&#34;
+        return self.master.saveslot.roster
+
+    @property
+    def cards(self):
+        &#34;&#34;&#34;`dict`: {`str`:`CharCard`} A dictionary mapping a character&#39;s
+        name ID attribute to its character card.
+        &#34;&#34;&#34;
+        return {
+            card.char.nameID : card
+            for card in self.scrollArea.content.winfo_children()
+            if isinstance(card, CharCard)
+        }
+
+    def checkFilter(self, char):
+        &#34;&#34;&#34;Checks if the given character passes the current filter
+        options.
+
+        Args:
+            char (legends.gameobjects.Character): The character to
+                check.
+
+        Returns:
+            bool: `True` if the character passes.
+
+        &#34;&#34;&#34;
+        filt = self.filter.dictify()
+        return(
+            filt[&#39;rarities&#39;][char.rarity]
+            and filt[&#39;roles&#39;][char.role]
+            and filt[&#39;ranks&#39;][0] &lt;= char.rank &lt;= filt[&#39;ranks&#39;][1]
+            and filt[&#39;levels&#39;][0] &lt;= char.level &lt;= filt[&#39;levels&#39;][1]
+        )
+
+    def fillCards(self):
+        &#34;&#34;&#34;Builds a card for each character in the player&#39;s collection
+        and places it in the scroll area&#39;s content frame.
+
+        &#34;&#34;&#34;
+        columns = 4
+        for j in range(columns):
+            self.scrollArea.content.columnconfigure(
+                j, weight=1, uniform=&#39;roster&#39;
+            )
+        count = 0
+        chars = [
+            char for char in self.roster.chars.values()
+            if self.checkFilter(char)
+        ]
+        for char in chars:
+            CharCard(char, self).grid(
+                row=count // columns, column=count % columns, sticky=NSEW
+            )
+            count += 1
+        self.infoBar.makeStats(chars, self.roster)
+
+    def actionBar(self):
+        &#34;&#34;&#34;Builds and returns an action bar that allows the user to
+        interact with the `RosterTab`.
+
+        &#34;&#34;&#34;
+        # define and initialize variables
+        sslot = self.master.saveslot
+        ros = self.roster
+        self.sortFuncs = {
+            &#39;Name&#39;: lambda c: c.shortName,
+            &#39;Favorite&#39;: lambda c,s=sslot: c in s.favorites,
+            &#39;Level&#39;: lambda c: c.xp,
+            &#39;Rank&#39;: lambda c: c.rank,
+            &#39;Rarity&#39;: lambda c: c.rarityIndex,
+            &#39;Role&#39;: lambda c: c.role,
+            &#39;Tokens&#39;: lambda c,s=sslot: s.tokens[c.nameID],
+            &#39;Tokens needed&#39;: lambda c,s=sslot: (
+                c.tokensNeeded - s.tokens[c.nameID]
+            )
+        }
+        for statName in STAT_INITIALS:
+            self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
+                r.charStats(c.nameID).get(n)
+            )
+        self.sortFuncs[&#39;Power&#39;] = lambda c,r=ros: (
+            POWER_AT_ORIGIN + r.charStats(c.nameID).power
+        )
+        self.sortFuncs.update({
+            &#39;Missing gear levels&#39;: lambda c,r=ros: (
+                r.missingGearLevels(c.nameID)
+            ),
+            &#39;Missing gear ranks&#39;: lambda c,r=ros: (
+                r.missingGearRanks(c.nameID)
+            ),
+            &#39;Missing skill levels&#39;: lambda c: c.missingSkillLevels
+        })
+        fields = list(self.sortFuncs.keys())
+        self.sortField = tk.StringVar()
+        self.descending = tk.BooleanVar()
+        self.descending.set(True)
+
+        # build bar and sorting Combobox
+        bar = tk.Frame(self)
+        sortMenu = ttk.Combobox(
+            bar,
+            textvariable=self.sortField,
+            values=fields,
+            state=&#39;readonly&#39;,
+            width=max(len(field) for field in fields)
+        )
+        sortMenu.bind(&#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.sort())
+
+        # pack and return bar
+        tk.Label(bar, text=&#39;sort by:&#39;).pack(side=LEFT)
+        sortMenu.pack(side=LEFT)
+        tk.Checkbutton(
+            bar, text=&#39;descending&#39;, variable=self.descending, command=self.sort
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text=&#39;filter&#39;, width=6, command=self.adjustFilter
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text=&#39;export&#39;, width=6, command=self.export
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text=&#39;summon pools&#39;, command=self.optimalSummons
+        ).pack(side=RIGHT)
+        return bar
+
+    def optimalSummons(self):
+        for pool in SUMMON_POOL:
+            print(pool, 150 * self.roster.tokensPerOrb(pool))
+
+    def sort(self):
+        &#34;&#34;&#34;Sorts the dictionary of characters stored in the associated
+        `legends.saveslot.SaveSlot` object according the currently
+        selected sorting field. Then refreshes the character cards.
+
+        &#34;&#34;&#34;
+        field = self.sortField.get()
+        if field == &#39;&#39;:
+            return
+        self.master.saveslot.sort(
+            self.sortFuncs[field], self.descending.get()
+        )
+        self.refresh()
+
+    def refresh(self):
+        &#34;&#34;&#34;Destroys and rebuilds all character cards.
+
+        &#34;&#34;&#34;
+        for card in self.cards.values():
+            card.destroy()
+        self.fillCards()
+
+    def adjustFilter(self):
+        &#34;&#34;&#34;Creates an `legends.ui.dialogs.AskRosterFilter` window,
+        giving the user an opportunity to adjust the filter settings.
+        Then refreshes the character cards and info bar.
+
+        &#34;&#34;&#34;
+        filt = askRosterFilter(self.root, self.filter)
+        if filt is not None:
+            self.filter = filt
+            self.refresh()
+
+    def export(self):
+        &#34;&#34;&#34;Exports the data in the character cards to a csv file. Each
+        row in the file corresponds to a card, and the data in that row
+        is the data generated by the card&#39;s `CharCard.dictify` method.
+
+        &#34;&#34;&#34;
+        filename = asksaveasfilename(
+            defaultextension=&#39;csv&#39;,
+            initialdir=&#39;/Users/&#39; + getuser() + &#39;/Documents/&#39;,
+            initialfile=&#39;roster.csv&#39;,
+            title=&#39;Export Roster&#39;,
+            filetypes=[(&#39;Text CSV&#39;, &#39;*.csv&#39;)]
+        )
+        if not filename:
+            return
+        cardDicts = [card.dictify() for card in self.cards.values()]
+        fields = cardDicts[0].keys()
+        with open(filename, &#39;w&#39;, newline=&#39;&#39;, encoding=&#39;utf-8&#39;) as f:
+            writer = DictWriter(f, fields)
+            writer.writeheader()
+            writer.writerows(cardDicts)
+
+class CharCard(tk.Frame):
+    &#34;&#34;&#34;A small tile containing basic information about a character.
+
+    Attributes:
+        char (legends.gameobjects.Character): The character from which
+            the card is built.
+        nameLabel (tk.Label): The label containing the character&#39;s name.
+            Clicking it toggles the character&#39;s `favorite` property.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, rostertab, **options):
+        &#34;&#34;&#34;The constructor builds the card and associates it with the
+        given `legends.ui.rostertab.RosterTab`.
+
+        Args:
+            char (legends.gameobjects.Character): The character from
+                which to build the card.
+            rostertab (legends.ui.rostertab.RosterTab): The
+                `legends.ui.rostertab.RosterTab` object to which this
+                card belongs.
+
+        &#34;&#34;&#34;
+        # build card and initialize variables
+        tk.Frame.__init__(self, rostertab.scrollArea.content, **options)
+        self.char = char
+
+        # build name and stat plates
+        bgColor = RARITY_COLORS[char.rarity]
+        namePlate = self.namePlate(bgColor)
+        statPlate = self.statPlate(bgColor)
+
+        # set card color configuration
+        self.config(bg=bgColor, highlightthickness=2)
+        self.colorByFav()
+
+        # pack card contents
+        namePlate.pack(side=LEFT)
+        statPlate.pack(side=RIGHT)
+
+    @property
+    def favorite(self):
+        &#34;&#34;&#34;`bool`: True if the player has selected this character as a
+        favorite.
+        &#34;&#34;&#34;
+        return self.char in self.saveslot.favorites
+
+    @property
+    def saveslot(self):
+        &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
+        character is located.
+        &#34;&#34;&#34;
+        content = self.master
+        canvas = content.master
+        scrollArea = canvas.master
+        rostertab = scrollArea.master
+        session = rostertab.master
+        return session.saveslot
+
+    def namePlate(self, bgColor):
+        &#34;&#34;&#34;Builds and returns the character name plate with the given
+        background color.
+
+        Args:
+            bgColor (str): The `tkinter` name of the given background
+                color.
+
+        Returns:
+            tk.Frame: The constructed name plate.
+
+        &#34;&#34;&#34;
+        plate = tk.Frame(self, bg=bgColor, height=118, width=105)
+        plate.pack_propagate(0)
+        data = self.dictify()
+
+        # build name label
+        self.nameLabel = tk.Label(
+            plate, text=data[&#39;name&#39;], bg=bgColor,
+            font=(None, 16, &#39;bold&#39;)
+        )
+        self.nameLabel.bind(&#39;&lt;Button-1&gt;&#39;, self.toggleFav)
+
+        # pack name plate contents and return the plate
+        tk.Label(
+            plate,
+            text=&#39;{}\nRank {}\nTokens: {}/{}&#39;.format(
+                data[&#39;role&#39;],
+                data[&#39;rank&#39;],
+                data[&#39;tokens&#39;],
+                data[&#39;tokensNeeded&#39;]
+            ),
+            bg=bgColor,
+            font=(None, 11, &#39;italic&#39;)
+        ).pack()
+        self.nameLabel.pack(expand=YES, fill=X)
+        tk.Label(
+            plate,
+            text=(&#39;Level {}\nXP: {:,}\n({:.1%})&#39;.format(
+                data[&#39;level&#39;],
+                data[&#39;xp&#39;],
+                data[&#39;xp&#39;]/maxXP(data[&#39;rarity&#39;])
+            )),
+            bg=bgColor,
+            font=(None, 11, &#39;italic&#39;)
+        ).pack()
+        return plate
+
+    def statPlate(self, bgColor):
+        &#34;&#34;&#34;Build and returns the character stat plate with the given
+        background color.
+
+        Args:
+            bgColor (str): The `tkinter` name of the given background
+                color.
+
+        Returns:
+            tk.Frame: The constructed stat plate.
+
+        &#34;&#34;&#34;
+        plate = tk.Frame(self, bg=bgColor)
+        data = self.dictify()
+        # statObj = self.saveslot.roster.charStats(self.char.nameID)
+        font = (None, 9)
+
+        # cycle through the 10 basic stats
+        for index, statName in enumerate(STAT_INITIALS):
+            # format the stat value
+            statVal = data[statName]
+            if index == 2: # the speed stat
+                statText = &#39;{:.2f}&#39;.format(statVal)
+            elif index &gt; 4: # the percentage stats
+                statText = (
+                    &#39;{:.1f}&#39;.format(100 * statVal).rstrip(&#39;0&#39;).rstrip(&#39;.&#39;)
+                    + &#39;%&#39;
+                )
+            else:
+                statText = &#39;{:.0f}&#39;.format(statVal)
+
+            # grid the 10 basic stats
+            row, col = index % 5, 2 * int(index/5)
+            tk.Label(
+                plate, text=STAT_INITIALS[statName] + &#39;:&#39;,
+                bg=bgColor, font=font
+            ).grid(row=row, column=col, sticky=W)
+            tk.Label(
+                plate, text=statText, bg=bgColor, font=font,
+                width=4 + col, anchor=W
+            ).grid(row=row, column=col + 1, sticky=W)
+
+        # grid the extra stats
+        moreStats = {k + &#39;:&#39;: data[k] for k in [&#39;MGL&#39;, &#39;MGR&#39;, &#39;MSL&#39;]}
+        for row, item in enumerate(moreStats.items()):
+            text, statVal = item
+            tk.Label(
+                plate, text=text, bg=bgColor, font=font
+            ).grid(row=row, column=5, sticky=W)
+            tk.Label(
+                plate, text=str(statVal), bg=bgColor, font=font,
+                width=5, anchor=W
+            ).grid(row=row, column=6, sticky=W)
+
+        # grid the power stat and return the plate
+        tk.Label(
+            plate,
+            text=&#39;POWER: {:.0f}&#39;.format(data[&#39;power&#39;]),
+            bg=bgColor, font=(None, 11) + (&#39;bold&#39;,)
+        ).grid(row=5, column=0, columnspan=4)
+        return plate
+
+    def toggleFav(self, event): # pylint: disable=unused-argument
+        &#34;&#34;&#34;Toggles the character&#39;s `favorite` property and recolors the
+        card.
+        &#34;&#34;&#34;
+        if self.char in self.saveslot.favorites:
+            self.saveslot.favorites.remove(self.char)
+        else:
+            self.saveslot.favorites.append(self.char)
+        self.colorByFav()
+
+    def colorByFav(self):
+        &#34;&#34;&#34;Colors the border and name of the character red if marked as
+        a favorite; black otherwise.
+
+        &#34;&#34;&#34;
+        color = &#39;red2&#39; if self.favorite else &#39;black&#39;
+        self.config(
+            highlightbackground=color, highlightcolor=color
+        )
+        self.nameLabel.config(fg=color)
+
+    def dictify(self):
+        &#34;&#34;&#34;Creates and returns a dictionary representation of the data
+        depicted on this card.
+
+        Returns:
+            dict: The dictionary of data from the card.
+
+        &#34;&#34;&#34;
+        D = {
+            &#39;name&#39;: self.char.shortName,
+            &#39;rarity&#39;: self.char.rarity,
+            &#39;role&#39;: self.char.role,
+            &#39;rank&#39;: self.char.rank,
+            &#39;tokens&#39;: self.saveslot.tokens[self.char.nameID],
+            &#39;tokensNeeded&#39;: self.char.tokensNeeded,
+            &#39;level&#39;: self.char.level,
+            &#39;xp&#39;: self.char.xp
+        }
+        statObj = self.saveslot.roster.charStats(self.char.nameID)
+        for statName in STAT_INITIALS:
+            D[statName] = statObj.get(statName)
+        D[&#39;power&#39;] = POWER_AT_ORIGIN + statObj.power
+        D.update({
+            &#39;MGL&#39;: self.saveslot.roster.missingGearLevels(self.char.nameID),
+            &#39;MGR&#39;: self.saveslot.roster.missingGearRanks(self.char.nameID),
+            &#39;MSL&#39;: self.char.missingSkillLevels
+        })
+        return D
+
+class RosterInfoBar(tk.Frame):
+    &#34;&#34;&#34;A frame for displaying aggregate data about the user&#39;s roster.
+
+    Attributes:
+        totalXP (tk.Label): A label displaying the total XP.
+        totalPower (tk.Label): A label displaying the total power.
+        charCount (tk.Label): A label displaying the number of
+            characters in the roster.
+
+    &#34;&#34;&#34;
+    def __init__(self, parent=None, **options):
+        &#34;&#34;&#34;The constructor passes its arguments to the `tk.Frame`
+        constructor, then builds and packs the attribute labels.
+
+        &#34;&#34;&#34;
+        tk.Frame.__init__(self, parent, **options)
+        self.totalXP = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.totalXP.pack(side=LEFT)
+        self.totalPower = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.totalPower.pack(side=LEFT)
+        self.charCount = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.charCount.pack(side=LEFT)
+
+    def makeStats(self, chars, roster):
+        &#34;&#34;&#34;Computes and redisplays roster statistics using the given
+        collection of characters.
+
+        Args:
+            chars (iterable of legends.gameobjects.Character): The
+                characters to use when computing statistics.
+            roster (legends.roster.Roster): The roster to which the
+                characters belong.
+
+        &#34;&#34;&#34;
+        self.totalXP.config(text=&#39;Total XP: {:,}&#39;.format(sum(
+            char.xp for char in chars
+        )))
+        self.totalPower.config(text=&#39;Total power: {:,.0f}&#39;.format(sum(
+            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+            for char in chars
+        )))
+        self.charCount.config(text=&#39;Characters: {}/{}&#39;.format(
+            len(list(chars)), len(ENABLED)
+        ))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.ui.rostertab.maxXP"><code class="name flex">
+<span>def <span class="ident">maxXP</span></span>(<span>rarity)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the maximum XP of a character of the given rarity.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The rarity of the character.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maxXP(rarity):
+    &#34;&#34;&#34;Returns the maximum XP of a character of the given rarity.
+
+    Args:
+        rarity (str): The rarity of the character.
+
+    &#34;&#34;&#34;
+    return GSLevel[rarity + &#39;_99&#39;][&#39;Experience&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.ui.rostertab.CharCard"><code class="flex name class">
+<span>class <span class="ident">CharCard</span></span>
+<span>(</span><span>char, rostertab, **options)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A small tile containing basic information about a character.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="../gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character from which
+the card is built.</dd>
+<dt><strong><code>nameLabel</code></strong> :&ensp;<code>tk.Label</code></dt>
+<dd>The label containing the character's name.
+Clicking it toggles the character's <code>favorite</code> property.</dd>
+</dl>
+<p>The constructor builds the card and associates it with the
+given <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="../gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character from
+which to build the card.</dd>
+<dt><strong><code>rostertab</code></strong> :&ensp;<code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code></dt>
+<dd>The
+<code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code> object to which this
+card belongs.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CharCard(tk.Frame):
+    &#34;&#34;&#34;A small tile containing basic information about a character.
+
+    Attributes:
+        char (legends.gameobjects.Character): The character from which
+            the card is built.
+        nameLabel (tk.Label): The label containing the character&#39;s name.
+            Clicking it toggles the character&#39;s `favorite` property.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, rostertab, **options):
+        &#34;&#34;&#34;The constructor builds the card and associates it with the
+        given `legends.ui.rostertab.RosterTab`.
+
+        Args:
+            char (legends.gameobjects.Character): The character from
+                which to build the card.
+            rostertab (legends.ui.rostertab.RosterTab): The
+                `legends.ui.rostertab.RosterTab` object to which this
+                card belongs.
+
+        &#34;&#34;&#34;
+        # build card and initialize variables
+        tk.Frame.__init__(self, rostertab.scrollArea.content, **options)
+        self.char = char
+
+        # build name and stat plates
+        bgColor = RARITY_COLORS[char.rarity]
+        namePlate = self.namePlate(bgColor)
+        statPlate = self.statPlate(bgColor)
+
+        # set card color configuration
+        self.config(bg=bgColor, highlightthickness=2)
+        self.colorByFav()
+
+        # pack card contents
+        namePlate.pack(side=LEFT)
+        statPlate.pack(side=RIGHT)
+
+    @property
+    def favorite(self):
+        &#34;&#34;&#34;`bool`: True if the player has selected this character as a
+        favorite.
+        &#34;&#34;&#34;
+        return self.char in self.saveslot.favorites
+
+    @property
+    def saveslot(self):
+        &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
+        character is located.
+        &#34;&#34;&#34;
+        content = self.master
+        canvas = content.master
+        scrollArea = canvas.master
+        rostertab = scrollArea.master
+        session = rostertab.master
+        return session.saveslot
+
+    def namePlate(self, bgColor):
+        &#34;&#34;&#34;Builds and returns the character name plate with the given
+        background color.
+
+        Args:
+            bgColor (str): The `tkinter` name of the given background
+                color.
+
+        Returns:
+            tk.Frame: The constructed name plate.
+
+        &#34;&#34;&#34;
+        plate = tk.Frame(self, bg=bgColor, height=118, width=105)
+        plate.pack_propagate(0)
+        data = self.dictify()
+
+        # build name label
+        self.nameLabel = tk.Label(
+            plate, text=data[&#39;name&#39;], bg=bgColor,
+            font=(None, 16, &#39;bold&#39;)
+        )
+        self.nameLabel.bind(&#39;&lt;Button-1&gt;&#39;, self.toggleFav)
+
+        # pack name plate contents and return the plate
+        tk.Label(
+            plate,
+            text=&#39;{}\nRank {}\nTokens: {}/{}&#39;.format(
+                data[&#39;role&#39;],
+                data[&#39;rank&#39;],
+                data[&#39;tokens&#39;],
+                data[&#39;tokensNeeded&#39;]
+            ),
+            bg=bgColor,
+            font=(None, 11, &#39;italic&#39;)
+        ).pack()
+        self.nameLabel.pack(expand=YES, fill=X)
+        tk.Label(
+            plate,
+            text=(&#39;Level {}\nXP: {:,}\n({:.1%})&#39;.format(
+                data[&#39;level&#39;],
+                data[&#39;xp&#39;],
+                data[&#39;xp&#39;]/maxXP(data[&#39;rarity&#39;])
+            )),
+            bg=bgColor,
+            font=(None, 11, &#39;italic&#39;)
+        ).pack()
+        return plate
+
+    def statPlate(self, bgColor):
+        &#34;&#34;&#34;Build and returns the character stat plate with the given
+        background color.
+
+        Args:
+            bgColor (str): The `tkinter` name of the given background
+                color.
+
+        Returns:
+            tk.Frame: The constructed stat plate.
+
+        &#34;&#34;&#34;
+        plate = tk.Frame(self, bg=bgColor)
+        data = self.dictify()
+        # statObj = self.saveslot.roster.charStats(self.char.nameID)
+        font = (None, 9)
+
+        # cycle through the 10 basic stats
+        for index, statName in enumerate(STAT_INITIALS):
+            # format the stat value
+            statVal = data[statName]
+            if index == 2: # the speed stat
+                statText = &#39;{:.2f}&#39;.format(statVal)
+            elif index &gt; 4: # the percentage stats
+                statText = (
+                    &#39;{:.1f}&#39;.format(100 * statVal).rstrip(&#39;0&#39;).rstrip(&#39;.&#39;)
+                    + &#39;%&#39;
+                )
+            else:
+                statText = &#39;{:.0f}&#39;.format(statVal)
+
+            # grid the 10 basic stats
+            row, col = index % 5, 2 * int(index/5)
+            tk.Label(
+                plate, text=STAT_INITIALS[statName] + &#39;:&#39;,
+                bg=bgColor, font=font
+            ).grid(row=row, column=col, sticky=W)
+            tk.Label(
+                plate, text=statText, bg=bgColor, font=font,
+                width=4 + col, anchor=W
+            ).grid(row=row, column=col + 1, sticky=W)
+
+        # grid the extra stats
+        moreStats = {k + &#39;:&#39;: data[k] for k in [&#39;MGL&#39;, &#39;MGR&#39;, &#39;MSL&#39;]}
+        for row, item in enumerate(moreStats.items()):
+            text, statVal = item
+            tk.Label(
+                plate, text=text, bg=bgColor, font=font
+            ).grid(row=row, column=5, sticky=W)
+            tk.Label(
+                plate, text=str(statVal), bg=bgColor, font=font,
+                width=5, anchor=W
+            ).grid(row=row, column=6, sticky=W)
+
+        # grid the power stat and return the plate
+        tk.Label(
+            plate,
+            text=&#39;POWER: {:.0f}&#39;.format(data[&#39;power&#39;]),
+            bg=bgColor, font=(None, 11) + (&#39;bold&#39;,)
+        ).grid(row=5, column=0, columnspan=4)
+        return plate
+
+    def toggleFav(self, event): # pylint: disable=unused-argument
+        &#34;&#34;&#34;Toggles the character&#39;s `favorite` property and recolors the
+        card.
+        &#34;&#34;&#34;
+        if self.char in self.saveslot.favorites:
+            self.saveslot.favorites.remove(self.char)
+        else:
+            self.saveslot.favorites.append(self.char)
+        self.colorByFav()
+
+    def colorByFav(self):
+        &#34;&#34;&#34;Colors the border and name of the character red if marked as
+        a favorite; black otherwise.
+
+        &#34;&#34;&#34;
+        color = &#39;red2&#39; if self.favorite else &#39;black&#39;
+        self.config(
+            highlightbackground=color, highlightcolor=color
+        )
+        self.nameLabel.config(fg=color)
+
+    def dictify(self):
+        &#34;&#34;&#34;Creates and returns a dictionary representation of the data
+        depicted on this card.
+
+        Returns:
+            dict: The dictionary of data from the card.
+
+        &#34;&#34;&#34;
+        D = {
+            &#39;name&#39;: self.char.shortName,
+            &#39;rarity&#39;: self.char.rarity,
+            &#39;role&#39;: self.char.role,
+            &#39;rank&#39;: self.char.rank,
+            &#39;tokens&#39;: self.saveslot.tokens[self.char.nameID],
+            &#39;tokensNeeded&#39;: self.char.tokensNeeded,
+            &#39;level&#39;: self.char.level,
+            &#39;xp&#39;: self.char.xp
+        }
+        statObj = self.saveslot.roster.charStats(self.char.nameID)
+        for statName in STAT_INITIALS:
+            D[statName] = statObj.get(statName)
+        D[&#39;power&#39;] = POWER_AT_ORIGIN + statObj.power
+        D.update({
+            &#39;MGL&#39;: self.saveslot.roster.missingGearLevels(self.char.nameID),
+            &#39;MGR&#39;: self.saveslot.roster.missingGearRanks(self.char.nameID),
+            &#39;MSL&#39;: self.char.missingSkillLevels
+        })
+        return D</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Frame</li>
+<li>tkinter.Widget</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Pack</li>
+<li>tkinter.Place</li>
+<li>tkinter.Grid</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.ui.rostertab.CharCard.favorite"><code class="name">var <span class="ident">favorite</span></code></dt>
+<dd>
+<div class="desc"><p><code>bool</code>: True if the player has selected this character as a
+favorite.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def favorite(self):
+    &#34;&#34;&#34;`bool`: True if the player has selected this character as a
+    favorite.
+    &#34;&#34;&#34;
+    return self.char in self.saveslot.favorites</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.CharCard.saveslot"><code class="name">var <span class="ident">saveslot</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code>: The save slot in which the
+character is located.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def saveslot(self):
+    &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
+    character is located.
+    &#34;&#34;&#34;
+    content = self.master
+    canvas = content.master
+    scrollArea = canvas.master
+    rostertab = scrollArea.master
+    session = rostertab.master
+    return session.saveslot</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.rostertab.CharCard.colorByFav"><code class="name flex">
+<span>def <span class="ident">colorByFav</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Colors the border and name of the character red if marked as
+a favorite; black otherwise.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def colorByFav(self):
+    &#34;&#34;&#34;Colors the border and name of the character red if marked as
+    a favorite; black otherwise.
+
+    &#34;&#34;&#34;
+    color = &#39;red2&#39; if self.favorite else &#39;black&#39;
+    self.config(
+        highlightbackground=color, highlightcolor=color
+    )
+    self.nameLabel.config(fg=color)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.CharCard.dictify"><code class="name flex">
+<span>def <span class="ident">dictify</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates and returns a dictionary representation of the data
+depicted on this card.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>The dictionary of data from the card.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dictify(self):
+    &#34;&#34;&#34;Creates and returns a dictionary representation of the data
+    depicted on this card.
+
+    Returns:
+        dict: The dictionary of data from the card.
+
+    &#34;&#34;&#34;
+    D = {
+        &#39;name&#39;: self.char.shortName,
+        &#39;rarity&#39;: self.char.rarity,
+        &#39;role&#39;: self.char.role,
+        &#39;rank&#39;: self.char.rank,
+        &#39;tokens&#39;: self.saveslot.tokens[self.char.nameID],
+        &#39;tokensNeeded&#39;: self.char.tokensNeeded,
+        &#39;level&#39;: self.char.level,
+        &#39;xp&#39;: self.char.xp
+    }
+    statObj = self.saveslot.roster.charStats(self.char.nameID)
+    for statName in STAT_INITIALS:
+        D[statName] = statObj.get(statName)
+    D[&#39;power&#39;] = POWER_AT_ORIGIN + statObj.power
+    D.update({
+        &#39;MGL&#39;: self.saveslot.roster.missingGearLevels(self.char.nameID),
+        &#39;MGR&#39;: self.saveslot.roster.missingGearRanks(self.char.nameID),
+        &#39;MSL&#39;: self.char.missingSkillLevels
+    })
+    return D</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.CharCard.namePlate"><code class="name flex">
+<span>def <span class="ident">namePlate</span></span>(<span>self, bgColor)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds and returns the character name plate with the given
+background color.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>bgColor</code></strong> :&ensp;<code>str</code></dt>
+<dd>The <code>tkinter</code> name of the given background
+color.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tk.Frame</code></dt>
+<dd>The constructed name plate.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def namePlate(self, bgColor):
+    &#34;&#34;&#34;Builds and returns the character name plate with the given
+    background color.
+
+    Args:
+        bgColor (str): The `tkinter` name of the given background
+            color.
+
+    Returns:
+        tk.Frame: The constructed name plate.
+
+    &#34;&#34;&#34;
+    plate = tk.Frame(self, bg=bgColor, height=118, width=105)
+    plate.pack_propagate(0)
+    data = self.dictify()
+
+    # build name label
+    self.nameLabel = tk.Label(
+        plate, text=data[&#39;name&#39;], bg=bgColor,
+        font=(None, 16, &#39;bold&#39;)
+    )
+    self.nameLabel.bind(&#39;&lt;Button-1&gt;&#39;, self.toggleFav)
+
+    # pack name plate contents and return the plate
+    tk.Label(
+        plate,
+        text=&#39;{}\nRank {}\nTokens: {}/{}&#39;.format(
+            data[&#39;role&#39;],
+            data[&#39;rank&#39;],
+            data[&#39;tokens&#39;],
+            data[&#39;tokensNeeded&#39;]
+        ),
+        bg=bgColor,
+        font=(None, 11, &#39;italic&#39;)
+    ).pack()
+    self.nameLabel.pack(expand=YES, fill=X)
+    tk.Label(
+        plate,
+        text=(&#39;Level {}\nXP: {:,}\n({:.1%})&#39;.format(
+            data[&#39;level&#39;],
+            data[&#39;xp&#39;],
+            data[&#39;xp&#39;]/maxXP(data[&#39;rarity&#39;])
+        )),
+        bg=bgColor,
+        font=(None, 11, &#39;italic&#39;)
+    ).pack()
+    return plate</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.CharCard.statPlate"><code class="name flex">
+<span>def <span class="ident">statPlate</span></span>(<span>self, bgColor)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Build and returns the character stat plate with the given
+background color.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>bgColor</code></strong> :&ensp;<code>str</code></dt>
+<dd>The <code>tkinter</code> name of the given background
+color.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tk.Frame</code></dt>
+<dd>The constructed stat plate.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def statPlate(self, bgColor):
+    &#34;&#34;&#34;Build and returns the character stat plate with the given
+    background color.
+
+    Args:
+        bgColor (str): The `tkinter` name of the given background
+            color.
+
+    Returns:
+        tk.Frame: The constructed stat plate.
+
+    &#34;&#34;&#34;
+    plate = tk.Frame(self, bg=bgColor)
+    data = self.dictify()
+    # statObj = self.saveslot.roster.charStats(self.char.nameID)
+    font = (None, 9)
+
+    # cycle through the 10 basic stats
+    for index, statName in enumerate(STAT_INITIALS):
+        # format the stat value
+        statVal = data[statName]
+        if index == 2: # the speed stat
+            statText = &#39;{:.2f}&#39;.format(statVal)
+        elif index &gt; 4: # the percentage stats
+            statText = (
+                &#39;{:.1f}&#39;.format(100 * statVal).rstrip(&#39;0&#39;).rstrip(&#39;.&#39;)
+                + &#39;%&#39;
+            )
+        else:
+            statText = &#39;{:.0f}&#39;.format(statVal)
+
+        # grid the 10 basic stats
+        row, col = index % 5, 2 * int(index/5)
+        tk.Label(
+            plate, text=STAT_INITIALS[statName] + &#39;:&#39;,
+            bg=bgColor, font=font
+        ).grid(row=row, column=col, sticky=W)
+        tk.Label(
+            plate, text=statText, bg=bgColor, font=font,
+            width=4 + col, anchor=W
+        ).grid(row=row, column=col + 1, sticky=W)
+
+    # grid the extra stats
+    moreStats = {k + &#39;:&#39;: data[k] for k in [&#39;MGL&#39;, &#39;MGR&#39;, &#39;MSL&#39;]}
+    for row, item in enumerate(moreStats.items()):
+        text, statVal = item
+        tk.Label(
+            plate, text=text, bg=bgColor, font=font
+        ).grid(row=row, column=5, sticky=W)
+        tk.Label(
+            plate, text=str(statVal), bg=bgColor, font=font,
+            width=5, anchor=W
+        ).grid(row=row, column=6, sticky=W)
+
+    # grid the power stat and return the plate
+    tk.Label(
+        plate,
+        text=&#39;POWER: {:.0f}&#39;.format(data[&#39;power&#39;]),
+        bg=bgColor, font=(None, 11) + (&#39;bold&#39;,)
+    ).grid(row=5, column=0, columnspan=4)
+    return plate</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.CharCard.toggleFav"><code class="name flex">
+<span>def <span class="ident">toggleFav</span></span>(<span>self, event)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Toggles the character's <code>favorite</code> property and recolors the
+card.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def toggleFav(self, event): # pylint: disable=unused-argument
+    &#34;&#34;&#34;Toggles the character&#39;s `favorite` property and recolors the
+    card.
+    &#34;&#34;&#34;
+    if self.char in self.saveslot.favorites:
+        self.saveslot.favorites.remove(self.char)
+    else:
+        self.saveslot.favorites.append(self.char)
+    self.colorByFav()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.ui.rostertab.RosterInfoBar"><code class="flex name class">
+<span>class <span class="ident">RosterInfoBar</span></span>
+<span>(</span><span>parent=None, **options)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A frame for displaying aggregate data about the user's roster.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>totalXP</code></strong> :&ensp;<code>tk.Label</code></dt>
+<dd>A label displaying the total XP.</dd>
+<dt><strong><code>totalPower</code></strong> :&ensp;<code>tk.Label</code></dt>
+<dd>A label displaying the total power.</dd>
+<dt><strong><code>charCount</code></strong> :&ensp;<code>tk.Label</code></dt>
+<dd>A label displaying the number of
+characters in the roster.</dd>
+</dl>
+<p>The constructor passes its arguments to the <code>tk.Frame</code>
+constructor, then builds and packs the attribute labels.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RosterInfoBar(tk.Frame):
+    &#34;&#34;&#34;A frame for displaying aggregate data about the user&#39;s roster.
+
+    Attributes:
+        totalXP (tk.Label): A label displaying the total XP.
+        totalPower (tk.Label): A label displaying the total power.
+        charCount (tk.Label): A label displaying the number of
+            characters in the roster.
+
+    &#34;&#34;&#34;
+    def __init__(self, parent=None, **options):
+        &#34;&#34;&#34;The constructor passes its arguments to the `tk.Frame`
+        constructor, then builds and packs the attribute labels.
+
+        &#34;&#34;&#34;
+        tk.Frame.__init__(self, parent, **options)
+        self.totalXP = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.totalXP.pack(side=LEFT)
+        self.totalPower = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.totalPower.pack(side=LEFT)
+        self.charCount = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
+        self.charCount.pack(side=LEFT)
+
+    def makeStats(self, chars, roster):
+        &#34;&#34;&#34;Computes and redisplays roster statistics using the given
+        collection of characters.
+
+        Args:
+            chars (iterable of legends.gameobjects.Character): The
+                characters to use when computing statistics.
+            roster (legends.roster.Roster): The roster to which the
+                characters belong.
+
+        &#34;&#34;&#34;
+        self.totalXP.config(text=&#39;Total XP: {:,}&#39;.format(sum(
+            char.xp for char in chars
+        )))
+        self.totalPower.config(text=&#39;Total power: {:,.0f}&#39;.format(sum(
+            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+            for char in chars
+        )))
+        self.charCount.config(text=&#39;Characters: {}/{}&#39;.format(
+            len(list(chars)), len(ENABLED)
+        ))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Frame</li>
+<li>tkinter.Widget</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Pack</li>
+<li>tkinter.Place</li>
+<li>tkinter.Grid</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.rostertab.RosterInfoBar.makeStats"><code class="name flex">
+<span>def <span class="ident">makeStats</span></span>(<span>self, chars, roster)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and redisplays roster statistics using the given
+collection of characters.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>chars</code></strong> :&ensp;<code>iterable</code> of <code><a title="legends.gameobjects.Character" href="../gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The
+characters to use when computing statistics.</dd>
+<dt><strong><code>roster</code></strong> :&ensp;<code><a title="legends.roster.Roster" href="../roster.html#legends.roster.Roster">Roster</a></code></dt>
+<dd>The roster to which the
+characters belong.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def makeStats(self, chars, roster):
+    &#34;&#34;&#34;Computes and redisplays roster statistics using the given
+    collection of characters.
+
+    Args:
+        chars (iterable of legends.gameobjects.Character): The
+            characters to use when computing statistics.
+        roster (legends.roster.Roster): The roster to which the
+            characters belong.
+
+    &#34;&#34;&#34;
+    self.totalXP.config(text=&#39;Total XP: {:,}&#39;.format(sum(
+        char.xp for char in chars
+    )))
+    self.totalPower.config(text=&#39;Total power: {:,.0f}&#39;.format(sum(
+        POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+        for char in chars
+    )))
+    self.charCount.config(text=&#39;Characters: {}/{}&#39;.format(
+        len(list(chars)), len(ENABLED)
+    ))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab"><code class="flex name class">
+<span>class <span class="ident">RosterTab</span></span>
+<span>(</span><span>session, **options)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Displays the player's character collection.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>filter</code></strong> :&ensp;<code><a title="legends.ui.dialogs.RosterFilter" href="dialogs.html#legends.ui.dialogs.RosterFilter">RosterFilter</a></code></dt>
+<dd>The
+<code><a title="legends.ui.dialogs.RosterFilter" href="dialogs.html#legends.ui.dialogs.RosterFilter">RosterFilter</a></code> object storing the current
+filter settings.</dd>
+<dt><strong><code>scrollArea</code></strong> :&ensp;<code><a title="legends.utils.scrollframe.ScrollFrame" href="../utils/scrollframe.html#legends.utils.scrollframe.ScrollFrame">ScrollFrame</a></code></dt>
+<dd>The
+<code><a title="legends.utils.scrollframe.ScrollFrame" href="../utils/scrollframe.html#legends.utils.scrollframe.ScrollFrame">ScrollFrame</a></code> used to hold the
+character cards.</dd>
+<dt><strong><code>infoBar</code></strong> :&ensp;<code><a title="legends.ui.rostertab.RosterInfoBar" href="#legends.ui.rostertab.RosterInfoBar">RosterInfoBar</a></code></dt>
+<dd>The info bar containing aggregate info
+about the currently displayed characters.</dd>
+<dt><strong><code>sortFuncs</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>func</code>} A dictionary mapping field
+names to functions that map <code><a title="legends.gameobjects.Character" href="../gameobjects.html#legends.gameobjects.Character">Character</a></code>
+objects to a sortable value.</dd>
+<dt><strong><code>sortField</code></strong> :&ensp;<code>tk.StringVar</code></dt>
+<dd>The currently selected field name by
+which the characters are sorted.</dd>
+<dt><strong><code>descending</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd><code>True</code> if characters should be
+sorted in descending order.</dd>
+</dl>
+<p>The constructor creates an instance as a child of the given
+session.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>session</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.Session" href="stlplanner.html#legends.ui.stlplanner.Session">Session</a></code></dt>
+<dd>The session to
+assign as the instance's parent.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RosterTab(tk.Frame):
+    &#34;&#34;&#34;Displays the player&#39;s character collection.
+
+    Attributes:
+        filter (legends.ui.dialogs.RosterFilter): The
+            `legends.ui.dialogs.RosterFilter` object storing the current
+            filter settings.
+        scrollArea (legends.utils.scrollframe.ScrollFrame): The
+            `legends.utils.scrollframe.ScrollFrame` used to hold the
+            character cards.
+        infoBar (RosterInfoBar): The info bar containing aggregate info
+            about the currently displayed characters.
+        sortFuncs (dict): {`str`:`func`} A dictionary mapping field
+            names to functions that map `legends.gameobjects.Character`
+            objects to a sortable value.
+        sortField (tk.StringVar): The currently selected field name by
+            which the characters are sorted.
+        descending (tk.BooleanVar): `True` if characters should be
+            sorted in descending order.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, session, **options):
+        &#34;&#34;&#34;The constructor creates an instance as a child of the given
+        session.
+
+        Args:
+            session (legends.ui.stlplanner.Session): The session to
+                assign as the instance&#39;s parent.
+
+        &#34;&#34;&#34;
+        # build frame and initialize variables
+        tk.Frame.__init__(self, session, **options)
+        self.filter = RosterFilter()
+
+        # build widgets
+        self.scrollArea = ScrollFrame(self)
+        self.scrollArea.canvas.config(height=0.7 * self.winfo_screenheight())
+        self.infoBar = RosterInfoBar(self)
+
+        # pack frame content
+        self.actionBar().pack(expand=YES, fill=X)
+        self.scrollArea.pack(expand=YES, fill=BOTH)
+        self.infoBar.pack()
+
+        # fill scroll area with character cards
+        self.fillCards()
+
+    @property
+    def root(self):
+        &#34;&#34;&#34;`legends.ui.stlplanner.STLPlanner`: The currently running
+        `legends.ui.stlplanner.STLPlanner` instance.
+        &#34;&#34;&#34;
+        return self.master.master
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with this
+        roster tab.
+        &#34;&#34;&#34;
+        return self.master.saveslot.roster
+
+    @property
+    def cards(self):
+        &#34;&#34;&#34;`dict`: {`str`:`CharCard`} A dictionary mapping a character&#39;s
+        name ID attribute to its character card.
+        &#34;&#34;&#34;
+        return {
+            card.char.nameID : card
+            for card in self.scrollArea.content.winfo_children()
+            if isinstance(card, CharCard)
+        }
+
+    def checkFilter(self, char):
+        &#34;&#34;&#34;Checks if the given character passes the current filter
+        options.
+
+        Args:
+            char (legends.gameobjects.Character): The character to
+                check.
+
+        Returns:
+            bool: `True` if the character passes.
+
+        &#34;&#34;&#34;
+        filt = self.filter.dictify()
+        return(
+            filt[&#39;rarities&#39;][char.rarity]
+            and filt[&#39;roles&#39;][char.role]
+            and filt[&#39;ranks&#39;][0] &lt;= char.rank &lt;= filt[&#39;ranks&#39;][1]
+            and filt[&#39;levels&#39;][0] &lt;= char.level &lt;= filt[&#39;levels&#39;][1]
+        )
+
+    def fillCards(self):
+        &#34;&#34;&#34;Builds a card for each character in the player&#39;s collection
+        and places it in the scroll area&#39;s content frame.
+
+        &#34;&#34;&#34;
+        columns = 4
+        for j in range(columns):
+            self.scrollArea.content.columnconfigure(
+                j, weight=1, uniform=&#39;roster&#39;
+            )
+        count = 0
+        chars = [
+            char for char in self.roster.chars.values()
+            if self.checkFilter(char)
+        ]
+        for char in chars:
+            CharCard(char, self).grid(
+                row=count // columns, column=count % columns, sticky=NSEW
+            )
+            count += 1
+        self.infoBar.makeStats(chars, self.roster)
+
+    def actionBar(self):
+        &#34;&#34;&#34;Builds and returns an action bar that allows the user to
+        interact with the `RosterTab`.
+
+        &#34;&#34;&#34;
+        # define and initialize variables
+        sslot = self.master.saveslot
+        ros = self.roster
+        self.sortFuncs = {
+            &#39;Name&#39;: lambda c: c.shortName,
+            &#39;Favorite&#39;: lambda c,s=sslot: c in s.favorites,
+            &#39;Level&#39;: lambda c: c.xp,
+            &#39;Rank&#39;: lambda c: c.rank,
+            &#39;Rarity&#39;: lambda c: c.rarityIndex,
+            &#39;Role&#39;: lambda c: c.role,
+            &#39;Tokens&#39;: lambda c,s=sslot: s.tokens[c.nameID],
+            &#39;Tokens needed&#39;: lambda c,s=sslot: (
+                c.tokensNeeded - s.tokens[c.nameID]
+            )
+        }
+        for statName in STAT_INITIALS:
+            self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
+                r.charStats(c.nameID).get(n)
+            )
+        self.sortFuncs[&#39;Power&#39;] = lambda c,r=ros: (
+            POWER_AT_ORIGIN + r.charStats(c.nameID).power
+        )
+        self.sortFuncs.update({
+            &#39;Missing gear levels&#39;: lambda c,r=ros: (
+                r.missingGearLevels(c.nameID)
+            ),
+            &#39;Missing gear ranks&#39;: lambda c,r=ros: (
+                r.missingGearRanks(c.nameID)
+            ),
+            &#39;Missing skill levels&#39;: lambda c: c.missingSkillLevels
+        })
+        fields = list(self.sortFuncs.keys())
+        self.sortField = tk.StringVar()
+        self.descending = tk.BooleanVar()
+        self.descending.set(True)
+
+        # build bar and sorting Combobox
+        bar = tk.Frame(self)
+        sortMenu = ttk.Combobox(
+            bar,
+            textvariable=self.sortField,
+            values=fields,
+            state=&#39;readonly&#39;,
+            width=max(len(field) for field in fields)
+        )
+        sortMenu.bind(&#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.sort())
+
+        # pack and return bar
+        tk.Label(bar, text=&#39;sort by:&#39;).pack(side=LEFT)
+        sortMenu.pack(side=LEFT)
+        tk.Checkbutton(
+            bar, text=&#39;descending&#39;, variable=self.descending, command=self.sort
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text=&#39;filter&#39;, width=6, command=self.adjustFilter
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text=&#39;export&#39;, width=6, command=self.export
+        ).pack(side=LEFT)
+        tk.Button(
+            bar, text=&#39;summon pools&#39;, command=self.optimalSummons
+        ).pack(side=RIGHT)
+        return bar
+
+    def optimalSummons(self):
+        for pool in SUMMON_POOL:
+            print(pool, 150 * self.roster.tokensPerOrb(pool))
+
+    def sort(self):
+        &#34;&#34;&#34;Sorts the dictionary of characters stored in the associated
+        `legends.saveslot.SaveSlot` object according the currently
+        selected sorting field. Then refreshes the character cards.
+
+        &#34;&#34;&#34;
+        field = self.sortField.get()
+        if field == &#39;&#39;:
+            return
+        self.master.saveslot.sort(
+            self.sortFuncs[field], self.descending.get()
+        )
+        self.refresh()
+
+    def refresh(self):
+        &#34;&#34;&#34;Destroys and rebuilds all character cards.
+
+        &#34;&#34;&#34;
+        for card in self.cards.values():
+            card.destroy()
+        self.fillCards()
+
+    def adjustFilter(self):
+        &#34;&#34;&#34;Creates an `legends.ui.dialogs.AskRosterFilter` window,
+        giving the user an opportunity to adjust the filter settings.
+        Then refreshes the character cards and info bar.
+
+        &#34;&#34;&#34;
+        filt = askRosterFilter(self.root, self.filter)
+        if filt is not None:
+            self.filter = filt
+            self.refresh()
+
+    def export(self):
+        &#34;&#34;&#34;Exports the data in the character cards to a csv file. Each
+        row in the file corresponds to a card, and the data in that row
+        is the data generated by the card&#39;s `CharCard.dictify` method.
+
+        &#34;&#34;&#34;
+        filename = asksaveasfilename(
+            defaultextension=&#39;csv&#39;,
+            initialdir=&#39;/Users/&#39; + getuser() + &#39;/Documents/&#39;,
+            initialfile=&#39;roster.csv&#39;,
+            title=&#39;Export Roster&#39;,
+            filetypes=[(&#39;Text CSV&#39;, &#39;*.csv&#39;)]
+        )
+        if not filename:
+            return
+        cardDicts = [card.dictify() for card in self.cards.values()]
+        fields = cardDicts[0].keys()
+        with open(filename, &#39;w&#39;, newline=&#39;&#39;, encoding=&#39;utf-8&#39;) as f:
+            writer = DictWriter(f, fields)
+            writer.writeheader()
+            writer.writerows(cardDicts)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Frame</li>
+<li>tkinter.Widget</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Pack</li>
+<li>tkinter.Place</li>
+<li>tkinter.Grid</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.ui.rostertab.RosterTab.cards"><code class="name">var <span class="ident">cards</span></code></dt>
+<dd>
+<div class="desc"><p><code>dict</code>: {<code>str</code>:<code><a title="legends.ui.rostertab.CharCard" href="#legends.ui.rostertab.CharCard">CharCard</a></code>} A dictionary mapping a character's
+name ID attribute to its character card.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cards(self):
+    &#34;&#34;&#34;`dict`: {`str`:`CharCard`} A dictionary mapping a character&#39;s
+    name ID attribute to its character card.
+    &#34;&#34;&#34;
+    return {
+        card.char.nameID : card
+        for card in self.scrollArea.content.winfo_children()
+        if isinstance(card, CharCard)
+    }</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.root"><code class="name">var <span class="ident">root</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code>: The currently running
+<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> instance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def root(self):
+    &#34;&#34;&#34;`legends.ui.stlplanner.STLPlanner`: The currently running
+    `legends.ui.stlplanner.STLPlanner` instance.
+    &#34;&#34;&#34;
+    return self.master.master</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.roster"><code class="name">var <span class="ident">roster</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.Roster" href="../roster.html#legends.roster.Roster">Roster</a></code>: The roster associated with this
+roster tab.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def roster(self):
+    &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with this
+    roster tab.
+    &#34;&#34;&#34;
+    return self.master.saveslot.roster</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.rostertab.RosterTab.actionBar"><code class="name flex">
+<span>def <span class="ident">actionBar</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds and returns an action bar that allows the user to
+interact with the <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def actionBar(self):
+    &#34;&#34;&#34;Builds and returns an action bar that allows the user to
+    interact with the `RosterTab`.
+
+    &#34;&#34;&#34;
+    # define and initialize variables
+    sslot = self.master.saveslot
+    ros = self.roster
+    self.sortFuncs = {
+        &#39;Name&#39;: lambda c: c.shortName,
+        &#39;Favorite&#39;: lambda c,s=sslot: c in s.favorites,
+        &#39;Level&#39;: lambda c: c.xp,
+        &#39;Rank&#39;: lambda c: c.rank,
+        &#39;Rarity&#39;: lambda c: c.rarityIndex,
+        &#39;Role&#39;: lambda c: c.role,
+        &#39;Tokens&#39;: lambda c,s=sslot: s.tokens[c.nameID],
+        &#39;Tokens needed&#39;: lambda c,s=sslot: (
+            c.tokensNeeded - s.tokens[c.nameID]
+        )
+    }
+    for statName in STAT_INITIALS:
+        self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
+            r.charStats(c.nameID).get(n)
+        )
+    self.sortFuncs[&#39;Power&#39;] = lambda c,r=ros: (
+        POWER_AT_ORIGIN + r.charStats(c.nameID).power
+    )
+    self.sortFuncs.update({
+        &#39;Missing gear levels&#39;: lambda c,r=ros: (
+            r.missingGearLevels(c.nameID)
+        ),
+        &#39;Missing gear ranks&#39;: lambda c,r=ros: (
+            r.missingGearRanks(c.nameID)
+        ),
+        &#39;Missing skill levels&#39;: lambda c: c.missingSkillLevels
+    })
+    fields = list(self.sortFuncs.keys())
+    self.sortField = tk.StringVar()
+    self.descending = tk.BooleanVar()
+    self.descending.set(True)
+
+    # build bar and sorting Combobox
+    bar = tk.Frame(self)
+    sortMenu = ttk.Combobox(
+        bar,
+        textvariable=self.sortField,
+        values=fields,
+        state=&#39;readonly&#39;,
+        width=max(len(field) for field in fields)
+    )
+    sortMenu.bind(&#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.sort())
+
+    # pack and return bar
+    tk.Label(bar, text=&#39;sort by:&#39;).pack(side=LEFT)
+    sortMenu.pack(side=LEFT)
+    tk.Checkbutton(
+        bar, text=&#39;descending&#39;, variable=self.descending, command=self.sort
+    ).pack(side=LEFT)
+    tk.Button(
+        bar, text=&#39;filter&#39;, width=6, command=self.adjustFilter
+    ).pack(side=LEFT)
+    tk.Button(
+        bar, text=&#39;export&#39;, width=6, command=self.export
+    ).pack(side=LEFT)
+    tk.Button(
+        bar, text=&#39;summon pools&#39;, command=self.optimalSummons
+    ).pack(side=RIGHT)
+    return bar</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.adjustFilter"><code class="name flex">
+<span>def <span class="ident">adjustFilter</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates an <code><a title="legends.ui.dialogs.AskRosterFilter" href="dialogs.html#legends.ui.dialogs.AskRosterFilter">AskRosterFilter</a></code> window,
+giving the user an opportunity to adjust the filter settings.
+Then refreshes the character cards and info bar.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def adjustFilter(self):
+    &#34;&#34;&#34;Creates an `legends.ui.dialogs.AskRosterFilter` window,
+    giving the user an opportunity to adjust the filter settings.
+    Then refreshes the character cards and info bar.
+
+    &#34;&#34;&#34;
+    filt = askRosterFilter(self.root, self.filter)
+    if filt is not None:
+        self.filter = filt
+        self.refresh()</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.checkFilter"><code class="name flex">
+<span>def <span class="ident">checkFilter</span></span>(<span>self, char)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if the given character passes the current filter
+options.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="../gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character to
+check.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd><code>True</code> if the character passes.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def checkFilter(self, char):
+    &#34;&#34;&#34;Checks if the given character passes the current filter
+    options.
+
+    Args:
+        char (legends.gameobjects.Character): The character to
+            check.
+
+    Returns:
+        bool: `True` if the character passes.
+
+    &#34;&#34;&#34;
+    filt = self.filter.dictify()
+    return(
+        filt[&#39;rarities&#39;][char.rarity]
+        and filt[&#39;roles&#39;][char.role]
+        and filt[&#39;ranks&#39;][0] &lt;= char.rank &lt;= filt[&#39;ranks&#39;][1]
+        and filt[&#39;levels&#39;][0] &lt;= char.level &lt;= filt[&#39;levels&#39;][1]
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.export"><code class="name flex">
+<span>def <span class="ident">export</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Exports the data in the character cards to a csv file. Each
+row in the file corresponds to a card, and the data in that row
+is the data generated by the card's <code><a title="legends.ui.rostertab.CharCard.dictify" href="#legends.ui.rostertab.CharCard.dictify">CharCard.dictify()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def export(self):
+    &#34;&#34;&#34;Exports the data in the character cards to a csv file. Each
+    row in the file corresponds to a card, and the data in that row
+    is the data generated by the card&#39;s `CharCard.dictify` method.
+
+    &#34;&#34;&#34;
+    filename = asksaveasfilename(
+        defaultextension=&#39;csv&#39;,
+        initialdir=&#39;/Users/&#39; + getuser() + &#39;/Documents/&#39;,
+        initialfile=&#39;roster.csv&#39;,
+        title=&#39;Export Roster&#39;,
+        filetypes=[(&#39;Text CSV&#39;, &#39;*.csv&#39;)]
+    )
+    if not filename:
+        return
+    cardDicts = [card.dictify() for card in self.cards.values()]
+    fields = cardDicts[0].keys()
+    with open(filename, &#39;w&#39;, newline=&#39;&#39;, encoding=&#39;utf-8&#39;) as f:
+        writer = DictWriter(f, fields)
+        writer.writeheader()
+        writer.writerows(cardDicts)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.fillCards"><code class="name flex">
+<span>def <span class="ident">fillCards</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds a card for each character in the player's collection
+and places it in the scroll area's content frame.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fillCards(self):
+    &#34;&#34;&#34;Builds a card for each character in the player&#39;s collection
+    and places it in the scroll area&#39;s content frame.
+
+    &#34;&#34;&#34;
+    columns = 4
+    for j in range(columns):
+        self.scrollArea.content.columnconfigure(
+            j, weight=1, uniform=&#39;roster&#39;
+        )
+    count = 0
+    chars = [
+        char for char in self.roster.chars.values()
+        if self.checkFilter(char)
+    ]
+    for char in chars:
+        CharCard(char, self).grid(
+            row=count // columns, column=count % columns, sticky=NSEW
+        )
+        count += 1
+    self.infoBar.makeStats(chars, self.roster)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.optimalSummons"><code class="name flex">
+<span>def <span class="ident">optimalSummons</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def optimalSummons(self):
+    for pool in SUMMON_POOL:
+        print(pool, 150 * self.roster.tokensPerOrb(pool))</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.refresh"><code class="name flex">
+<span>def <span class="ident">refresh</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Destroys and rebuilds all character cards.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def refresh(self):
+    &#34;&#34;&#34;Destroys and rebuilds all character cards.
+
+    &#34;&#34;&#34;
+    for card in self.cards.values():
+        card.destroy()
+    self.fillCards()</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.RosterTab.sort"><code class="name flex">
+<span>def <span class="ident">sort</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sorts the dictionary of characters stored in the associated
+<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object according the currently
+selected sorting field. Then refreshes the character cards.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sort(self):
+    &#34;&#34;&#34;Sorts the dictionary of characters stored in the associated
+    `legends.saveslot.SaveSlot` object according the currently
+    selected sorting field. Then refreshes the character cards.
+
+    &#34;&#34;&#34;
+    field = self.sortField.get()
+    if field == &#39;&#39;:
+        return
+    self.master.saveslot.sort(
+        self.sortFuncs[field], self.descending.get()
+    )
+    self.refresh()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legends.ui" href="index.html">legends.ui</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.ui.rostertab.maxXP" href="#legends.ui.rostertab.maxXP">maxXP</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.ui.rostertab.CharCard" href="#legends.ui.rostertab.CharCard">CharCard</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.ui.rostertab.CharCard.colorByFav" href="#legends.ui.rostertab.CharCard.colorByFav">colorByFav</a></code></li>
+<li><code><a title="legends.ui.rostertab.CharCard.dictify" href="#legends.ui.rostertab.CharCard.dictify">dictify</a></code></li>
+<li><code><a title="legends.ui.rostertab.CharCard.favorite" href="#legends.ui.rostertab.CharCard.favorite">favorite</a></code></li>
+<li><code><a title="legends.ui.rostertab.CharCard.namePlate" href="#legends.ui.rostertab.CharCard.namePlate">namePlate</a></code></li>
+<li><code><a title="legends.ui.rostertab.CharCard.saveslot" href="#legends.ui.rostertab.CharCard.saveslot">saveslot</a></code></li>
+<li><code><a title="legends.ui.rostertab.CharCard.statPlate" href="#legends.ui.rostertab.CharCard.statPlate">statPlate</a></code></li>
+<li><code><a title="legends.ui.rostertab.CharCard.toggleFav" href="#legends.ui.rostertab.CharCard.toggleFav">toggleFav</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.rostertab.RosterInfoBar" href="#legends.ui.rostertab.RosterInfoBar">RosterInfoBar</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.rostertab.RosterInfoBar.makeStats" href="#legends.ui.rostertab.RosterInfoBar.makeStats">makeStats</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.ui.rostertab.RosterTab.actionBar" href="#legends.ui.rostertab.RosterTab.actionBar">actionBar</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.adjustFilter" href="#legends.ui.rostertab.RosterTab.adjustFilter">adjustFilter</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.cards" href="#legends.ui.rostertab.RosterTab.cards">cards</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.checkFilter" href="#legends.ui.rostertab.RosterTab.checkFilter">checkFilter</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.export" href="#legends.ui.rostertab.RosterTab.export">export</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.fillCards" href="#legends.ui.rostertab.RosterTab.fillCards">fillCards</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.optimalSummons" href="#legends.ui.rostertab.RosterTab.optimalSummons">optimalSummons</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.refresh" href="#legends.ui.rostertab.RosterTab.refresh">refresh</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.root" href="#legends.ui.rostertab.RosterTab.root">root</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.roster" href="#legends.ui.rostertab.RosterTab.roster">roster</a></code></li>
+<li><code><a title="legends.ui.rostertab.RosterTab.sort" href="#legends.ui.rostertab.RosterTab.sort">sort</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

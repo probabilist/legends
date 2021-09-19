@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>legends.utils.objrelations API documentation</title>
+<meta name="description" content="Custom dictionary-like classes that can handle mutable objects …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legends.utils.objrelations</code></h1>
+</header>
+<section id="section-intro">
+<p>Custom dictionary-like classes that can handle mutable objects.</p>
+<p>Support for all relation types (one-to-one, many-to-many, many-to-one,
+and one-to-many) is provided. All objects stored as keys or values in
+any of these relations must be instances of the <code><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></code> class. The
+<code><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></code> class tracks objects by their id.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Custom dictionary-like classes that can handle mutable objects.
+
+Support for all relation types (one-to-one, many-to-many, many-to-one,
+and one-to-many) is provided. All objects stored as keys or values in
+any of these relations must be instances of the `Managed` class. The
+`Managed` class tracks objects by their id.
+
+&#34;&#34;&#34;
+
+from types import MethodType
+from legends.utils.customabcs import BiMapping, MultiMapping
+from legends.utils.relations import (
+    bidict, multidict, inversedict, invertibledict
+)
+
+__all__ = [&#39;Managed&#39;, &#39;OneToOne&#39;, &#39;ManyToMany&#39;, &#39;ManyToOne&#39;, &#39;OneToMany&#39;]
+
+class Managed(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A class whose instances are tracked by ID number.
+
+    Attributes:
+        _m_objects (dict): {`int`:`obj`} (class attribute) A dictionary
+            mapping the id of each instance to the instance itself.
+
+    &#34;&#34;&#34;
+
+    _m_objects = {}
+
+    def __new__(cls, *args, **kargs): # pylint: disable=unused-argument
+        obj = object.__new__(cls)
+        Managed._m_objects[id(obj)] = obj
+        return obj
+
+class OneToOne(BiMapping, Managed):
+    &#34;&#34;&#34;A one-to-one relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `OneToOne` object functions just like a
+    `legends.utils.relations.bidict` object.
+
+    Subclasses may wish to override the `OneToOne.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `OneToOne.validate` method is called whenever `__setitem__` is
+    called. If `OneToOne.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `OneToOne.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.bidict): {`int`:`int`} The relation
+            is stored under the hood as a
+            `legends.utils.relations.bidict` mapping IDs to IDs, where
+            the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.map = bidict()
+
+    def __getitem__(self, key):
+        try:
+            valID = self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+        return Managed._m_objects[valID]
+
+    def __delitem__(self, key):
+        try:
+            del self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+
+    def __iter__(self):
+        return (Managed._m_objects[keyID] for keyID in self.map)
+
+    def __len__(self):
+        return len(self.map)
+
+    def __setfreeval__(self, key, val):
+        if self.validate(key, val): # pylint: disable=not-callable
+            self.map[id(key)] = id(val)
+
+    def __inverse__(self):
+        inverse = OneToOne()
+        inverse.map = self.map.inverse
+        def validate(slf, key, val):
+            return slf.inverse.validate(val, key)
+        inverse.validate = MethodType(validate, inverse)
+        return inverse
+
+    # pylint: disable-next=method-hidden, unused-argument, no-self-use
+    def validate(self, key, val):
+        &#34;&#34;&#34;Checks if the given key-value pair may be added to the
+        relation. As implemented here, the method always returns True.
+        Subclasses should override this method to produce custom
+        behavior.
+
+        Args:
+            key (obj): The key to validate.
+            val (obj): The value to validate.
+
+        Returns:
+            bool: `True` if the key-value pair may be added, `False`
+                otherwise.
+
+        &#34;&#34;&#34;
+        return True
+
+    def __repr__(self):
+        disp = &#39;OneToOne({&#39;
+        for key, val in self.items():
+            disp += repr(key) + &#39;: &#39; + repr(val) + &#39;,\n &#39;
+        return disp + &#39;})&#39;
+
+class ManyToMany(MultiMapping, Managed):
+    &#34;&#34;&#34;A many-to-many relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `ManyToMany` object functions just like a
+    `legends.utils.relations.multidict` object.
+
+    Subclasses may wish to override the `ManyToMany.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `ManyToMany.validate` method is called whenever `__setitem__` is
+    called. If `validate` returns `True`, the `__setitem__` method
+    proceeds normally. Otherwise, `__setitem__` does nothing. If the
+    subclass wishes to raise an error when validation fails, the error
+    should be raised from within the `ManyToMany.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.multidict): {`int`:`int`} The
+            relation is stored under the hood as a
+            `legends.utils.relations.multidict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.map = multidict()
+
+    def _contains(self, key, val):
+        return id(key), id(val) in self.map
+
+    def __iter__(self):
+        return (
+            (Managed._m_objects[keyID], Managed._m_objects[valID])
+            for keyID, valID in self.map
+        )
+
+    def __len__(self):
+        return len(self.map)
+
+    def _discard(self, key, val):
+        &#34;&#34;&#34;Removes the given key-value pair from the relation, if
+        present.
+        &#34;&#34;&#34;
+        self.map.discard((id(key), id(val)))
+
+    def __getitem__(self, key):
+        try:
+            return tuple(
+                Managed._m_objects[valID] for valID in self.map[id(key)]
+            )
+        except KeyError as ex:
+            raise KeyError(key) from ex
+
+    def __setitem__(self, key, val):
+        if self.validate(key, val):
+            self.map[id(key)] = id(val)
+
+    def __delitem__(self, key):
+        try:
+            del self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+
+    def keys(self):
+        return (Managed._m_objects[keyID] for keyID in self.map.keys())
+
+    def __inverse__(self):
+        inverse = ManyToMany()
+        return self._inverseinit(inverse)
+
+    def _inverseinit(self, inverse):
+        inverse.map = self.map.inverse
+        def validate(slf, key, val):
+            return slf.inverse.validate(val, key)
+        inverse.validate = MethodType(validate, inverse)
+        return inverse
+
+    # pylint: disable=unused-argument, no-self-use
+    def validate(self, key, val):
+        &#34;&#34;&#34;Checks if the given key-value pair may be added to the
+        relation. As implemented here, the method always returns True.
+        Subclasses should override this method to produce custom
+        behavior.
+
+        Args:
+            key (obj): The key to validate.
+            val (obj): The value to validate.
+
+        Returns:
+            bool: `True` if the key-value pair may be added, `False`
+                otherwise.
+
+        &#34;&#34;&#34;
+        return True
+
+    def __repr__(self):
+        # pylint: disable=consider-using-dict-items
+        disp = &#39;ManyToMany({&#39;
+        for key in self.keys():
+            disp += repr(key) + &#39;: &#39; + repr(self[key]) + &#39;,\n &#39;
+        return disp + &#39;})&#39;
+
+class ManyToOne(ManyToMany):
+    &#34;&#34;&#34;A many-to-one relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `ManyToOne` object functions just like an
+    `legends.utils.relations.invertibledict` object.
+
+    Subclasses may wish to override the `ManyToOne.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `ManyToOne.validate` method is called whenever `__setitem__` is
+    called. If `ManyToOne.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `ManyToOne.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.invertibledict) {`int`:`int`} The
+            relation is stored under the hood as an
+            `legends.utils.relations.invertibledict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        ManyToMany.__init__(self)
+        self.map = invertibledict()
+
+    def __inverse__(self):
+        inverse = OneToMany()
+        return self._inverseinit(inverse)
+
+    def __getitem__(self, key):
+        try:
+            valID = self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+        return Managed._m_objects[valID]
+
+    def __repr__(self):
+        # pylint: disable=consider-using-dict-items
+        disp = &#39;ManyToOne({&#39;
+        for key in self.keys():
+            disp += repr(key) + &#39;: &#39; + repr(self[key]) + &#39;,\n &#39;
+        return disp + &#39;})&#39;
+
+class OneToMany(ManyToMany):
+    &#34;&#34;&#34;A one-to-many relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `OneToMany` object functions just like an
+    `legends.utils.relations.inversedict` object.
+
+    Subclasses may wish to override the `OneToMany.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `OneToMany.validate` method is called whenever `__setitem__` is
+    called. If `OneToMany.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `OneToMany.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.inversedict): {`int`:`int`} The
+            relation is stored under the hood as a
+            `legends.utils.relations.multidict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        ManyToMany.__init__(self)
+        self.map = inversedict()
+
+    def __inverse__(self):
+        inverse = ManyToOne()
+        return self._inverseinit(inverse)
+
+    def __repr__(self):
+        # pylint: disable=consider-using-dict-items
+        disp = &#39;OneToMany({&#39;
+        for key in self.keys():
+            disp += repr(key) + &#39;: &#39; + repr(self[key]) + &#39;,\n &#39;
+        return disp + &#39;})&#39;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.utils.objrelations.Managed"><code class="flex name class">
+<span>class <span class="ident">Managed</span></span>
+<span>(</span><span>*args, **kargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A class whose instances are tracked by ID number.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>_m_objects</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>int</code>:<code>obj</code>} (class attribute) A dictionary
+mapping the id of each instance to the instance itself.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Managed(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A class whose instances are tracked by ID number.
+
+    Attributes:
+        _m_objects (dict): {`int`:`obj`} (class attribute) A dictionary
+            mapping the id of each instance to the instance itself.
+
+    &#34;&#34;&#34;
+
+    _m_objects = {}
+
+    def __new__(cls, *args, **kargs): # pylint: disable=unused-argument
+        obj = object.__new__(cls)
+        Managed._m_objects[id(obj)] = obj
+        return obj</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.gameobjects.Gear" href="../gameobjects.html#legends.gameobjects.Gear">Gear</a></li>
+<li><a title="legends.gameobjects.GearSlot" href="../gameobjects.html#legends.gameobjects.GearSlot">GearSlot</a></li>
+<li><a title="legends.gameobjects.PartSlot" href="../gameobjects.html#legends.gameobjects.PartSlot">PartSlot</a></li>
+<li><a title="legends.gameobjects.Particle" href="../gameobjects.html#legends.gameobjects.Particle">Particle</a></li>
+<li><a title="legends.utils.objrelations.ManyToMany" href="#legends.utils.objrelations.ManyToMany">ManyToMany</a></li>
+<li><a title="legends.utils.objrelations.OneToOne" href="#legends.utils.objrelations.OneToOne">OneToOne</a></li>
+</ul>
+</dd>
+<dt id="legends.utils.objrelations.ManyToMany"><code class="flex name class">
+<span>class <span class="ident">ManyToMany</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A many-to-many relation mapping objects to objects.</p>
+<p>All objects in the relation need to be <code><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></code> objects, but
+otherwise, a <code><a title="legends.utils.objrelations.ManyToMany" href="#legends.utils.objrelations.ManyToMany">ManyToMany</a></code> object functions just like a
+<code><a title="legends.utils.relations.multidict" href="relations.html#legends.utils.relations.multidict">multidict</a></code> object.</p>
+<p>Subclasses may wish to override the <code><a title="legends.utils.objrelations.ManyToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method to
+provide restrictions on adding a pair to the relation. The
+<code><a title="legends.utils.objrelations.ManyToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method is called whenever <code>__setitem__</code> is
+called. If <code>validate</code> returns <code>True</code>, the <code>__setitem__</code> method
+proceeds normally. Otherwise, <code>__setitem__</code> does nothing. If the
+subclass wishes to raise an error when validation fails, the error
+should be raised from within the <code><a title="legends.utils.objrelations.ManyToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>map</code></strong> :&ensp;<code><a title="legends.utils.relations.multidict" href="relations.html#legends.utils.relations.multidict">multidict</a></code></dt>
+<dd>{<code>int</code>:<code>int</code>} The
+relation is stored under the hood as a
+<code><a title="legends.utils.relations.multidict" href="relations.html#legends.utils.relations.multidict">multidict</a></code> mapping IDs to IDs,
+where the IDs are provided by the <code>Manager</code> class.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ManyToMany(MultiMapping, Managed):
+    &#34;&#34;&#34;A many-to-many relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `ManyToMany` object functions just like a
+    `legends.utils.relations.multidict` object.
+
+    Subclasses may wish to override the `ManyToMany.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `ManyToMany.validate` method is called whenever `__setitem__` is
+    called. If `validate` returns `True`, the `__setitem__` method
+    proceeds normally. Otherwise, `__setitem__` does nothing. If the
+    subclass wishes to raise an error when validation fails, the error
+    should be raised from within the `ManyToMany.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.multidict): {`int`:`int`} The
+            relation is stored under the hood as a
+            `legends.utils.relations.multidict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.map = multidict()
+
+    def _contains(self, key, val):
+        return id(key), id(val) in self.map
+
+    def __iter__(self):
+        return (
+            (Managed._m_objects[keyID], Managed._m_objects[valID])
+            for keyID, valID in self.map
+        )
+
+    def __len__(self):
+        return len(self.map)
+
+    def _discard(self, key, val):
+        &#34;&#34;&#34;Removes the given key-value pair from the relation, if
+        present.
+        &#34;&#34;&#34;
+        self.map.discard((id(key), id(val)))
+
+    def __getitem__(self, key):
+        try:
+            return tuple(
+                Managed._m_objects[valID] for valID in self.map[id(key)]
+            )
+        except KeyError as ex:
+            raise KeyError(key) from ex
+
+    def __setitem__(self, key, val):
+        if self.validate(key, val):
+            self.map[id(key)] = id(val)
+
+    def __delitem__(self, key):
+        try:
+            del self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+
+    def keys(self):
+        return (Managed._m_objects[keyID] for keyID in self.map.keys())
+
+    def __inverse__(self):
+        inverse = ManyToMany()
+        return self._inverseinit(inverse)
+
+    def _inverseinit(self, inverse):
+        inverse.map = self.map.inverse
+        def validate(slf, key, val):
+            return slf.inverse.validate(val, key)
+        inverse.validate = MethodType(validate, inverse)
+        return inverse
+
+    # pylint: disable=unused-argument, no-self-use
+    def validate(self, key, val):
+        &#34;&#34;&#34;Checks if the given key-value pair may be added to the
+        relation. As implemented here, the method always returns True.
+        Subclasses should override this method to produce custom
+        behavior.
+
+        Args:
+            key (obj): The key to validate.
+            val (obj): The value to validate.
+
+        Returns:
+            bool: `True` if the key-value pair may be added, `False`
+                otherwise.
+
+        &#34;&#34;&#34;
+        return True
+
+    def __repr__(self):
+        # pylint: disable=consider-using-dict-items
+        disp = &#39;ManyToMany({&#39;
+        for key in self.keys():
+            disp += repr(key) + &#39;: &#39; + repr(self[key]) + &#39;,\n &#39;
+        return disp + &#39;})&#39;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.customabcs.MultiMapping" href="customabcs.html#legends.utils.customabcs.MultiMapping">MultiMapping</a></li>
+<li><a title="legends.utils.customabcs.MutableRelSet" href="customabcs.html#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></li>
+<li><a title="legends.utils.customabcs.RelSet" href="customabcs.html#legends.utils.customabcs.RelSet">RelSet</a></li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+<li><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.ManyToOne" href="#legends.utils.objrelations.ManyToOne">ManyToOne</a></li>
+<li><a title="legends.utils.objrelations.OneToMany" href="#legends.utils.objrelations.OneToMany">OneToMany</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.utils.objrelations.ManyToMany.validate"><code class="name flex">
+<span>def <span class="ident">validate</span></span>(<span>self, key, val)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if the given key-value pair may be added to the
+relation. As implemented here, the method always returns True.
+Subclasses should override this method to produce custom
+behavior.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>key</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The key to validate.</dd>
+<dt><strong><code>val</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The value to validate.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd><code>True</code> if the key-value pair may be added, <code>False</code>
+otherwise.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate(self, key, val):
+    &#34;&#34;&#34;Checks if the given key-value pair may be added to the
+    relation. As implemented here, the method always returns True.
+    Subclasses should override this method to produce custom
+    behavior.
+
+    Args:
+        key (obj): The key to validate.
+        val (obj): The value to validate.
+
+    Returns:
+        bool: `True` if the key-value pair may be added, `False`
+            otherwise.
+
+    &#34;&#34;&#34;
+    return True</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.customabcs.MultiMapping" href="customabcs.html#legends.utils.customabcs.MultiMapping">MultiMapping</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.customabcs.MultiMapping.add" href="customabcs.html#legends.utils.customabcs.MultiMapping.add">add</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.clear" href="customabcs.html#legends.utils.customabcs.MutableRelSet.clear">clear</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.difference_update" href="customabcs.html#legends.utils.customabcs.MutableRelSet.difference_update">difference_update</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.discard" href="customabcs.html#legends.utils.customabcs.MultiMapping.discard">discard</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.inverse" href="customabcs.html#legends.utils.customabcs.MultiMapping.inverse">inverse</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.isdisjoint" href="customabcs.html#legends.utils.customabcs.RelSet.isdisjoint">isdisjoint</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.keys" href="customabcs.html#legends.utils.customabcs.MultiMapping.keys">keys</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.pop" href="customabcs.html#legends.utils.customabcs.MutableRelSet.pop">pop</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.remove" href="customabcs.html#legends.utils.customabcs.MutableRelSet.remove">remove</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.update" href="customabcs.html#legends.utils.customabcs.MutableRelSet.update">update</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.values" href="customabcs.html#legends.utils.customabcs.MultiMapping.values">values</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.utils.objrelations.ManyToOne"><code class="flex name class">
+<span>class <span class="ident">ManyToOne</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A many-to-one relation mapping objects to objects.</p>
+<p>All objects in the relation need to be <code><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></code> objects, but
+otherwise, a <code><a title="legends.utils.objrelations.ManyToOne" href="#legends.utils.objrelations.ManyToOne">ManyToOne</a></code> object functions just like an
+<code><a title="legends.utils.relations.invertibledict" href="relations.html#legends.utils.relations.invertibledict">invertibledict</a></code> object.</p>
+<p>Subclasses may wish to override the <code><a title="legends.utils.objrelations.ManyToOne.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method to
+provide restrictions on adding a pair to the relation. The
+<code><a title="legends.utils.objrelations.ManyToOne.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method is called whenever <code>__setitem__</code> is
+called. If <code><a title="legends.utils.objrelations.ManyToOne.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> returns <code>True</code>, the <code>__setitem__</code>
+method proceeds normally. Otherwise, <code>__setitem__</code> does nothing. If
+the subclass wishes to raise an error when validation fails, the
+error should be raised from within the <code><a title="legends.utils.objrelations.ManyToOne.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method.</p>
+<h2 id="attributes">Attributes</h2>
+<p>map (legends.utils.relations.invertibledict) {<code>int</code>:<code>int</code>} The
+relation is stored under the hood as an
+<code><a title="legends.utils.relations.invertibledict" href="relations.html#legends.utils.relations.invertibledict">invertibledict</a></code> mapping IDs to IDs,
+where the IDs are provided by the <code>Manager</code> class.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ManyToOne(ManyToMany):
+    &#34;&#34;&#34;A many-to-one relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `ManyToOne` object functions just like an
+    `legends.utils.relations.invertibledict` object.
+
+    Subclasses may wish to override the `ManyToOne.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `ManyToOne.validate` method is called whenever `__setitem__` is
+    called. If `ManyToOne.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `ManyToOne.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.invertibledict) {`int`:`int`} The
+            relation is stored under the hood as an
+            `legends.utils.relations.invertibledict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        ManyToMany.__init__(self)
+        self.map = invertibledict()
+
+    def __inverse__(self):
+        inverse = OneToMany()
+        return self._inverseinit(inverse)
+
+    def __getitem__(self, key):
+        try:
+            valID = self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+        return Managed._m_objects[valID]
+
+    def __repr__(self):
+        # pylint: disable=consider-using-dict-items
+        disp = &#39;ManyToOne({&#39;
+        for key in self.keys():
+            disp += repr(key) + &#39;: &#39; + repr(self[key]) + &#39;,\n &#39;
+        return disp + &#39;})&#39;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.ManyToMany" href="#legends.utils.objrelations.ManyToMany">ManyToMany</a></li>
+<li><a title="legends.utils.customabcs.MultiMapping" href="customabcs.html#legends.utils.customabcs.MultiMapping">MultiMapping</a></li>
+<li><a title="legends.utils.customabcs.MutableRelSet" href="customabcs.html#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></li>
+<li><a title="legends.utils.customabcs.RelSet" href="customabcs.html#legends.utils.customabcs.RelSet">RelSet</a></li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+<li><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.objrelations.ManyToMany" href="#legends.utils.objrelations.ManyToMany">ManyToMany</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.objrelations.ManyToMany.add" href="customabcs.html#legends.utils.customabcs.MultiMapping.add">add</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.clear" href="customabcs.html#legends.utils.customabcs.MutableRelSet.clear">clear</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.difference_update" href="customabcs.html#legends.utils.customabcs.MutableRelSet.difference_update">difference_update</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.discard" href="customabcs.html#legends.utils.customabcs.MultiMapping.discard">discard</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.inverse" href="customabcs.html#legends.utils.customabcs.MultiMapping.inverse">inverse</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.isdisjoint" href="customabcs.html#legends.utils.customabcs.RelSet.isdisjoint">isdisjoint</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.keys" href="customabcs.html#legends.utils.customabcs.MultiMapping.keys">keys</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.pop" href="customabcs.html#legends.utils.customabcs.MutableRelSet.pop">pop</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.remove" href="customabcs.html#legends.utils.customabcs.MutableRelSet.remove">remove</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.update" href="customabcs.html#legends.utils.customabcs.MutableRelSet.update">update</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">validate</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.values" href="customabcs.html#legends.utils.customabcs.MultiMapping.values">values</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.utils.objrelations.OneToMany"><code class="flex name class">
+<span>class <span class="ident">OneToMany</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A one-to-many relation mapping objects to objects.</p>
+<p>All objects in the relation need to be <code><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></code> objects, but
+otherwise, a <code><a title="legends.utils.objrelations.OneToMany" href="#legends.utils.objrelations.OneToMany">OneToMany</a></code> object functions just like an
+<code><a title="legends.utils.relations.inversedict" href="relations.html#legends.utils.relations.inversedict">inversedict</a></code> object.</p>
+<p>Subclasses may wish to override the <code><a title="legends.utils.objrelations.OneToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method to
+provide restrictions on adding a pair to the relation. The
+<code><a title="legends.utils.objrelations.OneToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method is called whenever <code>__setitem__</code> is
+called. If <code><a title="legends.utils.objrelations.OneToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> returns <code>True</code>, the <code>__setitem__</code>
+method proceeds normally. Otherwise, <code>__setitem__</code> does nothing. If
+the subclass wishes to raise an error when validation fails, the
+error should be raised from within the <code><a title="legends.utils.objrelations.OneToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">ManyToMany.validate()</a></code> method.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>map</code></strong> :&ensp;<code><a title="legends.utils.relations.inversedict" href="relations.html#legends.utils.relations.inversedict">inversedict</a></code></dt>
+<dd>{<code>int</code>:<code>int</code>} The
+relation is stored under the hood as a
+<code><a title="legends.utils.relations.multidict" href="relations.html#legends.utils.relations.multidict">multidict</a></code> mapping IDs to IDs,
+where the IDs are provided by the <code>Manager</code> class.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class OneToMany(ManyToMany):
+    &#34;&#34;&#34;A one-to-many relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `OneToMany` object functions just like an
+    `legends.utils.relations.inversedict` object.
+
+    Subclasses may wish to override the `OneToMany.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `OneToMany.validate` method is called whenever `__setitem__` is
+    called. If `OneToMany.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `OneToMany.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.inversedict): {`int`:`int`} The
+            relation is stored under the hood as a
+            `legends.utils.relations.multidict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        ManyToMany.__init__(self)
+        self.map = inversedict()
+
+    def __inverse__(self):
+        inverse = ManyToOne()
+        return self._inverseinit(inverse)
+
+    def __repr__(self):
+        # pylint: disable=consider-using-dict-items
+        disp = &#39;OneToMany({&#39;
+        for key in self.keys():
+            disp += repr(key) + &#39;: &#39; + repr(self[key]) + &#39;,\n &#39;
+        return disp + &#39;})&#39;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.ManyToMany" href="#legends.utils.objrelations.ManyToMany">ManyToMany</a></li>
+<li><a title="legends.utils.customabcs.MultiMapping" href="customabcs.html#legends.utils.customabcs.MultiMapping">MultiMapping</a></li>
+<li><a title="legends.utils.customabcs.MutableRelSet" href="customabcs.html#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></li>
+<li><a title="legends.utils.customabcs.RelSet" href="customabcs.html#legends.utils.customabcs.RelSet">RelSet</a></li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+<li><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.objrelations.ManyToMany" href="#legends.utils.objrelations.ManyToMany">ManyToMany</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.objrelations.ManyToMany.add" href="customabcs.html#legends.utils.customabcs.MultiMapping.add">add</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.clear" href="customabcs.html#legends.utils.customabcs.MutableRelSet.clear">clear</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.difference_update" href="customabcs.html#legends.utils.customabcs.MutableRelSet.difference_update">difference_update</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.discard" href="customabcs.html#legends.utils.customabcs.MultiMapping.discard">discard</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.inverse" href="customabcs.html#legends.utils.customabcs.MultiMapping.inverse">inverse</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.isdisjoint" href="customabcs.html#legends.utils.customabcs.RelSet.isdisjoint">isdisjoint</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.keys" href="customabcs.html#legends.utils.customabcs.MultiMapping.keys">keys</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.pop" href="customabcs.html#legends.utils.customabcs.MutableRelSet.pop">pop</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.remove" href="customabcs.html#legends.utils.customabcs.MutableRelSet.remove">remove</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.update" href="customabcs.html#legends.utils.customabcs.MutableRelSet.update">update</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">validate</a></code></li>
+<li><code><a title="legends.utils.objrelations.ManyToMany.values" href="customabcs.html#legends.utils.customabcs.MultiMapping.values">values</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.utils.objrelations.OneToOne"><code class="flex name class">
+<span>class <span class="ident">OneToOne</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A one-to-one relation mapping objects to objects.</p>
+<p>All objects in the relation need to be <code><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></code> objects, but
+otherwise, a <code><a title="legends.utils.objrelations.OneToOne" href="#legends.utils.objrelations.OneToOne">OneToOne</a></code> object functions just like a
+<code><a title="legends.utils.relations.bidict" href="relations.html#legends.utils.relations.bidict">bidict</a></code> object.</p>
+<p>Subclasses may wish to override the <code><a title="legends.utils.objrelations.OneToOne.validate" href="#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code> method to
+provide restrictions on adding a pair to the relation. The
+<code><a title="legends.utils.objrelations.OneToOne.validate" href="#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code> method is called whenever <code>__setitem__</code> is
+called. If <code><a title="legends.utils.objrelations.OneToOne.validate" href="#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code> returns <code>True</code>, the <code>__setitem__</code>
+method proceeds normally. Otherwise, <code>__setitem__</code> does nothing. If
+the subclass wishes to raise an error when validation fails, the
+error should be raised from within the <code><a title="legends.utils.objrelations.OneToOne.validate" href="#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code> method.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>map</code></strong> :&ensp;<code><a title="legends.utils.relations.bidict" href="relations.html#legends.utils.relations.bidict">bidict</a></code></dt>
+<dd>{<code>int</code>:<code>int</code>} The relation
+is stored under the hood as a
+<code><a title="legends.utils.relations.bidict" href="relations.html#legends.utils.relations.bidict">bidict</a></code> mapping IDs to IDs, where
+the IDs are provided by the <code>Manager</code> class.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class OneToOne(BiMapping, Managed):
+    &#34;&#34;&#34;A one-to-one relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `OneToOne` object functions just like a
+    `legends.utils.relations.bidict` object.
+
+    Subclasses may wish to override the `OneToOne.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `OneToOne.validate` method is called whenever `__setitem__` is
+    called. If `OneToOne.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `OneToOne.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.bidict): {`int`:`int`} The relation
+            is stored under the hood as a
+            `legends.utils.relations.bidict` mapping IDs to IDs, where
+            the IDs are provided by the `Manager` class.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.map = bidict()
+
+    def __getitem__(self, key):
+        try:
+            valID = self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+        return Managed._m_objects[valID]
+
+    def __delitem__(self, key):
+        try:
+            del self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+
+    def __iter__(self):
+        return (Managed._m_objects[keyID] for keyID in self.map)
+
+    def __len__(self):
+        return len(self.map)
+
+    def __setfreeval__(self, key, val):
+        if self.validate(key, val): # pylint: disable=not-callable
+            self.map[id(key)] = id(val)
+
+    def __inverse__(self):
+        inverse = OneToOne()
+        inverse.map = self.map.inverse
+        def validate(slf, key, val):
+            return slf.inverse.validate(val, key)
+        inverse.validate = MethodType(validate, inverse)
+        return inverse
+
+    # pylint: disable-next=method-hidden, unused-argument, no-self-use
+    def validate(self, key, val):
+        &#34;&#34;&#34;Checks if the given key-value pair may be added to the
+        relation. As implemented here, the method always returns True.
+        Subclasses should override this method to produce custom
+        behavior.
+
+        Args:
+            key (obj): The key to validate.
+            val (obj): The value to validate.
+
+        Returns:
+            bool: `True` if the key-value pair may be added, `False`
+                otherwise.
+
+        &#34;&#34;&#34;
+        return True
+
+    def __repr__(self):
+        disp = &#39;OneToOne({&#39;
+        for key, val in self.items():
+            disp += repr(key) + &#39;: &#39; + repr(val) + &#39;,\n &#39;
+        return disp + &#39;})&#39;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.customabcs.BiMapping" href="customabcs.html#legends.utils.customabcs.BiMapping">BiMapping</a></li>
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+<li><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.utils.objrelations.OneToOne.validate"><code class="name flex">
+<span>def <span class="ident">validate</span></span>(<span>self, key, val)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if the given key-value pair may be added to the
+relation. As implemented here, the method always returns True.
+Subclasses should override this method to produce custom
+behavior.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>key</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The key to validate.</dd>
+<dt><strong><code>val</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The value to validate.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd><code>True</code> if the key-value pair may be added, <code>False</code>
+otherwise.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate(self, key, val):
+    &#34;&#34;&#34;Checks if the given key-value pair may be added to the
+    relation. As implemented here, the method always returns True.
+    Subclasses should override this method to produce custom
+    behavior.
+
+    Args:
+        key (obj): The key to validate.
+        val (obj): The value to validate.
+
+    Returns:
+        bool: `True` if the key-value pair may be added, `False`
+            otherwise.
+
+    &#34;&#34;&#34;
+    return True</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.customabcs.BiMapping" href="customabcs.html#legends.utils.customabcs.BiMapping">BiMapping</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.customabcs.BiMapping.inverse" href="customabcs.html#legends.utils.customabcs.BiMapping.inverse">inverse</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legends.utils" href="index.html">legends.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.utils.objrelations.Managed" href="#legends.utils.objrelations.Managed">Managed</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.utils.objrelations.ManyToMany" href="#legends.utils.objrelations.ManyToMany">ManyToMany</a></code></h4>
+<ul class="">
+<li><code><a title="legends.utils.objrelations.ManyToMany.validate" href="#legends.utils.objrelations.ManyToMany.validate">validate</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.utils.objrelations.ManyToOne" href="#legends.utils.objrelations.ManyToOne">ManyToOne</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.utils.objrelations.OneToMany" href="#legends.utils.objrelations.OneToMany">OneToMany</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.utils.objrelations.OneToOne" href="#legends.utils.objrelations.OneToOne">OneToOne</a></code></h4>
+<ul class="">
+<li><code><a title="legends.utils.objrelations.OneToOne.validate" href="#legends.utils.objrelations.OneToOne.validate">validate</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

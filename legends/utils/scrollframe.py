@@ -10,27 +10,31 @@ __all__ = ['ScrollFrame']
 class ScrollFrame(tk.Frame):
     """A simple scrollable frame.
 
-    A ScrollFrame object is a Frame with a Canvas and a Scrollbar
-    embedded in it. Attached to the canvas is another frame, which is
-    accessed via the `content` attribute. This frame is meant to hold
-    other widgets, so widgets should be added to `content`, not to the
-    ScrollFrame object itself.
+    A `ScrollFrame` object is a `tk.Frame` with a `tk.Canvas` and a
+    `tk.Scrollbar` embedded in it. Attached to the canvas is another
+    frame, which is accessed via the `content` attribute. This frame is
+    meant to hold other widgets, so widgets should be added to
+    `content`, not to the `ScrollFrame` object itself.
 
-    A ScrollFrame only has a vertical scrollbar. When the size of the
+    A `ScrollFrame` only has a vertical scrollbar. When the size of the
     `content` frame changes, the width of the embedded canvas also
     changes to match it. Parent objects can set the 'height' option of
     the `canvas` attribute to give the scrollable frame any desired
     initial height.
 
     Attributes:
-        canvas (Canvas): The embedded canvas.
-        scrollbar (Scrollbar): The embedded scrollbar.
-        content (Frame): The inner frame, attached to the embedded
+        canvas (tk.Canvas): The embedded canvas.
+        scrollbar (tk.Scrollbar): The embedded scrollbar.
+        content (tk.Frame): The inner frame, attached to the embedded
             canvas. Widgets should be attached to this.
 
     """
 
     def __init__(self, parent=None, **options):
+        """The constructor passes its arguments to the `tk.Frame`
+        superclass.
+
+        """
         tk.Frame.__init__(self, parent, **options)
         self.canvas = tk.Canvas(self, highlightthickness=0)
         self.scrollbar = tk.Scrollbar(self, command=self.canvas.yview)
@@ -45,16 +49,20 @@ class ScrollFrame(tk.Frame):
         self.canvas.pack(side=LEFT, expand=YES, fill=BOTH)
         self.content = tk.Frame(self.canvas)
         self.canvas.create_window((0,0), window=self.content, anchor=NW)
-        self.content.bind('<Configure>', self.onContentConfig)
+        self.content.bind('<Configure>', lambda event:self.onContentConfig())
 
     def onMouseWheel(self, event):
         """Allows the user to use the mouse wheel/trackpad to scroll the
         canvas.
 
+        Args:
+            event (tk.Event): The `tk.Event` passed by the
+                '<Mousewheel>' event.
+
         """
         self.canvas.yview_scroll(-1 * event.delta, 'units')
 
-    def onContentConfig(self, event): # pylint: disable=unused-argument
+    def onContentConfig(self):
         """When the content area changes, the canvas adjusts its width
         and scrollable region to match it.
 

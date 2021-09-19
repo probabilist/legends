@@ -1,4 +1,4 @@
-"""Core functions used in the `legends` package.
+"""Tools for processing the STL save file.
 
 """
 

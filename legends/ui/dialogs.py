@@ -85,7 +85,7 @@ def askSlot(root, save):
             `legends.ui.stlplanner.STLPlanner` instance.
         save (dict): A decrypted dictionary representation of the
             player's save file, as returned by the
-            `legends.functions.decryptSaveFile` function.
+            `legends.savefile.decryptSaveFile` function.
 
     Returns:
         legends.saveslot.SaveSlot or None: Returns a
@@ -194,7 +194,7 @@ class AskSlot(ModalDialog):
     Attributes:
         save (dict): A decrypted dictionary representation of the
             player's save file, as returned by the
-            `legends.functions.decryptSaveFile` function.
+            `legends.savefile.decryptSaveFile` function.
         displaySlot (tk.StringVar): The currently selected slot, as it
             is displayed in the window.
         result (SaveSlot or None): Inherited from `ModalDialog`, which

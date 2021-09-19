@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.9.3
+
+* Alphabetized constants in docstring.
+* Renamed `functions` module to `savefile` and revised docstrings accordingly.
+* Improved documentation for the `Roster.inGearSlot` attribute.
+* For compatibility with `pdcoc` formatting, edited docstrings in the following modules:
+    - `objrelations`
+    - `relations`
+    - `scrollframe`
+* Uploaded documentation produced by `pdoc`
+
 ## Version 0.9.2
 
 * Removed the unnecessary `event` argument from `RosterTab.sort()` and revised `RosterTab.actionBar()` accordingly.

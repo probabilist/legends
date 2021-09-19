@@ -72,7 +72,7 @@ class SaveSlot():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.functions.decryptSaveFile` function.
+                `legends.savefile.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
@@ -141,7 +141,7 @@ class STLTimeStamps():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.functions.decryptSaveFile` function.
+                `legends.savefile.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the time stamps.
 

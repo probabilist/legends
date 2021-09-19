@@ -8,36 +8,24 @@ NOTE: The constant `GSBaseStat` differs from the data file
 `GSBaseStat.json`. In the constant, 'MaxHealth' is renamed to 'Health'.
 
 Attributes:
-    STAT_ABBREVIATIONS (dict): A dictionary mapping stat names as they
-        appear in GSBaseStat to abbreviations used throughout this
-        package, typically for attribute names.
+    DESCRIPTIONS (dict): The key-value pairs in `lang_en_us['List']` put
+        into a Python dictionary.
+    ENABLED (list of str): A list of name IDs of characters that appear
+        on the Crew screen.
+    HELP (str): The contents of the file, `legends/help.txt`.
     POWER_GRADIENT (dict): {`str`:`float`} A dictionary mapping stat
         names to the amount that a character's power would increase if
         that stat were to increase by 1.
     POWER_AT_ORIGIN (float): The theoretical power of a character whose
         every stat is 0.
-    DESCRIPTIONS (dict): The key-value pairs in `lang_en_us['List']` put
-        into a Python dictionary.
     RARITIES (list of str): A list of rarities in the game, from low to
         high.
-    ROLES (list of str): A list of roles in the game.
     RARITY_COLORS (dict): {`str`:`str`} A dictionary mapping character
         rarities to color names in tkinter.
-    PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
-        mapping particle rarities to a list whose indices denote the
-        0-based level of the particle and whose values denote the number
-        of unlocked stats on a particle of that rarity and level. See
-        the examples below.
-    PART_STAT_VALUES (dict): {`str`:{`str`:[`float`]}}: A
-        dictionary mapping stat names to a dictionary mapping rarity
-        names to a list whose indices denote the 0-based level of the
-        particle and whose values denote the value of the given stat on
-        a particle of the given rarity and level. See the examples
-        below.
-    ENABLED (list of str): A list of name IDs of characters that appear
-        on the Crew screen.
-    UPCOMING (list of str): A list of name IDs of characters believed to
-        be in the queue for future release.
+    ROLES (list of str): A list of roles in the game.
+    STAT_ABBREVIATIONS (dict): A dictionary mapping stat names as they
+        appear in `GSBaseStat` to abbreviations used throughout this
+        package, typically for attribute names.
     SUMMON_POOL (dict): {`str`:`dict`} A dictionary mapping pool names
         ('Core' or one the roles in `ROLES`) to a dictionary with three
         keys: 'nameIDs', which maps to a dictionary connecting name IDs
@@ -49,7 +37,19 @@ Attributes:
     SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
         dictionary mapping pool names their summon IDs, which are used
         by the game data to identify particular summon pools.
-    HELP (str): The contents of the file, `legends/help.txt`.
+    PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
+        mapping particle rarities to a list whose indices denote the
+        0-based level of the particle and whose values denote the number
+        of unlocked stats on a particle of that rarity and level. See
+        the examples below.
+    PART_STAT_VALUES (dict): {`str`:{`str`:[`float`]}}: A
+        dictionary mapping stat names to a dictionary mapping rarity
+        names to a list whose indices denote the 0-based level of the
+        particle and whose values denote the value of the given stat on
+        a particle of the given rarity and level. See the examples
+        below.
+    UPCOMING (list of str): A list of name IDs of characters believed to
+        be in the queue for future release.
 
 Examples:
     A Very Rare, Level 3 particle has 2 stats unlocked:

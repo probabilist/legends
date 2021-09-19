@@ -1,0 +1,1959 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>legends.gameobjects API documentation</title>
+<meta name="description" content="The `legends.gameobjects.Character` class and related objects." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legends.gameobjects</code></h1>
+</header>
+<section id="section-intro">
+<p>The <code><a title="legends.gameobjects.Character" href="#legends.gameobjects.Character">Character</a></code> class and related objects.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;The `legends.gameobjects.Character` class and related objects.
+
+&#34;&#34;&#34;
+
+from re import findall
+from legends.utils.objrelations import Managed
+#pylint: disable-next=no-name-in-module
+from legends.constants import (
+    GSSkill, GSCharacter, GSLevel, GSGear, GSRank, GSBaseStat, GSGearLevel
+)
+from legends.constants import (
+    DESCRIPTIONS, RARITIES, PART_STAT_VALUES, PART_STAT_UNLOCKED
+)
+from legends.stats import Stats
+
+__all__ = [
+    &#39;levelFromXP&#39;, &#39;xpFromLevel&#39;, &#39;tokensNeeded&#39;, &#39;getCharStats&#39;,
+    &#39;getGearStats&#39;, &#39;getPartStats&#39;, &#39;Gear&#39;, &#39;Particle&#39;, &#39;GearSlot&#39;, &#39;PartSlot&#39;,
+    &#39;Character&#39;, &#39;Skill&#39;
+]
+
+def levelFromXP(xp, rarity=&#39;Common&#39;):
+    &#34;&#34;&#34;Calculates the level of a character from its XP.
+
+    Args:
+        xp (int): The XP of the character.
+        rarity (str): The rarity of the character.
+
+    Returns:
+        int: The level of the character.
+
+    &#34;&#34;&#34;
+    level = None
+    for j in reversed(range(100)):
+        xpNeeded = GSLevel[rarity + &#39;_&#39; + str(j)][&#39;Experience&#39;]
+        if xp &gt;= xpNeeded:
+            level = j
+            break
+    else:
+        raise ValueError(repr(xp) + &#39; could not be converted from XP to level&#39;)
+    return level
+
+def xpFromLevel(level, rarity=&#39;Common&#39;):
+    &#34;&#34;&#34;Calculates the minimum XP of a character from its level.
+
+    Args:
+        level (int): The level of the character.
+        rarity (str): The rarity of the character.
+
+    Returns:
+        int: The minimum possible XP the character could have.
+
+    &#34;&#34;&#34;
+    return GSLevel[rarity + &#39;_&#39; + str(level)][&#39;Experience&#39;]
+
+def tokensNeeded(rarity, rank):
+    &#34;&#34;&#34;Returns the number of tokens needed by a character of the given
+    rarity and rank to move up to the next rank.
+
+    Args:
+        rarity (str): The rarity of the character.
+        rank (int): The current rank of the character.
+
+    Returns:
+        int: The total number of tokens need for the character to
+            advance to the next rank.
+
+    &#34;&#34;&#34;
+    if rank == 9:
+        return 0
+    # pylint: disable-next=undefined-variable
+    return GSRank[&#39;{}_{}&#39;.format(rarity, rank + 1)][&#39;RequiredTokenCount&#39;]
+
+def getCharStats(nameID, rank, level):
+    &#34;&#34;&#34;Calculates a character&#39;s naked stats from its nameID, rank, and
+    level.
+
+    Args:
+        nameID (str): The name ID of the character, as it appears in
+            `GSCharacter`.
+        rank (int): The rank of the character.
+        level (int): The level of the character.
+
+    Returns:
+        dict: A dictionary mapping stat names, as they appear in
+            `GSBaseStat`, to stat values.
+
+    &#34;&#34;&#34;
+    rarity = GSCharacter[nameID][&#39;Rarity&#39;]
+    stats = {}
+    for statName, data in GSBaseStat.items():
+        m = data[&#39;MinValue&#39;] #pylint: disable=invalid-name
+        M = data[&#39;MaxValue&#39;] #pylint: disable=invalid-name
+        t = GSCharacter[nameID][statName] #pylint: disable=invalid-name
+        baseStat = m + t * (M - m)
+        try:
+            levelMod = GSLevel[rarity + &#39;_&#39; + str(level)][
+                    statName + &#39;Modifier&#39;
+                ]
+            rankMod = GSRank[rarity + &#39;_&#39; + str(rank)][
+                    statName + &#39;Modifier&#39;
+                ]
+        except KeyError:
+            levelMod = 1
+            rankMod = 1
+        statVal = baseStat * levelMod * rankMod
+        stats[statName] = statVal
+    return stats
+
+def getGearStats(gearID, level):
+    &#34;&#34;&#34;Calculates a gear&#39;s stats from its gear ID and level.
+
+    Args:
+        gearID (str): The gear ID as it appears in `GSGear`.
+        level (int): The level of the gear. (See `Gear.level`.)
+
+    Returns:
+        dict: A dictionary mapping stat names, as they appear in
+            `GSBaseStat`, to stat values.
+
+    &#34;&#34;&#34;
+    stats = {statName: 0 for statName in GSBaseStat}
+    gearLevelID = &#39;[{}, {}]&#39;.format(gearID, level)
+    numStats = GSGearLevel[gearLevelID][&#39;m_StatBrancheCount&#39;]
+    for i in range(numStats):
+        data = GSGear[gearID][&#39;m_Stats&#39;][i]
+        statName = data[&#39;m_Type&#39;]
+        statBase = data[&#39;m_BaseValue&#39;]
+        statIncr = data[&#39;m_IncreaseValue&#39;]
+        statVal = statBase + (level - 10 * i) * statIncr
+        stats[statName] += statVal
+    return stats
+
+def getPartStats(rarity, level, statList):
+    &#34;&#34;&#34;Calculates a particle&#39;s stats from its rarity, level, and list of
+    stat names.
+
+    Args:
+        rarity (str): The particle&#39;s rarity.
+        level (int): The particle&#39;s level.
+        statList (list of str): The stat names on the particle.
+
+    Returns:
+        dict: A dictionary mapping stat names, as they appear in
+            `GSBaseStat`, to stat values.
+
+    &#34;&#34;&#34;
+    stats = {statName: 0 for statName in GSBaseStat}
+    for statName in statList:
+        stats[statName] = (
+            PART_STAT_VALUES[statName][rarity][level - 1]
+        )
+    return stats
+
+class Gear(Managed):
+    &#34;&#34;&#34;A piece of gear in STL.
+
+    Attributes:
+        gearID (str): The in-code ID of the gear piece. Should be a key
+            in `GSGear`.
+        stats (legends.stats.Stats): The Stats object that stores the
+            gear&#39;s total stats.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, gearID, level):
+        &#34;&#34;&#34;The constructor stores the given level in a private attribute
+        that is managed by a class property.
+
+        Args:
+            gearID (str): The gearID of the piece to create.
+            level (int): The level of the piece to create.
+
+        &#34;&#34;&#34;
+        self.gearID = gearID
+        self._level = level
+        self.stats = Stats()
+        self.updateStats()
+
+    @property
+    def level(self):
+        &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
+        rarity. For example, a Level 17 gear piece displays in game as
+        &#34;Epic, Level 2&#34;. Modifying this property also calls the
+        `Gear.updateStats` method.
+        &#34;&#34;&#34;
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        self._level = value
+        self.updateStats()
+
+    @property
+    def rarityIndex(self):
+        &#34;&#34;&#34;`int`: The index of the rarity in `RARITIES`.&#34;&#34;&#34;
+        return int((self.level - 1)/5)
+
+    @property
+    def rarity(self):
+        &#34;&#34;&#34;`str`: The rarity of the gear piece.&#34;&#34;&#34;
+        return RARITIES[self.rarityIndex]
+
+    @property
+    def slot(self):
+        &#34;&#34;&#34;`int`: The 0-based index of the slot into which the gear must
+        be placed.
+        &#34;&#34;&#34;
+        return GSGear[self.gearID][&#39;m_Slot&#39;]
+
+    def updateStats(self):
+        &#34;&#34;&#34;Updates the `stats` attribute.
+
+        &#34;&#34;&#34;
+        self.stats.update(getGearStats(self.gearID, self.level))
+
+    def __repr__(self):
+        return &#39;&lt;&#39; + repr(self.gearID) + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;
+
+class Particle(Managed):
+    &#34;&#34;&#34;A particle in STL.
+
+    Attributes:
+        typ (str): The type of the particle. This is what the data
+            refers to as the particle&#39;s &#34;display name&#34;. Should be one of
+            &#39;Accelerated Coagulation&#39;, &#39;Amplify Force&#39;, &#39;Nexus Field&#39;,
+            &#39;Temporal Flux&#39;, or &#39;Undo Damage&#39;.
+        rarity (str): The particle&#39;s rarity.
+        locked (bool): True if the particle is locked.
+        stats (legends.stats.Stats): The Stats object that stores the
+            particle&#39;s total stats.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, typ, rarity, level, locked=False):
+        &#34;&#34;&#34;The constructor passes the given level to a private attribute
+        that is managed by a class property.
+
+        Args:
+            typ (str): The type of particle to create.
+            rarity (str): The rarity of the created particle.
+            level (int): The level of the created particle.
+            locked (bool): True if the new particle should be locked.
+
+        &#34;&#34;&#34;
+        self.typ = typ
+        self.rarity = rarity
+        self._level = level
+        self.locked = locked
+        self._statNames = [None] * 4
+        self.stats = Stats()
+
+    @property
+    def level(self):
+        &#34;&#34;&#34;`str`: The particle&#39;s level. Modifying this property also
+        calls the `Particle.updateStats` method.
+        &#34;&#34;&#34;
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        self._level = value
+        self.updateStats()
+
+    @property
+    def numStats(self):
+        &#34;&#34;&#34;`int`: The number of unlocked stats on the particle.&#34;&#34;&#34;
+        return PART_STAT_UNLOCKED[self.rarity][self.level - 1]
+
+    @property
+    def statNames(self):
+        &#34;&#34;&#34;`tuple of str`: The names, as they appear in `GSBaseStat`, of
+        the stats that are on the particle. It is always a 4-tuple,
+        though some values may be `None`.
+        &#34;&#34;&#34;
+        return tuple(self._statNames)
+
+    def setStatName(self, index, statName):
+        &#34;&#34;&#34;Changes the `statNames` property by setting the value at the
+        given index to the given stat name.
+
+        Args:
+            index (int): The 0-based index of the value in the
+                `statNames` property to change.
+            statName (str): The stat name to assign to the given index.
+
+        &#34;&#34;&#34;
+        self._statNames[index] = statName
+        self.updateStats()
+
+    def updateStats(self):
+        &#34;&#34;&#34;Updates the `stats` attribute.
+
+        &#34;&#34;&#34;
+        statList = [
+            statName for statName in self.statNames[:self.numStats]
+            if statName is not None
+        ]
+        self.stats.update(getPartStats(self.rarity, self.level, statList))
+
+    def __repr__(self):
+        return (
+            &#39;&lt;&#39; + repr(self.typ) + &#39;, &#39; + repr(self.rarity)
+            + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;
+        )
+
+class GearSlot(Managed): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A slot into which a piece of gear can be placed.
+
+    Must be implemented as a class, rather than a tuple, so that it can
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
+
+    Attributes:
+        char (Character): The character that owns the slot.
+        index (int): The 0-based index of the slot.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, index):
+        self.char = char
+        self.index = index
+
+    def __repr__(self):
+        return &#39;&lt;&#39; + self.char.nameID + &#39;, gear slot &#39; + str(self.index) + &#39;&gt;&#39;
+
+class PartSlot(Managed): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A slot into which a particle can be placed.
+
+    Must be implemented as a class, rather than a tuple, so that it can
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
+
+    Attributes:
+        char (Character): The character that owns the slot.
+        index (int): The 0-based index of the slot.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, index):
+        self.char = char
+        self.index = index
+
+    def __repr__(self):
+        return &#39;&lt;&#39; + self.char.nameID + &#39;, part slot &#39; + str(self.index) + &#39;&gt;&#39;
+
+class Character():
+    &#34;&#34;&#34;A character in STL.
+
+    Attributes:
+        stats (legends.stats.Stats): The Stats object that stores the
+            character&#39;s naked stats (i.e. the stats they would have
+            without any gear or particles).
+        skills (dict): {`str`:`Skill`} A dictionary mapping skill IDs
+            (found in `GSSkill`) to Skill objects.
+        gearSlots (list of GearSlot): The list of the character&#39;s gear
+            slots.
+        partSlots (list of PartSlot): The list of the character&#39;s
+            particle slots.
+
+    &#34;&#34;&#34;
+    def __init__(self, nameID, rank=1, xp=0):
+        &#34;&#34;&#34;The constructor stores the passed arguments in a private
+        dictionary, whose values are accessed and managed by class
+        properties.
+
+        Args:
+            nameID (str): The name ID of the character to create.
+            rank (int): The rank to assign on creation.
+            xp (int): The xp to assign on creation.
+
+        &#34;&#34;&#34;
+        self._data = {
+            &#39;nameID&#39;: nameID,
+            &#39;rank&#39;: rank,
+            &#39;xp&#39;: xp
+        }
+        self.stats = Stats()
+        self.updateStats()
+        self.skills = {
+            skillID: Skill(skillID)
+            for skillID in GSCharacter[self.nameID][&#39;SkillIDs&#39;]
+        }
+        self.gearSlots = []
+        for slot in range(4):
+            self.gearSlots.append(GearSlot(self, slot))
+        self.partSlots = []
+        for slot in range(2):
+            self.partSlots.append(PartSlot(self, slot))
+
+    @property
+    def nameID(self):
+        &#34;&#34;&#34;`str`: The in-data name of the character. Should match a key in
+        `GSCharacter`.
+        &#34;&#34;&#34;
+        return self._data[&#39;nameID&#39;]
+
+    @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game display name of the character.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSCharacter[self.nameID][&#39;Name&#39;]]
+
+    @property
+    def shortName(self):
+        &#34;&#34;&#34;`str`: A shortened version of the character&#39;s display name.
+        &#34;&#34;&#34;
+        if self.rarity == &#39;Common&#39;:
+            L = findall(&#39;[A-Z][^A-Z]*&#39;, self.nameID)
+            return L[1] + &#39; &#39; + L[2][:-2]
+        betterNames = {
+            &#39;Nine&#39;: &#39;Seven&#39;,
+            &#39;Nerys&#39;: &#39;Kira&#39;,
+            &#39;Scott&#39;: &#39;Scotty&#39;,
+            &#39;Torchbearer&#39;: &#39;Torch&#39;,
+            &#39;BorgQueen&#39;: &#39;Borg Queen&#39;,
+            &#39;PicardDixon&#39;: &#39;Dixon&#39;,
+            &#39;JadziaDax&#39;: &#39;Jadzia Dax&#39;,
+            &#39;PicardOld&#39;: &#39;Old Picard&#39;
+        }
+        return betterNames.get(self.nameID, self.nameID)
+
+    @property
+    def rank(self):
+        &#34;&#34;&#34;`int`: The rank of the character. Modifying this property
+        also calls the `Character.updateStats` method.
+        &#34;&#34;&#34;
+        return self._data[&#39;rank&#39;]
+
+    @rank.setter
+    def rank(self, value):
+        self._data[&#39;rank&#39;] = value
+        self.updateStats()
+
+    @property
+    def xp(self):
+        &#34;&#34;&#34;`int`: The xp of the character. Modifying this property also
+        calls the `Character.updateStats` method.
+        &#34;&#34;&#34;
+        return self._data[&#39;xp&#39;]
+
+    @xp.setter
+    def xp(self, value):
+        self._data[&#39;xp&#39;] = value
+        self.updateStats()
+
+    @property
+    def level(self):
+        &#34;&#34;&#34;`int`: The level of the character. Setting this to a value
+        different from its current value will change the `xp` property
+        to the minimum xp required to attain the new level.
+        &#34;&#34;&#34;
+        return levelFromXP(self.xp)
+
+    @level.setter
+    def level(self, value):
+        if self.level != value:
+            self.xp = xpFromLevel(value, self.rarity)
+
+    @property
+    def rarity(self):
+        &#34;&#34;&#34;`str`: The rarity of the character.&#34;&#34;&#34;
+        return GSCharacter[self.nameID][&#39;Rarity&#39;]
+
+    @property
+    def rarityIndex(self):
+        &#34;&#34;&#34;`int`: The index of the rarity in `RARITIES`.&#34;&#34;&#34;
+        return RARITIES.index(self.rarity)
+
+    @property
+    def role(self):
+        &#34;&#34;&#34;`str`: The role of the character.&#34;&#34;&#34;
+        return GSCharacter[self.nameID][&#39;Role&#39;]
+
+    @property
+    def maxGearLevel(self):
+        &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
+        return 5 + 5 * self.rarityIndex
+
+    @property
+    def missingSkillLevels(self):
+        &#34;&#34;&#34;`int`: The number of missing skill levels. Assumes the
+        maximum level for every skill is 2.
+        &#34;&#34;&#34;
+        missingLevels = 0
+        for skill in self.skills.values():
+            missingLevels += 2
+            if skill.unlocked:
+                missingLevels -= skill.level
+        return missingLevels
+
+    @property
+    def tokensNeeded(self):
+        &#34;&#34;&#34;`int`: The total number of tokens needed for the character to
+        reach the next rank.
+        &#34;&#34;&#34;
+        return tokensNeeded(self.rarity, self.rank)
+
+    def updateStats(self):
+        &#34;&#34;&#34;Updates the `stats` attribute.
+
+        &#34;&#34;&#34;
+        self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def __repr__(self):
+        return (
+            &#39;&lt;&#39; + repr(self.name) + &#39;, rank &#39; + repr(self.rank)
+            + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;
+        )
+
+class Skill():
+    &#34;&#34;&#34;A skill in STL.
+
+    Attributes:
+        skillID (str): The skill&#39;s ID, as it appears in `GSSkill`.
+        level (int): The level of the skill.
+        unlocked (bool): True if the character has unlocked this skill.
+
+    &#34;&#34;&#34;
+    def __init__(self, skillID, level=1, unlocked=False):
+        self.skillID = skillID
+        self.level = level
+        self.unlocked = unlocked
+
+    @property
+    def name(self):
+        &#34;&#34;&#34;The in-game display name of the skill.&#34;&#34;&#34;
+        return DESCRIPTIONS[self.data[&#39;name&#39;]]
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
+        key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
+            self.skillID, self.level
+        )
+        return GSSkill[key]
+
+    def __repr__(self):
+        return (
+            &#39;&lt;Skill: &#39; + self.name + &#39;, Level &#39; + str(self.level) + &#39;, &#39;
+            + (&#39;unlocked&#39; if self.unlocked else &#39;locked&#39;) + &#39;&gt;&#39;
+        )</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.gameobjects.getCharStats"><code class="name flex">
+<span>def <span class="ident">getCharStats</span></span>(<span>nameID, rank, level)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates a character's naked stats from its nameID, rank, and
+level.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nameID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name ID of the character, as it appears in
+<code>GSCharacter</code>.</dd>
+<dt><strong><code>rank</code></strong> :&ensp;<code>int</code></dt>
+<dd>The rank of the character.</dd>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The level of the character.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary mapping stat names, as they appear in
+<code>GSBaseStat</code>, to stat values.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getCharStats(nameID, rank, level):
+    &#34;&#34;&#34;Calculates a character&#39;s naked stats from its nameID, rank, and
+    level.
+
+    Args:
+        nameID (str): The name ID of the character, as it appears in
+            `GSCharacter`.
+        rank (int): The rank of the character.
+        level (int): The level of the character.
+
+    Returns:
+        dict: A dictionary mapping stat names, as they appear in
+            `GSBaseStat`, to stat values.
+
+    &#34;&#34;&#34;
+    rarity = GSCharacter[nameID][&#39;Rarity&#39;]
+    stats = {}
+    for statName, data in GSBaseStat.items():
+        m = data[&#39;MinValue&#39;] #pylint: disable=invalid-name
+        M = data[&#39;MaxValue&#39;] #pylint: disable=invalid-name
+        t = GSCharacter[nameID][statName] #pylint: disable=invalid-name
+        baseStat = m + t * (M - m)
+        try:
+            levelMod = GSLevel[rarity + &#39;_&#39; + str(level)][
+                    statName + &#39;Modifier&#39;
+                ]
+            rankMod = GSRank[rarity + &#39;_&#39; + str(rank)][
+                    statName + &#39;Modifier&#39;
+                ]
+        except KeyError:
+            levelMod = 1
+            rankMod = 1
+        statVal = baseStat * levelMod * rankMod
+        stats[statName] = statVal
+    return stats</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.getGearStats"><code class="name flex">
+<span>def <span class="ident">getGearStats</span></span>(<span>gearID, level)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates a gear's stats from its gear ID and level.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>gearID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The gear ID as it appears in <code>GSGear</code>.</dd>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The level of the gear. (See <code><a title="legends.gameobjects.Gear.level" href="#legends.gameobjects.Gear.level">Gear.level</a></code>.)</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary mapping stat names, as they appear in
+<code>GSBaseStat</code>, to stat values.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getGearStats(gearID, level):
+    &#34;&#34;&#34;Calculates a gear&#39;s stats from its gear ID and level.
+
+    Args:
+        gearID (str): The gear ID as it appears in `GSGear`.
+        level (int): The level of the gear. (See `Gear.level`.)
+
+    Returns:
+        dict: A dictionary mapping stat names, as they appear in
+            `GSBaseStat`, to stat values.
+
+    &#34;&#34;&#34;
+    stats = {statName: 0 for statName in GSBaseStat}
+    gearLevelID = &#39;[{}, {}]&#39;.format(gearID, level)
+    numStats = GSGearLevel[gearLevelID][&#39;m_StatBrancheCount&#39;]
+    for i in range(numStats):
+        data = GSGear[gearID][&#39;m_Stats&#39;][i]
+        statName = data[&#39;m_Type&#39;]
+        statBase = data[&#39;m_BaseValue&#39;]
+        statIncr = data[&#39;m_IncreaseValue&#39;]
+        statVal = statBase + (level - 10 * i) * statIncr
+        stats[statName] += statVal
+    return stats</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.getPartStats"><code class="name flex">
+<span>def <span class="ident">getPartStats</span></span>(<span>rarity, level, statList)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates a particle's stats from its rarity, level, and list of
+stat names.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The particle's rarity.</dd>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The particle's level.</dd>
+<dt><strong><code>statList</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
+<dd>The stat names on the particle.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A dictionary mapping stat names, as they appear in
+<code>GSBaseStat</code>, to stat values.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getPartStats(rarity, level, statList):
+    &#34;&#34;&#34;Calculates a particle&#39;s stats from its rarity, level, and list of
+    stat names.
+
+    Args:
+        rarity (str): The particle&#39;s rarity.
+        level (int): The particle&#39;s level.
+        statList (list of str): The stat names on the particle.
+
+    Returns:
+        dict: A dictionary mapping stat names, as they appear in
+            `GSBaseStat`, to stat values.
+
+    &#34;&#34;&#34;
+    stats = {statName: 0 for statName in GSBaseStat}
+    for statName in statList:
+        stats[statName] = (
+            PART_STAT_VALUES[statName][rarity][level - 1]
+        )
+    return stats</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.levelFromXP"><code class="name flex">
+<span>def <span class="ident">levelFromXP</span></span>(<span>xp, rarity='Common')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the level of a character from its XP.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>xp</code></strong> :&ensp;<code>int</code></dt>
+<dd>The XP of the character.</dd>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The rarity of the character.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The level of the character.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def levelFromXP(xp, rarity=&#39;Common&#39;):
+    &#34;&#34;&#34;Calculates the level of a character from its XP.
+
+    Args:
+        xp (int): The XP of the character.
+        rarity (str): The rarity of the character.
+
+    Returns:
+        int: The level of the character.
+
+    &#34;&#34;&#34;
+    level = None
+    for j in reversed(range(100)):
+        xpNeeded = GSLevel[rarity + &#39;_&#39; + str(j)][&#39;Experience&#39;]
+        if xp &gt;= xpNeeded:
+            level = j
+            break
+    else:
+        raise ValueError(repr(xp) + &#39; could not be converted from XP to level&#39;)
+    return level</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.tokensNeeded"><code class="name flex">
+<span>def <span class="ident">tokensNeeded</span></span>(<span>rarity, rank)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the number of tokens needed by a character of the given
+rarity and rank to move up to the next rank.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The rarity of the character.</dd>
+<dt><strong><code>rank</code></strong> :&ensp;<code>int</code></dt>
+<dd>The current rank of the character.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The total number of tokens need for the character to
+advance to the next rank.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tokensNeeded(rarity, rank):
+    &#34;&#34;&#34;Returns the number of tokens needed by a character of the given
+    rarity and rank to move up to the next rank.
+
+    Args:
+        rarity (str): The rarity of the character.
+        rank (int): The current rank of the character.
+
+    Returns:
+        int: The total number of tokens need for the character to
+            advance to the next rank.
+
+    &#34;&#34;&#34;
+    if rank == 9:
+        return 0
+    # pylint: disable-next=undefined-variable
+    return GSRank[&#39;{}_{}&#39;.format(rarity, rank + 1)][&#39;RequiredTokenCount&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.xpFromLevel"><code class="name flex">
+<span>def <span class="ident">xpFromLevel</span></span>(<span>level, rarity='Common')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the minimum XP of a character from its level.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The level of the character.</dd>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The rarity of the character.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The minimum possible XP the character could have.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def xpFromLevel(level, rarity=&#39;Common&#39;):
+    &#34;&#34;&#34;Calculates the minimum XP of a character from its level.
+
+    Args:
+        level (int): The level of the character.
+        rarity (str): The rarity of the character.
+
+    Returns:
+        int: The minimum possible XP the character could have.
+
+    &#34;&#34;&#34;
+    return GSLevel[rarity + &#39;_&#39; + str(level)][&#39;Experience&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.gameobjects.Character"><code class="flex name class">
+<span>class <span class="ident">Character</span></span>
+<span>(</span><span>nameID, rank=1, xp=0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A character in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>stats</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
+<dd>The Stats object that stores the
+character's naked stats (i.e. the stats they would have
+without any gear or particles).</dd>
+<dt><strong><code>skills</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code><a title="legends.gameobjects.Skill" href="#legends.gameobjects.Skill">Skill</a></code>} A dictionary mapping skill IDs
+(found in <code>GSSkill</code>) to Skill objects.</dd>
+<dt><strong><code>gearSlots</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.GearSlot" href="#legends.gameobjects.GearSlot">GearSlot</a></code></dt>
+<dd>The list of the character's gear
+slots.</dd>
+<dt><strong><code>partSlots</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.PartSlot" href="#legends.gameobjects.PartSlot">PartSlot</a></code></dt>
+<dd>The list of the character's
+particle slots.</dd>
+</dl>
+<p>The constructor stores the passed arguments in a private
+dictionary, whose values are accessed and managed by class
+properties.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nameID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name ID of the character to create.</dd>
+<dt><strong><code>rank</code></strong> :&ensp;<code>int</code></dt>
+<dd>The rank to assign on creation.</dd>
+<dt><strong><code>xp</code></strong> :&ensp;<code>int</code></dt>
+<dd>The xp to assign on creation.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Character():
+    &#34;&#34;&#34;A character in STL.
+
+    Attributes:
+        stats (legends.stats.Stats): The Stats object that stores the
+            character&#39;s naked stats (i.e. the stats they would have
+            without any gear or particles).
+        skills (dict): {`str`:`Skill`} A dictionary mapping skill IDs
+            (found in `GSSkill`) to Skill objects.
+        gearSlots (list of GearSlot): The list of the character&#39;s gear
+            slots.
+        partSlots (list of PartSlot): The list of the character&#39;s
+            particle slots.
+
+    &#34;&#34;&#34;
+    def __init__(self, nameID, rank=1, xp=0):
+        &#34;&#34;&#34;The constructor stores the passed arguments in a private
+        dictionary, whose values are accessed and managed by class
+        properties.
+
+        Args:
+            nameID (str): The name ID of the character to create.
+            rank (int): The rank to assign on creation.
+            xp (int): The xp to assign on creation.
+
+        &#34;&#34;&#34;
+        self._data = {
+            &#39;nameID&#39;: nameID,
+            &#39;rank&#39;: rank,
+            &#39;xp&#39;: xp
+        }
+        self.stats = Stats()
+        self.updateStats()
+        self.skills = {
+            skillID: Skill(skillID)
+            for skillID in GSCharacter[self.nameID][&#39;SkillIDs&#39;]
+        }
+        self.gearSlots = []
+        for slot in range(4):
+            self.gearSlots.append(GearSlot(self, slot))
+        self.partSlots = []
+        for slot in range(2):
+            self.partSlots.append(PartSlot(self, slot))
+
+    @property
+    def nameID(self):
+        &#34;&#34;&#34;`str`: The in-data name of the character. Should match a key in
+        `GSCharacter`.
+        &#34;&#34;&#34;
+        return self._data[&#39;nameID&#39;]
+
+    @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game display name of the character.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSCharacter[self.nameID][&#39;Name&#39;]]
+
+    @property
+    def shortName(self):
+        &#34;&#34;&#34;`str`: A shortened version of the character&#39;s display name.
+        &#34;&#34;&#34;
+        if self.rarity == &#39;Common&#39;:
+            L = findall(&#39;[A-Z][^A-Z]*&#39;, self.nameID)
+            return L[1] + &#39; &#39; + L[2][:-2]
+        betterNames = {
+            &#39;Nine&#39;: &#39;Seven&#39;,
+            &#39;Nerys&#39;: &#39;Kira&#39;,
+            &#39;Scott&#39;: &#39;Scotty&#39;,
+            &#39;Torchbearer&#39;: &#39;Torch&#39;,
+            &#39;BorgQueen&#39;: &#39;Borg Queen&#39;,
+            &#39;PicardDixon&#39;: &#39;Dixon&#39;,
+            &#39;JadziaDax&#39;: &#39;Jadzia Dax&#39;,
+            &#39;PicardOld&#39;: &#39;Old Picard&#39;
+        }
+        return betterNames.get(self.nameID, self.nameID)
+
+    @property
+    def rank(self):
+        &#34;&#34;&#34;`int`: The rank of the character. Modifying this property
+        also calls the `Character.updateStats` method.
+        &#34;&#34;&#34;
+        return self._data[&#39;rank&#39;]
+
+    @rank.setter
+    def rank(self, value):
+        self._data[&#39;rank&#39;] = value
+        self.updateStats()
+
+    @property
+    def xp(self):
+        &#34;&#34;&#34;`int`: The xp of the character. Modifying this property also
+        calls the `Character.updateStats` method.
+        &#34;&#34;&#34;
+        return self._data[&#39;xp&#39;]
+
+    @xp.setter
+    def xp(self, value):
+        self._data[&#39;xp&#39;] = value
+        self.updateStats()
+
+    @property
+    def level(self):
+        &#34;&#34;&#34;`int`: The level of the character. Setting this to a value
+        different from its current value will change the `xp` property
+        to the minimum xp required to attain the new level.
+        &#34;&#34;&#34;
+        return levelFromXP(self.xp)
+
+    @level.setter
+    def level(self, value):
+        if self.level != value:
+            self.xp = xpFromLevel(value, self.rarity)
+
+    @property
+    def rarity(self):
+        &#34;&#34;&#34;`str`: The rarity of the character.&#34;&#34;&#34;
+        return GSCharacter[self.nameID][&#39;Rarity&#39;]
+
+    @property
+    def rarityIndex(self):
+        &#34;&#34;&#34;`int`: The index of the rarity in `RARITIES`.&#34;&#34;&#34;
+        return RARITIES.index(self.rarity)
+
+    @property
+    def role(self):
+        &#34;&#34;&#34;`str`: The role of the character.&#34;&#34;&#34;
+        return GSCharacter[self.nameID][&#39;Role&#39;]
+
+    @property
+    def maxGearLevel(self):
+        &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
+        return 5 + 5 * self.rarityIndex
+
+    @property
+    def missingSkillLevels(self):
+        &#34;&#34;&#34;`int`: The number of missing skill levels. Assumes the
+        maximum level for every skill is 2.
+        &#34;&#34;&#34;
+        missingLevels = 0
+        for skill in self.skills.values():
+            missingLevels += 2
+            if skill.unlocked:
+                missingLevels -= skill.level
+        return missingLevels
+
+    @property
+    def tokensNeeded(self):
+        &#34;&#34;&#34;`int`: The total number of tokens needed for the character to
+        reach the next rank.
+        &#34;&#34;&#34;
+        return tokensNeeded(self.rarity, self.rank)
+
+    def updateStats(self):
+        &#34;&#34;&#34;Updates the `stats` attribute.
+
+        &#34;&#34;&#34;
+        self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def __repr__(self):
+        return (
+            &#39;&lt;&#39; + repr(self.name) + &#39;, rank &#39; + repr(self.rank)
+            + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;
+        )</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.gameobjects.Character.level"><code class="name">var <span class="ident">level</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The level of the character. Setting this to a value
+different from its current value will change the <code>xp</code> property
+to the minimum xp required to attain the new level.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def level(self):
+    &#34;&#34;&#34;`int`: The level of the character. Setting this to a value
+    different from its current value will change the `xp` property
+    to the minimum xp required to attain the new level.
+    &#34;&#34;&#34;
+    return levelFromXP(self.xp)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.maxGearLevel"><code class="name">var <span class="ident">maxGearLevel</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The maximum level of gear this character can equip.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def maxGearLevel(self):
+    &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
+    return 5 + 5 * self.rarityIndex</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.missingSkillLevels"><code class="name">var <span class="ident">missingSkillLevels</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The number of missing skill levels. Assumes the
+maximum level for every skill is 2.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def missingSkillLevels(self):
+    &#34;&#34;&#34;`int`: The number of missing skill levels. Assumes the
+    maximum level for every skill is 2.
+    &#34;&#34;&#34;
+    missingLevels = 0
+    for skill in self.skills.values():
+        missingLevels += 2
+        if skill.unlocked:
+            missingLevels -= skill.level
+    return missingLevels</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The in-game display name of the character.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self):
+    &#34;&#34;&#34;`str`: The in-game display name of the character.&#34;&#34;&#34;
+    return DESCRIPTIONS[GSCharacter[self.nameID][&#39;Name&#39;]]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.nameID"><code class="name">var <span class="ident">nameID</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The in-data name of the character. Should match a key in
+<code>GSCharacter</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def nameID(self):
+    &#34;&#34;&#34;`str`: The in-data name of the character. Should match a key in
+    `GSCharacter`.
+    &#34;&#34;&#34;
+    return self._data[&#39;nameID&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.rank"><code class="name">var <span class="ident">rank</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The rank of the character. Modifying this property
+also calls the <code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">Character.updateStats()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rank(self):
+    &#34;&#34;&#34;`int`: The rank of the character. Modifying this property
+    also calls the `Character.updateStats` method.
+    &#34;&#34;&#34;
+    return self._data[&#39;rank&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.rarity"><code class="name">var <span class="ident">rarity</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The rarity of the character.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rarity(self):
+    &#34;&#34;&#34;`str`: The rarity of the character.&#34;&#34;&#34;
+    return GSCharacter[self.nameID][&#39;Rarity&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.rarityIndex"><code class="name">var <span class="ident">rarityIndex</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The index of the rarity in <code>RARITIES</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rarityIndex(self):
+    &#34;&#34;&#34;`int`: The index of the rarity in `RARITIES`.&#34;&#34;&#34;
+    return RARITIES.index(self.rarity)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.role"><code class="name">var <span class="ident">role</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The role of the character.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def role(self):
+    &#34;&#34;&#34;`str`: The role of the character.&#34;&#34;&#34;
+    return GSCharacter[self.nameID][&#39;Role&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.shortName"><code class="name">var <span class="ident">shortName</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: A shortened version of the character's display name.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def shortName(self):
+    &#34;&#34;&#34;`str`: A shortened version of the character&#39;s display name.
+    &#34;&#34;&#34;
+    if self.rarity == &#39;Common&#39;:
+        L = findall(&#39;[A-Z][^A-Z]*&#39;, self.nameID)
+        return L[1] + &#39; &#39; + L[2][:-2]
+    betterNames = {
+        &#39;Nine&#39;: &#39;Seven&#39;,
+        &#39;Nerys&#39;: &#39;Kira&#39;,
+        &#39;Scott&#39;: &#39;Scotty&#39;,
+        &#39;Torchbearer&#39;: &#39;Torch&#39;,
+        &#39;BorgQueen&#39;: &#39;Borg Queen&#39;,
+        &#39;PicardDixon&#39;: &#39;Dixon&#39;,
+        &#39;JadziaDax&#39;: &#39;Jadzia Dax&#39;,
+        &#39;PicardOld&#39;: &#39;Old Picard&#39;
+    }
+    return betterNames.get(self.nameID, self.nameID)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.tokensNeeded"><code class="name">var <span class="ident">tokensNeeded</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The total number of tokens needed for the character to
+reach the next rank.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def tokensNeeded(self):
+    &#34;&#34;&#34;`int`: The total number of tokens needed for the character to
+    reach the next rank.
+    &#34;&#34;&#34;
+    return tokensNeeded(self.rarity, self.rank)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.xp"><code class="name">var <span class="ident">xp</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The xp of the character. Modifying this property also
+calls the <code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">Character.updateStats()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def xp(self):
+    &#34;&#34;&#34;`int`: The xp of the character. Modifying this property also
+    calls the `Character.updateStats` method.
+    &#34;&#34;&#34;
+    return self._data[&#39;xp&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.gameobjects.Character.updateStats"><code class="name flex">
+<span>def <span class="ident">updateStats</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the <code>stats</code> attribute.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def updateStats(self):
+    &#34;&#34;&#34;Updates the `stats` attribute.
+
+    &#34;&#34;&#34;
+    self.stats.update(getCharStats(self.nameID, self.rank, self.level))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.gameobjects.Gear"><code class="flex name class">
+<span>class <span class="ident">Gear</span></span>
+<span>(</span><span>gearID, level)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A piece of gear in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>gearID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The in-code ID of the gear piece. Should be a key
+in <code>GSGear</code>.</dd>
+<dt><strong><code>stats</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
+<dd>The Stats object that stores the
+gear's total stats.</dd>
+</dl>
+<p>The constructor stores the given level in a private attribute
+that is managed by a class property.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>gearID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The gearID of the piece to create.</dd>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The level of the piece to create.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Gear(Managed):
+    &#34;&#34;&#34;A piece of gear in STL.
+
+    Attributes:
+        gearID (str): The in-code ID of the gear piece. Should be a key
+            in `GSGear`.
+        stats (legends.stats.Stats): The Stats object that stores the
+            gear&#39;s total stats.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, gearID, level):
+        &#34;&#34;&#34;The constructor stores the given level in a private attribute
+        that is managed by a class property.
+
+        Args:
+            gearID (str): The gearID of the piece to create.
+            level (int): The level of the piece to create.
+
+        &#34;&#34;&#34;
+        self.gearID = gearID
+        self._level = level
+        self.stats = Stats()
+        self.updateStats()
+
+    @property
+    def level(self):
+        &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
+        rarity. For example, a Level 17 gear piece displays in game as
+        &#34;Epic, Level 2&#34;. Modifying this property also calls the
+        `Gear.updateStats` method.
+        &#34;&#34;&#34;
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        self._level = value
+        self.updateStats()
+
+    @property
+    def rarityIndex(self):
+        &#34;&#34;&#34;`int`: The index of the rarity in `RARITIES`.&#34;&#34;&#34;
+        return int((self.level - 1)/5)
+
+    @property
+    def rarity(self):
+        &#34;&#34;&#34;`str`: The rarity of the gear piece.&#34;&#34;&#34;
+        return RARITIES[self.rarityIndex]
+
+    @property
+    def slot(self):
+        &#34;&#34;&#34;`int`: The 0-based index of the slot into which the gear must
+        be placed.
+        &#34;&#34;&#34;
+        return GSGear[self.gearID][&#39;m_Slot&#39;]
+
+    def updateStats(self):
+        &#34;&#34;&#34;Updates the `stats` attribute.
+
+        &#34;&#34;&#34;
+        self.stats.update(getGearStats(self.gearID, self.level))
+
+    def __repr__(self):
+        return &#39;&lt;&#39; + repr(self.gearID) + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.Managed" href="utils/objrelations.html#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.gameobjects.Gear.level"><code class="name">var <span class="ident">level</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The level of the gear. Level is 1-based and includes
+rarity. For example, a Level 17 gear piece displays in game as
+"Epic, Level 2". Modifying this property also calls the
+<code><a title="legends.gameobjects.Gear.updateStats" href="#legends.gameobjects.Gear.updateStats">Gear.updateStats()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def level(self):
+    &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
+    rarity. For example, a Level 17 gear piece displays in game as
+    &#34;Epic, Level 2&#34;. Modifying this property also calls the
+    `Gear.updateStats` method.
+    &#34;&#34;&#34;
+    return self._level</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Gear.rarity"><code class="name">var <span class="ident">rarity</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The rarity of the gear piece.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rarity(self):
+    &#34;&#34;&#34;`str`: The rarity of the gear piece.&#34;&#34;&#34;
+    return RARITIES[self.rarityIndex]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Gear.rarityIndex"><code class="name">var <span class="ident">rarityIndex</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The index of the rarity in <code>RARITIES</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rarityIndex(self):
+    &#34;&#34;&#34;`int`: The index of the rarity in `RARITIES`.&#34;&#34;&#34;
+    return int((self.level - 1)/5)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Gear.slot"><code class="name">var <span class="ident">slot</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The 0-based index of the slot into which the gear must
+be placed.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def slot(self):
+    &#34;&#34;&#34;`int`: The 0-based index of the slot into which the gear must
+    be placed.
+    &#34;&#34;&#34;
+    return GSGear[self.gearID][&#39;m_Slot&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.gameobjects.Gear.updateStats"><code class="name flex">
+<span>def <span class="ident">updateStats</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the <code>stats</code> attribute.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def updateStats(self):
+    &#34;&#34;&#34;Updates the `stats` attribute.
+
+    &#34;&#34;&#34;
+    self.stats.update(getGearStats(self.gearID, self.level))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.gameobjects.GearSlot"><code class="flex name class">
+<span>class <span class="ident">GearSlot</span></span>
+<span>(</span><span>char, index)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A slot into which a piece of gear can be placed.</p>
+<p>Must be implemented as a class, rather than a tuple, so that it can
+be a <code><a title="legends.utils.objrelations.Managed" href="utils/objrelations.html#legends.utils.objrelations.Managed">Managed</a></code> instance, eligible to be
+part of an object-based relation.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character that owns the slot.</dd>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 0-based index of the slot.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GearSlot(Managed): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A slot into which a piece of gear can be placed.
+
+    Must be implemented as a class, rather than a tuple, so that it can
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
+
+    Attributes:
+        char (Character): The character that owns the slot.
+        index (int): The 0-based index of the slot.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, index):
+        self.char = char
+        self.index = index
+
+    def __repr__(self):
+        return &#39;&lt;&#39; + self.char.nameID + &#39;, gear slot &#39; + str(self.index) + &#39;&gt;&#39;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.Managed" href="utils/objrelations.html#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+</dd>
+<dt id="legends.gameobjects.PartSlot"><code class="flex name class">
+<span>class <span class="ident">PartSlot</span></span>
+<span>(</span><span>char, index)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A slot into which a particle can be placed.</p>
+<p>Must be implemented as a class, rather than a tuple, so that it can
+be a <code><a title="legends.utils.objrelations.Managed" href="utils/objrelations.html#legends.utils.objrelations.Managed">Managed</a></code> instance, eligible to be
+part of an object-based relation.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character that owns the slot.</dd>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 0-based index of the slot.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PartSlot(Managed): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A slot into which a particle can be placed.
+
+    Must be implemented as a class, rather than a tuple, so that it can
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
+
+    Attributes:
+        char (Character): The character that owns the slot.
+        index (int): The 0-based index of the slot.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, index):
+        self.char = char
+        self.index = index
+
+    def __repr__(self):
+        return &#39;&lt;&#39; + self.char.nameID + &#39;, part slot &#39; + str(self.index) + &#39;&gt;&#39;</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.Managed" href="utils/objrelations.html#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+</dd>
+<dt id="legends.gameobjects.Particle"><code class="flex name class">
+<span>class <span class="ident">Particle</span></span>
+<span>(</span><span>typ, rarity, level, locked=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A particle in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>typ</code></strong> :&ensp;<code>str</code></dt>
+<dd>The type of the particle. This is what the data
+refers to as the particle's "display name". Should be one of
+'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
+'Temporal Flux', or 'Undo Damage'.</dd>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The particle's rarity.</dd>
+<dt><strong><code>locked</code></strong> :&ensp;<code>bool</code></dt>
+<dd>True if the particle is locked.</dd>
+<dt><strong><code>stats</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
+<dd>The Stats object that stores the
+particle's total stats.</dd>
+</dl>
+<p>The constructor passes the given level to a private attribute
+that is managed by a class property.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>typ</code></strong> :&ensp;<code>str</code></dt>
+<dd>The type of particle to create.</dd>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The rarity of the created particle.</dd>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The level of the created particle.</dd>
+<dt><strong><code>locked</code></strong> :&ensp;<code>bool</code></dt>
+<dd>True if the new particle should be locked.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Particle(Managed):
+    &#34;&#34;&#34;A particle in STL.
+
+    Attributes:
+        typ (str): The type of the particle. This is what the data
+            refers to as the particle&#39;s &#34;display name&#34;. Should be one of
+            &#39;Accelerated Coagulation&#39;, &#39;Amplify Force&#39;, &#39;Nexus Field&#39;,
+            &#39;Temporal Flux&#39;, or &#39;Undo Damage&#39;.
+        rarity (str): The particle&#39;s rarity.
+        locked (bool): True if the particle is locked.
+        stats (legends.stats.Stats): The Stats object that stores the
+            particle&#39;s total stats.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, typ, rarity, level, locked=False):
+        &#34;&#34;&#34;The constructor passes the given level to a private attribute
+        that is managed by a class property.
+
+        Args:
+            typ (str): The type of particle to create.
+            rarity (str): The rarity of the created particle.
+            level (int): The level of the created particle.
+            locked (bool): True if the new particle should be locked.
+
+        &#34;&#34;&#34;
+        self.typ = typ
+        self.rarity = rarity
+        self._level = level
+        self.locked = locked
+        self._statNames = [None] * 4
+        self.stats = Stats()
+
+    @property
+    def level(self):
+        &#34;&#34;&#34;`str`: The particle&#39;s level. Modifying this property also
+        calls the `Particle.updateStats` method.
+        &#34;&#34;&#34;
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        self._level = value
+        self.updateStats()
+
+    @property
+    def numStats(self):
+        &#34;&#34;&#34;`int`: The number of unlocked stats on the particle.&#34;&#34;&#34;
+        return PART_STAT_UNLOCKED[self.rarity][self.level - 1]
+
+    @property
+    def statNames(self):
+        &#34;&#34;&#34;`tuple of str`: The names, as they appear in `GSBaseStat`, of
+        the stats that are on the particle. It is always a 4-tuple,
+        though some values may be `None`.
+        &#34;&#34;&#34;
+        return tuple(self._statNames)
+
+    def setStatName(self, index, statName):
+        &#34;&#34;&#34;Changes the `statNames` property by setting the value at the
+        given index to the given stat name.
+
+        Args:
+            index (int): The 0-based index of the value in the
+                `statNames` property to change.
+            statName (str): The stat name to assign to the given index.
+
+        &#34;&#34;&#34;
+        self._statNames[index] = statName
+        self.updateStats()
+
+    def updateStats(self):
+        &#34;&#34;&#34;Updates the `stats` attribute.
+
+        &#34;&#34;&#34;
+        statList = [
+            statName for statName in self.statNames[:self.numStats]
+            if statName is not None
+        ]
+        self.stats.update(getPartStats(self.rarity, self.level, statList))
+
+    def __repr__(self):
+        return (
+            &#39;&lt;&#39; + repr(self.typ) + &#39;, &#39; + repr(self.rarity)
+            + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.Managed" href="utils/objrelations.html#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.gameobjects.Particle.level"><code class="name">var <span class="ident">level</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The particle's level. Modifying this property also
+calls the <code><a title="legends.gameobjects.Particle.updateStats" href="#legends.gameobjects.Particle.updateStats">Particle.updateStats()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def level(self):
+    &#34;&#34;&#34;`str`: The particle&#39;s level. Modifying this property also
+    calls the `Particle.updateStats` method.
+    &#34;&#34;&#34;
+    return self._level</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Particle.numStats"><code class="name">var <span class="ident">numStats</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The number of unlocked stats on the particle.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def numStats(self):
+    &#34;&#34;&#34;`int`: The number of unlocked stats on the particle.&#34;&#34;&#34;
+    return PART_STAT_UNLOCKED[self.rarity][self.level - 1]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Particle.statNames"><code class="name">var <span class="ident">statNames</span></code></dt>
+<dd>
+<div class="desc"><p><code>tuple of str</code>: The names, as they appear in <code>GSBaseStat</code>, of
+the stats that are on the particle. It is always a 4-tuple,
+though some values may be <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def statNames(self):
+    &#34;&#34;&#34;`tuple of str`: The names, as they appear in `GSBaseStat`, of
+    the stats that are on the particle. It is always a 4-tuple,
+    though some values may be `None`.
+    &#34;&#34;&#34;
+    return tuple(self._statNames)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.gameobjects.Particle.setStatName"><code class="name flex">
+<span>def <span class="ident">setStatName</span></span>(<span>self, index, statName)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Changes the <code>statNames</code> property by setting the value at the
+given index to the given stat name.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 0-based index of the value in the
+<code>statNames</code> property to change.</dd>
+<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
+<dd>The stat name to assign to the given index.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setStatName(self, index, statName):
+    &#34;&#34;&#34;Changes the `statNames` property by setting the value at the
+    given index to the given stat name.
+
+    Args:
+        index (int): The 0-based index of the value in the
+            `statNames` property to change.
+        statName (str): The stat name to assign to the given index.
+
+    &#34;&#34;&#34;
+    self._statNames[index] = statName
+    self.updateStats()</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Particle.updateStats"><code class="name flex">
+<span>def <span class="ident">updateStats</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the <code>stats</code> attribute.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def updateStats(self):
+    &#34;&#34;&#34;Updates the `stats` attribute.
+
+    &#34;&#34;&#34;
+    statList = [
+        statName for statName in self.statNames[:self.numStats]
+        if statName is not None
+    ]
+    self.stats.update(getPartStats(self.rarity, self.level, statList))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.gameobjects.Skill"><code class="flex name class">
+<span>class <span class="ident">Skill</span></span>
+<span>(</span><span>skillID, level=1, unlocked=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A skill in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>skillID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The skill's ID, as it appears in <code>GSSkill</code>.</dd>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The level of the skill.</dd>
+<dt><strong><code>unlocked</code></strong> :&ensp;<code>bool</code></dt>
+<dd>True if the character has unlocked this skill.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Skill():
+    &#34;&#34;&#34;A skill in STL.
+
+    Attributes:
+        skillID (str): The skill&#39;s ID, as it appears in `GSSkill`.
+        level (int): The level of the skill.
+        unlocked (bool): True if the character has unlocked this skill.
+
+    &#34;&#34;&#34;
+    def __init__(self, skillID, level=1, unlocked=False):
+        self.skillID = skillID
+        self.level = level
+        self.unlocked = unlocked
+
+    @property
+    def name(self):
+        &#34;&#34;&#34;The in-game display name of the skill.&#34;&#34;&#34;
+        return DESCRIPTIONS[self.data[&#39;name&#39;]]
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
+        key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
+            self.skillID, self.level
+        )
+        return GSSkill[key]
+
+    def __repr__(self):
+        return (
+            &#39;&lt;Skill: &#39; + self.name + &#39;, Level &#39; + str(self.level) + &#39;, &#39;
+            + (&#39;unlocked&#39; if self.unlocked else &#39;locked&#39;) + &#39;&gt;&#39;
+        )</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.gameobjects.Skill.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dd>
+<div class="desc"><p><code>dict</code>: The skill data from <code>GSSkill</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def data(self):
+    &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
+    key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
+        self.skillID, self.level
+    )
+    return GSSkill[key]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Skill.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p>The in-game display name of the skill.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self):
+    &#34;&#34;&#34;The in-game display name of the skill.&#34;&#34;&#34;
+    return DESCRIPTIONS[self.data[&#39;name&#39;]]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legends" href="index.html">legends</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="legends.gameobjects.getCharStats" href="#legends.gameobjects.getCharStats">getCharStats</a></code></li>
+<li><code><a title="legends.gameobjects.getGearStats" href="#legends.gameobjects.getGearStats">getGearStats</a></code></li>
+<li><code><a title="legends.gameobjects.getPartStats" href="#legends.gameobjects.getPartStats">getPartStats</a></code></li>
+<li><code><a title="legends.gameobjects.levelFromXP" href="#legends.gameobjects.levelFromXP">levelFromXP</a></code></li>
+<li><code><a title="legends.gameobjects.tokensNeeded" href="#legends.gameobjects.tokensNeeded">tokensNeeded</a></code></li>
+<li><code><a title="legends.gameobjects.xpFromLevel" href="#legends.gameobjects.xpFromLevel">xpFromLevel</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.gameobjects.Character" href="#legends.gameobjects.Character">Character</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.gameobjects.Character.level" href="#legends.gameobjects.Character.level">level</a></code></li>
+<li><code><a title="legends.gameobjects.Character.maxGearLevel" href="#legends.gameobjects.Character.maxGearLevel">maxGearLevel</a></code></li>
+<li><code><a title="legends.gameobjects.Character.missingSkillLevels" href="#legends.gameobjects.Character.missingSkillLevels">missingSkillLevels</a></code></li>
+<li><code><a title="legends.gameobjects.Character.name" href="#legends.gameobjects.Character.name">name</a></code></li>
+<li><code><a title="legends.gameobjects.Character.nameID" href="#legends.gameobjects.Character.nameID">nameID</a></code></li>
+<li><code><a title="legends.gameobjects.Character.rank" href="#legends.gameobjects.Character.rank">rank</a></code></li>
+<li><code><a title="legends.gameobjects.Character.rarity" href="#legends.gameobjects.Character.rarity">rarity</a></code></li>
+<li><code><a title="legends.gameobjects.Character.rarityIndex" href="#legends.gameobjects.Character.rarityIndex">rarityIndex</a></code></li>
+<li><code><a title="legends.gameobjects.Character.role" href="#legends.gameobjects.Character.role">role</a></code></li>
+<li><code><a title="legends.gameobjects.Character.shortName" href="#legends.gameobjects.Character.shortName">shortName</a></code></li>
+<li><code><a title="legends.gameobjects.Character.tokensNeeded" href="#legends.gameobjects.Character.tokensNeeded">tokensNeeded</a></code></li>
+<li><code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">updateStats</a></code></li>
+<li><code><a title="legends.gameobjects.Character.xp" href="#legends.gameobjects.Character.xp">xp</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.gameobjects.Gear" href="#legends.gameobjects.Gear">Gear</a></code></h4>
+<ul class="">
+<li><code><a title="legends.gameobjects.Gear.level" href="#legends.gameobjects.Gear.level">level</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.rarity" href="#legends.gameobjects.Gear.rarity">rarity</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.rarityIndex" href="#legends.gameobjects.Gear.rarityIndex">rarityIndex</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.slot" href="#legends.gameobjects.Gear.slot">slot</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.updateStats" href="#legends.gameobjects.Gear.updateStats">updateStats</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.gameobjects.GearSlot" href="#legends.gameobjects.GearSlot">GearSlot</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.gameobjects.PartSlot" href="#legends.gameobjects.PartSlot">PartSlot</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.gameobjects.Particle" href="#legends.gameobjects.Particle">Particle</a></code></h4>
+<ul class="">
+<li><code><a title="legends.gameobjects.Particle.level" href="#legends.gameobjects.Particle.level">level</a></code></li>
+<li><code><a title="legends.gameobjects.Particle.numStats" href="#legends.gameobjects.Particle.numStats">numStats</a></code></li>
+<li><code><a title="legends.gameobjects.Particle.setStatName" href="#legends.gameobjects.Particle.setStatName">setStatName</a></code></li>
+<li><code><a title="legends.gameobjects.Particle.statNames" href="#legends.gameobjects.Particle.statNames">statNames</a></code></li>
+<li><code><a title="legends.gameobjects.Particle.updateStats" href="#legends.gameobjects.Particle.updateStats">updateStats</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.gameobjects.Skill" href="#legends.gameobjects.Skill">Skill</a></code></h4>
+<ul class="">
+<li><code><a title="legends.gameobjects.Skill.data" href="#legends.gameobjects.Skill.data">data</a></code></li>
+<li><code><a title="legends.gameobjects.Skill.name" href="#legends.gameobjects.Skill.name">name</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

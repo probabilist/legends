@@ -6,7 +6,7 @@ The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 
 import tkinter as tk
 from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
-from legends.functions import decryptSaveFile
+from legends.savefile import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
     showerror, askSlot, askMaxChars, askyesno, HelpScreen

@@ -1,10 +1,11 @@
 """Custom dictionary-like data types.
 
-Includes bidict (a one-to-one dictionary), dictplus (a dictionary with a
-set-like `discard` method), dictofsets (a rudimentary multi-valued
-dictionary), multidict (a robust multi-valued dictionary), inversedict
-(a multidict whose keys cannot share values), and invertibledict (a
-dictionary that can be inverted to an inversedict).
+Includes `bidict` (a one-to-one dictionary), `dictplus` (a dictionary
+with a set-like `discard` method), `dictofsets` (a rudimentary
+multi-valued dictionary), `multidict` (a robust multi-valued
+dictionary), `inversedict` (a `multidict` whose keys cannot share
+values), and `invertibledict` (a dictionary that can be inverted to an
+`inversedict`).
 
 """
 
@@ -26,7 +27,10 @@ class bidict(BiMapping): # pylint: disable=invalid-name
     """
 
     def __init__(self):
-        """Creates an empty bidict object."""
+        """The constructor takes no arguments and creates an empty
+        `bidict` object.
+
+        """
         self._forward = {}
         self._backward = {}
 
@@ -64,10 +68,11 @@ class dictplus(dict): # pylint: disable=invalid-name
     """
 
     def discard(self, elem):
-        """Removes the given key-value pair, if present.
+        """Removes the given key-value pair, if present. Does nothing if
+        `elem` is not a 2-tuple.
 
         Args:
-            elem (2-tuple): The key-value pair to remove.
+            elem (tuple): (`key`, `value`) The key-value pair to remove.
 
         """
         if ordPair(elem):
@@ -154,7 +159,10 @@ class multidict(MultiMapping): # pylint: disable=invalid-name
 
     """
     def __init__(self):
-        """Constructs an empty multidict."""
+        """The constructor takes no arguments and creates an empty
+        `multidict` object.
+
+        """
         self._forward = dictofsets()
         self._backward = dictofsets()
         self._set = set()
@@ -170,7 +178,9 @@ class multidict(MultiMapping): # pylint: disable=invalid-name
         return len(self._set)
 
     def _discard(self, key, val):
-        """Removes the given key-value pair, if present."""
+        """Removes the given key-value pair, if present.
+
+        """
         if (key, val) in self:
             self._forward.discard((key, val))
             self._backward.discard((val, key))
@@ -193,7 +203,9 @@ class multidict(MultiMapping): # pylint: disable=invalid-name
             self.discard((key, val))
 
     def keys(self):
-        """Returns an iterator over the keys in the multidict."""
+        """Returns an iterator over the keys in the `multidict`.
+
+        """
         return self._forward.keys()
 
     def __inverse__(self):
@@ -229,7 +241,10 @@ class inversedict(multidict): # pylint: disable=invalid-name
 
     """
     def __init__(self):
-        """Constructs an empty inversedict."""
+        """The constructor takes no arguments and creates an empty
+        `inversedict` object.
+
+        """
         multidict.__init__(self)
         self._backward = dictplus()
 
@@ -243,7 +258,9 @@ class inversedict(multidict): # pylint: disable=invalid-name
         return self._inverseinit(inverse)
 
     def copy(self):
-        """Creates and returns a copy of the inversedict object."""
+        """Creates and returns a copy of the `inversedict` object.
+
+        """
         new = inversedict()
         return self._fillcopy(new)
 
@@ -257,7 +274,10 @@ class invertibledict(multidict): # pylint: disable=invalid-name
 
     """
     def __init__(self):
-        """Constructs an empty invertibledict."""
+        """The constructor takes no arguments and creates an empty
+        `invertibledict` object.
+
+        """
         multidict.__init__(self)
         self._forward = dictplus()
 
@@ -272,7 +292,9 @@ class invertibledict(multidict): # pylint: disable=invalid-name
         return self._inverseinit(inverse)
 
     def copy(self):
-        """Creates and returns a copy of the invertibledict object."""
+        """Creates and returns a copy of the `invertibledict` object.
+
+        """
         new = invertibledict()
         return self._fillcopy(new)
 

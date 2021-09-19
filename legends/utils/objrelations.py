@@ -34,22 +34,23 @@ class Managed(): # pylint: disable=too-few-public-methods
 class OneToOne(BiMapping, Managed):
     """A one-to-one relation mapping objects to objects.
 
-    All objects in the relation need to be Managed objects, but
-    otherwise, a OneToOne object functions just like a bidict object.
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `OneToOne` object functions just like a
+    `legends.utils.relations.bidict` object.
 
-    The OneToOne class is meant to be subclassed. Subclasses may wish to
-    override the `validate` method to provide restrictions on adding a
-    pair to the relation. The `validate` method is called whenever
-    `__setitem__` is called. If `validate` returns True, the
-    `__setitem__` method proceeds normally. Otherwise, `__setitem__`
-    simply returns None. If the subclass wishes to raise an error when
-    validation fails, the error should be raised from within the
-    `validate` method.
+    Subclasses may wish to override the `OneToOne.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `OneToOne.validate` method is called whenever `__setitem__` is
+    called. If `OneToOne.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `OneToOne.validate` method.
 
     Attributes:
-        map (bidict of int:int): The relation is stored under the
-            hood as a bidict mapping IDs to IDs, where the IDs are
-            provided by the common Manager object.
+        map (legends.utils.relations.bidict): {`int`:`int`} The relation
+            is stored under the hood as a
+            `legends.utils.relations.bidict` mapping IDs to IDs, where
+            the IDs are provided by the `Manager` class.
 
     """
 
@@ -99,7 +100,7 @@ class OneToOne(BiMapping, Managed):
             val (obj): The value to validate.
 
         Returns:
-            bool: True if the key-value pair may be added, False
+            bool: `True` if the key-value pair may be added, `False`
                 otherwise.
 
         """
@@ -118,9 +119,8 @@ class ManyToMany(MultiMapping, Managed):
     otherwise, a `ManyToMany` object functions just like a
     `legends.utils.relations.multidict` object.
 
-    The `ManyToMany` class is meant to be subclassed. Subclasses may
-    wish to override the `ManyToMany.validate` method to provide
-    restrictions on adding a pair to the relation. The
+    Subclasses may wish to override the `ManyToMany.validate` method to
+    provide restrictions on adding a pair to the relation. The
     `ManyToMany.validate` method is called whenever `__setitem__` is
     called. If `validate` returns `True`, the `__setitem__` method
     proceeds normally. Otherwise, `__setitem__` does nothing. If the
@@ -216,23 +216,23 @@ class ManyToMany(MultiMapping, Managed):
 class ManyToOne(ManyToMany):
     """A many-to-one relation mapping objects to objects.
 
-    All objects in the relation need to be Managed objects, but
-    otherwise, a ManyToOne object functions just like an invertibledict
-    object.
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `ManyToOne` object functions just like an
+    `legends.utils.relations.invertibledict` object.
 
-    The ManyToOne class is meant to be subclassed. Subclasses may wish
-    to override the `validate` method to provide restrictions on adding
-    a pair to the relation. The `validate` method is called whenever
-    `__setitem__` is called. If `validate` returns True, the
-    `__setitem__` method proceeds normally. Otherwise, `__setitem__`
-    simply returns None. If the subclass wishes to raise an error when
-    validation fails, the error should be raised from within the
-    `validate` method.
+    Subclasses may wish to override the `ManyToOne.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `ManyToOne.validate` method is called whenever `__setitem__` is
+    called. If `ManyToOne.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `ManyToOne.validate` method.
 
     Attributes:
-        map (invertibledict of int:int): The relation is stored under
-            the hood as a multidict mapping IDs to IDs, where the IDs
-            are provided by the common Manager object.
+        map (legends.utils.relations.invertibledict) {`int`:`int`} The
+            relation is stored under the hood as an
+            `legends.utils.relations.invertibledict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
 
     """
 
@@ -261,23 +261,23 @@ class ManyToOne(ManyToMany):
 class OneToMany(ManyToMany):
     """A one-to-many relation mapping objects to objects.
 
-    All objects in the relation need to be Managed objects, but
-    otherwise, a OneToMany object functions just like an inversedict
-    object.
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `OneToMany` object functions just like an
+    `legends.utils.relations.inversedict` object.
 
-    The OneToMany class is meant to be subclassed. Subclasses may wish
-    to override the `validate` method to provide restrictions on adding
-    a pair to the relation. The `validate` method is called whenever
-    `__setitem__` is called. If `validate` returns True, the
-    `__setitem__` method proceeds normally. Otherwise, `__setitem__`
-    simply returns None. If the subclass wishes to raise an error when
-    validation fails, the error should be raised from within the
-    `validate` method.
+    Subclasses may wish to override the `OneToMany.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `OneToMany.validate` method is called whenever `__setitem__` is
+    called. If `OneToMany.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `OneToMany.validate` method.
 
     Attributes:
-        map (inversedict of int:int): The relation is stored under the
-            hood as a multidict mapping IDs to IDs, where the IDs are
-            provided by the common Manager object.
+        map (legends.utils.relations.inversedict): {`int`:`int`} The
+            relation is stored under the hood as a
+            `legends.utils.relations.multidict` mapping IDs to IDs,
+            where the IDs are provided by the `Manager` class.
 
     """
 

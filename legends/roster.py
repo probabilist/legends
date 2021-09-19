@@ -23,7 +23,7 @@ def readGear(save, slot):
     Args:
         save (dict): A decrypted dictionary representation of the
             player's save file, as returned by the
-            `legends.functions.decryptSaveFile` function.
+            `legends.savefile.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -49,7 +49,7 @@ def readParts(save, slot):
     Args:
         save (dict): A decrypted dictionary representation of the
             player's save file, as returned by the
-            `legends.functions.decryptSaveFile` function.
+            `legends.savefile.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -82,10 +82,15 @@ class Roster():
             dictionary mapping name IDs to characters.
         inGearSlot (legends.utils.objrelations.OneToOne): A relation
             mapping `legends.gameobjects.Gear` objects to
-            `legends.gameobjects.GearSlot` objects.
+            `legends.gameobjects.GearSlot` objects. The
+            `legends.utils.objrelations.OneToOne.validate()` method is
+            overridden to prohibit the placing of gear in the wrong slot
+            or the placing of gear that exceeds the maximum allowed
+            level.
         inPartSlot (legends.utils.objrelations.OneToOne): A relation
             mapping `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
+            `
 
     """
     def __init__(self, save=None, slot=0):
@@ -96,7 +101,7 @@ class Roster():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.functions.decryptSaveFile` function.
+                `legends.savefile.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
@@ -147,7 +152,7 @@ class Roster():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.functions.decryptSaveFile` function.
+                `legends.savefile.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
