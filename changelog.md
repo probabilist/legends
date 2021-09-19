@@ -1,5 +1,18 @@
 # Change log
 
+## Version 0.9.2
+
+* Removed the unnecessary `event` argument from `RosterTab.sort()` and revised `RosterTab.actionBar()` accordingly.
+* In preparation for publishing detailed package documentation with `pdcoc`, edited docstrings in the following modules:
+    - `dialogs`
+    - `rostertab`
+    - `stlplanner`
+    - `customabcs`
+    - `objrelations`
+    - `relations`
+    - `scrollframe`
+
+
 ## Version 0.9.1
 
 * In preparation for publishing detailed package documentation with `pdcoc`, edited docstrings in the following modules:

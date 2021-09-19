@@ -16,11 +16,11 @@ from legends.ui.rostertab import RosterTab
 __all__ = ['cleanTime', 'STLPlanner', 'Session']
 
 def cleanTime(delta):
-    """Converts a timedelta object into a string description that shows
-    the number of days (if positive), hours, and minutes.
+    """Converts a `timedelta` object into a string description that
+    shows the number of days (if positive), hours, and minutes.
 
     Args:
-        delta (timedelta): The timedelta object to convert.
+        delta (timedelta): The `timedelta` object to convert.
 
     Returns:
         str: The string description.
@@ -34,21 +34,27 @@ def cleanTime(delta):
     return display
 
 class STLPlanner(tk.Tk):
-    """STL Planner main window.
+    """The *STL Planner* main window.
 
     Args:
-        showTimestamps (tk.BooleanVar): True if the info bar with
-            timestamp data should be shown.
-        disableOnModal (list of (tk.Menu, int)): Each item in this list
-            is a 2-tuple that represents a menu option which should be
-            disabled when a modal dialog is open. The first value is the
-            menu in which the option exists. The second value is the
-            0-based index of the option within that menu.
-        session (Session): The currently running user session.
+        showTimestamps (tk.BooleanVar): `True` if the info bar with
+            timestamp data should be shown. Defaults to `True`.
+        disableOnModal (list): [(`tk.Menu`, `int`)]: Each item in this
+            list is a 2-tuple that represents a menu option which should
+            be disabled when a modal dialog is open. The first value is
+            the menu in which the option exists. The second value is the
+            0-based index of the option within that menu. Defaults to an
+            empty list.
+        session (Session): The currently running user session. Defaults
+            to a new `Session` instance with no save slot.
 
     """
 
     def __init__(self, *args, **kargs):
+        """The constructor passes its arguments to the `tk.Tk`
+        constructor.
+
+        """
         # build window and initialize variables
         tk.Tk.__init__(self, *args, **kargs)
         self.title('STL Planner')
@@ -61,7 +67,7 @@ class STLPlanner(tk.Tk):
 
     @property
     def menuEnabled(self):
-        """bool: True if the menu options in `disableOnModal` are
+        """`bool`: `True` if the menu options in `disableOnModal` are
         enabled. Upon setting this property, those menu options' states
         are set accordingly.
         """
@@ -117,10 +123,11 @@ class STLPlanner(tk.Tk):
 
     def newSession(self, saveslot):
         """Clears the current session and starts a new one with the
-        given SaveSlot object.
+        given `legends.saveslot.SaveSlot` object.
 
         Args:
-            saveslot (SaveSlot): The SaveSlot instance to associate with
+            saveslot (legends.saveslot.SaveSlot): The
+                `legends.saveslot.SaveSlot` instance to associate with
                 the new session.
 
         """
@@ -129,12 +136,13 @@ class STLPlanner(tk.Tk):
         self.session.pack()
 
     def askCloseSession(self):
-        """Returns True if there is no active session. (An active
-        session is one whose `saveslot` attribute is not None.) If there
-        is an active session, asks the user if it is okay to close it.
+        """Returns `True` if there is no active session. (An active
+        session is one whose `saveslot` attribute is not `None`.) If
+        there is an active session, asks the user if it is okay to close
+        it.
 
         Returns:
-            bool: True if it is okay to close the current session.
+            bool: `True` if it is okay to close the current session.
 
         """
         if self.session.saveslot is None:
@@ -142,8 +150,8 @@ class STLPlanner(tk.Tk):
         return askyesno(self, 'Close Session', 'Close current session?')
 
     def newFromFile(self):
-        """Prompts the user for a save slot, then builds a SaveSlot
-        object and starts a new session.
+        """Prompts the user for a save slot, then builds a
+        `legends.saveslot.SaveSlot` object and starts a new session.
 
         """
         if self.askCloseSession():
@@ -182,10 +190,11 @@ class STLPlanner(tk.Tk):
             self.session.removeTimeBar()
 
 class Session(tk.Frame):
-    """A user session in the STL Planner app.
+    """A user session in the *STL Planner* app.
 
     Attributes:
-        saveslot (SaveSlot): The SaveSlot object associated with the
+        saveslot (legends.saveslot.SaveSlot): The
+            `legends.saveslot.SaveSlot` object associated with the
             session.
         timeBar (tk.Frame): The horizontal bar at the top of the session
             frame that displays time stamp info connected with the
@@ -194,14 +203,14 @@ class Session(tk.Frame):
 
     """
     def __init__(self, stlplanner, saveslot=None, **options):
-        """Creates a new session.
+        """The constructor creates a new session associated with the
+        given `legends.saveslot.SaveSlot` object. If none is provided,
+        the session displays buttons that activate choices from the
+        `File` menu.
 
         Args:
-            stlplanner (STLPlanner): The STLPlanner instance to be
+            stlplanner (STLPlanner): The `STLPlanner` instance to be
                 assigned as the parent of this session.
-            saveslot (SaveSlot): The SaveSlot object to associate with
-                this session. If none is provided, the session displays
-                buttons that activate choices from the File menu.
 
         """
         tk.Frame.__init__(self, stlplanner, **options)
@@ -216,7 +225,7 @@ class Session(tk.Frame):
             self.rosterTab()
 
     def startFrame(self):
-        """Build the starting frame, with choices from the File menu.
+        """Build the starting frame, with choices from the `File` menu.
 
         """
         buttonbox = tk.Frame(self.tab)
@@ -235,9 +244,10 @@ class Session(tk.Frame):
         buttonbox.pack(padx=50, pady=50)
 
     def makeTimeBar(self):
-        """Builds and returns a horizontal bar containing timestamp
-        information from the associated save slot. If there is no save
-        slot, or the time bar already exists, or the STLPlanner master
+        """Builds a horizontal bar (a `tk.Frame` instance) containing
+        timestamp information from the associated save slot, then
+        assigns the bar to the `timeBar` attribute. If there is no save
+        slot, or the time bar already exists, or the `STLPlanner` master
         prohibits it, the method does nothing.
 
         """
@@ -282,7 +292,7 @@ class Session(tk.Frame):
 
     def removeTimeBar(self):
         """If the time bar exists, it is destroyed and the `timeBar`
-        attribute is set to None.
+        attribute is set to `None`.
 
         """
         if self.timeBar is not None:
@@ -290,7 +300,8 @@ class Session(tk.Frame):
             self.timeBar = None
 
     def rosterTab(self):
-        """Loads a new RosterTab instance into the `tab` attribute.
+        """Loads a new `legends.ui.rostertab.RosterTab` instance into
+        the `tab` attribute.
 
         """
         self.tab.destroy()

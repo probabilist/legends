@@ -138,7 +138,7 @@ class dictofsets(MultiMapping): # pylint: disable=invalid-name
         del self._dict[key]
 
     def keys(self):
-        """Returns an iterator over the keys of `dictofsets`."""
+        """Returns an iterable over the keys of `dictofsets`."""
         return self._dict.keys()
 
     def __repr__(self):

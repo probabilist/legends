@@ -1,4 +1,4 @@
-"""This module contains the ScrollFrame class.
+"""The `legends.utils.scrollframe.ScrollFrame` class.
 
 """
 

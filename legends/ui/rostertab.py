@@ -18,34 +18,43 @@ from legends.ui.dialogs import askRosterFilter, RosterFilter
 __all__ = ['maxXP', 'RosterTab', 'CharCard', 'RosterInfoBar']
 
 def maxXP(rarity):
-    """Returns the maximum XP of a character of the given rarity."""
+    """Returns the maximum XP of a character of the given rarity.
+
+    Args:
+        rarity (str): The rarity of the character.
+
+    """
     return GSLevel[rarity + '_99']['Experience']
 
 class RosterTab(tk.Frame):
     """Displays the player's character collection.
 
     Attributes:
-        filter (RosterFilter): The RosterFilter object storing the
-            current filter settings.
-        scrollArea (ScrollFrame): The ScrollFrame used to hold the
+        filter (legends.ui.dialogs.RosterFilter): The
+            `legends.ui.dialogs.RosterFilter` object storing the current
+            filter settings.
+        scrollArea (legends.utils.scrollframe.ScrollFrame): The
+            `legends.utils.scrollframe.ScrollFrame` used to hold the
             character cards.
         infoBar (RosterInfoBar): The info bar containing aggregate info
             about the currently displayed characters.
-        sortFuncs (dict of str:func): A dictionary mapping field names
-            to functions that map Character objects to a sortable value.
-        sortField (StringVar): The currently selected field name by
+        sortFuncs (dict): {`str`:`func`} A dictionary mapping field
+            names to functions that map `legends.gameobjects.Character`
+            objects to a sortable value.
+        sortField (tk.StringVar): The currently selected field name by
             which the characters are sorted.
-        descending (BooleanVar): True if characters should be sorted in
-            descending order.
+        descending (tk.BooleanVar): `True` if characters should be
+            sorted in descending order.
 
     """
 
     def __init__(self, session, **options):
-        """Creates the RosterTab instance.
+        """The constructor creates an instance as a child of the given
+        session.
 
         Args:
-            session (Session): The Session instance to assign as the
-                RosterTab instance's parent.
+            session (legends.ui.stlplanner.Session): The session to
+                assign as the instance's parent.
 
         """
         # build frame and initialize variables
@@ -67,18 +76,22 @@ class RosterTab(tk.Frame):
 
     @property
     def root(self):
-        """STLPlanner: The currently running STLPlanner instance."""
+        """`legends.ui.stlplanner.STLPlanner`: The currently running
+        `legends.ui.stlplanner.STLPlanner` instance.
+        """
         return self.master.master
 
     @property
     def roster(self):
-        """Roster: The roster associated with this roster tab."""
+        """`legends.roster.Roster`: The roster associated with this
+        roster tab.
+        """
         return self.master.saveslot.roster
 
     @property
     def cards(self):
-        """dict of str:CharCard: A dictionary mapping a character's
-        `nameID` attribute to its character card.
+        """`dict`: {`str`:`CharCard`} A dictionary mapping a character's
+        name ID attribute to its character card.
         """
         return {
             card.char.nameID : card
@@ -91,10 +104,11 @@ class RosterTab(tk.Frame):
         options.
 
         Args:
-            char (Character): The character to check.
+            char (legends.gameobjects.Character): The character to
+                check.
 
         Returns:
-            bool: True if the character passes.
+            bool: `True` if the character passes.
 
         """
         filt = self.filter.dictify()
@@ -129,7 +143,7 @@ class RosterTab(tk.Frame):
 
     def actionBar(self):
         """Builds and returns an action bar that allows the user to
-        interact with the RosterTab.
+        interact with the `RosterTab`.
 
         """
         # define and initialize variables
@@ -177,7 +191,7 @@ class RosterTab(tk.Frame):
             state='readonly',
             width=max(len(field) for field in fields)
         )
-        sortMenu.bind('<<ComboboxSelected>>', self.sort)
+        sortMenu.bind('<<ComboboxSelected>>', lambda event:self.sort())
 
         # pack and return bar
         tk.Label(bar, text='sort by:').pack(side=LEFT)
@@ -200,10 +214,10 @@ class RosterTab(tk.Frame):
         for pool in SUMMON_POOL:
             print(pool, 150 * self.roster.tokensPerOrb(pool))
 
-    def sort(self, event=None): # pylint: disable=unused-argument
+    def sort(self):
         """Sorts the dictionary of characters stored in the associated
-        SaveSlot object according the currently selected sorting field.
-        Then destroys and rebuilds all character cards.
+        `legends.saveslot.SaveSlot` object according the currently
+        selected sorting field. Then refreshes the character cards.
 
         """
         field = self.sortField.get()
@@ -223,9 +237,9 @@ class RosterTab(tk.Frame):
         self.fillCards()
 
     def adjustFilter(self):
-        """Creates a FilterDialog window, giving the user an opportunity
-        to adjust the filter settings. Then refreshes the character
-        cards and info bar.
+        """Creates an `legends.ui.dialogs.AskRosterFilter` window,
+        giving the user an opportunity to adjust the filter settings.
+        Then refreshes the character cards and info bar.
 
         """
         filt = askRosterFilter(self.root, self.filter)
@@ -236,7 +250,7 @@ class RosterTab(tk.Frame):
     def export(self):
         """Exports the data in the character cards to a csv file. Each
         row in the file corresponds to a card, and the data in that row
-        is the data generated by the card's `dictify` method.
+        is the data generated by the card's `CharCard.dictify` method.
 
         """
         filename = asksaveasfilename(
@@ -259,26 +273,28 @@ class CharCard(tk.Frame):
     """A small tile containing basic information about a character.
 
     Attributes:
-        char (Character): The character from which the card is built.
-        nameLabel (Label): The label containing the character's name.
-            Clicking it toggles the character's `favorite` attribute.
+        char (legends.gameobjects.Character): The character from which
+            the card is built.
+        nameLabel (tk.Label): The label containing the character's name.
+            Clicking it toggles the character's `favorite` property.
 
     """
 
     def __init__(self, char, rostertab, **options):
-        """Builds a character card for the given Character object.
+        """The constructor builds the card and associates it with the
+        given `legends.ui.rostertab.RosterTab`.
 
         Args:
-            char (Character): The character from which to build the
-                card.
-            rostertab (RosterTab): The RosterTab object to which this
+            char (legends.gameobjects.Character): The character from
+                which to build the card.
+            rostertab (legends.ui.rostertab.RosterTab): The
+                `legends.ui.rostertab.RosterTab` object to which this
                 card belongs.
 
         """
         # build card and initialize variables
         tk.Frame.__init__(self, rostertab.scrollArea.content, **options)
         self.char = char
-        # self.saveslot = saveslot
 
         # build name and stat plates
         bgColor = RARITY_COLORS[char.rarity]
@@ -295,14 +311,16 @@ class CharCard(tk.Frame):
 
     @property
     def favorite(self):
-        """bool:True if the player has selected this character as a
+        """`bool`: True if the player has selected this character as a
         favorite.
         """
         return self.char in self.saveslot.favorites
 
     @property
     def saveslot(self):
-        """SaveSlot: The save slot in which the character is located."""
+        """`legends.saveslot.SaveSlot`: The save slot in which the
+        character is located.
+        """
         content = self.master
         canvas = content.master
         scrollArea = canvas.master
@@ -311,11 +329,11 @@ class CharCard(tk.Frame):
         return session.saveslot
 
     def namePlate(self, bgColor):
-        """Build and returns the character name plate with the given
+        """Builds and returns the character name plate with the given
         background color.
 
         Args:
-            bgColor (str): The tkinter name of the given background
+            bgColor (str): The `tkinter` name of the given background
                 color.
 
         Returns:
@@ -363,7 +381,7 @@ class CharCard(tk.Frame):
         background color.
 
         Args:
-            bgColor (str): The tkinter name of the given background
+            bgColor (str): The `tkinter` name of the given background
                 color.
 
         Returns:
@@ -421,7 +439,7 @@ class CharCard(tk.Frame):
         return plate
 
     def toggleFav(self, event): # pylint: disable=unused-argument
-        """Toggles the character's `favorite` attribute and recolors the
+        """Toggles the character's `favorite` property and recolors the
         card.
         """
         if self.char in self.saveslot.favorites:
@@ -444,6 +462,9 @@ class CharCard(tk.Frame):
     def dictify(self):
         """Creates and returns a dictionary representation of the data
         depicted on this card.
+
+        Returns:
+            dict: The dictionary of data from the card.
 
         """
         D = {
@@ -472,9 +493,16 @@ class RosterInfoBar(tk.Frame):
 
     Attributes:
         totalXP (tk.Label): A label displaying the total XP.
+        totalPower (tk.Label): A label displaying the total power.
+        charCount (tk.Label): A label displaying the number of
+            characters in the roster.
 
     """
     def __init__(self, parent=None, **options):
+        """The constructor passes its arguments to the `tk.Frame`
+        constructor, then builds and packs the attribute labels.
+
+        """
         tk.Frame.__init__(self, parent, **options)
         self.totalXP = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
         self.totalXP.pack(side=LEFT)
@@ -488,9 +516,10 @@ class RosterInfoBar(tk.Frame):
         collection of characters.
 
         Args:
-            chars (iterable of Character): The characters to use when
-                computing statistics.
-            roster (Roster): The roster to which the characters belong.
+            chars (iterable of legends.gameobjects.Character): The
+                characters to use when computing statistics.
+            roster (legends.roster.Roster): The roster to which the
+                characters belong.
 
         """
         self.totalXP.config(text='Total XP: {:,}'.format(sum(

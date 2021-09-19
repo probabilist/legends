@@ -1,13 +1,5 @@
 """Dialog windows for use with the `legends` package.
 
-Attributes:
-    showerror (func): Similar to tkinter.simpledialog.showerror, but
-        with a `root` positional argument in the front. See the
-        docstring for the `addroot` function below for details.
-    showinfo (func): Similar to tkinter.simpledialog.showerror, but
-        with a `root` positional argument in the front. See the
-        docstring for the `addroot` function below for details.
-
 """
 
 import tkinter as tk
@@ -35,10 +27,10 @@ __all__ = [
 def addroot(func):
     """Creates and returns a new function from the given function by
     adding a `root` positional argument at the front, which should be
-    the currently running STLPlanner instance. The new function will
-    ensure that the menus of `root` are disabled before calling the
-    given function, and will return the menus to their original state
-    after calling the given function.
+    the currently running `legends.ui.stlplanner.STLPlanner` instance.
+    The new function will ensure that the menus of `root` are disabled
+    before calling the given function, and will return the menus to
+    their original state after calling the given function.
 
     """
     def newFunc(root, *args, **kargs):
@@ -52,87 +44,112 @@ def addroot(func):
     return newFunc
 
 def showerror(root, *args, **kargs):
-    """A wrapper around tkinter's showerror that disables the root menu.
+    """A wrapper around `tk.messagebox.showerror` that disables the root
+    menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
 
     """
     return addroot(_showerror)(root, *args, **kargs)
 
 def showinfo(root, *args, **kargs):
-    """A wrapper around tkinter's showinfo that disables the root menu.
+    """A wrapper around `tk.messagebox.showinfo` that disables the root
+    menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
 
     """
     return addroot(_showinfo)(root, *args, **kargs)
 
 def askyesno(root, *args, **kargs):
-    """A wrapper around tkinter's askyesno that disables the root menu.
+    """A wrapper around `tk.messagebox.askyesno` that disables the root
+    menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
 
     """
     return addroot(_askyesno)(root, *args, **kargs)
 
 def askSlot(root, save):
-    """Raises a dialog window, prompting the user to select a save slot.
+    """Raises an `AskSlot` dialog window, prompting the user to select a
+    save slot.
 
     Args:
-        root (STLPlanner): The currently running STLPlanner instance.
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
         save (dict): A decrypted dictionary representation of the
-            player's save file, as returned by the `decryptSaveFile`
-            function.
+            player's save file, as returned by the
+            `legends.functions.decryptSaveFile` function.
 
     Returns:
-        SaveSlot or None: Returns a SaveSlot instance created from the
-            chosen slot number. Returns `None` if no slot was selected.
+        legends.saveslot.SaveSlot or None: Returns a
+            `legends.saveslot.SaveSlot` instance created from the chosen
+            slot number. Returns `None` if no slot was selected.
 
     """
     dialog = AskSlot(root, save)
     return dialog.result
 
 def askRosterFilter(root, filt):
-    """Raises a dialog window, prompting the user to adjust the filters
-    for the RosterTab. The dialog window is initialized to display the
-    filters passed by the `filt` argument.
+    """Raises an `AskRosterFilter` dialog window, prompting the user to
+    adjust the filters for the roster tab. The dialog window is
+    initialized to display the filters passed by the `filt` argument.
 
     Args:
-        root (STLPlanner): The currently running STLPlanner instance.
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
         filt (RosterFilter): The filter used to initialize the dialog
             window. This filter is not modified.
 
     Returns:
-        RosterFilter or None: Returns a new RosterFilter object
-            representing the user's choices. Returns None if no choices
-            were confirmed.
+        RosterFilter or None: Returns a new `RosterFilter` object
+            representing the user's choices. Returns `None` if no
+            choices were confirmed.
 
     """
     dialog = AskRosterFilter(root, filt)
     return dialog.result
 
 def askMaxChars(root):
-    """Raises a dialog window, prompting the user to select from an
-    array of options just prior to creating a roster of maxed
+    """Raises an `AskMaxChars` dialog window, prompting the user to
+    select from an array of options for creating a roster of maxed
     characters.
 
     Args:
-        root (STLPlanner): The currently running STLPlanner instance.
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
 
     Returns:
-        tuple of (list of str, bool): The first value in the tuple is
-            the list of name IDs of characters the user wants to include
-            in the roster. The second value is True if the user wants
-            the maxed characters to also have maxed gear.
+        tuple: ([`str`], `bool`) The first value in the tuple is the
+            list of name IDs of characters the user wants to include in
+            the roster. The second value is `True` if the user wants the
+            maxed characters to also have maxed gear.
 
     """
     dialog = AskMaxChars(root)
     return dialog.result
 
 class ModalDialog(Dialog):
-    """A subclass of Dialog that disables menu options.
+    """A subclass of `tk.simpledialog.Dialog` that disables menus.
 
-    Args:
-        root (STLPlanner): The currently running STLPlanner instance.
+    Attributes:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+        initialMenuState (bool): `True` if the root menu is enabled at
+            the moment the dialog opens.
+        box (tk.Frame): The frame that holds the 'OK' and 'Cancel'
+            buttons.
 
     """
     def __init__(self, root, parent=None, title=None):
-        """(override) Disables root menu options before calling
-        superclass constructor.
+        """The constructor disables the root menu before calling the
+        `tk.simpledialog.Dialog` constructor.
 
         """
         self.root = root
@@ -159,8 +176,8 @@ class ModalDialog(Dialog):
         self.box.pack()
 
     def destroy(self):
-        """(override) Enables root menu options before destroying
-        window.
+        """Restores root menu options to their original state, then
+        destroys the window.
 
         """
         self.initial_focus = None
@@ -172,18 +189,18 @@ class AskSlot(ModalDialog):
     """A modal dialog that prompts the user to select a save slot.
 
     Save slots are denoted in the game data as 0, 1, or 2. In the
-    AskSlot window, they are shown to the user as '1', '2', or '3'.
+    `AskSlot` window, they are shown to the user as '1', '2', or '3'.
 
     Attributes:
         save (dict): A decrypted dictionary representation of the
-            player's save file, as returned by the `decryptSaveFile`
-            function.
+            player's save file, as returned by the
+            `legends.functions.decryptSaveFile` function.
         displaySlot (tk.StringVar): The currently selected slot, as it
             is displayed in the window.
-        result (SaveSlot or None): Inherited from ModalDialog, which
-            inherited it from Dialog. Defaults to None. Is set by the
-            `validate` method to a SaveSlot instance created from the
-            chosen slot number.
+        result (SaveSlot or None): Inherited from `ModalDialog`, which
+            inherited it from `tk.simpledialog.Dialog`. Defaults to
+            `None`. Is set by the `AskSlot.validate` method to a
+            `SaveSlot` instance created from the chosen slot number.
 
     """
     def __init__(self, root, save, parent=None):
@@ -221,7 +238,7 @@ class AskSlot(ModalDialog):
         return cbox
 
     def validate(self):
-        """Set the `result` attribute and return True.
+        """Set the `result` attribute and return `True`.
 
         """
         slot = int(self.displaySlot.get()) - 1
@@ -238,26 +255,30 @@ class AskSlot(ModalDialog):
         return True
 
 class RosterFilter():
-    """Stores information about filtering a RosterTab.
+    """Stores information about filtering a
+    `legends.ui.rostertab.RosterTab`.
 
     Attributes:
-        rarities (dict of str:tk.BooleanVar): A dictionary mapping
-            rarities to tkinter boolean variables indicating whether the
-            rarity is to be included in the RosterTab.
-        roles (dict of str:tk.BooleanVar): A dictionary mapping roles to
-            tkinter boolean variables indicating whether the role is to
-            be included in the RosterTab.
-        ranks (2-tuple of tk.IntVar): The first value is the minimum
-            rank to include in the RosterTab. The second is the maximum.
-        levels (2-tuple of tk.IntVar): The first value is the minimum
-            level to include in the RosterTab. The second is the maximum.
+        rarities (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
+            rarities to `tkinter` boolean variables indicating whether
+            the rarity is to be included in the
+            `legends.ui.rostertab.RosterTab`.
+        roles (dict): {`str`:`tk.BooleanVar`} A dictionary mapping roles
+            to `tkinter` boolean variables indicating whether the role
+            is to be included in the `legends.ui.rostertab.RosterTab`.
+        ranks (tuple): (`tk.IntVar`, `tk.IntVar`) The first value is the
+            minimum rank to include in the
+            `legends.ui.rostertab.RosterTab`. The second is the maximum.
+        levels (tuple): (`tk.IntVar`, `tk.IntVar`) The first value is
+            the minimum level to include in the
+            `legends.ui.rostertab.RosterTab`. The second is the maximum.
 
     """
 
     def __init__(self, filt=None):
-        """Creates a new RosterFilter object with the same values as the
-        given RosterFilter object. If none is provided, the new filter
-        will not omit anything.
+        """The constructor creates a new `RosterFilter` object with the
+        same values as the given `RosterFilter` object. If `None` is
+        provided, the new filter will not omit anything.
 
         Args:
             filt (RosterFilter): The filter used to initialize the new
@@ -276,8 +297,8 @@ class RosterFilter():
             self.set(filt)
 
     def set(self, filt):
-        """Sets the values of the calling RosterFilter to match those of
-        the given filter.
+        """Sets the values of the calling instance to match those of the
+        given filter.
 
         Args:
             filt (RosterFilter): The filter from which to copy values.
@@ -294,7 +315,7 @@ class RosterFilter():
 
     def dictify(self):
         """Creates and returns a dictionary mapping the calling
-        instance's attribute names to its values, with each tkinter
+        instance's attribute names to its values, with each `tkinter`
         variable replaced by its value.
 
         Returns:
@@ -319,20 +340,32 @@ class RosterFilter():
         return 'RosterFilter({})'.format(self.dictify())
 
 class AskRosterFilter(ModalDialog):
-    """A modal dialog used for adjusting RosterFilter objects.
+    """A modal dialog used for adjusting `RosterFilter` objects.
 
-    The constructor must be given a RosterFilter object. That object
+    The constructor must be given a `RosterFilter` object. That object
     will be used to initialize the window, but will not be modified.
 
     Attributes:
-        filt (RosterFilter): The RosterFilter object controlled and
+        filt (RosterFilter): The `RosterFilter` object controlled and
             modified by the dialog window.
-        result (RosterFilter or None): Inherited from ModalDialog, which
-            inherited it from Dialog. Defaults to None. Is set by the
-            `apply` method to the value of the `filt` attribute.
+        result (RosterFilter or None): Inherited from `ModalDialog`,
+            which inherited it from `tk.simpledialog.Dialog`. Defaults
+            to `None`. Is set by the `AskRosterFilter.apply` method to
+            the value of the `filt` attribute.
 
     """
     def __init__(self, root, rosterFilter, parent=None):
+        """The constructor sets the `filt` attribute, then calls the
+        `ModalDialog` constructor.
+
+        Args:
+            root (legends.ui.stlplanner.STLPlanner): The currently
+                running `legends.ui.stlplanner.STLPlanner` instance.
+                Passed to the `ModalDialog` constructor.
+            rosterFilter (RosterFilter): The instance's `filt` attribute
+                is assigned a copy of this argument.
+
+        """
         self.filt = RosterFilter(rosterFilter)
         ModalDialog.__init__(self, root, parent, 'Filter characters')
 
@@ -378,14 +411,13 @@ class AskRosterFilter(ModalDialog):
     def makeLinkedScales(self, master, attrName, maxVal):
         """Creates and returns a pair of linked Scale widgets. Each
         scale has values from 1 to `maxVal`. If `attrName` is 'ranks',
-        the scales are associated with the tkinter variables stored in
+        the scales are associated with the `tkinter` variables stored in
         the `ranks` attribute of the calling instance's `filt`
         attribute. Similarly if `attrName` is 'levels'.
 
         The first scale controls the minimum value; the second controls
         the maximum. The scales are configured so that the minimum value
-        cannot exceed the maximum. The scale values range from 1 to the
-        given maximum value.
+        cannot exceed the maximum.
 
         The given `master` argument is assigned as the parent of both
         scales.
@@ -449,12 +481,12 @@ class AskMaxChars(ModalDialog):
             exclude characters that are not summonable.
         storeOnly (tk.BooleanVar): True if the user wants to exclude
             characters whose tokens are not in the daily store.
-        maxGear (tk.BooleanVar): True if the user wants to the maxed
+        maxGear (tk.BooleanVar): True if the user wants the maxed
             characters to also have maxed gear.
-        result (tuple of (list of str, bool)): The first value in the
-            tuple is the list of name IDs of characters the user wants
-            to include in the roster. The second value is True if the
-            user wants the maxed characters to also have maxed gear.
+        result (tuple): ([`str`], `bool`) The first value in the tuple is
+            the list of name IDs of characters the user wants to include
+            in the roster. The second value is `True` if the user wants
+            the maxed characters to also have maxed gear.
 
     """
     def __init__(self, root, parent=None):
@@ -520,7 +552,7 @@ class AskMaxChars(ModalDialog):
         return True
 
 class HelpScreen(ModalDialog):
-    """A message dialog giving help on the STL Planner app.
+    """A message dialog giving help on the *STL Planner* app.
 
     """
     def __init__(self, root, parent=None):
