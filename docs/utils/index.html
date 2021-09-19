@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>legends.utils API documentation</title>
-<meta name="description" content="Generic coding structures needed in the `legends` package." />
+<meta name="description" content="Generic coding structures needed in the `legends` package …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,11 +23,26 @@
 </header>
 <section id="section-intro">
 <p>Generic coding structures needed in the <code><a title="legends" href="../index.html">legends</a></code> package.</p>
+<p>All objects that reside in one of the direct submodules of
+<code><a title="legends.utils" href="#legends.utils">legends.utils</a></code> can be accessed from the <code><a title="legends.utils" href="#legends.utils">legends.utils</a></code> namespace.</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; import legends
+&gt;&gt;&gt; legends.utils.bidict is legends.utils.relations.bidict
+True
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;Generic coding structures needed in the `legends` package.
+
+All objects that reside in one of the direct submodules of
+`legends.utils` can be accessed from the `legends.utils` namespace.
+
+Example:
+    &gt;&gt;&gt; import legends
+    &gt;&gt;&gt; legends.utils.bidict is legends.utils.relations.bidict
+    True
 
 &#34;&#34;&#34;
 

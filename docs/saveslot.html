@@ -105,6 +105,10 @@ class SaveSlot():
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
+        Raises:
+            ValueError: If the given slot is not in the given save data,
+                or if the given save slot data is empty.
+
         &#34;&#34;&#34;
         key = &#39;{} data&#39;.format(slot)
         if key not in save or not save[key]:
@@ -480,6 +484,10 @@ characters the player has marked as 'favorite'.</dd>
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
+        Raises:
+            ValueError: If the given slot is not in the given save data,
+                or if the given save slot data is empty.
+
         &#34;&#34;&#34;
         key = &#39;{} data&#39;.format(slot)
         if key not in save or not save[key]:
@@ -523,6 +531,12 @@ player's save file, as returned by the
 <dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
 <dd>The 0-based index of the save slot from which to
 draw the data.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If the given slot is not in the given save data,
+or if the given save slot data is empty.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -538,6 +552,10 @@ draw the data.</dd>
             `legends.savefile.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             draw the data.
+
+    Raises:
+        ValueError: If the given slot is not in the given save data,
+            or if the given save slot data is empty.
 
     &#34;&#34;&#34;
     key = &#39;{} data&#39;.format(slot)

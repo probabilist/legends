@@ -115,7 +115,9 @@ class Roster():
             `legends.utils.objrelations.OneToOne.validate()` method is
             overridden to prohibit the placing of gear in the wrong slot
             or the placing of gear that exceeds the maximum allowed
-            level.
+            level. The `legends.utils.objrelations.OneToOne.validate()`
+            method raises a `ValueError` when it fails to validate an
+            assignment.
         inPartSlot (legends.utils.objrelations.OneToOne): A relation
             mapping `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
@@ -516,7 +518,9 @@ mapping <code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends
 <code><a title="legends.utils.objrelations.OneToOne.validate" href="utils/objrelations.html#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code> method is
 overridden to prohibit the placing of gear in the wrong slot
 or the placing of gear that exceeds the maximum allowed
-level.</dd>
+level. The <code><a title="legends.utils.objrelations.OneToOne.validate" href="utils/objrelations.html#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code>
+method raises a <code>ValueError</code> when it fails to validate an
+assignment.</dd>
 <dt><strong><code>inPartSlot</code></strong> :&ensp;<code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code></dt>
 <dd>A relation
 mapping <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code> objects to
@@ -556,7 +560,9 @@ read the data.</dd>
             `legends.utils.objrelations.OneToOne.validate()` method is
             overridden to prohibit the placing of gear in the wrong slot
             or the placing of gear that exceeds the maximum allowed
-            level.
+            level. The `legends.utils.objrelations.OneToOne.validate()`
+            method raises a `ValueError` when it fails to validate an
+            assignment.
         inPartSlot (legends.utils.objrelations.OneToOne): A relation
             mapping `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.

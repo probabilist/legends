@@ -58,6 +58,10 @@ def levelFromXP(xp, rarity=&#39;Common&#39;):
     Returns:
         int: The level of the character.
 
+    Raises:
+        ValueError: If the level cannot be determined from the given xp
+            value and the data in `GSLevel`.
+
     &#34;&#34;&#34;
     level = None
     for j in reversed(range(100)):
@@ -750,6 +754,12 @@ stat names.</p>
 <dl>
 <dt><code>int</code></dt>
 <dd>The level of the character.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If the level cannot be determined from the given xp
+value and the data in <code>GSLevel</code>.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -764,6 +774,10 @@ stat names.</p>
 
     Returns:
         int: The level of the character.
+
+    Raises:
+        ValueError: If the level cannot be determined from the given xp
+            value and the data in `GSLevel`.
 
     &#34;&#34;&#34;
     level = None

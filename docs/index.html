@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>legends API documentation</title>
-<meta name="description" content="A package for working with data from Star Trek: Legends." />
+<meta name="description" content="A package for working with data from Star Trek: Legends …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -23,11 +23,28 @@
 </header>
 <section id="section-intro">
 <p>A package for working with data from Star Trek: Legends.</p>
+<p>All objects that reside in one of the direct submodules of the <code><a title="legends" href="#legends">legends</a></code>
+package can be accessed from the <code><a title="legends" href="#legends">legends</a></code> namespace, with the exception
+of the <code><a title="legends.ui" href="ui/index.html">legends.ui</a></code> and <code><a title="legends.utils" href="utils/index.html">legends.utils</a></code> submodules.</p>
+<h2 id="example">Example</h2>
+<pre><code class="language-python-repl">&gt;&gt;&gt; import legends
+&gt;&gt;&gt; legends.Character is legends.gameobjects.Character
+True
+</code></pre>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;A package for working with data from Star Trek: Legends.
+
+All objects that reside in one of the direct submodules of the `legends`
+package can be accessed from the `legends` namespace, with the exception
+of the `ui` and `utils` submodules.
+
+Example:
+    &gt;&gt;&gt; import legends
+    &gt;&gt;&gt; legends.Character is legends.gameobjects.Character
+    True
 
 &#34;&#34;&#34;
 
@@ -70,11 +87,11 @@ from legends.stats import *</code></pre>
 </dd>
 <dt><code class="name"><a title="legends.ui" href="ui/index.html">legends.ui</a></code></dt>
 <dd>
-<div class="desc"><p>UI objects used with the <code><a title="legends" href="#legends">legends</a></code> package.</p></div>
+<div class="desc"><p>UI objects used with the <code><a title="legends" href="#legends">legends</a></code> package …</p></div>
 </dd>
 <dt><code class="name"><a title="legends.utils" href="utils/index.html">legends.utils</a></code></dt>
 <dd>
-<div class="desc"><p>Generic coding structures needed in the <code><a title="legends" href="#legends">legends</a></code> package.</p></div>
+<div class="desc"><p>Generic coding structures needed in the <code><a title="legends" href="#legends">legends</a></code> package …</p></div>
 </dd>
 </dl>
 </section>

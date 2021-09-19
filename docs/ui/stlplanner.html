@@ -150,6 +150,7 @@ class STLPlanner(tk.Tk):
         helpMenu.add_command(
             label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
         )
+        self.disableOnModal.append((helpMenu, 0))
 
     def newSession(self, saveslot):
         &#34;&#34;&#34;Clears the current session and starts a new one with the
@@ -506,6 +507,7 @@ constructor.</p></div>
         helpMenu.add_command(
             label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
         )
+        self.disableOnModal.append((helpMenu, 0))
 
     def newSession(self, saveslot):
         &#34;&#34;&#34;Clears the current session and starts a new one with the
@@ -684,7 +686,8 @@ it.</p>
     menuBar.add_cascade(label=&#39;Help&#39;, menu=helpMenu)
     helpMenu.add_command(
         label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
-    )</code></pre>
+    )
+    self.disableOnModal.append((helpMenu, 0))</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.stlplanner.STLPlanner.newFromFile"><code class="name flex">

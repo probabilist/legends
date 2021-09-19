@@ -29,6 +29,10 @@ def levelFromXP(xp, rarity='Common'):
     Returns:
         int: The level of the character.
 
+    Raises:
+        ValueError: If the level cannot be determined from the given xp
+            value and the data in `GSLevel`.
+
     """
     level = None
     for j in reversed(range(100)):

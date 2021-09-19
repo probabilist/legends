@@ -76,6 +76,10 @@ class SaveSlot():
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
+        Raises:
+            ValueError: If the given slot is not in the given save data,
+                or if the given save slot data is empty.
+
         """
         key = '{} data'.format(slot)
         if key not in save or not save[key]:

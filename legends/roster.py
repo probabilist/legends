@@ -86,7 +86,9 @@ class Roster():
             `legends.utils.objrelations.OneToOne.validate()` method is
             overridden to prohibit the placing of gear in the wrong slot
             or the placing of gear that exceeds the maximum allowed
-            level.
+            level. The `legends.utils.objrelations.OneToOne.validate()`
+            method raises a `ValueError` when it fails to validate an
+            assignment.
         inPartSlot (legends.utils.objrelations.OneToOne): A relation
             mapping `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
