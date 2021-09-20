@@ -69,7 +69,7 @@ class SaveSlot():
         self.inventory = {}
 
     def fromFile(self, save, slot):
-        """Uses the given save data to population the calling instance's
+        """Uses the given save data to populate the calling instance's
         attributes.
 
         Args:
