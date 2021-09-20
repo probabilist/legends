@@ -217,7 +217,6 @@ class STLPlanner(tk.Tk):
                 continue
             if cat not in categories:
                 categories.append(cat)
-        print(categories)
         for cat in categories:
             print('# {}'.format(cat))
             for itemID, qty in self.session.saveslot.inventory.items():
