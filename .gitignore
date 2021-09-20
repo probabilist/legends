@@ -2,6 +2,7 @@
 *.sublime*
 __pycache__
 _archive
+app versions
 build
 dist
 docs/legends
@@ -9,6 +10,7 @@ docs/legends
 _notes.md
 daily.py
 pythonref*
+README.html
 startrek.json
 tests.py
 tkinter

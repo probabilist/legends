@@ -38,6 +38,9 @@ into a Python dictionary.</dd>
 on the Crew screen.</dd>
 <dt><strong><code>HELP</code></strong> :&ensp;<code>str</code></dt>
 <dd>The contents of the file, <code>legends/help.txt</code>.</dd>
+<dt><strong><code>ITEMS</code></strong> :&ensp;<code>list</code> of <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code></dt>
+<dd>A list of all items in the game, as parsed
+from <code>GSItem</code>.</dd>
 <dt><strong><code>POWER_GRADIENT</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>float</code>} A dictionary mapping stat
 names to the amount that a character's power would increase if
@@ -129,6 +132,8 @@ Attributes:
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     HELP (str): The contents of the file, `legends/help.txt`.
+    ITEMS (list of Item): A list of all items in the game, as parsed
+        from `GSItem`.
     POWER_GRADIENT (dict): {`str`:`float`} A dictionary mapping stat
         names to the amount that a character&#39;s power would increase if
         that stat were to increase by 1.
@@ -201,7 +206,7 @@ __all__ = [
     &#39;STAT_ABBREVIATIONS&#39;, &#39;STAT_INITIALS&#39;, &#39;POWER_GRADIENT&#39;, &#39;POWER_AT_ORIGIN&#39;,
     &#39;DESCRIPTIONS&#39;, &#39;ROLES&#39;, &#39;RARITIES&#39;, &#39;RARITY_COLORS&#39;, &#39;PART_STAT_UNLOCKED&#39;,
     &#39;PART_STAT_VALUES&#39;, &#39;ENABLED&#39;, &#39;UPCOMING&#39;, &#39;SUMMON_POOL&#39;,
-    &#39;SUMMON_POOL_IDS&#39;, &#39;HELP&#39;
+    &#39;SUMMON_POOL_IDS&#39;, &#39;HELP&#39;, &#39;ITEMS&#39;
 ]
 
 rootPath = abspath(dirname(__file__))
@@ -359,7 +364,61 @@ for pool, data in SUMMON_POOL.items():
 
 # read and store the help file
 with open(rootPath + &#39;/help.txt&#39;, encoding=&#39;utf-8&#39;) as f:
-    HELP = f.read()</code></pre>
+    HELP = f.read()
+
+class Item():
+    &#34;&#34;&#34;An item in STL.
+
+    Attributes:
+        itemID (str): The in-data item ID of the item. Should be a
+            key in `GSItem`.
+        category (str): The in-data category of the item, with two
+            exceptions. The in-data category of gear leveling and
+            gear ranking materials is &#39;Item&#39;. This is manually changed
+            to &#39;Gear Leveling Materials&#39; and &#39;Gear Ranking Materials&#39;,
+            respectively.
+
+    &#34;&#34;&#34;
+    def __init__(self, itemID):
+        &#34;&#34;&#34;The constructor builds the item from the given item ID,
+        looking up the required information in `GSItem`.
+
+        &#34;&#34;&#34;
+        self.itemID = itemID
+        itemData = GSItem[itemID] # pylint: disable=undefined-variable
+        self.category = itemData[&#39;category&#39;]
+        if itemData[&#39;icon&#39;][:4] == &#39;Gear&#39;:
+            if itemData[&#39;rarity&#39;] == &#39;Common&#39;:
+                self.category = &#39;Gear Leveling Materials&#39;
+            else:
+                self.category = &#39;Gear Ranking Materials&#39;
+
+    @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game name of the item.&#34;&#34;&#34;
+        # pylint: disable-next=undefined-variable
+        itemData = GSItem[self.itemID]
+        return (
+            DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
+            else self.itemID
+        )
+
+    @property
+    def xp(self):
+        &#34;&#34;&#34;`int`: If the item is a bio-gel, this is the amount of xp it
+        awards; otherwise it is 0.
+        &#34;&#34;&#34;
+        try:
+            # pylint: disable-next=undefined-variable
+            return GSItem[self.itemID][&#39;DataBiomimeticGel&#39;][&#39;Xp&#39;]
+        except KeyError:
+            return 0
+
+    def __repr__(self):
+        return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)
+
+# pylint: disable-next =undefined-variable
+ITEMS = {itemID: Item(itemID) for itemID in GSItem}</code></pre>
 </details>
 </section>
 <section>
@@ -369,6 +428,126 @@ with open(rootPath + &#39;/help.txt&#39;, encoding=&#39;utf-8&#39;) as f:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.constants.Item"><code class="flex name class">
+<span>class <span class="ident">Item</span></span>
+<span>(</span><span>itemID)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An item in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>itemID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The in-data item ID of the item. Should be a
+key in <code>GSItem</code>.</dd>
+<dt><strong><code>category</code></strong> :&ensp;<code>str</code></dt>
+<dd>The in-data category of the item, with two
+exceptions. The in-data category of gear leveling and
+gear ranking materials is 'Item'. This is manually changed
+to 'Gear Leveling Materials' and 'Gear Ranking Materials',
+respectively.</dd>
+</dl>
+<p>The constructor builds the item from the given item ID,
+looking up the required information in <code>GSItem</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Item():
+    &#34;&#34;&#34;An item in STL.
+
+    Attributes:
+        itemID (str): The in-data item ID of the item. Should be a
+            key in `GSItem`.
+        category (str): The in-data category of the item, with two
+            exceptions. The in-data category of gear leveling and
+            gear ranking materials is &#39;Item&#39;. This is manually changed
+            to &#39;Gear Leveling Materials&#39; and &#39;Gear Ranking Materials&#39;,
+            respectively.
+
+    &#34;&#34;&#34;
+    def __init__(self, itemID):
+        &#34;&#34;&#34;The constructor builds the item from the given item ID,
+        looking up the required information in `GSItem`.
+
+        &#34;&#34;&#34;
+        self.itemID = itemID
+        itemData = GSItem[itemID] # pylint: disable=undefined-variable
+        self.category = itemData[&#39;category&#39;]
+        if itemData[&#39;icon&#39;][:4] == &#39;Gear&#39;:
+            if itemData[&#39;rarity&#39;] == &#39;Common&#39;:
+                self.category = &#39;Gear Leveling Materials&#39;
+            else:
+                self.category = &#39;Gear Ranking Materials&#39;
+
+    @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game name of the item.&#34;&#34;&#34;
+        # pylint: disable-next=undefined-variable
+        itemData = GSItem[self.itemID]
+        return (
+            DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
+            else self.itemID
+        )
+
+    @property
+    def xp(self):
+        &#34;&#34;&#34;`int`: If the item is a bio-gel, this is the amount of xp it
+        awards; otherwise it is 0.
+        &#34;&#34;&#34;
+        try:
+            # pylint: disable-next=undefined-variable
+            return GSItem[self.itemID][&#39;DataBiomimeticGel&#39;][&#39;Xp&#39;]
+        except KeyError:
+            return 0
+
+    def __repr__(self):
+        return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.constants.Item.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The in-game name of the item.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self):
+    &#34;&#34;&#34;`str`: The in-game name of the item.&#34;&#34;&#34;
+    # pylint: disable-next=undefined-variable
+    itemData = GSItem[self.itemID]
+    return (
+        DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
+        else self.itemID
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.constants.Item.xp"><code class="name">var <span class="ident">xp</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: If the item is a bio-gel, this is the amount of xp it
+awards; otherwise it is 0.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def xp(self):
+    &#34;&#34;&#34;`int`: If the item is a bio-gel, this is the amount of xp it
+    awards; otherwise it is 0.
+    &#34;&#34;&#34;
+    try:
+        # pylint: disable-next=undefined-variable
+        return GSItem[self.itemID][&#39;DataBiomimeticGel&#39;][&#39;Xp&#39;]
+    except KeyError:
+        return 0</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -380,6 +559,17 @@ with open(rootPath + &#39;/help.txt&#39;, encoding=&#39;utf-8&#39;) as f:
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code></h4>
+<ul class="">
+<li><code><a title="legends.constants.Item.name" href="#legends.constants.Item.name">name</a></code></li>
+<li><code><a title="legends.constants.Item.xp" href="#legends.constants.Item.xp">xp</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

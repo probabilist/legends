@@ -6,6 +6,7 @@ The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 
 import tkinter as tk
 from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
+from legends.constants import ITEMS
 from legends.savefile import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
@@ -113,6 +114,8 @@ class STLPlanner(tk.Tk):
             command=self.setTimestamps
         )
         self.disableOnModal.append((sessionMenu, 0))
+        sessionMenu.add_command(label='Inventory...', command=self.inventory)
+        self.disableOnModal.append((sessionMenu, 1))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -189,6 +192,41 @@ class STLPlanner(tk.Tk):
             self.session.makeTimeBar()
         else:
             self.session.removeTimeBar()
+
+    def inventory(self):
+        """Prints the inventory of the save slot associated with the
+        current session to the console. Organizes the data by category.
+        Ignores the categories 'Token', 'PlayerAvatar', and 'Emote'.
+        Ignores a number of other items that are either not relevant to
+        the current implementation of *Star Trek: Legends*, or are not
+        relevant to the *STL Planner* app.
+        """
+        # TODO: Replace with a dialog window. <>
+        ignoredCategories = ['Token', 'PlayerAvatar', 'Emote']
+        ignoredItemIDs = [
+            'Credits', 'Dilithium', 'Tritanium', 'Player XP', 'PvP Stamina',
+            'Alliance Stamina', 'EventPoint', 'PvP Chest Points',
+            'Shards Advanced', 'Shards Elite', 'Shards Credit',
+            'Shards Biomimetic', 'Shards Protomatter', 'Shards_Worf',
+            'Shards_McCoy'
+        ]
+        categories = []
+        for item in ITEMS.values():
+            cat = item.category
+            if cat in ignoredCategories:
+                continue
+            if cat not in categories:
+                categories.append(cat)
+        print(categories)
+        for cat in categories:
+            print('# {}'.format(cat))
+            for itemID, qty in self.session.saveslot.inventory.items():
+                if itemID in ignoredItemIDs:
+                    continue
+                item = ITEMS[itemID]
+                if item.category == cat:
+                    print('    * {}: {}'.format(item.name, qty))
+
 
 class Session(tk.Frame):
     """A user session in the *STL Planner* app.

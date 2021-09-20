@@ -19,7 +19,7 @@ The *STL Planner* app must be run on a Mac. To import your game data, the Mac mu
 
 ### Download
 
-Version 0.10.0: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1co-I9lxzeiUUGcwZTFNaq76km2AyHcC9/view?usp=sharing)
+Version 0.10.0: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1A42Z-7L8Fcc8pDw0RE-aHAkD-_YLpB55/view?usp=sharing)
 
 ### Install
 
@@ -30,6 +30,14 @@ There is no install required, but you will need to follow these steps:
 3. A dialog will pop up, warning you of the security risk. You can then agree to run the app anyway.
 
 In Step 2, if you accidentally double-click, the security dialog will not allow you to run the app.
+
+### Developer version
+
+If you'd like to try the latest developer version, it's here: [v0.10.1-dev](https://drive.google.com/file/d/1cC8wh6WpsdCjdXFE43TPNpQ_vRyhuQ3J/view?usp=sharing)
+
+The developer version is a Unix Executable. When you run it in macOS, you will see two windows. One is the app, as usual. The other is a Terminal console.
+
+The developer version may sometimes write to the console, not just for error messages, but for intended functionality. If the app is not functioning the way you expect, be sure to check the console.
 
 ## The legends package
 

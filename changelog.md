@@ -1,5 +1,17 @@
 # Change log
 
+## Version 0.10.1
+
+* Added an `Item` class and an `ITEMS` constant.
+* Added a `SaveSlot.inventory` attribute.
+* Edited `SaveSlot.fromFile()` to read and populate the `inventory` attribute.
+* Added a 'Session > Inventory...' menu options.
+* Added an `STLPlanner.inventory()` method to write the inventory to the console.
+* Updated documentation.
+* Updated README.
+    - Changed link to app download because of Google Drive reorganization.
+    - Added link to developer version of app.
+
 ## Version 0.10.0
 
 * Added a `ModalMessage` class, which is the same as `ModalDialog` but has no 'Cancel' button.

@@ -1,4 +1,4 @@
-"""A package for working with data from Star Trek: Legends.
+"""A package for working with data from *Star Trek: Legends*.
 
 All objects that reside in one of the direct submodules of the `legends`
 package can be accessed from the `legends` namespace, with the exception

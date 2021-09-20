@@ -56,6 +56,8 @@ class SaveSlot():
             player's inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as 'favorite'.
+        inventory (dict): {`str`:`int`} A dictionary mapping an item ID
+            to the quantity of that item in the player's inventory. 
 
     """
 
@@ -64,6 +66,7 @@ class SaveSlot():
         self.roster = Roster()
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
+        self.inventory = {}
 
     def fromFile(self, save, slot):
         """Uses the given save data to population the calling instance's
@@ -88,6 +91,7 @@ class SaveSlot():
         self.roster.fromSaveData(save, slot)
         for nameID in self.tokens:
             self.tokens[nameID] = save[key]['items'].get(nameID, 0)
+        self.inventory = save[key]['items']
 
     def sort(self, func, descending=True):
         """Sorts the dictionary of characters stored in the `roster`
@@ -107,7 +111,7 @@ class SaveSlot():
         ))
 
 class STLTimeStamps():
-    """An object for storing and managing Star Trek: Legends timestamps.
+    """Stores and manages *Star Trek: Legends* timestamps.
 
     Each instance is associated to a specific save slot in a particular
     user's save file.

@@ -85,6 +85,8 @@ class SaveSlot():
             player&#39;s inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as &#39;favorite&#39;.
+        inventory (dict): {`str`:`int`} A dictionary mapping an item ID
+            to quantity of that item in the player&#39;s inventory. 
 
     &#34;&#34;&#34;
 
@@ -93,6 +95,7 @@ class SaveSlot():
         self.roster = Roster()
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
+        self.inventory = {}
 
     def fromFile(self, save, slot):
         &#34;&#34;&#34;Uses the given save data to population the calling instance&#39;s
@@ -117,6 +120,7 @@ class SaveSlot():
         self.roster.fromSaveData(save, slot)
         for nameID in self.tokens:
             self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
+        self.inventory = save[key][&#39;items&#39;]
 
     def sort(self, func, descending=True):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the `roster`
@@ -136,7 +140,7 @@ class SaveSlot():
         ))
 
 class STLTimeStamps():
-    &#34;&#34;&#34;An object for storing and managing Star Trek: Legends timestamps.
+    &#34;&#34;&#34;Stores and manages *Star Trek: Legends* timestamps.
 
     Each instance is associated to a specific save slot in a particular
     user&#39;s save file.
@@ -283,7 +287,7 @@ uses ticks to mark time.</p>
 <span>class <span class="ident">STLTimeStamps</span></span>
 </code></dt>
 <dd>
-<div class="desc"><p>An object for storing and managing Star Trek: Legends timestamps.</p>
+<div class="desc"><p>Stores and manages <em>Star Trek: Legends</em> timestamps.</p>
 <p>Each instance is associated to a specific save slot in a particular
 user's save file.</p>
 <h2 id="attributes">Attributes</h2>
@@ -305,7 +309,7 @@ playing the associated save slot. Defaults to 0.</dd>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class STLTimeStamps():
-    &#34;&#34;&#34;An object for storing and managing Star Trek: Legends timestamps.
+    &#34;&#34;&#34;Stores and manages *Star Trek: Legends* timestamps.
 
     Each instance is associated to a specific save slot in a particular
     user&#39;s save file.
@@ -446,6 +450,9 @@ player's inventory.</dd>
 <dt><strong><code>favorites</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
 <dd>A list of
 characters the player has marked as 'favorite'.</dd>
+<dt><strong><code>inventory</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int</code>} A dictionary mapping an item ID
+to quantity of that item in the player's inventory.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -464,6 +471,8 @@ characters the player has marked as 'favorite'.</dd>
             player&#39;s inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as &#39;favorite&#39;.
+        inventory (dict): {`str`:`int`} A dictionary mapping an item ID
+            to quantity of that item in the player&#39;s inventory. 
 
     &#34;&#34;&#34;
 
@@ -472,6 +481,7 @@ characters the player has marked as 'favorite'.</dd>
         self.roster = Roster()
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
+        self.inventory = {}
 
     def fromFile(self, save, slot):
         &#34;&#34;&#34;Uses the given save data to population the calling instance&#39;s
@@ -496,6 +506,7 @@ characters the player has marked as 'favorite'.</dd>
         self.roster.fromSaveData(save, slot)
         for nameID in self.tokens:
             self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
+        self.inventory = save[key][&#39;items&#39;]
 
     def sort(self, func, descending=True):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the `roster`
@@ -564,7 +575,8 @@ or if the given save slot data is empty.</dd>
     self.timestamps.fromSaveData(save, slot)
     self.roster.fromSaveData(save, slot)
     for nameID in self.tokens:
-        self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)</code></pre>
+        self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
+    self.inventory = save[key][&#39;items&#39;]</code></pre>
 </details>
 </dd>
 <dt id="legends.saveslot.SaveSlot.sort"><code class="name flex">

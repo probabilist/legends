@@ -36,6 +36,7 @@ The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 
 import tkinter as tk
 from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
+from legends.constants import ITEMS
 from legends.savefile import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
@@ -143,6 +144,8 @@ class STLPlanner(tk.Tk):
             command=self.setTimestamps
         )
         self.disableOnModal.append((sessionMenu, 0))
+        sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+        self.disableOnModal.append((sessionMenu, 1))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -219,6 +222,41 @@ class STLPlanner(tk.Tk):
             self.session.makeTimeBar()
         else:
             self.session.removeTimeBar()
+
+    def inventory(self):
+        &#34;&#34;&#34;Prints the inventory of the save slot associated with the
+        current session to the console. Organizes the data by category.
+        Ignores the categories &#39;Token&#39;, &#39;PlayerAvatar&#39;, and &#39;Emote&#39;.
+        Ignores a number of other items that are either not relevant to
+        the current implementation of *Star Trek: Legends*, or are not
+        relevant to the *STL Planner* app.
+        &#34;&#34;&#34;
+        # TODO: Replace with a dialog window. &lt;&gt;
+        ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
+        ignoredItemIDs = [
+            &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
+            &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
+            &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
+            &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
+            &#39;Shards_McCoy&#39;
+        ]
+        categories = []
+        for item in ITEMS.values():
+            cat = item.category
+            if cat in ignoredCategories:
+                continue
+            if cat not in categories:
+                categories.append(cat)
+        print(categories)
+        for cat in categories:
+            print(&#39;# {}&#39;.format(cat))
+            for itemID, qty in self.session.saveslot.inventory.items():
+                if itemID in ignoredItemIDs:
+                    continue
+                item = ITEMS[itemID]
+                if item.category == cat:
+                    print(&#39;    * {}: {}&#39;.format(item.name, qty))
+
 
 class Session(tk.Frame):
     &#34;&#34;&#34;A user session in the *STL Planner* app.
@@ -500,6 +538,8 @@ constructor.</p></div>
             command=self.setTimestamps
         )
         self.disableOnModal.append((sessionMenu, 0))
+        sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+        self.disableOnModal.append((sessionMenu, 1))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -575,7 +615,41 @@ constructor.</p></div>
         if self.showTimestamps.get():
             self.session.makeTimeBar()
         else:
-            self.session.removeTimeBar()</code></pre>
+            self.session.removeTimeBar()
+
+    def inventory(self):
+        &#34;&#34;&#34;Prints the inventory of the save slot associated with the
+        current session to the console. Organizes the data by category.
+        Ignores the categories &#39;Token&#39;, &#39;PlayerAvatar&#39;, and &#39;Emote&#39;.
+        Ignores a number of other items that are either not relevant to
+        the current implementation of *Star Trek: Legends*, or are not
+        relevant to the *STL Planner* app.
+        &#34;&#34;&#34;
+        # TODO: Replace with a dialog window. &lt;&gt;
+        ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
+        ignoredItemIDs = [
+            &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
+            &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
+            &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
+            &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
+            &#39;Shards_McCoy&#39;
+        ]
+        categories = []
+        for item in ITEMS.values():
+            cat = item.category
+            if cat in ignoredCategories:
+                continue
+            if cat not in categories:
+                categories.append(cat)
+        print(categories)
+        for cat in categories:
+            print(&#39;# {}&#39;.format(cat))
+            for itemID, qty in self.session.saveslot.inventory.items():
+                if itemID in ignoredItemIDs:
+                    continue
+                item = ITEMS[itemID]
+                if item.category == cat:
+                    print(&#39;    * {}: {}&#39;.format(item.name, qty))</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -680,6 +754,8 @@ it.</p>
         command=self.setTimestamps
     )
     self.disableOnModal.append((sessionMenu, 0))
+    sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+    self.disableOnModal.append((sessionMenu, 1))
 
     # build and populate the Help menu
     helpMenu = tk.Menu(menuBar)
@@ -688,6 +764,55 @@ it.</p>
         label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
     )
     self.disableOnModal.append((helpMenu, 0))</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.inventory"><code class="name flex">
+<span>def <span class="ident">inventory</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prints the inventory of the save slot associated with the
+current session to the console. Organizes the data by category.
+Ignores the categories 'Token', 'PlayerAvatar', and 'Emote'.
+Ignores a number of other items that are either not relevant to
+the current implementation of <em>Star Trek: Legends</em>, or are not
+relevant to the <em>STL Planner</em> app.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def inventory(self):
+    &#34;&#34;&#34;Prints the inventory of the save slot associated with the
+    current session to the console. Organizes the data by category.
+    Ignores the categories &#39;Token&#39;, &#39;PlayerAvatar&#39;, and &#39;Emote&#39;.
+    Ignores a number of other items that are either not relevant to
+    the current implementation of *Star Trek: Legends*, or are not
+    relevant to the *STL Planner* app.
+    &#34;&#34;&#34;
+    # TODO: Replace with a dialog window. &lt;&gt;
+    ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
+    ignoredItemIDs = [
+        &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
+        &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
+        &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
+        &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
+        &#39;Shards_McCoy&#39;
+    ]
+    categories = []
+    for item in ITEMS.values():
+        cat = item.category
+        if cat in ignoredCategories:
+            continue
+        if cat not in categories:
+            categories.append(cat)
+    print(categories)
+    for cat in categories:
+        print(&#39;# {}&#39;.format(cat))
+        for itemID, qty in self.session.saveslot.inventory.items():
+            if itemID in ignoredItemIDs:
+                continue
+            item = ITEMS[itemID]
+            if item.category == cat:
+                print(&#39;    * {}: {}&#39;.format(item.name, qty))</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.stlplanner.STLPlanner.newFromFile"><code class="name flex">
@@ -1121,6 +1246,7 @@ the <code>tab</code> attribute.</p></div>
 <ul class="two-column">
 <li><code><a title="legends.ui.stlplanner.STLPlanner.askCloseSession" href="#legends.ui.stlplanner.STLPlanner.askCloseSession">askCloseSession</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.buildMenu" href="#legends.ui.stlplanner.STLPlanner.buildMenu">buildMenu</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.inventory" href="#legends.ui.stlplanner.STLPlanner.inventory">inventory</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.menuEnabled" href="#legends.ui.stlplanner.STLPlanner.menuEnabled">menuEnabled</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newFromFile" href="#legends.ui.stlplanner.STLPlanner.newFromFile">newFromFile</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newMaxChars" href="#legends.ui.stlplanner.STLPlanner.newMaxChars">newMaxChars</a></code></li>
