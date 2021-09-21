@@ -26896,7 +26896,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "Votre \u00e9quipe <color=#FFCE00>r\u00e9cup\u00e8re</color> {0} % des PV pour le prochain combat de survie."
+            "value": "Votre \u00e9quipe <color=#FFCE00>r\u00e9cup\u00e8re</color> 50 % des PV pour le prochain combat de survie."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26912,7 +26912,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "Votre \u00e9quipe <color=#FFCE00>r\u00e9g\u00e9n\u00e8re</color> {0} % des PV pour les prochains combats de survie."
+            "value": "Votre \u00e9quipe <color=#FFCE00>r\u00e9g\u00e9n\u00e8re</color> 10 % des PV pour les prochains combats de survie."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26940,19 +26940,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+5 % d'attaque</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+5 % d'attaque</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+10 % d'attaque</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+10 % d'attaque</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+15 % d'attaque</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+15 % d'attaque</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+20 % d'attaque</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+20 % d'attaque</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26960,39 +26960,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+5 % de d\u00e9fense</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+5 % de d\u00e9fense</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+10 % de d\u00e9fense</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+10 % de d\u00e9fense</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+15 % de d\u00e9fense</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+15 % de d\u00e9fense</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+20 % de d\u00e9fense</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+20 % de d\u00e9fense</color> lors des combats de survie."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "Bonus De Sant\u00e9"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+5 % de PV</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+5 % de PV</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+10 % de PV</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+10 % de PV</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+15 % de PV</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+15 % de PV</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+20 % de PV</b> lors des combats de survie."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "Bonus De Sant\u00e9"
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+20 % de PV</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27004,19 +27004,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+            "value": "D\u00e9verrouiller <color=#01e2ff>+1 emplacement de r\u00e9serve</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+            "value": "D\u00e9verrouiller <color=#01e2ff>+1 emplacement de r\u00e9serve</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+            "value": "D\u00e9verrouiller <color=#01e2ff>+1 emplacement de r\u00e9serve</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "D\u00e9verrouiller 1 <i>emplacement de r\u00e9serve</i>."
+            "value": "D\u00e9verrouiller <color=#01e2ff>+1 emplacement de r\u00e9serve</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27024,19 +27024,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Commencer avec <b>50 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+            "value": "Commencer avec <color=#01e2ff>125 boucliers</color> pendant 3 tours lors de chaque combat de survie."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Commencer avec <b>100 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+            "value": "Commencer avec <color=#01e2ff>250 boucliers</color> pendant 3 tours lors de chaque combat de survie."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Commencer avec <b>150 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+            "value": "Commencer avec <color=#01e2ff>375 boucliers</color> pendant 3 tours lors de chaque combat de survie."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Commencer avec <b>200 boucliers</b> pendant 3 tours lors de chaque combat de survie."
+            "value": "Commencer avec <color=#01e2ff>500 boucliers</color> pendant 3 tours lors de chaque combat de survie."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27044,19 +27044,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+5 % de tech</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+5 % de tech</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+10 % de tech</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+10 % de tech</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+15 % de tech</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+15 % de tech</color> lors des combats de survie."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "B\u00e9n\u00e9ficier de <b>+20 % de tech</b> lors des combats de survie."
+            "value": "B\u00e9n\u00e9ficier de <color=#01e2ff>+20 % de tech</color> lors des combats de survie."
         },
         {
             "key": "e1_ending_00",
@@ -31560,7 +31560,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "Veuillez s\u00e9lectionner un <b>chemin</b> pour continuer."
+            "value": "Veuillez s\u00e9lectionner un <color=#F3E54D>chemin</color> pour continuer."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31580,7 +31580,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "Veuillez s\u00e9lectionner un <b>booster</b> pour continuer."
+            "value": "Veuillez s\u00e9lectionner un <color=#F3E54D>booster</color> pour continuer."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31593,6 +31593,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "Aucun emplacement de r\u00e9serve disponible. S\u00e9lectionnez un booster bonus."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Renfort"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32879,6 +32883,10 @@
             "value": "RETOURNER SUR LE PONT\u00a0?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "CHOIX"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "COMBAT"
         },
@@ -32891,8 +32899,16 @@
             "value": "EXPLORATION"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "BOOSTER"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "RESSOURCE"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "DIVISION"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33289,6 +33305,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "Vous ne pouvez pas jouer en JcJ ou en alliance en mode hors ligne. Red\u00e9marrez le jeu et autorisez le t\u00e9l\u00e9chargement des mises \u00e0 jour importantes lorsqu'on vous le demandera."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "Fuir le combat fera \u00e9chouer votre niveau actuelle.  <b>Voulez-vous vraiment continuer\u00a0?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34273,6 +34293,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Appuyer sur {0} pour utiliser le cri de guerre de Worf"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "Ouvrir pour voir les <color=#fff15c>SURVIE</color>"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "Ouvrir pour voir les <color=#fff15c>AM\u00c9LIORATIONS</color>"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

@@ -186,7 +186,7 @@ ENABLED = [
     # pylint: disable-next=undefined-variable
     nameID for nameID, data in GSCharacter.items() if data['Type'] == 'Normal'
 ]
-UPCOMING = ['Tuvok', 'Gowron', 'JadziaDax', 'PicardOld']
+UPCOMING = ['Tuvok', 'Gowron', 'JadziaDax', 'PicardOld', 'JudgeQ']
 
 # initialize SUMMON_POOL and SUMMON_POOL_IDS
 SUMMON_POOL = {'Core': {'nameIDs': {}}}

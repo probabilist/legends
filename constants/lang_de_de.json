@@ -26896,7 +26896,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "Dein Team <color=#FFCE00>heilt</color> f\u00fcr den n\u00e4chsten \u00dcberlebenskampf {0} % LP."
+            "value": "Dein Team <color=#FFCE00>heilt</color> f\u00fcr den n\u00e4chsten \u00dcberlebenskampf 50 % LP."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26912,7 +26912,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "Dein Team <color=#FFCE00>regeneriert</color> f\u00fcr kommende \u00dcberlebensk\u00e4mpfe {0} % LP."
+            "value": "Dein Team <color=#FFCE00>regeneriert</color> f\u00fcr kommende \u00dcberlebensk\u00e4mpfe 10 % LP."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26940,19 +26940,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "Erhalte <b>+5 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+5 % ANGREIFEN</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "Erhalte <b>+10 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+10 % ANGREIFEN</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "Erhalte <b>+15 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+15 % ANGREIFEN</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "Erhalte <b>+20 % ANGREIFEN</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+20 % ANGREIFEN</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26960,39 +26960,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "Erhalte <b>+5 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+5 % VERTEIDIGUNG</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "Erhalte <b>+10 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+10 % VERTEIDIGUNG</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "Erhalte <b>+15 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+15 % VERTEIDIGUNG</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "Erhalte <b>+20 % VERTEIDIGUNG</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+20 % VERTEIDIGUNG</color> in \u00dcberlebensk\u00e4mpfen."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "Gesundheitsbonus"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "Erhalte <b>+5 % LP</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+5 % LP</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "Erhalte <b>+10 % LP</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+10 % LP</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "Erhalte <b>+15 % LP</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+15 % LP</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "Erhalte <b>+20 % LP</b> in \u00dcberlebensk\u00e4mpfen."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "Gesundheitsbonus"
+            "value": "Erhalte <color=#01e2ff>+20 % LP</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27004,19 +27004,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+            "value": "Schalte <color=#01e2ff>+1 Reserveplatz</color> frei."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+            "value": "Schalte <color=#01e2ff>+1 Reserveplatz</color> frei."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+            "value": "Schalte <color=#01e2ff>+1 Reserveplatz</color> frei."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "Schalte 1 <i>Reserveplatz</i> frei."
+            "value": "Schalte <color=#01e2ff>+1 Reserveplatz</color> frei."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27024,19 +27024,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>50 Schilden</b>."
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <color=#01e2ff>125 Schilden</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>100 Schilden</b>."
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <color=#01e2ff>250 Schilden</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>150 Schilden</b>."
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <color=#01e2ff>375 Schilden</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <b>200 Schilden</b>."
+            "value": "Beginne jeden \u00dcberlebenskampf 3 Runden lang mit <color=#01e2ff>500 Schilden</color>."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27044,19 +27044,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "Erhalte <b>+5 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+5 % TECH</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "Erhalte <b>+10 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+10 % TECH</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "Erhalte <b>+15 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+15 % TECH</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "Erhalte <b>+20 % TECH</b> in \u00dcberlebensk\u00e4mpfen."
+            "value": "Erhalte <color=#01e2ff>+20 % TECH</color> in \u00dcberlebensk\u00e4mpfen."
         },
         {
             "key": "e1_ending_00",
@@ -31560,7 +31560,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "Bitte w\u00e4hle einen <b>Weg</b>, um fortzufahren."
+            "value": "Bitte w\u00e4hle einen <color=#F3E54D>Weg</color>, um fortzufahren."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31580,7 +31580,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "Bitte w\u00e4hle ein <b>Power-Up</b>, um fortzufahren."
+            "value": "Bitte w\u00e4hle ein <color=#F3E54D>Power-Up</color>, um fortzufahren."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31593,6 +31593,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "Keine Reservepl\u00e4tze verf\u00fcgbar. W\u00e4hle ein Bonus-Power-Up."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Verst\u00e4rkung"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32879,6 +32883,10 @@
             "value": "ZUR BR\u00dcCKE ZUR\u00dcCKKEHREN?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "AUSWAHL"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "KAMPF"
         },
@@ -32891,8 +32899,16 @@
             "value": "ERKUNDEN"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "POWER-UP"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "RESSOURCE"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "GABELUNG"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33289,6 +33305,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "Du kannst offline weder PvP noch Allianzen spielen. Bitte starte das Spiel neu und akzeptiere die Anfrage nach notwendigen Updates, wenn sie erscheint."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "Du Flucht aus dem Kampf f\u00fchrt zum Fehlschlag deiner aktuellen level.  <b>Bist du sicher, dass du dies tun willst?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34273,6 +34293,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Dr\u00fccke {0}, um Worfs Schlachtruf zu verwenden"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "\u00d6ffnen, um die <color=#fff15c>\u00dcBERLEBEN</color> anzusehen"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "\u00d6ffnen, um die <color=#fff15c>AUFWERTUNGEN</color> anzusehen"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

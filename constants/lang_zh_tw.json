@@ -26896,7 +26896,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "\u5728\u63a5\u4e0b\u4f86\u7684\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4f60\u7684\u5718\u968a<color=#FFCE00>\u6cbb\u7642</color> {0}% HP\u3002"
+            "value": "\u5728\u63a5\u4e0b\u4f86\u7684\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4f60\u7684\u5718\u968a<color=#FFCE00>\u6cbb\u7642</color> 50% HP\u3002"
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26912,7 +26912,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "\u5728\u63a5\u4e0b\u4f86\u7684\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4f60\u7684\u5718\u968a<color=#FFCE00>\u518d\u751f</color> {0}% HP\u3002"
+            "value": "\u5728\u63a5\u4e0b\u4f86\u7684\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4f60\u7684\u5718\u968a<color=#FFCE00>\u518d\u751f</color> 10% HP\u3002"
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26940,19 +26940,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+5%\u653b\u64ca\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+5%\u653b\u64ca\u529b</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+10%\u653b\u64ca\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+10%\u653b\u64ca\u529b</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+15%\u653b\u64ca\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+15%\u653b\u64ca\u529b</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+20%\u653b\u64ca\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+20%\u653b\u64ca\u529b</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26960,39 +26960,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+5%\u9632\u79a6\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+5%\u9632\u79a6\u529b</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+10%\u9632\u79a6\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+10%\u9632\u79a6\u529b</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+15%\u9632\u79a6\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+15%\u9632\u79a6\u529b</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+20%\u9632\u79a6\u529b</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+20%\u9632\u79a6\u529b</color>\u3002"
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "\u751f\u547d\u503c\u734e\u52f5"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+5%HP</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+5%HP</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+10%HP</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+10%HP</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+15%HP</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+15%HP</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+20%HP</b>\u3002"
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "\u751f\u547d\u503c\u734e\u52f5"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+20%HP</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27004,19 +27004,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "\u89e3\u93961 <i>\u5132\u5099\u6b04</i>\u3002"
+            "value": "\u89e3\u9396<color=#01e2ff>+1 \u5132\u5099\u6b04</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "\u89e3\u93961 <i>\u5132\u5099\u6b04</i>\u3002"
+            "value": "\u89e3\u9396<color=#01e2ff>+1 \u5132\u5099\u6b04</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "\u89e3\u93961 <i>\u5132\u5099\u6b04</i>\u3002"
+            "value": "\u89e3\u9396<color=#01e2ff>+1 \u5132\u5099\u6b04</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "\u89e3\u93961 <i>\u5132\u5099\u6b04</i>\u3002"
+            "value": "\u89e3\u9396<color=#01e2ff>+1 \u5132\u5099\u6b04</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27024,19 +27024,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<b>50\u500b\u8b77\u76fe</b>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
+            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<color=#01e2ff>125\u500b\u8b77\u76fe</color>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<b>100\u500b\u8b77\u76fe</b>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
+            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<color=#01e2ff>250\u500b\u8b77\u76fe</color>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<b>150\u500b\u8b77\u76fe</b>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
+            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<color=#01e2ff>375\u500b\u8b77\u76fe</color>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<b>200\u500b\u8b77\u76fe</b>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
+            "value": "\u6bcf\u5834\u751f\u5b58\u6230\u9b25\u4e2d\uff0c\u4ee5<color=#01e2ff>500\u500b\u8b77\u76fe</color>\u958b\u59cb\uff0c\u6301\u7e8c3\u56de\u5408\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27044,19 +27044,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+5%\u79d1\u6280</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+5%\u79d1\u6280</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+10%\u79d1\u6280</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+10%\u79d1\u6280</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+15%\u79d1\u6280</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+15%\u79d1\u6280</color>\u3002"
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<b>+20%\u79d1\u6280</b>\u3002"
+            "value": "\u5728\u751f\u5b58\u6230\u9b25\u4e2d\u5f97\u5230<color=#01e2ff>+20%\u79d1\u6280</color>\u3002"
         },
         {
             "key": "e1_ending_00",
@@ -31560,7 +31560,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "\u8acb\u9078\u64c7\u4e00\u689d<b>\u8def\u7dda</b>\u7e7c\u7e8c\u3002"
+            "value": "\u8acb\u9078\u64c7\u4e00\u689d<color=#F3E54D>\u8def\u7dda</color>\u7e7c\u7e8c\u3002"
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31580,7 +31580,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "\u8acb\u9078\u64c7\u4e00\u500b<b>\u5f37\u5316\u9053\u5177</b>\u7e7c\u7e8c\u3002"
+            "value": "\u8acb\u9078\u64c7\u4e00\u500b<color=#F3E54D>\u5f37\u5316\u9053\u5177</color>\u7e7c\u7e8c\u3002"
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31593,6 +31593,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "\u7121\u53ef\u7528\u7684\u5132\u5099\u6b04\u3002\u9078\u64c7\u4e00\u500b\u734e\u52f5\u7684\u5f37\u5316\u9053\u5177\u3002"
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "\u63f4\u8ecd"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32879,6 +32883,10 @@
             "value": "\u78ba\u5b9a\u8981\u8fd4\u56de\u8266\u6a4b\uff1f"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "\u9078\u64c7"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "\u6230\u9b25"
         },
@@ -32891,8 +32899,16 @@
             "value": "\u63a2\u7d22"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "\u5f37\u5316\u9053\u5177"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "\u8cc7\u6e90"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "\u5206\u958b"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33289,6 +33305,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "\u96e2\u7dda\u6642\u7121\u6cd5\u904a\u73a9PvP\u6216\u806f\u8ecd\u3002\u8acb\u91cd\u555f\u904a\u6232\uff0c\u4e26\u5728\u63d0\u793a\u6642\u540c\u610f\u4e0b\u8f09\u95dc\u9375\u66f4\u65b0\u3002"
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "\u9003\u96e2\u6230\u9b25\u6703\u4f7f\u7576\u524d\u500b\u95dc\u5361\u5931\u6557\u3002 <b>\u4f60\u78ba\u5b9a\u8981\u96e2\u958b\u6230\u9b25\uff1f</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34273,6 +34293,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "\u6309\u4e0b {0} \u4f7f\u7528\u6c83\u723e\u592b\u7684 \u6230\u543c"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "\u958b\u555f\u4ee5\u6aa2\u8996<color=#fff15c>\u751f\u5b58</color>"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "\u958b\u555f\u4ee5\u6aa2\u8996<color=#fff15c>\u5347\u7d1a</color>"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

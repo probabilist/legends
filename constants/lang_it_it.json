@@ -26896,7 +26896,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "La tua squadra <color=#FFCE00>recupera</color> il {0}% di PS per la prossima battaglia di Sopravvivenza."
+            "value": "La tua squadra <color=#FFCE00>recupera</color> il 50% di PS per la prossima battaglia di Sopravvivenza."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26912,7 +26912,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "La tua squadra <color=#FFCE00>rigenera</color> il {0}% di PS per le prossime battaglie di Sopravvivenza."
+            "value": "La tua squadra <color=#FFCE00>rigenera</color> il 10% di PS per le prossime battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26940,19 +26940,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "Ricevi <b>+5% Attacco</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+5% Attacco</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "Ricevi <b>+10% Attacco</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+10% Attacco</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "Ricevi <b>+15% Attacco</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+15% Attacco</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "Ricevi <b>+20% Attacco</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+20% Attacco</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26960,39 +26960,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "Ricevi <b>+5% Difesa</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+5% Difesa</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "Ricevi <b>+10% Difesa</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+10% Difesa</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "Ricevi <b>+15% Difesa</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+15% Difesa</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "Ricevi <b>+20% Difesa</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+20% Difesa</color> nelle battaglie di Sopravvivenza."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "Bonus Salute"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "Ricevi <b>+5% PS</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+5% PS</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "Ricevi <b>+10% PS</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+10% PS</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "Ricevi <b>+15% PS</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+15% PS</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "Ricevi <b>+20% PS</b> nelle battaglie di Sopravvivenza."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "Bonus Salute"
+            "value": "Ricevi <color=#01e2ff>+20% PS</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27004,19 +27004,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "Sblocca 1 <i>Slot riserva</i>."
+            "value": "Sblocca <color=#01e2ff>+1 Slot riserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "Sblocca 1 <i>Slot riserva</i>."
+            "value": "Sblocca <color=#01e2ff>+1 Slot riserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "Sblocca 1 <i>Slot riserva</i>."
+            "value": "Sblocca <color=#01e2ff>+1 Slot riserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "Sblocca 1 <i>Slot riserva</i>."
+            "value": "Sblocca <color=#01e2ff>+1 Slot riserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27024,19 +27024,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Inizia con <b>50 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+            "value": "Inizia con <color=#01e2ff>125 Scudi</color> per 3 turni in ogni battaglia di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Inizia con <b>100 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+            "value": "Inizia con <color=#01e2ff>250 Scudi</color> per 3 turni in ogni battaglia di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Inizia con <b>150 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+            "value": "Inizia con <color=#01e2ff>375 Scudi</color> per 3 turni in ogni battaglia di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Inizia con <b>200 Scudi</b> per 3 turni in ogni battaglia di Sopravvivenza."
+            "value": "Inizia con <color=#01e2ff>500 Scudi</color> per 3 turni in ogni battaglia di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27044,19 +27044,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "Ricevi <b>+5% Tech</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+5% Tech</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "Ricevi <b>+10% Tech</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+10% Tech</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "Ricevi <b>+15% Tech</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+15% Tech</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "Ricevi <b>+20% Tech</b> nelle battaglie di Sopravvivenza."
+            "value": "Ricevi <color=#01e2ff>+20% Tech</color> nelle battaglie di Sopravvivenza."
         },
         {
             "key": "e1_ending_00",
@@ -31560,7 +31560,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "Seleziona un <b>percorso</b> per procedere."
+            "value": "Seleziona un <color=#F3E54D>percorso</color> per procedere."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31580,7 +31580,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "Seleziona un <b>power-up</b> per procedere."
+            "value": "Seleziona un <color=#F3E54D>power-up</color> per procedere."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31593,6 +31593,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "Nessuno Slot riserva disponibile. Scegli un power-up bonus."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Rinforzo"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32879,6 +32883,10 @@
             "value": "TORNARE AL PONTE?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "SCELTA"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "BATTAGLIA"
         },
@@ -32891,8 +32899,16 @@
             "value": "ESPLORA"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "POWER-UP"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "RISORSA"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "DIVISIONE"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33289,6 +33305,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "Non puoi giocare offline in PvP o in un'Alleanza. Riavvia il gioco e accetta la richiesta di scaricare gli aggiornamenti critici."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "La tua livello attuale sar\u00e0 considerata fallita se fuggirai dalla battaglia.  <b>Confermi?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34273,6 +34293,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Premi {0} per usare il Grido di battaglia di Worf"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "Apri per vedere le <color=#fff15c>SOPRAVVIVENZA</color>"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "Apri per vedere le <color=#fff15c>MIGLIORAMENTI</color>"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

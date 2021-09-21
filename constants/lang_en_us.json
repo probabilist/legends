@@ -107,106 +107,6 @@
             "value": ""
         },
         {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
-            "key": "",
-            "value": ""
-        },
-        {
             "key": "Accessories_Autosell_Button_Confirm",
             "value": "CONFIRM"
         },
@@ -2119,6 +2019,10 @@
             "value": "Join"
         },
         {
+            "key": "Common_JudgeQ",
+            "value": "Q"
+        },
+        {
             "key": "Common_Khan",
             "value": "Khan"
         },
@@ -2919,6 +2823,14 @@
             "value": "Synthetics"
         },
         {
+            "key": "Common_Tag_Q",
+            "value": "Q"
+        },
+        {
+            "key": "Common_Tag_QContinuum",
+            "value": "Q Continuum"
+        },
+        {
             "key": "Common_Tag_Romulan",
             "value": "Romulan"
         },
@@ -3255,6 +3167,10 @@
             "value": "The famous captain of the U.S.S. Voyager. Her tenacity and brilliance helped save her ragtag crew as they ventured deeper into uncharted space than any previous Starfleet vessel."
         },
         {
+            "key": "Data_Character_JudgeQ_description",
+            "value": "TBD"
+        },
+        {
             "key": "Data_Character_Khan_description",
             "value": "A 20th century Augment dictator woken from cryosleep by the crew of the U.S.S. Enterprise centuries later. Gifted by a eugenics program that made him smarter, faster and stronger than regular men... but far more arrogant."
         },
@@ -3284,7 +3200,7 @@
         },
         {
             "key": "Data_Character_Nine_description",
-            "value": "Assimilated by the Borg as a child, Seven is one of the few survivors of the Borg's brutality. Her remaining cybernatic enhancements make as lethal in combat as she is brilliant in strategy."
+            "value": "Assimilated by the Borg as a child, Seven is one of the few survivors of the Borg's brutality. Her remaining cybernatic enhancements make her as lethal in combat as she is brilliant in strategy."
         },
         {
             "key": "Data_Character_Odo_description",
@@ -13200,7 +13116,7 @@
         },
         {
             "key": "Data_GSCutSceneDialogue_e7_m6_battle12_post_02",
-            "value": "Maybe. The Nexus might be nothing more a misguided and hubristic creation of an ancient civilization, ensnaring anyone caught within it."
+            "value": "Maybe. The Nexus might be nothing more than a misguided and hubristic creation of an ancient civilization, ensnaring anyone caught within it."
         },
         {
             "key": "Data_GSCutSceneDialogue_e7_m6_battle12_post_03",
@@ -23731,6 +23647,62 @@
             "value": "Defense Pierce"
         },
         {
+            "key": "Data_Skill_JudgeQ_Attack_description_level1",
+            "value": "Deal <color=#01e2ff>100% Damage</color> (<color=#01e2ff>10% Chance -1 Morale</color>)."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Attack_description_level2",
+            "value": "Deal <color=#01e2ff>125% Damage</color> (<color=#01e2ff>25% Chance -1 Morale</color>)."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Attack_displayName",
+            "value": "Prosecute"
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Bridge_description",
+            "value": "TBD"
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Bridge_displayName",
+            "value": "Helping Hand"
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill1_description_level1",
+            "value": "<color=#01e2ff>Stun</color> for 3 turns and <color=#01e2ff>50% Chance -1 Morale</color> to 1 enemy."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill1_description_level2",
+            "value": "<color=#01e2ff>Stun</color> for 3 turns and <color=#01e2ff>-1 Morale</color> to 1 enemy."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill1_displayName",
+            "value": "Silence"
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill2_description_level1",
+            "value": "<color=#01e2ff>Skill Lock</color> and <color=#01e2ff>Attack Down</color> for 3 turns to 1 enemy."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill2_description_level2",
+            "value": "<color=#01e2ff>Skill Lock</color>, <color=#01e2ff>Attack Down</color>, and <color=#01e2ff>Defense Down</color> for 3 turns to 1 enemy."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill2_displayName",
+            "value": "Inferior Being"
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill3_description_level1",
+            "value": "Deal <color=#01e2ff>100% Damage</color>, <color=#01e2ff>-1 Morale</color>, and <color=#01e2ff>Purge</color> to all enemies."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill3_description_level2",
+            "value": "Deal <color=#01e2ff>200% Damage</color>, <color=#01e2ff>-2 Morale</color>, and <color=#01e2ff>Purge</color> to all enemies."
+        },
+        {
+            "key": "Data_Skill_JudgeQ_Skill3_displayName",
+            "value": "Guilty"
+        },
+        {
             "key": "Data_Skill_Khan_Attack_description_level1",
             "value": "Deal <color=#01e2ff>2 x 50% Damage</color>."
         },
@@ -27144,7 +27116,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "Your team <color=#FFCE00>Heals</color> {0}% HP for the next Survival battle."
+            "value": "Your team <color=#FFCE00>Heals</color> 50% HP for the next Survival battle."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -27160,7 +27132,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "Your team <color=#FFCE00>Regenerates</color> {0}% HP for upcoming Survival battles."
+            "value": "Your team <color=#FFCE00>Regenerates</color> 10% HP for upcoming Survival battles."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -27188,19 +27160,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "Gain <b>+5% Attack</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+5% Attack</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "Gain <b>+10% Attack</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+10% Attack</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "Gain <b>+15% Attack</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+15% Attack</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "Gain <b>+20% Attack</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+20% Attack</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -27208,39 +27180,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "Gain <b>+5% Defense</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+5% Defense</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "Gain <b>+10% Defense</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+10% Defense</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "Gain <b>+15% Defense</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+15% Defense</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "Gain <b>+20% Defense</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+20% Defense</color> in Survival battles."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "Health Bonus"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "Gain <b>+5% Health</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+5% Health</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "Gain <b>+10% Health</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+10% Health</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "Gain <b>+15% Health</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+15% Health</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "Gain <b>+20% Health</b> in Survival battles."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "Health Bonus"
+            "value": "Gain <color=#01e2ff>+20% Health</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27252,19 +27224,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "Unlock 1 <i>Reserve Slot</i>."
+            "value": "Unlock <color=#01e2ff>+1 Reserve Slot</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "Unlock 1 <i>Reserve Slot</i>."
+            "value": "Unlock <color=#01e2ff>+1 Reserve Slot</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "Unlock 1 <i>Reserve Slot</i>."
+            "value": "Unlock <color=#01e2ff>+1 Reserve Slot</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "Unlock 1 <i>Reserve Slot</i>."
+            "value": "Unlock <color=#01e2ff>+1 Reserve Slot</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27272,19 +27244,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Start with <b>50 Shields</b> for 3 turns in every Survival battle."
+            "value": "Start with <color=#01e2ff>125 Shields</color> for 3 turns in every Survival battle."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Start with <b>100 Shields</b> for 3 turns in every Survival battle."
+            "value": "Start with <color=#01e2ff>250 Shields</color> for 3 turns in every Survival battle."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Start with <b>150 Shields</b> for 3 turns in every Survival battle."
+            "value": "Start with <color=#01e2ff>375 Shields</color> for 3 turns in every Survival battle."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Start with <b>200 Shields</b> for 3 turns in every Survival battle."
+            "value": "Start with <color=#01e2ff>500 Shields</color> for 3 turns in every Survival battle."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27292,19 +27264,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "Gain <b>+5% Tech</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+5% Tech</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "Gain <b>+10% Tech</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+10% Tech</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "Gain <b>+15% Tech</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+15% Tech</color> in Survival battles."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "Gain <b>+20% Tech</b> in Survival battles."
+            "value": "Gain <color=#01e2ff>+20% Tech</color> in Survival battles."
         },
         {
             "key": "e1_ending_00",
@@ -31812,7 +31784,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "Please select a <b>Path</b> to proceed."
+            "value": "Please select a <color=#F3E54D>Path</color> to proceed."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31832,7 +31804,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "Please select a <b>Power-Up</b> to proceed."
+            "value": "Please select a <color=#F3E54D>Power-Up</color> to proceed."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31845,6 +31817,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "No Reserve Slots are available. Choose a bonus Power-Up."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Reinforcement"
         },
         {
             "key": "UI_Dungeon_ReinforcementUnlocked",
@@ -33139,6 +33115,10 @@
             "value": "RETURN TO BRIDGE?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "CHOICE"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "COMBAT"
         },
@@ -33151,8 +33131,16 @@
             "value": "EXPLORE"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "POWER-UP"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "RESOURCE"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "SPLIT"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33549,6 +33537,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "You can't play PVP or Alliances while offline. Please restart the game and agree to download critical updates when prompted."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "Fleeing from combat will fail your current level.  <b>Are you sure you want to do this?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34533,6 +34525,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Press {0} to use Worf's Battle Cry"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "Open to view <color=#fff15c>SURVIVAL</color>"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "Open to view <color=#fff15c>UPGRADES</color>"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

@@ -26896,7 +26896,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "Sua equipe <color=#FFCE00>cura</color> {0}% do PV na pr\u00f3xima batalha de sobreviv\u00eancia."
+            "value": "Sua equipe <color=#FFCE00>cura</color> 50% do PV na pr\u00f3xima batalha de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26912,7 +26912,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "Sua equipe <color=#FFCE00>regenera</color> {0}% do PV nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
+            "value": "Sua equipe <color=#FFCE00>regenera</color> 10% do PV nas pr\u00f3ximas batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26940,19 +26940,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "Ganhe <b>+5% de ataque</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+5% de ataque</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "Ganhe <b>+10% de ataque</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+10% de ataque</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "Ganhe <b>+15% de ataque</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+15% de ataque</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "Ganhe <b>+20% de ataque</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+20% de ataque</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26960,39 +26960,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "Ganhe <b>+5% de defesa</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+5% de defesa</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "Ganhe <b>+10% de defesa</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+10% de defesa</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "Ganhe <b>+15% de defesa</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+15% de defesa</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "Ganhe <b>+20% de defesa</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+20% de defesa</color> em batalhas de sobreviv\u00eancia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "B\u00f4nus De Vida"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "Ganhe <b>+5% de PV</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+5% de PV</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "Ganhe <b>+10% de PV</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+10% de PV</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "Ganhe <b>+15% de PV</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+15% de PV</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "Ganhe <b>+20% de PV</b> em batalhas de sobreviv\u00eancia."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "B\u00f4nus De Vida"
+            "value": "Ganhe <color=#01e2ff>+20% de PV</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27004,19 +27004,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+            "value": "Desbloqueie <color=#01e2ff>+1 espa\u00e7o reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+            "value": "Desbloqueie <color=#01e2ff>+1 espa\u00e7o reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+            "value": "Desbloqueie <color=#01e2ff>+1 espa\u00e7o reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "Desbloqueie 1 <i>espa\u00e7o reserva</i>."
+            "value": "Desbloqueie <color=#01e2ff>+1 espa\u00e7o reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27024,19 +27024,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Comece com <b>50 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+            "value": "Comece com <color=#01e2ff>125 escudos</color> por 3 turnos em cada batalha de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Comece com <b>100 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+            "value": "Comece com <color=#01e2ff>250 escudos</color> por 3 turnos em cada batalha de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Comece com <b>150 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+            "value": "Comece com <color=#01e2ff>375 escudos</color> por 3 turnos em cada batalha de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Comece com <b>200 escudos</b> por 3 turnos em cada batalha de sobreviv\u00eancia."
+            "value": "Comece com <color=#01e2ff>500 escudos</color> por 3 turnos em cada batalha de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27044,19 +27044,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "Ganhe <b>+5% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+5% de tecnologia</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "Ganhe <b>+10% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+10% de tecnologia</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "Ganhe <b>+15% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+15% de tecnologia</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "Ganhe <b>+20% de tecnologia</b> em batalhas de sobreviv\u00eancia."
+            "value": "Ganhe <color=#01e2ff>+20% de tecnologia</color> em batalhas de sobreviv\u00eancia."
         },
         {
             "key": "e1_ending_00",
@@ -31560,7 +31560,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "Para continuar, selecione um <b>caminho</b>."
+            "value": "Para continuar, selecione um <color=#F3E54D>caminho</color>."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31580,7 +31580,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "Para continuar, selecione um <b>item especial</b>."
+            "value": "Para continuar, selecione um <color=#F3E54D>item especial</color>."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31593,6 +31593,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "Nenhum espa\u00e7o reserva dispon\u00edvel. Selecione um item especial b\u00f4nus."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Refor\u00e7o"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32879,6 +32883,10 @@
             "value": "VOLTAR PARA A PONTE?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "OP\u00c7\u00c3O"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "COMBATE"
         },
@@ -32891,8 +32899,16 @@
             "value": "EXPLORAR"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "ITEM ESPECIAL"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "RECURSO"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "DIVIDIR"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33289,6 +33305,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "N\u00e3o \u00e9 poss\u00edvel jogar no JxJ ou nas Alian\u00e7as off-line. Reinicie o jogo e aceite o download das atualiza\u00e7\u00f5es cr\u00edticas quando solicitado."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "Fugir do combate resultar\u00e1 no fracasso da n\u00edvel atual.  <b>Confirma?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34273,6 +34293,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Toque {0} para usar o Grito de Guerra de Worf"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "Abra para exibir as <color=#fff15c>SOBREVIV\u00caNCIA</color>"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "Abra para exibir as <color=#fff15c>APRIMORAMENTOS</color>"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

@@ -26896,7 +26896,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "Tu equipo <color=#FFCE00>se cura</color> un {0} % de sus PS en el siguiente combate de supervivencia."
+            "value": "Tu equipo <color=#FFCE00>se cura</color> un 50 % de sus PS en el siguiente combate de supervivencia."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26912,7 +26912,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "Tu equipo <color=#FFCE00>regenera</color> un {0} % de sus PS en los pr\u00f3ximos combates de supervivencia."
+            "value": "Tu equipo <color=#FFCE00>regenera</color> un 10 % de sus PS en los pr\u00f3ximos combates de supervivencia."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26940,19 +26940,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "Gana <b>+5 % de ataque</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+5 % de ataque</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "Gana <b>+10 % de ataque</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+10 % de ataque</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "Gana <b>+15 % de ataque</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+15 % de ataque</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "Gana <b>+20 % de ataque</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+20 % de ataque</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26960,39 +26960,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "Gana <b>+5 % de defensa</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+5 % de defensa</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "Gana <b>+10 % de defensa</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+10 % de defensa</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "Gana <b>+15 % de defensa</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+15 % de defensa</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "Gana <b>+20 % de defensa</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+20 % de defensa</color> en las batallas de supervivencia."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "Bonificaci\u00f3n De Salud"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "Gana <b>+5 % de PS</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+5 % de PS</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "Gana <b>+10 % de PS</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+10 % de PS</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "Gana <b>+15 % de PS</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+15 % de PS</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "Gana <b>+20 % de PS</b> en las batallas de supervivencia."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "Bonificaci\u00f3n De Salud"
+            "value": "Gana <color=#01e2ff>+20 % de PS</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27004,19 +27004,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "Desbloquea 1 <i>ranura(s) de reserva</i>."
+            "value": "Desbloquea <color=#01e2ff>+1 ranura(s) de reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "Desbloquea 1 <i>ranura(s) de reserva</i>."
+            "value": "Desbloquea <color=#01e2ff>+1 ranura(s) de reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "Desbloquea 1 <i>ranura(s) de reserva</i>."
+            "value": "Desbloquea <color=#01e2ff>+1 ranura(s) de reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "Desbloquea 1 <i>ranura(s) de reserva</i>."
+            "value": "Desbloquea <color=#01e2ff>+1 ranura(s) de reserva</color>."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27024,19 +27024,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Comienza con <b>50 escudos</b> durante 3 turnos en todas las batallas de supervivencia."
+            "value": "Comienza con <color=#01e2ff>125 escudos</color> durante 3 turnos en todas las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Comienza con <b>100 escudos</b> durante 3 turnos en todas las batallas de supervivencia."
+            "value": "Comienza con <color=#01e2ff>250 escudos</color> durante 3 turnos en todas las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Comienza con <b>150 escudos</b> durante 3 turnos en todas las batallas de supervivencia."
+            "value": "Comienza con <color=#01e2ff>375 escudos</color> durante 3 turnos en todas las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Comienza con <b>200 escudos</b> durante 3 turnos en todas las batallas de supervivencia."
+            "value": "Comienza con <color=#01e2ff>500 escudos</color> durante 3 turnos en todas las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27044,19 +27044,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "Gana <b>+5 % de recursos tecnol\u00f3gicos</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+5 % de recursos tecnol\u00f3gicos</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "Gana <b>+10 % de recursos tecnol\u00f3gicos</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+10 % de recursos tecnol\u00f3gicos</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "Gana <b>+15 % de recursos tecnol\u00f3gicos</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+15 % de recursos tecnol\u00f3gicos</color> en las batallas de supervivencia."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "Gana <b>+20 % de recursos tecnol\u00f3gicos</b> en las batallas de supervivencia."
+            "value": "Gana <color=#01e2ff>+20 % de recursos tecnol\u00f3gicos</color> en las batallas de supervivencia."
         },
         {
             "key": "e1_ending_00",
@@ -31560,7 +31560,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "Selecciona un <b>camino</b> para continuar."
+            "value": "Selecciona un <color=#F3E54D>camino</color> para continuar."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31580,7 +31580,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "Selecciona un <b>potenciador</b> para continuar."
+            "value": "Selecciona un <color=#F3E54D>potenciador</color> para continuar."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31593,6 +31593,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "No hay ranuras de reserva disponibles. Elige un potenciador adicional."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Refuerzos"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32879,6 +32883,10 @@
             "value": "\u00bfVOLVER AL PUENTE?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "ELECCI\u00d3N"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "LUCHAR"
         },
@@ -32891,8 +32899,16 @@
             "value": "EXPLORAR"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "POTENCIADOR"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "RECURSO"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "DIVISI\u00d3N"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33289,6 +33305,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "No se puede jugar en modo JcJ o con alianzas sin conexi\u00f3n. Reinicia el juego y acepta la descarga de actualizaciones importantes cuando aparezca el mensaje."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "Si abandonas la batalla, no superar\u00e1s la nivel actual.  <b>\u00bfSeguro que quieres hacerlo?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34273,6 +34293,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Pulsa {0} para usar el grito de guerra de Worf"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "Abrir para ver las <color=#fff15c>SUPERVIVENCIA</color>"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "Abrir para ver las <color=#fff15c>MEJORAS</color>"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

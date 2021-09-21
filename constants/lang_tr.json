@@ -26892,7 +26892,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "Tak\u0131m\u0131n, sonraki Hayatta Kalma sava\u015f\u0131 i\u00e7in %{0} SP <color=#FFCE00>Yeniler</color>."
+            "value": "Tak\u0131m\u0131n, sonraki Hayatta Kalma sava\u015f\u0131 i\u00e7in %50 SP <color=#FFCE00>Yeniler</color>."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26908,7 +26908,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "Tak\u0131m\u0131n, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in %{0} SP <color=#FFCE00>Yeniden \u00dcretir</color>."
+            "value": "Tak\u0131m\u0131n, yakla\u015fan Hayatta Kalma sava\u015flar\u0131 i\u00e7in %10 SP <color=#FFCE00>Yeniden \u00dcretir</color>."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26936,19 +26936,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 Sald\u0131r\u0131</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%5 Sald\u0131r\u0131</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 Sald\u0131r\u0131</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%10 Sald\u0131r\u0131</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 Sald\u0131r\u0131</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%15 Sald\u0131r\u0131</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 Sald\u0131r\u0131</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%20 Sald\u0131r\u0131</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26956,39 +26956,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 Savunma</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%5 Savunma</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 Savunma</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%10 Savunma</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 Savunma</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%15 Savunma</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 Savunma</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%20 Savunma</color> kazan."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "Sa\u011flik Bonusu"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 SP</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%5 SP</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 SP</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%10 SP</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 SP</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%15 SP</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 SP</b> kazan."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "Sa\u011flik Bonusu"
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%20 SP</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27000,19 +27000,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+            "value": "<color=#01e2ff>+1. Yedek Yuvas\u0131n\u0131n</color> kilidini a\u00e7."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+            "value": "<color=#01e2ff>+1. Yedek Yuvas\u0131n\u0131n</color> kilidini a\u00e7."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+            "value": "<color=#01e2ff>+1. Yedek Yuvas\u0131n\u0131n</color> kilidini a\u00e7."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "1. <i>Yedek Yuvas\u0131n\u0131n</i> kilidini a\u00e7."
+            "value": "<color=#01e2ff>+1. Yedek Yuvas\u0131n\u0131n</color> kilidini a\u00e7."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27020,19 +27020,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>50 Kalkan</b> ile ba\u015fla."
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <color=#01e2ff>125 Kalkan</color> ile ba\u015fla."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>100 Kalkan</b> ile ba\u015fla."
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <color=#01e2ff>250 Kalkan</color> ile ba\u015fla."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>150 Kalkan</b> ile ba\u015fla."
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <color=#01e2ff>375 Kalkan</color> ile ba\u015fla."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <b>200 Kalkan</b> ile ba\u015fla."
+            "value": "Her Hayatta Kalma sava\u015f\u0131nda 3 tur boyunca <color=#01e2ff>500 Kalkan</color> ile ba\u015fla."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27040,19 +27040,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%5 Teknoloji</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%5 Teknoloji</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%10 Teknoloji</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%10 Teknoloji</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%15 Teknoloji</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%15 Teknoloji</color> kazan."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "Hayatta Kalma sava\u015flar\u0131nda <b>+%20 Teknoloji</b> kazan."
+            "value": "Hayatta Kalma sava\u015flar\u0131nda <color=#01e2ff>+%20 Teknoloji</color> kazan."
         },
         {
             "key": "e1_ending_00",
@@ -31556,7 +31556,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "L\u00fctfen devam etmek i\u00e7in bir <b>Yol</b> se\u00e7."
+            "value": "L\u00fctfen devam etmek i\u00e7in bir <color=#F3E54D>Yol</color> se\u00e7."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31576,7 +31576,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "L\u00fctfen devam etmek i\u00e7in bir <b>G\u00fc\u00e7lendirici</b> se\u00e7."
+            "value": "L\u00fctfen devam etmek i\u00e7in bir <color=#F3E54D>G\u00fc\u00e7lendirici</color> se\u00e7."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31589,6 +31589,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "Yedek Yuvas\u0131 mevcut de\u011fil. Bir bonus G\u00fc\u00e7lendirici se\u00e7."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Takviye"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32875,6 +32879,10 @@
             "value": "KAPTAN K\u00d6\u015eK\u00dcNE D\u00d6N\u00dcLS\u00dcN M\u00dc?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "SE\u00c7\u0130M"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "\u00c7ARPI\u015eMA"
         },
@@ -32887,8 +32895,16 @@
             "value": "KE\u015eFET"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "G\u00dc\u00c7LEND\u0130R\u0130C\u0130"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "KAYNAK"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "AYIRIM"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33285,6 +33301,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "\u00c7evrim d\u0131\u015f\u0131yken PvP veya \u0130ttifak oynayamazs\u0131n. L\u00fctfen oyunu yeniden ba\u015flat ve istendi\u011finde kritik g\u00fcncellemeleri indirmeyi kabul et."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "\u00c7arp\u0131\u015fmadan ka\u00e7arsan bulundu\u011fun seviye ba\u015far\u0131s\u0131z olursun.  <b>Bunu yapmak istedi\u011fine emin misin?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34269,6 +34289,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Worf'un Sava\u015f Naras\u0131n\u0131 kullanmak i\u00e7in {0} d\u00fc\u011fmesine bas"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "<color=#fff15c>HAYATTA KALMAI</color> g\u00f6rmek i\u00e7in a\u00e7"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "<color=#fff15c>Y\u00dcKSELTMELERI</color> g\u00f6rmek i\u00e7in a\u00e7"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",

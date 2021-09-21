@@ -26896,7 +26896,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Heal_Desc",
-            "value": "Je team <color=#FFCE00>herstelt</color> {0}% GP voor het volgende overlevingsgevecht."
+            "value": "Je team <color=#FFCE00>herstelt</color> 50% GP voor het volgende overlevingsgevecht."
         },
         {
             "key": "Dungeon_PowerUp_MoraleDown_Desc",
@@ -26912,7 +26912,7 @@
         },
         {
             "key": "Dungeon_PowerUp_Regenerate_Desc",
-            "value": "Je team <color=#FFCE00>regenereert</color> {0}% GP voor komende overlevingsgevechten."
+            "value": "Je team <color=#FFCE00>regenereert</color> 10% GP voor komende overlevingsgevechten."
         },
         {
             "key": "Dungeon_PowerUp_Scan_Desc",
@@ -26940,19 +26940,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level1_Desc",
-            "value": "Krijg <b>+5% aanval</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+5% aanval</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level2_Desc",
-            "value": "Krijg <b>+10% aanval</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+10% aanval</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level3_Desc",
-            "value": "Krijg <b>+15% aanval</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+15% aanval</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Attack_Level4_Desc",
-            "value": "Krijg <b>+20% aanval</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+20% aanval</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Generic_Title",
@@ -26960,39 +26960,39 @@
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level1_Desc",
-            "value": "Krijg <b>+5% verdediging</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+5% verdediging</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level2_Desc",
-            "value": "Krijg <b>+10% verdediging</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+10% verdediging</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level3_Desc",
-            "value": "Krijg <b>+15% verdediging</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+15% verdediging</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Defense_Level4_Desc",
-            "value": "Krijg <b>+20% verdediging</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+20% verdediging</color> tijdens overlevingsgevechten."
+        },
+        {
+            "key": "Dungeon_Upgrade_Health_Generic_Title",
+            "value": "Gezondheidsbonus"
         },
         {
             "key": "Dungeon_Upgrade_Health_Level1_Desc",
-            "value": "Krijg <b>+5% GP</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+5% GP</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level2_Desc",
-            "value": "Krijg <b>+10% GP</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+10% GP</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level3_Desc",
-            "value": "Krijg <b>+15% GP</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+15% GP</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Health_Level4_Desc",
-            "value": "Krijg <b>+20% GP</b> tijdens overlevingsgevechten."
-        },
-        {
-            "key": "Dungeon_Upgrade_HP_Generic_Title",
-            "value": "Gezondheidsbonus"
+            "value": "Krijg <color=#01e2ff>+20% GP</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Generic_Desc",
@@ -27004,19 +27004,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level1_Desc",
-            "value": "1 <i>reserveplek</i> ontgrendelen."
+            "value": "<color=#01e2ff>+1 reserveplek</color> ontgrendelen."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level2_Desc",
-            "value": "1 <i>reserveplek</i> ontgrendelen."
+            "value": "<color=#01e2ff>+1 reserveplek</color> ontgrendelen."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level3_Desc",
-            "value": "1 <i>reserveplek</i> ontgrendelen."
+            "value": "<color=#01e2ff>+1 reserveplek</color> ontgrendelen."
         },
         {
             "key": "Dungeon_Upgrade_Reinforce_Level4_Desc",
-            "value": "1 <i>reserveplek</i> ontgrendelen."
+            "value": "<color=#01e2ff>+1 reserveplek</color> ontgrendelen."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Generic_Title",
@@ -27024,19 +27024,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level1_Desc",
-            "value": "Start met <b>50 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+            "value": "Start met <color=#01e2ff>125 schilden</color> gedurende 3 beurten tijdens elk overlevingsgevecht."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level2_Desc",
-            "value": "Start met <b>100 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+            "value": "Start met <color=#01e2ff>250 schilden</color> gedurende 3 beurten tijdens elk overlevingsgevecht."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level3_Desc",
-            "value": "Start met <b>150 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+            "value": "Start met <color=#01e2ff>375 schilden</color> gedurende 3 beurten tijdens elk overlevingsgevecht."
         },
         {
             "key": "Dungeon_Upgrade_Shields_Level4_Desc",
-            "value": "Start met <b>200 schilden</b> gedurende 3 beurten tijdens elk overlevingsgevecht."
+            "value": "Start met <color=#01e2ff>500 schilden</color> gedurende 3 beurten tijdens elk overlevingsgevecht."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Generic_Title",
@@ -27044,19 +27044,19 @@
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level1_Desc",
-            "value": "Krijg <b>+5% technologie</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+5% technologie</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level2_Desc",
-            "value": "Krijg <b>+10% technologie</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+10% technologie</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level3_Desc",
-            "value": "Krijg <b>+15% technologie</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+15% technologie</color> tijdens overlevingsgevechten."
         },
         {
             "key": "Dungeon_Upgrade_Tech_Level4_Desc",
-            "value": "Krijg <b>+20% technologie</b> tijdens overlevingsgevechten."
+            "value": "Krijg <color=#01e2ff>+20% technologie</color> tijdens overlevingsgevechten."
         },
         {
             "key": "e1_ending_00",
@@ -31560,7 +31560,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_Choice_MinChoice",
-            "value": "Selecteer een <b>pad</b> om verder te gaan."
+            "value": "Selecteer een <color=#F3E54D>pad</color> om verder te gaan."
         },
         {
             "key": "UI_Dungeon_Popup_Choice_Upper",
@@ -31580,7 +31580,7 @@
         },
         {
             "key": "UI_Dungeon_Popup_PowerUp_MinPowerUp",
-            "value": "Selecteer een <b>krachtverhoging</b> om verder te gaan."
+            "value": "Selecteer een <color=#F3E54D>krachtverhoging</color> om verder te gaan."
         },
         {
             "key": "UI_Dungeon_Powerup_Duration",
@@ -31593,6 +31593,10 @@
         {
             "key": "UI_Dungeon_Reinforcement_PowerUp_Reserve",
             "value": "Geen reserveplekken beschikbaar. Kies een krachtverhogingsbonus."
+        },
+        {
+            "key": "UI_Dungeon_ReinforcementOverflow_Title",
+            "value": "Versterking"
         },
         {
             "key": "UI_Dungeon_SelectCheckpoint",
@@ -32879,6 +32883,10 @@
             "value": "TERUGKEREN NAAR DE BRUG?"
         },
         {
+            "key": "UI_MissionNode_Label_Choice",
+            "value": "KEUZE"
+        },
+        {
             "key": "UI_MissionNode_Label_Encounter",
             "value": "GEVECHT"
         },
@@ -32891,8 +32899,16 @@
             "value": "VERKENNEN"
         },
         {
+            "key": "UI_MissionNode_Label_PowerUp",
+            "value": "KRACHTVERHOGING"
+        },
+        {
             "key": "UI_MissionNode_Label_Resource",
             "value": "MIDDEL"
+        },
+        {
+            "key": "UI_MissionNode_Label_Split",
+            "value": "SPLITSING"
         },
         {
             "key": "UI_MissionNode_Label_Story",
@@ -33289,6 +33305,10 @@
         {
             "key": "UI_Popup_DownloadRestart_Body",
             "value": "Je kunt geen PvP of Allianties spelen terwijl je offline bent. Start het spel opnieuw en ga akkoord met het downloaden van kritieke updates wanneer daarom wordt gevraagd."
+        },
+        {
+            "key": "UI_Popup_Dungeon_Flee_Desc",
+            "value": "Als je vlucht uit de strijd, mislukt je huidige level.  <b>Weet je zeker dat je dit wilt doen?</b>"
         },
         {
             "key": "UI_Popup_Flee_Desc",
@@ -34273,6 +34293,14 @@
         {
             "key": "UI_Tutorial_ToolTip_Disable_Gamepad",
             "value": "Druk op {0} om Worfs strijdkreet te gebruiken"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_Dungeon",
+            "value": "Open om <color=#fff15c>OVERLEVING</color> te bekijken"
+        },
+        {
+            "key": "UI_Tutorial_ToolTip_DungeonUpgrades",
+            "value": "Open om <color=#fff15c>UPGRADES</color> te bekijken"
         },
         {
             "key": "UI_Tutorial_ToolTip_EnterBridge",
