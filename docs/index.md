@@ -4,5 +4,5 @@ title: legends project website
 
 # Links
 
-* `legends` package [documentation](legends/index.html)
-* [List of skills](skills.html) (all playable characters, both current and upcoming)
+* `legends` package <a href='legends/index.html'>documentation</a>
+* <a href='skills.html'>List of skills</a> (all playable characters, both current and upcoming)
