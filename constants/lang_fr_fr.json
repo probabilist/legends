@@ -30552,7 +30552,7 @@
         },
         {
             "key": "Tutorial_Dungeon_Line08_Narrator",
-            "value": "Les <color=#fff15c>paliers</color> sont syst\u00e9matiquement d\u00e9bloqu\u00e9s tous les <color=#fff15c>{0} niveaux</color>. Vous pourrez reprendre vos prochaines parties de survie \u00e0 partir de ces paliers."
+            "value": "Les <color=#fff15c>paliers</color> sont syst\u00e9matiquement d\u00e9bloqu\u00e9s tous les <color=#fff15c>20 niveaux</color>. Vous pourrez reprendre vos prochaines parties de survie \u00e0 partir de ces paliers."
         },
         {
             "key": "tutorial_firstlossreaction_00",

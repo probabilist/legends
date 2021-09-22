@@ -26,8 +26,10 @@
 <p>Each json file in <code>legends/data</code> is converted to a constant. The
 variable name is the file name without extension, and the variable
 points to a Python dictionary built from the file's contents.</p>
-<p>NOTE: The constant <code>GSBaseStat</code> differs from the data file
-<code>GSBaseStat.json</code>. In the constant, 'MaxHealth' is renamed to 'Health'.</p>
+<p>NOTE: (1) The constant <code>GSBaseStat</code> differs from the data file
+'GSBaseStat.json'. In the constant, 'MaxHealth' is renamed to 'Health'.
+(2) The file 'Item.json' is converted to the constant <code>Item_asset</code> to
+prevent conflict with the <code>Item</code> class.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>DESCRIPTIONS</code></strong> :&ensp;<code>dict</code></dt>
@@ -38,7 +40,7 @@ into a Python dictionary.</dd>
 on the Crew screen.</dd>
 <dt><strong><code>HELP</code></strong> :&ensp;<code>str</code></dt>
 <dd>The contents of the file, <code>legends/help.txt</code>.</dd>
-<dt><strong><code>ITEMS</code></strong> :&ensp;<code>list</code> of <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code></dt>
+<dt><strong><code>ITEMS</code></strong> :&ensp;<code>list</code> of <code>Item</code></dt>
 <dd>A list of all items in the game, as parsed
 from <code>GSItem</code>.</dd>
 <dt><strong><code>POWER_GRADIENT</code></strong> :&ensp;<code>dict</code></dt>
@@ -123,8 +125,10 @@ Each json file in `legends/data` is converted to a constant. The
 variable name is the file name without extension, and the variable
 points to a Python dictionary built from the file&#39;s contents.
 
-NOTE: The constant `GSBaseStat` differs from the data file
-`GSBaseStat.json`. In the constant, &#39;MaxHealth&#39; is renamed to &#39;Health&#39;.
+NOTE: (1) The constant `GSBaseStat` differs from the data file
+&#39;GSBaseStat.json&#39;. In the constant, &#39;MaxHealth&#39; is renamed to &#39;Health&#39;.
+(2) The file &#39;Item.json&#39; is converted to the constant `Item_asset` to
+prevent conflict with the `Item` class.
 
 Attributes:
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us[&#39;List&#39;]` put
@@ -217,6 +221,8 @@ for fileName in listdir(rootPath + &#39;/data&#39;):
     if fileName[0] == &#39;.&#39;:
         continue
     varName = fileName.split(&#39;.&#39;)[0]
+    if varName == &#39;Item&#39;:
+        varName = &#39;Item_asset&#39; # pylint: disable=invalid-name
     with open(rootPath + &#39;/data/&#39; + fileName, encoding=&#39;utf-8&#39;) as f:
         globals()[varName] = load(f)
     __all__.append(varName)
@@ -305,7 +311,7 @@ ENABLED = [
     # pylint: disable-next=undefined-variable
     nameID for nameID, data in GSCharacter.items() if data[&#39;Type&#39;] == &#39;Normal&#39;
 ]
-UPCOMING = [&#39;Tuvok&#39;, &#39;Gowron&#39;, &#39;JadziaDax&#39;, &#39;PicardOld&#39;]
+UPCOMING = [&#39;Tuvok&#39;, &#39;Gowron&#39;, &#39;JadziaDax&#39;, &#39;PicardOld&#39;, &#39;JudgeQ&#39;]
 
 # initialize SUMMON_POOL and SUMMON_POOL_IDS
 SUMMON_POOL = {&#39;Core&#39;: {&#39;nameIDs&#39;: {}}}
@@ -428,126 +434,6 @@ ITEMS = {itemID: Item(itemID) for itemID in GSItem}</code></pre>
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="legends.constants.Item"><code class="flex name class">
-<span>class <span class="ident">Item</span></span>
-<span>(</span><span>itemID)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>An item in STL.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>itemID</code></strong> :&ensp;<code>str</code></dt>
-<dd>The in-data item ID of the item. Should be a
-key in <code>GSItem</code>.</dd>
-<dt><strong><code>category</code></strong> :&ensp;<code>str</code></dt>
-<dd>The in-data category of the item, with two
-exceptions. The in-data category of gear leveling and
-gear ranking materials is 'Item'. This is manually changed
-to 'Gear Leveling Materials' and 'Gear Ranking Materials',
-respectively.</dd>
-</dl>
-<p>The constructor builds the item from the given item ID,
-looking up the required information in <code>GSItem</code>.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Item():
-    &#34;&#34;&#34;An item in STL.
-
-    Attributes:
-        itemID (str): The in-data item ID of the item. Should be a
-            key in `GSItem`.
-        category (str): The in-data category of the item, with two
-            exceptions. The in-data category of gear leveling and
-            gear ranking materials is &#39;Item&#39;. This is manually changed
-            to &#39;Gear Leveling Materials&#39; and &#39;Gear Ranking Materials&#39;,
-            respectively.
-
-    &#34;&#34;&#34;
-    def __init__(self, itemID):
-        &#34;&#34;&#34;The constructor builds the item from the given item ID,
-        looking up the required information in `GSItem`.
-
-        &#34;&#34;&#34;
-        self.itemID = itemID
-        itemData = GSItem[itemID] # pylint: disable=undefined-variable
-        self.category = itemData[&#39;category&#39;]
-        if itemData[&#39;icon&#39;][:4] == &#39;Gear&#39;:
-            if itemData[&#39;rarity&#39;] == &#39;Common&#39;:
-                self.category = &#39;Gear Leveling Materials&#39;
-            else:
-                self.category = &#39;Gear Ranking Materials&#39;
-
-    @property
-    def name(self):
-        &#34;&#34;&#34;`str`: The in-game name of the item.&#34;&#34;&#34;
-        # pylint: disable-next=undefined-variable
-        itemData = GSItem[self.itemID]
-        return (
-            DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
-            else self.itemID
-        )
-
-    @property
-    def xp(self):
-        &#34;&#34;&#34;`int`: If the item is a bio-gel, this is the amount of xp it
-        awards; otherwise it is 0.
-        &#34;&#34;&#34;
-        try:
-            # pylint: disable-next=undefined-variable
-            return GSItem[self.itemID][&#39;DataBiomimeticGel&#39;][&#39;Xp&#39;]
-        except KeyError:
-            return 0
-
-    def __repr__(self):
-        return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)</code></pre>
-</details>
-<h3>Instance variables</h3>
-<dl>
-<dt id="legends.constants.Item.name"><code class="name">var <span class="ident">name</span></code></dt>
-<dd>
-<div class="desc"><p><code>str</code>: The in-game name of the item.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def name(self):
-    &#34;&#34;&#34;`str`: The in-game name of the item.&#34;&#34;&#34;
-    # pylint: disable-next=undefined-variable
-    itemData = GSItem[self.itemID]
-    return (
-        DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
-        else self.itemID
-    )</code></pre>
-</details>
-</dd>
-<dt id="legends.constants.Item.xp"><code class="name">var <span class="ident">xp</span></code></dt>
-<dd>
-<div class="desc"><p><code>int</code>: If the item is a bio-gel, this is the amount of xp it
-awards; otherwise it is 0.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def xp(self):
-    &#34;&#34;&#34;`int`: If the item is a bio-gel, this is the amount of xp it
-    awards; otherwise it is 0.
-    &#34;&#34;&#34;
-    try:
-        # pylint: disable-next=undefined-variable
-        return GSItem[self.itemID][&#39;DataBiomimeticGel&#39;][&#39;Xp&#39;]
-    except KeyError:
-        return 0</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
-</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -559,17 +445,6 @@ def xp(self):
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-classes">Classes</a></h3>
-<ul>
-<li>
-<h4><code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code></h4>
-<ul class="">
-<li><code><a title="legends.constants.Item.name" href="#legends.constants.Item.name">name</a></code></li>
-<li><code><a title="legends.constants.Item.xp" href="#legends.constants.Item.xp">xp</a></code></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>

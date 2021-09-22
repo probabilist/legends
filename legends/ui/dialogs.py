@@ -14,7 +14,7 @@ from tkinter.scrolledtext import ScrolledText
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.constants import (
-    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS
+    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS, ITEMS
 )
 from legends.saveslot import SaveSlot
 
@@ -22,7 +22,7 @@ __all__ = [
     'addroot', 'showerror', 'showinfo', 'askyesno', 'askSlot',
     'askRosterFilter', 'askMaxChars', 'ModalMessage', 'ModalDialog', 'AskSlot',
     'RosterFilter', 'AskRosterFilter', 'AskMaxChars', 'HelpScreen',
-    'OptimalSummons'
+    'OptimalSummons', 'InventoryScreen'
 ]
 
 def addroot(func):
@@ -688,3 +688,57 @@ class OptimalSummons(ModalMessage):
         """
         self.labels[pool][0].config(font=(None, 11, emphasis))
         self.labels[pool][1].config(font=(None, 11, emphasis))
+
+class InventoryScreen(ModalMessage):
+    """A message dialog showing the player's inventory.
+
+    """
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, 'Inventory')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        inv = self.root.session.saveslot.inventory
+        # ignoredCategories = ['Token', 'PlayerAvatar', 'Emote']
+        ignoredItemIDs = [
+            'Credits', 'Dilithium', 'Tritanium', 'Player XP', 'PvP Stamina',
+            'Alliance Stamina', 'EventPoint', 'PvP Chest Points',
+            'Shards Advanced', 'Shards Elite', 'Shards Credit',
+            'Shards Biomimetic', 'Shards Protomatter', 'Shards_Worf',
+            'Shards_McCoy'
+        ]
+        categories = {
+            'Currency': 'Currency',
+            'BiomimeticGel': 'Bio-Gel',
+            'Gear Leveling Materials': 'Gear Leveling Materials',
+            'Item': 'General Items',
+            'ProtoMatter': 'Protomatter',
+            'Gear Ranking Materials': 'Gear Ranking Materials'
+        }
+        row = 0
+        col = 0
+        for index, cat in enumerate(categories.items()):
+            dataCat, displayCat = cat
+            if index == 3:
+                row = 0
+                col = 2
+            catLabel = tk.Label(master, text=displayCat, font=(None, 13,
+               'bold'))
+            catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
+            if index % 3 > 0:
+                catLabel.grid_configure(pady=(20,0))
+
+            row += 1
+            for itemID, qty in inv.items():
+                item = ITEMS[itemID]
+                if itemID in ignoredItemIDs or item.category != dataCat:
+                    continue
+                tk.Label(master, text=item.name).grid(
+                    row=row, column=col, sticky=W, padx=(20,0)
+                )
+                tk.Label(master, text='{:,}'.format(qty)).grid(
+                    row=row, column=col + 1, sticky=E, padx=(0,20)
+                )
+                row += 1

@@ -30752,11 +30752,11 @@
         },
         {
             "key": "Tutorial_Dungeon_Line03_Narrator",
-            "value": "<color=#fff15c>Survival Levels</color> each consists of a series of battles, with rewards and difficulty increasing the higher you advance."
+            "value": "<color=#fff15c>Survival Levels</color> each consist of a series of battles, with rewards and difficulty increasing the higher you advance."
         },
         {
             "key": "Tutorial_Dungeon_Line04_Narrator",
-            "value": "Build your team using randomly assigned Crew from your Roster. Increase your team size by completing <color=#fff15c>Survival Levels</color> and purchasing <color=#fff15c>Reinforcement Upgrades</color>."
+            "value": "Build your team using Crew randomly drawn from your Roster. Increase your team size by completing <color=#fff15c>Survival Levels</color> and purchasing <color=#fff15c>Reinforcement Upgrades</color>."
         },
         {
             "key": "Tutorial_Dungeon_Line05_Narrator",
@@ -30772,7 +30772,7 @@
         },
         {
             "key": "Tutorial_Dungeon_Line08_Narrator",
-            "value": "<color=#fff15c>Checkpoints</color> are permanently unlocked every <color=#fff15c>{0} Levels</color>, allowing you to start from higher levels for future Survival runs."
+            "value": "<color=#fff15c>Checkpoints</color> are permanently unlocked every <color=#fff15c>20 Levels</color>, allowing you to start from higher levels for future Survival runs."
         },
         {
             "key": "tutorial_firstlossreaction_00",

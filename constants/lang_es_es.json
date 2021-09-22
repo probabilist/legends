@@ -30552,7 +30552,7 @@
         },
         {
             "key": "Tutorial_Dungeon_Line08_Narrator",
-            "value": "Los <color=#fff15c>puntos de guardado</color> se desbloquean de forma permanente cada <color=#fff15c>{0} niveles</color>, lo que te permitir\u00e1 empezar nuevas partidas en niveles de supervivencia superiores."
+            "value": "Los <color=#fff15c>puntos de guardado</color> se desbloquean de forma permanente cada <color=#fff15c>20 niveles</color>, lo que te permitir\u00e1 empezar nuevas partidas en niveles de supervivencia superiores."
         },
         {
             "key": "tutorial_firstlossreaction_00",

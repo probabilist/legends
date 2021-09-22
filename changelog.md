@@ -1,5 +1,13 @@
 # Change log
 
+## Version 0.10.2
+
+* Added 'Judge Q' to the list of upcoming characters.
+* Added an `InventoryScreen` modal message class.
+* Edited `STLPlanner.inventory()` method to raise an `InventoryScreen` dialog.
+* Data file 'Item.json' now imports as the variable, `Item_asset`, so as not to conflict with the `Item` class.
+* Updated game data.
+
 ## Version 0.10.1
 
 * Added an `Item` class and an `ITEMS` constant.

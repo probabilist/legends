@@ -36,11 +36,10 @@ The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 
 import tkinter as tk
 from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
-from legends.constants import ITEMS
 from legends.savefile import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
-    showerror, askSlot, askMaxChars, askyesno, HelpScreen
+    showerror, askSlot, askMaxChars, askyesno, HelpScreen, InventoryScreen
 )
 from legends.ui.rostertab import RosterTab
 
@@ -224,39 +223,18 @@ class STLPlanner(tk.Tk):
             self.session.removeTimeBar()
 
     def inventory(self):
-        &#34;&#34;&#34;Prints the inventory of the save slot associated with the
-        current session to the console. Organizes the data by category.
-        Ignores the categories &#39;Token&#39;, &#39;PlayerAvatar&#39;, and &#39;Emote&#39;.
-        Ignores a number of other items that are either not relevant to
-        the current implementation of *Star Trek: Legends*, or are not
-        relevant to the *STL Planner* app.
-        &#34;&#34;&#34;
-        # TODO: Replace with a dialog window. &lt;&gt;
-        ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
-        ignoredItemIDs = [
-            &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
-            &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
-            &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
-            &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
-            &#39;Shards_McCoy&#39;
-        ]
-        categories = []
-        for item in ITEMS.values():
-            cat = item.category
-            if cat in ignoredCategories:
-                continue
-            if cat not in categories:
-                categories.append(cat)
-        print(categories)
-        for cat in categories:
-            print(&#39;# {}&#39;.format(cat))
-            for itemID, qty in self.session.saveslot.inventory.items():
-                if itemID in ignoredItemIDs:
-                    continue
-                item = ITEMS[itemID]
-                if item.category == cat:
-                    print(&#39;    * {}: {}&#39;.format(item.name, qty))
+        &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+        showing the player&#39;s inventory. Calls an error popup if the
+        inventory is either not found or empty.
 
+        &#34;&#34;&#34;
+        if (
+            self.session.saveslot is None
+            or not self.session.saveslot.inventory
+        ):
+            showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
+            return
+        InventoryScreen(self)
 
 class Session(tk.Frame):
     &#34;&#34;&#34;A user session in the *STL Planner* app.
@@ -618,38 +596,18 @@ constructor.</p></div>
             self.session.removeTimeBar()
 
     def inventory(self):
-        &#34;&#34;&#34;Prints the inventory of the save slot associated with the
-        current session to the console. Organizes the data by category.
-        Ignores the categories &#39;Token&#39;, &#39;PlayerAvatar&#39;, and &#39;Emote&#39;.
-        Ignores a number of other items that are either not relevant to
-        the current implementation of *Star Trek: Legends*, or are not
-        relevant to the *STL Planner* app.
+        &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+        showing the player&#39;s inventory. Calls an error popup if the
+        inventory is either not found or empty.
+
         &#34;&#34;&#34;
-        # TODO: Replace with a dialog window. &lt;&gt;
-        ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
-        ignoredItemIDs = [
-            &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
-            &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
-            &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
-            &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
-            &#39;Shards_McCoy&#39;
-        ]
-        categories = []
-        for item in ITEMS.values():
-            cat = item.category
-            if cat in ignoredCategories:
-                continue
-            if cat not in categories:
-                categories.append(cat)
-        print(categories)
-        for cat in categories:
-            print(&#39;# {}&#39;.format(cat))
-            for itemID, qty in self.session.saveslot.inventory.items():
-                if itemID in ignoredItemIDs:
-                    continue
-                item = ITEMS[itemID]
-                if item.category == cat:
-                    print(&#39;    * {}: {}&#39;.format(item.name, qty))</code></pre>
+        if (
+            self.session.saveslot is None
+            or not self.session.saveslot.inventory
+        ):
+            showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
+            return
+        InventoryScreen(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -770,49 +728,26 @@ it.</p>
 <span>def <span class="ident">inventory</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Prints the inventory of the save slot associated with the
-current session to the console. Organizes the data by category.
-Ignores the categories 'Token', 'PlayerAvatar', and 'Emote'.
-Ignores a number of other items that are either not relevant to
-the current implementation of <em>Star Trek: Legends</em>, or are not
-relevant to the <em>STL Planner</em> app.</p></div>
+<div class="desc"><p>Calls an <code><a title="legends.ui.dialogs.InventoryScreen" href="dialogs.html#legends.ui.dialogs.InventoryScreen">InventoryScreen</a></code> message,
+showing the player's inventory. Calls an error popup if the
+inventory is either not found or empty.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def inventory(self):
-    &#34;&#34;&#34;Prints the inventory of the save slot associated with the
-    current session to the console. Organizes the data by category.
-    Ignores the categories &#39;Token&#39;, &#39;PlayerAvatar&#39;, and &#39;Emote&#39;.
-    Ignores a number of other items that are either not relevant to
-    the current implementation of *Star Trek: Legends*, or are not
-    relevant to the *STL Planner* app.
+    &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+    showing the player&#39;s inventory. Calls an error popup if the
+    inventory is either not found or empty.
+
     &#34;&#34;&#34;
-    # TODO: Replace with a dialog window. &lt;&gt;
-    ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
-    ignoredItemIDs = [
-        &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
-        &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
-        &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
-        &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
-        &#39;Shards_McCoy&#39;
-    ]
-    categories = []
-    for item in ITEMS.values():
-        cat = item.category
-        if cat in ignoredCategories:
-            continue
-        if cat not in categories:
-            categories.append(cat)
-    print(categories)
-    for cat in categories:
-        print(&#39;# {}&#39;.format(cat))
-        for itemID, qty in self.session.saveslot.inventory.items():
-            if itemID in ignoredItemIDs:
-                continue
-            item = ITEMS[itemID]
-            if item.category == cat:
-                print(&#39;    * {}: {}&#39;.format(item.name, qty))</code></pre>
+    if (
+        self.session.saveslot is None
+        or not self.session.saveslot.inventory
+    ):
+        showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
+        return
+    InventoryScreen(self)</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.stlplanner.STLPlanner.newFromFile"><code class="name flex">

@@ -30552,7 +30552,7 @@
         },
         {
             "key": "Tutorial_Dungeon_Line08_Narrator",
-            "value": "I <color=#fff15c>checkpoint</color> vengono sbloccati in maniera permanente ogni <color=#fff15c>{0} Livelli</color>, permettendoti, per le partite in modalit\u00e0 Sopravvivenza successive, di partire dai livelli pi\u00f9 alti."
+            "value": "I <color=#fff15c>checkpoint</color> vengono sbloccati in maniera permanente ogni <color=#fff15c>20 Livelli</color>, permettendoti, per le partite in modalit\u00e0 Sopravvivenza successive, di partire dai livelli pi\u00f9 alti."
         },
         {
             "key": "tutorial_firstlossreaction_00",

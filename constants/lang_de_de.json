@@ -30552,7 +30552,7 @@
         },
         {
             "key": "Tutorial_Dungeon_Line08_Narrator",
-            "value": "<color=#fff15c>Checkpoints</color> werden alle <color=#fff15c>{0} Level</color> permanent freigeschaltet und erlauben es, zuk\u00fcnftige \u00dcberlebens-Versuche von h\u00f6heren Leveln zu beginnen."
+            "value": "<color=#fff15c>Checkpoints</color> werden alle <color=#fff15c>20 Level</color> permanent freigeschaltet und erlauben es, zuk\u00fcnftige \u00dcberlebens-Versuche von h\u00f6heren Leveln zu beginnen."
         },
         {
             "key": "tutorial_firstlossreaction_00",

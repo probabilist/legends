@@ -30552,7 +30552,7 @@
         },
         {
             "key": "Tutorial_Dungeon_Line08_Narrator",
-            "value": "Os <color=#fff15c>pontos de controle</color> s\u00e3o desbloqueados permanentemente a cada <color=#fff15c>{0} n\u00edveis</color> para que seja poss\u00edvel iniciar de n\u00edveis mais altos em sess\u00f5es futuras de sobreviv\u00eancia."
+            "value": "Os <color=#fff15c>pontos de controle</color> s\u00e3o desbloqueados permanentemente a cada <color=#fff15c>20 n\u00edveis</color> para que seja poss\u00edvel iniciar de n\u00edveis mais altos em sess\u00f5es futuras de sobreviv\u00eancia."
         },
         {
             "key": "tutorial_firstlossreaction_00",

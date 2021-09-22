@@ -4,8 +4,10 @@ Each json file in `legends/data` is converted to a constant. The
 variable name is the file name without extension, and the variable
 points to a Python dictionary built from the file's contents.
 
-NOTE: The constant `GSBaseStat` differs from the data file
-`GSBaseStat.json`. In the constant, 'MaxHealth' is renamed to 'Health'.
+NOTE: (1) The constant `GSBaseStat` differs from the data file
+'GSBaseStat.json'. In the constant, 'MaxHealth' is renamed to 'Health'.
+(2) The file 'Item.json' is converted to the constant `Item_asset` to
+prevent conflict with the `Item` class.
 
 Attributes:
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us['List']` put
@@ -98,6 +100,8 @@ for fileName in listdir(rootPath + '/data'):
     if fileName[0] == '.':
         continue
     varName = fileName.split('.')[0]
+    if varName == 'Item':
+        varName = 'Item_asset' # pylint: disable=invalid-name
     with open(rootPath + '/data/' + fileName, encoding='utf-8') as f:
         globals()[varName] = load(f)
     __all__.append(varName)

@@ -30552,7 +30552,7 @@
         },
         {
             "key": "Tutorial_Dungeon_Line08_Narrator",
-            "value": "<color=#fff15c>Checkpoints</color> worden elke <color=#fff15c>{0} levels</color> permanent ontgrendeld, zodat je vanaf hogere levels kunt beginnen voor toekomstige overlevingspogingen."
+            "value": "<color=#fff15c>Checkpoints</color> worden elke <color=#fff15c>20 levels</color> permanent ontgrendeld, zodat je vanaf hogere levels kunt beginnen voor toekomstige overlevingspogingen."
         },
         {
             "key": "tutorial_firstlossreaction_00",

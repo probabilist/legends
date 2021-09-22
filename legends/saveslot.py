@@ -57,7 +57,7 @@ class SaveSlot():
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as 'favorite'.
         inventory (dict): {`str`:`int`} A dictionary mapping an item ID
-            to the quantity of that item in the player's inventory. 
+            to the quantity of that item in the player's inventory.
 
     """
 
