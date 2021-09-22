@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>legends.roster API documentation</title>
+<meta name="description" content="The `legends.roster.Roster` class and related objects." />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legends.roster</code></h1>
+</header>
+<section id="section-intro">
+<p>The <code><a title="legends.roster.Roster" href="#legends.roster.Roster">Roster</a></code> class and related objects.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;The `legends.roster.Roster` class and related objects.
+
+&#34;&#34;&#34;
+
+from types import MethodType
+from warnings import warn
+from legends.utils.objrelations import OneToOne
+#pylint: disable-next=no-name-in-module
+from legends.constants import GSAccessoryItems, GSCharacter
+from legends.constants import DESCRIPTIONS, SUMMON_POOL
+from legends.gameobjects import Gear, Particle, Character
+from legends.stats import Stats
+
+__all__ = [&#39;readGear&#39;, &#39;readParts&#39;, &#39;Roster&#39;]
+
+def readGear(save, slot):
+    &#34;&#34;&#34;The STL save file contains a list of gear, each one having a
+    unique ID number. This method makes a `legends.gameobjects.Gear`
+    object for each gear piece, and builds a dictionary mapping its ID
+    number in the save file to the associated `legends.gameobjects.Gear`
+    object.
+
+    Args:
+        save (dict): A decrypted dictionary representation of the
+            player&#39;s save file, as returned by the
+            `legends.savefile.decryptSaveFile` function.
+        slot (int): The 0-based index of the save slot from which to
+            read the data.
+
+    Returns:
+        dict: {`int`:`legends.gameobjects.Gear`} The dictionary mapping
+            IDs to gear.
+
+    &#34;&#34;&#34;
+    slotData = save[&#39;{} data&#39;.format(slot)]
+    gear = {}
+    for indexStr, data in slotData[&#39;gears&#39;].items():
+        index = int(indexStr)
+        gear[index] = Gear(data[&#39;gearid&#39;], data[&#39;level&#39;])
+    return gear
+
+def readParts(save, slot):
+    &#34;&#34;&#34;The STL save file contains a list of particles, each one having a
+    unique ID number. This method makes a `legends.gameobjects.Particle`
+    object for each particle, and builds a dictionary mapping its ID
+    number in the save file to the associated
+    `legends.gameobjects.Particle` object.
+
+    Args:
+        save (dict): A decrypted dictionary representation of the
+            player&#39;s save file, as returned by the
+            `legends.savefile.decryptSaveFile` function.
+        slot (int): The 0-based index of the save slot from which to
+            read the data.
+
+    Returns:
+        dict: {`int`:`legends.gameobjects.Particle`} The dictionary
+            mapping IDs to particles.
+
+    &#34;&#34;&#34;
+    parts = {}
+    slotData = save[&#39;{} data&#39;.format(slot)]
+    for saveIndexStr, data in slotData[&#39;accessories&#39;].items():
+        saveIndex = int(saveIndexStr)
+        name = DESCRIPTIONS[GSAccessoryItems[data[&#39;accessoryid&#39;]][&#39;Name&#39;]]
+        rarity = GSAccessoryItems[data[&#39;accessoryid&#39;]][&#39;Rarity&#39;]
+        part = Particle(name, rarity, data[&#39;level&#39;], data[&#39;locked&#39;])
+        for statIndex, statName in enumerate(data[&#39;stats&#39;].values()):
+            part.setStatName(statIndex, statName)
+        parts[saveIndex] = part
+    return parts
+
+class Roster():
+    &#34;&#34;&#34;A collection of related characters, gear, and particles.
+
+    Attributes:
+        gear (list of legends.gameobjects.Gear): A list of the gear in
+            the roster.
+        parts (list of legends.gameobjects.Particle): A list of the
+            particles in the roster.
+        chars (dict): {`str`:`legends.gameobjects.Character`} A
+            dictionary mapping name IDs to characters.
+        inGearSlot (legends.utils.objrelations.OneToOne): A relation
+            mapping `legends.gameobjects.Gear` objects to
+            `legends.gameobjects.GearSlot` objects. The
+            `legends.utils.objrelations.OneToOne.validate()` method is
+            overridden to prohibit the placing of gear in the wrong slot
+            or the placing of gear that exceeds the maximum allowed
+            level. The `legends.utils.objrelations.OneToOne.validate()`
+            method raises a `ValueError` when it fails to validate an
+            assignment.
+        inPartSlot (legends.utils.objrelations.OneToOne): A relation
+            mapping `legends.gameobjects.Particle` objects to
+            `legends.gameobjects.PartSlot` objects.
+            `
+
+    &#34;&#34;&#34;
+    def __init__(self, save=None, slot=0):
+        &#34;&#34;&#34;If save data is provided, the constructor will populate the
+        roster with objects built from the save data. Otherwise, an
+        empty roster is created.
+
+        Args:
+            save (dict): A decrypted dictionary representation of the
+                player&#39;s save file, as returned by the
+                `legends.savefile.decryptSaveFile` function.
+            slot (int): The 0-based index of the save slot from which to
+                read the data.
+
+        &#34;&#34;&#34;
+        self.gear = []
+        self.parts = []
+        self.chars = {}
+        self.inGearSlot = OneToOne()
+        def validate(slf, gear, gearSlot): # pylint: disable=unused-argument
+            char = gearSlot.char
+            index = gearSlot.index
+            if gear.level &gt; char.maxGearLevel or gear.slot != index:
+                raise ValueError((gear, gearSlot))
+            return True
+        self.inGearSlot.validate = MethodType(validate, self.inGearSlot)
+        self.inPartSlot = OneToOne()
+        if save is not None:
+            self.fromSaveData(save, slot)
+
+    @property
+    def containsGear(self):
+        &#34;&#34;&#34;`legends.utils.objrelations.OneToOne`: The inverse of
+        `inGearSlot`.
+        &#34;&#34;&#34;
+        return self.inGearSlot.inverse
+
+    @property
+    def containsPart(self):
+        &#34;&#34;&#34;`legends.utils.objrelations.OneToOne`: The inverse of
+        `inPartSlot`.
+        &#34;&#34;&#34;
+        return self.inPartSlot.inverse
+
+    def clear(self):
+        &#34;&#34;&#34;Completely clears all items in the roster.
+
+        &#34;&#34;&#34;
+        self.gear.clear()
+        self.parts.clear()
+        self.chars.clear()
+        self.inGearSlot.clear()
+        self.inPartSlot.clear()
+
+    def fromSaveData(self, save, slot):
+        &#34;&#34;&#34;Completely empties the roster, then re-populates it with data
+        from the given save data and slot.
+
+        Args:
+            save (dict): A decrypted dictionary representation of the
+                player&#39;s save file, as returned by the
+                `legends.savefile.decryptSaveFile` function.
+            slot (int): The 0-based index of the save slot from which to
+                read the data.
+
+        &#34;&#34;&#34;
+        self.clear()
+
+        # fill gear and particles
+        gearDict = readGear(save, slot)
+        self.gear = list(gearDict.values())
+        partDict = readParts(save, slot)
+        self.parts = list(partDict.values())
+
+        # cycle through characters in save data
+        slotData = save[&#39;{} data&#39;.format(slot)]
+        for nameID, data in slotData[&#39;units&#39;].items():
+            char = Character(nameID, data[&#39;rank&#39;], data[&#39;xp&#39;])
+
+            # add skills to character
+            for skillID, level in data[&#39;skills&#39;].items():
+                if level &gt; 0:
+                    try:
+                        char.skills[skillID].unlocked = True
+                        char.skills[skillID].level = level
+                    except KeyError:
+                        warn(
+                            repr(skillID)
+                            + &#39; found in save file but not in game data&#39;
+                        )
+
+            # add gear to character
+            for slotIndex, itemSaveIndex in enumerate(data[&#39;gears&#39;].values()):
+                if itemSaveIndex &gt; 0:
+                    item = gearDict[itemSaveIndex]
+                    slot = char.gearSlots[slotIndex]
+                    self.inGearSlot[item] = slot
+
+            # add particles to character
+            for slotIndex, itemSaveIndex in (
+                enumerate(data[&#39;accessories&#39;].values())
+            ):
+                if itemSaveIndex &gt; 0:
+                    item = partDict[itemSaveIndex]
+                    slot = char.partSlots[slotIndex]
+                    self.inPartSlot[item] = slot
+
+            # add character to roster
+            self.chars[nameID] = char
+
+    def fillChars(self, nameIDs, maxGear=True):
+        &#34;&#34;&#34;For each name ID in the given list of name IDs, a character
+        with that name ID is added to the roster, if it is not already
+        present. The character is added at maximum rank and level.
+
+        If the `maxGear` attribute is True, maxed gear pieces will be
+        created, added to the roster, and equipped to the newly added
+        characters.
+
+        Args:
+            nameIDs (iterable of str): The name IDs of the characters to
+                add.
+            maxGear (bool): True if characters are to be equipped with
+                maxed gear.
+
+        &#34;&#34;&#34;
+        gearNames = [
+            &#39;Starfleet PADD 2256&#39;,
+            &#39;Type II Phaser 2256&#39;,
+            &#39;Communicator 2256&#39;,
+            &#39;Tricorder 2256&#39;
+        ]
+        for nameID in nameIDs:
+            if nameID in self.chars:
+                continue
+            char = Character(nameID, 9)
+            char.level = 99
+            self.chars[nameID] = char
+            if not maxGear:
+                continue
+            for slot, gearName in enumerate(gearNames):
+                gear = Gear(
+                    &#39;{} {}&#39;.format(gearName, char.role), char.maxGearLevel
+                )
+                self.gear.append(gear)
+                self.inGearSlot[gear] = char.gearSlots[slot]
+
+    def charStats(self, nameID):
+        &#34;&#34;&#34;Constructs and returns a `legends.stats.Stats` object
+        containing the total stats (including gear and particles) of the
+        character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character whose stats to
+                build.
+
+        Returns:
+            legends.stats.Stats: The character&#39;s total stats.
+
+        &#34;&#34;&#34;
+        char = self.chars[nameID]
+        nakedStats = char.stats
+        gears = (
+            self.containsGear[gearSlot] for gearSlot in char.gearSlots
+            if gearSlot in self.containsGear
+        )
+        gearStats = sum(
+            (gear.stats for gear in gears if gear is not None),
+            Stats()
+        )
+        parts = (
+            self.containsPart[partSlot] for partSlot in char.partSlots
+            if partSlot in self.containsPart
+        )
+        partStats = sum(
+            (part.stats for part in parts if part is not None),
+            Stats()
+        )
+        return nakedStats + gearStats + partStats
+
+    def missingGearLevels(self, nameID):
+        &#34;&#34;&#34;Computes and returns the number of missing gear levels for
+        the character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character.
+
+        Returns:
+            int: The number of missing gear levels.
+
+        &#34;&#34;&#34;
+        char = self.chars[nameID]
+        gearLevels = 0
+        for slot in char.gearSlots:
+            try:
+                gearLevels += self.containsGear[slot].level
+            except (KeyError, AttributeError):
+                pass
+        return 4 * char.maxGearLevel - gearLevels
+
+    def missingGearRanks(self, nameID):
+        &#34;&#34;&#34;Computes and returns the number of missing gear ranks for the
+        character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character.
+
+        Returns:
+            int: The number of missing gear ranks.
+
+        &#34;&#34;&#34;
+        char = self.chars[nameID]
+        gearRanks = 0
+        for slot in char.gearSlots:
+            try:
+                gearRanks += self.containsGear[slot].rarityIndex + 1
+            except (KeyError, AttributeError):
+                pass
+        return 4 * (char.rarityIndex + 1) - gearRanks
+
+    def tokensPerOrb(self, pool, excludeCommons=True):
+        &#34;&#34;&#34;Computes and returns the expected number of tokens per orb
+        the player will receive from using the given summon pool.
+
+        Args:
+            pool (str): One of the keys of `SUMMON_POOL`.
+            excludeCommons (bool): If True, ignores tokens for common
+                characters.
+
+        Returns:
+            float: The expected number of tokens per orb.
+
+        &#34;&#34;&#34;
+        tokens = 0
+        for nameID, prob in SUMMON_POOL[pool][&#39;nameIDs&#39;].items():
+            if excludeCommons and GSCharacter[nameID][&#39;Rarity&#39;] == &#39;Common&#39;:
+                continue
+            if nameID in self.chars and self.chars[nameID].rank == 9:
+                continue
+            tokens += 10 * prob
+        return tokens/SUMMON_POOL[pool][&#39;cost&#39;]</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.roster.readGear"><code class="name flex">
+<span>def <span class="ident">readGear</span></span>(<span>save, slot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The STL save file contains a list of gear, each one having a
+unique ID number. This method makes a <code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code>
+object for each gear piece, and builds a dictionary mapping its ID
+number in the save file to the associated <code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code>
+object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
+<dd>A decrypted dictionary representation of the
+player's save file, as returned by the
+<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 0-based index of the save slot from which to
+read the data.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>{<code>int</code>:<code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code>} The dictionary mapping
+IDs to gear.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def readGear(save, slot):
+    &#34;&#34;&#34;The STL save file contains a list of gear, each one having a
+    unique ID number. This method makes a `legends.gameobjects.Gear`
+    object for each gear piece, and builds a dictionary mapping its ID
+    number in the save file to the associated `legends.gameobjects.Gear`
+    object.
+
+    Args:
+        save (dict): A decrypted dictionary representation of the
+            player&#39;s save file, as returned by the
+            `legends.savefile.decryptSaveFile` function.
+        slot (int): The 0-based index of the save slot from which to
+            read the data.
+
+    Returns:
+        dict: {`int`:`legends.gameobjects.Gear`} The dictionary mapping
+            IDs to gear.
+
+    &#34;&#34;&#34;
+    slotData = save[&#39;{} data&#39;.format(slot)]
+    gear = {}
+    for indexStr, data in slotData[&#39;gears&#39;].items():
+        index = int(indexStr)
+        gear[index] = Gear(data[&#39;gearid&#39;], data[&#39;level&#39;])
+    return gear</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.readParts"><code class="name flex">
+<span>def <span class="ident">readParts</span></span>(<span>save, slot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The STL save file contains a list of particles, each one having a
+unique ID number. This method makes a <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code>
+object for each particle, and builds a dictionary mapping its ID
+number in the save file to the associated
+<code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code> object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
+<dd>A decrypted dictionary representation of the
+player's save file, as returned by the
+<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 0-based index of the save slot from which to
+read the data.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>{<code>int</code>:<code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code>} The dictionary
+mapping IDs to particles.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def readParts(save, slot):
+    &#34;&#34;&#34;The STL save file contains a list of particles, each one having a
+    unique ID number. This method makes a `legends.gameobjects.Particle`
+    object for each particle, and builds a dictionary mapping its ID
+    number in the save file to the associated
+    `legends.gameobjects.Particle` object.
+
+    Args:
+        save (dict): A decrypted dictionary representation of the
+            player&#39;s save file, as returned by the
+            `legends.savefile.decryptSaveFile` function.
+        slot (int): The 0-based index of the save slot from which to
+            read the data.
+
+    Returns:
+        dict: {`int`:`legends.gameobjects.Particle`} The dictionary
+            mapping IDs to particles.
+
+    &#34;&#34;&#34;
+    parts = {}
+    slotData = save[&#39;{} data&#39;.format(slot)]
+    for saveIndexStr, data in slotData[&#39;accessories&#39;].items():
+        saveIndex = int(saveIndexStr)
+        name = DESCRIPTIONS[GSAccessoryItems[data[&#39;accessoryid&#39;]][&#39;Name&#39;]]
+        rarity = GSAccessoryItems[data[&#39;accessoryid&#39;]][&#39;Rarity&#39;]
+        part = Particle(name, rarity, data[&#39;level&#39;], data[&#39;locked&#39;])
+        for statIndex, statName in enumerate(data[&#39;stats&#39;].values()):
+            part.setStatName(statIndex, statName)
+        parts[saveIndex] = part
+    return parts</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.roster.Roster"><code class="flex name class">
+<span>class <span class="ident">Roster</span></span>
+<span>(</span><span>save=None, slot=0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A collection of related characters, gear, and particles.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>gear</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code></dt>
+<dd>A list of the gear in
+the roster.</dd>
+<dt><strong><code>parts</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code></dt>
+<dd>A list of the
+particles in the roster.</dd>
+<dt><strong><code>chars</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code>} A
+dictionary mapping name IDs to characters.</dd>
+<dt><strong><code>inGearSlot</code></strong> :&ensp;<code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code></dt>
+<dd>A relation
+mapping <code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code> objects to
+<code><a title="legends.gameobjects.GearSlot" href="gameobjects.html#legends.gameobjects.GearSlot">GearSlot</a></code> objects. The
+<code><a title="legends.utils.objrelations.OneToOne.validate" href="utils/objrelations.html#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code> method is
+overridden to prohibit the placing of gear in the wrong slot
+or the placing of gear that exceeds the maximum allowed
+level. The <code><a title="legends.utils.objrelations.OneToOne.validate" href="utils/objrelations.html#legends.utils.objrelations.OneToOne.validate">OneToOne.validate()</a></code>
+method raises a <code>ValueError</code> when it fails to validate an
+assignment.</dd>
+<dt><strong><code>inPartSlot</code></strong> :&ensp;<code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code></dt>
+<dd>A relation
+mapping <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code> objects to
+<code><a title="legends.gameobjects.PartSlot" href="gameobjects.html#legends.gameobjects.PartSlot">PartSlot</a></code> objects.
+`</dd>
+</dl>
+<p>If save data is provided, the constructor will populate the
+roster with objects built from the save data. Otherwise, an
+empty roster is created.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
+<dd>A decrypted dictionary representation of the
+player's save file, as returned by the
+<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 0-based index of the save slot from which to
+read the data.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Roster():
+    &#34;&#34;&#34;A collection of related characters, gear, and particles.
+
+    Attributes:
+        gear (list of legends.gameobjects.Gear): A list of the gear in
+            the roster.
+        parts (list of legends.gameobjects.Particle): A list of the
+            particles in the roster.
+        chars (dict): {`str`:`legends.gameobjects.Character`} A
+            dictionary mapping name IDs to characters.
+        inGearSlot (legends.utils.objrelations.OneToOne): A relation
+            mapping `legends.gameobjects.Gear` objects to
+            `legends.gameobjects.GearSlot` objects. The
+            `legends.utils.objrelations.OneToOne.validate()` method is
+            overridden to prohibit the placing of gear in the wrong slot
+            or the placing of gear that exceeds the maximum allowed
+            level. The `legends.utils.objrelations.OneToOne.validate()`
+            method raises a `ValueError` when it fails to validate an
+            assignment.
+        inPartSlot (legends.utils.objrelations.OneToOne): A relation
+            mapping `legends.gameobjects.Particle` objects to
+            `legends.gameobjects.PartSlot` objects.
+            `
+
+    &#34;&#34;&#34;
+    def __init__(self, save=None, slot=0):
+        &#34;&#34;&#34;If save data is provided, the constructor will populate the
+        roster with objects built from the save data. Otherwise, an
+        empty roster is created.
+
+        Args:
+            save (dict): A decrypted dictionary representation of the
+                player&#39;s save file, as returned by the
+                `legends.savefile.decryptSaveFile` function.
+            slot (int): The 0-based index of the save slot from which to
+                read the data.
+
+        &#34;&#34;&#34;
+        self.gear = []
+        self.parts = []
+        self.chars = {}
+        self.inGearSlot = OneToOne()
+        def validate(slf, gear, gearSlot): # pylint: disable=unused-argument
+            char = gearSlot.char
+            index = gearSlot.index
+            if gear.level &gt; char.maxGearLevel or gear.slot != index:
+                raise ValueError((gear, gearSlot))
+            return True
+        self.inGearSlot.validate = MethodType(validate, self.inGearSlot)
+        self.inPartSlot = OneToOne()
+        if save is not None:
+            self.fromSaveData(save, slot)
+
+    @property
+    def containsGear(self):
+        &#34;&#34;&#34;`legends.utils.objrelations.OneToOne`: The inverse of
+        `inGearSlot`.
+        &#34;&#34;&#34;
+        return self.inGearSlot.inverse
+
+    @property
+    def containsPart(self):
+        &#34;&#34;&#34;`legends.utils.objrelations.OneToOne`: The inverse of
+        `inPartSlot`.
+        &#34;&#34;&#34;
+        return self.inPartSlot.inverse
+
+    def clear(self):
+        &#34;&#34;&#34;Completely clears all items in the roster.
+
+        &#34;&#34;&#34;
+        self.gear.clear()
+        self.parts.clear()
+        self.chars.clear()
+        self.inGearSlot.clear()
+        self.inPartSlot.clear()
+
+    def fromSaveData(self, save, slot):
+        &#34;&#34;&#34;Completely empties the roster, then re-populates it with data
+        from the given save data and slot.
+
+        Args:
+            save (dict): A decrypted dictionary representation of the
+                player&#39;s save file, as returned by the
+                `legends.savefile.decryptSaveFile` function.
+            slot (int): The 0-based index of the save slot from which to
+                read the data.
+
+        &#34;&#34;&#34;
+        self.clear()
+
+        # fill gear and particles
+        gearDict = readGear(save, slot)
+        self.gear = list(gearDict.values())
+        partDict = readParts(save, slot)
+        self.parts = list(partDict.values())
+
+        # cycle through characters in save data
+        slotData = save[&#39;{} data&#39;.format(slot)]
+        for nameID, data in slotData[&#39;units&#39;].items():
+            char = Character(nameID, data[&#39;rank&#39;], data[&#39;xp&#39;])
+
+            # add skills to character
+            for skillID, level in data[&#39;skills&#39;].items():
+                if level &gt; 0:
+                    try:
+                        char.skills[skillID].unlocked = True
+                        char.skills[skillID].level = level
+                    except KeyError:
+                        warn(
+                            repr(skillID)
+                            + &#39; found in save file but not in game data&#39;
+                        )
+
+            # add gear to character
+            for slotIndex, itemSaveIndex in enumerate(data[&#39;gears&#39;].values()):
+                if itemSaveIndex &gt; 0:
+                    item = gearDict[itemSaveIndex]
+                    slot = char.gearSlots[slotIndex]
+                    self.inGearSlot[item] = slot
+
+            # add particles to character
+            for slotIndex, itemSaveIndex in (
+                enumerate(data[&#39;accessories&#39;].values())
+            ):
+                if itemSaveIndex &gt; 0:
+                    item = partDict[itemSaveIndex]
+                    slot = char.partSlots[slotIndex]
+                    self.inPartSlot[item] = slot
+
+            # add character to roster
+            self.chars[nameID] = char
+
+    def fillChars(self, nameIDs, maxGear=True):
+        &#34;&#34;&#34;For each name ID in the given list of name IDs, a character
+        with that name ID is added to the roster, if it is not already
+        present. The character is added at maximum rank and level.
+
+        If the `maxGear` attribute is True, maxed gear pieces will be
+        created, added to the roster, and equipped to the newly added
+        characters.
+
+        Args:
+            nameIDs (iterable of str): The name IDs of the characters to
+                add.
+            maxGear (bool): True if characters are to be equipped with
+                maxed gear.
+
+        &#34;&#34;&#34;
+        gearNames = [
+            &#39;Starfleet PADD 2256&#39;,
+            &#39;Type II Phaser 2256&#39;,
+            &#39;Communicator 2256&#39;,
+            &#39;Tricorder 2256&#39;
+        ]
+        for nameID in nameIDs:
+            if nameID in self.chars:
+                continue
+            char = Character(nameID, 9)
+            char.level = 99
+            self.chars[nameID] = char
+            if not maxGear:
+                continue
+            for slot, gearName in enumerate(gearNames):
+                gear = Gear(
+                    &#39;{} {}&#39;.format(gearName, char.role), char.maxGearLevel
+                )
+                self.gear.append(gear)
+                self.inGearSlot[gear] = char.gearSlots[slot]
+
+    def charStats(self, nameID):
+        &#34;&#34;&#34;Constructs and returns a `legends.stats.Stats` object
+        containing the total stats (including gear and particles) of the
+        character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character whose stats to
+                build.
+
+        Returns:
+            legends.stats.Stats: The character&#39;s total stats.
+
+        &#34;&#34;&#34;
+        char = self.chars[nameID]
+        nakedStats = char.stats
+        gears = (
+            self.containsGear[gearSlot] for gearSlot in char.gearSlots
+            if gearSlot in self.containsGear
+        )
+        gearStats = sum(
+            (gear.stats for gear in gears if gear is not None),
+            Stats()
+        )
+        parts = (
+            self.containsPart[partSlot] for partSlot in char.partSlots
+            if partSlot in self.containsPart
+        )
+        partStats = sum(
+            (part.stats for part in parts if part is not None),
+            Stats()
+        )
+        return nakedStats + gearStats + partStats
+
+    def missingGearLevels(self, nameID):
+        &#34;&#34;&#34;Computes and returns the number of missing gear levels for
+        the character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character.
+
+        Returns:
+            int: The number of missing gear levels.
+
+        &#34;&#34;&#34;
+        char = self.chars[nameID]
+        gearLevels = 0
+        for slot in char.gearSlots:
+            try:
+                gearLevels += self.containsGear[slot].level
+            except (KeyError, AttributeError):
+                pass
+        return 4 * char.maxGearLevel - gearLevels
+
+    def missingGearRanks(self, nameID):
+        &#34;&#34;&#34;Computes and returns the number of missing gear ranks for the
+        character with the given name ID.
+
+        Args:
+            nameID (str): The name ID of the character.
+
+        Returns:
+            int: The number of missing gear ranks.
+
+        &#34;&#34;&#34;
+        char = self.chars[nameID]
+        gearRanks = 0
+        for slot in char.gearSlots:
+            try:
+                gearRanks += self.containsGear[slot].rarityIndex + 1
+            except (KeyError, AttributeError):
+                pass
+        return 4 * (char.rarityIndex + 1) - gearRanks
+
+    def tokensPerOrb(self, pool, excludeCommons=True):
+        &#34;&#34;&#34;Computes and returns the expected number of tokens per orb
+        the player will receive from using the given summon pool.
+
+        Args:
+            pool (str): One of the keys of `SUMMON_POOL`.
+            excludeCommons (bool): If True, ignores tokens for common
+                characters.
+
+        Returns:
+            float: The expected number of tokens per orb.
+
+        &#34;&#34;&#34;
+        tokens = 0
+        for nameID, prob in SUMMON_POOL[pool][&#39;nameIDs&#39;].items():
+            if excludeCommons and GSCharacter[nameID][&#39;Rarity&#39;] == &#39;Common&#39;:
+                continue
+            if nameID in self.chars and self.chars[nameID].rank == 9:
+                continue
+            tokens += 10 * prob
+        return tokens/SUMMON_POOL[pool][&#39;cost&#39;]</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.roster.Roster.containsGear"><code class="name">var <span class="ident">containsGear</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code>: The inverse of
+<code>inGearSlot</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def containsGear(self):
+    &#34;&#34;&#34;`legends.utils.objrelations.OneToOne`: The inverse of
+    `inGearSlot`.
+    &#34;&#34;&#34;
+    return self.inGearSlot.inverse</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.containsPart"><code class="name">var <span class="ident">containsPart</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code>: The inverse of
+<code>inPartSlot</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def containsPart(self):
+    &#34;&#34;&#34;`legends.utils.objrelations.OneToOne`: The inverse of
+    `inPartSlot`.
+    &#34;&#34;&#34;
+    return self.inPartSlot.inverse</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.roster.Roster.charStats"><code class="name flex">
+<span>def <span class="ident">charStats</span></span>(<span>self, nameID)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructs and returns a <code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code> object
+containing the total stats (including gear and particles) of the
+character with the given name ID.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nameID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name ID of the character whose stats to
+build.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
+<dd>The character's total stats.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def charStats(self, nameID):
+    &#34;&#34;&#34;Constructs and returns a `legends.stats.Stats` object
+    containing the total stats (including gear and particles) of the
+    character with the given name ID.
+
+    Args:
+        nameID (str): The name ID of the character whose stats to
+            build.
+
+    Returns:
+        legends.stats.Stats: The character&#39;s total stats.
+
+    &#34;&#34;&#34;
+    char = self.chars[nameID]
+    nakedStats = char.stats
+    gears = (
+        self.containsGear[gearSlot] for gearSlot in char.gearSlots
+        if gearSlot in self.containsGear
+    )
+    gearStats = sum(
+        (gear.stats for gear in gears if gear is not None),
+        Stats()
+    )
+    parts = (
+        self.containsPart[partSlot] for partSlot in char.partSlots
+        if partSlot in self.containsPart
+    )
+    partStats = sum(
+        (part.stats for part in parts if part is not None),
+        Stats()
+    )
+    return nakedStats + gearStats + partStats</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Completely clears all items in the roster.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear(self):
+    &#34;&#34;&#34;Completely clears all items in the roster.
+
+    &#34;&#34;&#34;
+    self.gear.clear()
+    self.parts.clear()
+    self.chars.clear()
+    self.inGearSlot.clear()
+    self.inPartSlot.clear()</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.fillChars"><code class="name flex">
+<span>def <span class="ident">fillChars</span></span>(<span>self, nameIDs, maxGear=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>For each name ID in the given list of name IDs, a character
+with that name ID is added to the roster, if it is not already
+present. The character is added at maximum rank and level.</p>
+<p>If the <code>maxGear</code> attribute is True, maxed gear pieces will be
+created, added to the roster, and equipped to the newly added
+characters.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nameIDs</code></strong> :&ensp;<code>iterable</code> of <code>str</code></dt>
+<dd>The name IDs of the characters to
+add.</dd>
+<dt><strong><code>maxGear</code></strong> :&ensp;<code>bool</code></dt>
+<dd>True if characters are to be equipped with
+maxed gear.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fillChars(self, nameIDs, maxGear=True):
+    &#34;&#34;&#34;For each name ID in the given list of name IDs, a character
+    with that name ID is added to the roster, if it is not already
+    present. The character is added at maximum rank and level.
+
+    If the `maxGear` attribute is True, maxed gear pieces will be
+    created, added to the roster, and equipped to the newly added
+    characters.
+
+    Args:
+        nameIDs (iterable of str): The name IDs of the characters to
+            add.
+        maxGear (bool): True if characters are to be equipped with
+            maxed gear.
+
+    &#34;&#34;&#34;
+    gearNames = [
+        &#39;Starfleet PADD 2256&#39;,
+        &#39;Type II Phaser 2256&#39;,
+        &#39;Communicator 2256&#39;,
+        &#39;Tricorder 2256&#39;
+    ]
+    for nameID in nameIDs:
+        if nameID in self.chars:
+            continue
+        char = Character(nameID, 9)
+        char.level = 99
+        self.chars[nameID] = char
+        if not maxGear:
+            continue
+        for slot, gearName in enumerate(gearNames):
+            gear = Gear(
+                &#39;{} {}&#39;.format(gearName, char.role), char.maxGearLevel
+            )
+            self.gear.append(gear)
+            self.inGearSlot[gear] = char.gearSlots[slot]</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.fromSaveData"><code class="name flex">
+<span>def <span class="ident">fromSaveData</span></span>(<span>self, save, slot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Completely empties the roster, then re-populates it with data
+from the given save data and slot.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
+<dd>A decrypted dictionary representation of the
+player's save file, as returned by the
+<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 0-based index of the save slot from which to
+read the data.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fromSaveData(self, save, slot):
+    &#34;&#34;&#34;Completely empties the roster, then re-populates it with data
+    from the given save data and slot.
+
+    Args:
+        save (dict): A decrypted dictionary representation of the
+            player&#39;s save file, as returned by the
+            `legends.savefile.decryptSaveFile` function.
+        slot (int): The 0-based index of the save slot from which to
+            read the data.
+
+    &#34;&#34;&#34;
+    self.clear()
+
+    # fill gear and particles
+    gearDict = readGear(save, slot)
+    self.gear = list(gearDict.values())
+    partDict = readParts(save, slot)
+    self.parts = list(partDict.values())
+
+    # cycle through characters in save data
+    slotData = save[&#39;{} data&#39;.format(slot)]
+    for nameID, data in slotData[&#39;units&#39;].items():
+        char = Character(nameID, data[&#39;rank&#39;], data[&#39;xp&#39;])
+
+        # add skills to character
+        for skillID, level in data[&#39;skills&#39;].items():
+            if level &gt; 0:
+                try:
+                    char.skills[skillID].unlocked = True
+                    char.skills[skillID].level = level
+                except KeyError:
+                    warn(
+                        repr(skillID)
+                        + &#39; found in save file but not in game data&#39;
+                    )
+
+        # add gear to character
+        for slotIndex, itemSaveIndex in enumerate(data[&#39;gears&#39;].values()):
+            if itemSaveIndex &gt; 0:
+                item = gearDict[itemSaveIndex]
+                slot = char.gearSlots[slotIndex]
+                self.inGearSlot[item] = slot
+
+        # add particles to character
+        for slotIndex, itemSaveIndex in (
+            enumerate(data[&#39;accessories&#39;].values())
+        ):
+            if itemSaveIndex &gt; 0:
+                item = partDict[itemSaveIndex]
+                slot = char.partSlots[slotIndex]
+                self.inPartSlot[item] = slot
+
+        # add character to roster
+        self.chars[nameID] = char</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.missingGearLevels"><code class="name flex">
+<span>def <span class="ident">missingGearLevels</span></span>(<span>self, nameID)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the number of missing gear levels for
+the character with the given name ID.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nameID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name ID of the character.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The number of missing gear levels.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def missingGearLevels(self, nameID):
+    &#34;&#34;&#34;Computes and returns the number of missing gear levels for
+    the character with the given name ID.
+
+    Args:
+        nameID (str): The name ID of the character.
+
+    Returns:
+        int: The number of missing gear levels.
+
+    &#34;&#34;&#34;
+    char = self.chars[nameID]
+    gearLevels = 0
+    for slot in char.gearSlots:
+        try:
+            gearLevels += self.containsGear[slot].level
+        except (KeyError, AttributeError):
+            pass
+    return 4 * char.maxGearLevel - gearLevels</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.missingGearRanks"><code class="name flex">
+<span>def <span class="ident">missingGearRanks</span></span>(<span>self, nameID)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the number of missing gear ranks for the
+character with the given name ID.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>nameID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name ID of the character.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The number of missing gear ranks.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def missingGearRanks(self, nameID):
+    &#34;&#34;&#34;Computes and returns the number of missing gear ranks for the
+    character with the given name ID.
+
+    Args:
+        nameID (str): The name ID of the character.
+
+    Returns:
+        int: The number of missing gear ranks.
+
+    &#34;&#34;&#34;
+    char = self.chars[nameID]
+    gearRanks = 0
+    for slot in char.gearSlots:
+        try:
+            gearRanks += self.containsGear[slot].rarityIndex + 1
+        except (KeyError, AttributeError):
+            pass
+    return 4 * (char.rarityIndex + 1) - gearRanks</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.tokensPerOrb"><code class="name flex">
+<span>def <span class="ident">tokensPerOrb</span></span>(<span>self, pool, excludeCommons=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the expected number of tokens per orb
+the player will receive from using the given summon pool.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>pool</code></strong> :&ensp;<code>str</code></dt>
+<dd>One of the keys of <code>SUMMON_POOL</code>.</dd>
+<dt><strong><code>excludeCommons</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If True, ignores tokens for common
+characters.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>float</code></dt>
+<dd>The expected number of tokens per orb.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tokensPerOrb(self, pool, excludeCommons=True):
+    &#34;&#34;&#34;Computes and returns the expected number of tokens per orb
+    the player will receive from using the given summon pool.
+
+    Args:
+        pool (str): One of the keys of `SUMMON_POOL`.
+        excludeCommons (bool): If True, ignores tokens for common
+            characters.
+
+    Returns:
+        float: The expected number of tokens per orb.
+
+    &#34;&#34;&#34;
+    tokens = 0
+    for nameID, prob in SUMMON_POOL[pool][&#39;nameIDs&#39;].items():
+        if excludeCommons and GSCharacter[nameID][&#39;Rarity&#39;] == &#39;Common&#39;:
+            continue
+        if nameID in self.chars and self.chars[nameID].rank == 9:
+            continue
+        tokens += 10 * prob
+    return tokens/SUMMON_POOL[pool][&#39;cost&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legends" href="index.html">legends</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.roster.readGear" href="#legends.roster.readGear">readGear</a></code></li>
+<li><code><a title="legends.roster.readParts" href="#legends.roster.readParts">readParts</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.roster.Roster" href="#legends.roster.Roster">Roster</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.roster.Roster.charStats" href="#legends.roster.Roster.charStats">charStats</a></code></li>
+<li><code><a title="legends.roster.Roster.clear" href="#legends.roster.Roster.clear">clear</a></code></li>
+<li><code><a title="legends.roster.Roster.containsGear" href="#legends.roster.Roster.containsGear">containsGear</a></code></li>
+<li><code><a title="legends.roster.Roster.containsPart" href="#legends.roster.Roster.containsPart">containsPart</a></code></li>
+<li><code><a title="legends.roster.Roster.fillChars" href="#legends.roster.Roster.fillChars">fillChars</a></code></li>
+<li><code><a title="legends.roster.Roster.fromSaveData" href="#legends.roster.Roster.fromSaveData">fromSaveData</a></code></li>
+<li><code><a title="legends.roster.Roster.missingGearLevels" href="#legends.roster.Roster.missingGearLevels">missingGearLevels</a></code></li>
+<li><code><a title="legends.roster.Roster.missingGearRanks" href="#legends.roster.Roster.missingGearRanks">missingGearRanks</a></code></li>
+<li><code><a title="legends.roster.Roster.tokensPerOrb" href="#legends.roster.Roster.tokensPerOrb">tokensPerOrb</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

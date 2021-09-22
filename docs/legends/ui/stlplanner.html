@@ -1,0 +1,1210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>legends.ui.stlplanner API documentation</title>
+<meta name="description" content="The `legends.ui.stlplanner.STLPlanner` class and related objects …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legends.ui.stlplanner</code></h1>
+</header>
+<section id="section-intro">
+<p>The <code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> class and related objects.</p>
+<p>The <em>STL PLanner</em> app can be launched with <code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a>.mainloop()</code>.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;The `legends.ui.stlplanner.STLPlanner` class and related objects.
+
+The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
+
+&#34;&#34;&#34;
+
+import tkinter as tk
+from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
+from legends.savefile import decryptSaveFile
+from legends.saveslot import SaveSlot
+from legends.ui.dialogs import (
+    showerror, askSlot, askMaxChars, askyesno, HelpScreen, InventoryScreen
+)
+from legends.ui.rostertab import RosterTab
+
+__all__ = [&#39;cleanTime&#39;, &#39;STLPlanner&#39;, &#39;Session&#39;]
+
+def cleanTime(delta):
+    &#34;&#34;&#34;Converts a `timedelta` object into a string description that
+    shows the number of days (if positive), hours, and minutes.
+
+    Args:
+        delta (timedelta): The `timedelta` object to convert.
+
+    Returns:
+        str: The string description.
+
+    &#34;&#34;&#34;
+    minutes = int(delta.total_seconds()/60)
+    hours, minutes = minutes//60, minutes % 60
+    days, hours = hours//24, hours % 24
+    display = &#39;{} days &#39;.format(days) if days &gt; 1 else &#39;&#39;
+    display += &#39;{} hrs {} min&#39;.format(hours, minutes)
+    return display
+
+class STLPlanner(tk.Tk):
+    &#34;&#34;&#34;The *STL Planner* main window.
+
+    Args:
+        showTimestamps (tk.BooleanVar): `True` if the info bar with
+            timestamp data should be shown. Defaults to `True`.
+        disableOnModal (list): [(`tk.Menu`, `int`)]: Each item in this
+            list is a 2-tuple that represents a menu option which should
+            be disabled when a modal dialog is open. The first value is
+            the menu in which the option exists. The second value is the
+            0-based index of the option within that menu. Defaults to an
+            empty list.
+        session (Session): The currently running user session. Defaults
+            to a new `Session` instance with no save slot.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, *args, **kargs):
+        &#34;&#34;&#34;The constructor passes its arguments to the `tk.Tk`
+        constructor.
+
+        &#34;&#34;&#34;
+        # build window and initialize variables
+        tk.Tk.__init__(self, *args, **kargs)
+        self.title(&#39;STL Planner&#39;)
+        self.showTimestamps = tk.BooleanVar(self, True)
+        self.disableOnModal = []
+        self._menuEnabled = True
+        self.buildMenu()
+        self.session = Session(self)
+        self.session.pack()
+
+    @property
+    def menuEnabled(self):
+        &#34;&#34;&#34;`bool`: `True` if the menu options in `disableOnModal` are
+        enabled. Upon setting this property, those menu options&#39; states
+        are set accordingly.
+        &#34;&#34;&#34;
+        return self._menuEnabled
+
+    @menuEnabled.setter
+    def menuEnabled(self, value):
+        self._menuEnabled = value
+        state = NORMAL if value else DISABLED
+        for menu, index in self.disableOnModal:
+            menu.entryconfig(index, state=state)
+
+    def buildMenu(self):
+        &#34;&#34;&#34;Builds the menu bar.
+
+        &#34;&#34;&#34;
+        menuBar = tk.Menu(self)
+        self.config(menu=menuBar)
+
+        # build the File menu
+        fileMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label=&#39;File&#39;, menu=fileMenu)
+
+        # build the File &gt; New Session submenu
+        newSessionSubmenu = tk.Menu(fileMenu)
+        fileMenu.add_cascade(label=&#39;New Session&#39;, menu=newSessionSubmenu)
+
+        # populate the File &gt; New Session submenu
+        newSessionSubmenu.add_command(
+            label=&#39;From Save File...&#39;, command=self.newFromFile
+        )
+        self.disableOnModal.append((newSessionSubmenu, 0))
+        newSessionSubmenu.add_command(
+            label=&#39;Maxed Characters&#39;, command=self.newMaxChars
+        )
+        self.disableOnModal.append((newSessionSubmenu, 1))
+
+        # build and populate the Session menu
+        sessionMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label=&#39;Session&#39;, menu=sessionMenu)
+        sessionMenu.add_checkbutton(
+            label=&#39;Show Timestamps&#39;, variable=self.showTimestamps,
+            command=self.setTimestamps
+        )
+        self.disableOnModal.append((sessionMenu, 0))
+        sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+        self.disableOnModal.append((sessionMenu, 1))
+
+        # build and populate the Help menu
+        helpMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label=&#39;Help&#39;, menu=helpMenu)
+        helpMenu.add_command(
+            label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
+        )
+        self.disableOnModal.append((helpMenu, 0))
+
+    def newSession(self, saveslot):
+        &#34;&#34;&#34;Clears the current session and starts a new one with the
+        given `legends.saveslot.SaveSlot` object.
+
+        Args:
+            saveslot (legends.saveslot.SaveSlot): The
+                `legends.saveslot.SaveSlot` instance to associate with
+                the new session.
+
+        &#34;&#34;&#34;
+        self.session.destroy()
+        self.session = Session(self, saveslot)
+        self.session.pack()
+
+    def askCloseSession(self):
+        &#34;&#34;&#34;Returns `True` if there is no active session. (An active
+        session is one whose `saveslot` attribute is not `None`.) If
+        there is an active session, asks the user if it is okay to close
+        it.
+
+        Returns:
+            bool: `True` if it is okay to close the current session.
+
+        &#34;&#34;&#34;
+        if self.session.saveslot is None:
+            return True
+        return askyesno(self, &#39;Close Session&#39;, &#39;Close current session?&#39;)
+
+    def newFromFile(self):
+        &#34;&#34;&#34;Prompts the user for a save slot, then builds a
+        `legends.saveslot.SaveSlot` object and starts a new session.
+
+        &#34;&#34;&#34;
+        if self.askCloseSession():
+            try:
+                save = decryptSaveFile()
+            except FileNotFoundError:
+                showerror(self, &#39;File Not Found&#39;, &#39;Save file not found.&#39;)
+                return
+            saveslot = askSlot(self, save)
+            if saveslot is None:
+                return
+            self.newSession(saveslot)
+
+    def newMaxChars(self):
+        &#34;&#34;&#34;Prompts the user to choose from an array of options, then
+        starts a new session using a roster of maxed characters.
+
+        &#34;&#34;&#34;
+        if self.askCloseSession():
+            result = askMaxChars(self)
+            if result is None:
+                return
+            chars, maxGear = result
+            saveslot = SaveSlot()
+            saveslot.roster.fillChars(chars, maxGear)
+            self.newSession(saveslot)
+
+    def setTimestamps(self, *args): # pylint: disable=unused-argument
+        &#34;&#34;&#34;Sets the visibility of the timestamps in the active session
+        according to the value of the `showTimestamps` attribute.
+
+        &#34;&#34;&#34;
+        if self.showTimestamps.get():
+            self.session.makeTimeBar()
+        else:
+            self.session.removeTimeBar()
+
+    def inventory(self):
+        &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+        showing the player&#39;s inventory. Calls an error popup if the
+        inventory is either not found or empty.
+
+        &#34;&#34;&#34;
+        if (
+            self.session.saveslot is None
+            or not self.session.saveslot.inventory
+        ):
+            showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
+            return
+        InventoryScreen(self)
+
+class Session(tk.Frame):
+    &#34;&#34;&#34;A user session in the *STL Planner* app.
+
+    Attributes:
+        saveslot (legends.saveslot.SaveSlot): The
+            `legends.saveslot.SaveSlot` object associated with the
+            session.
+        timeBar (tk.Frame): The horizontal bar at the top of the session
+            frame that displays time stamp info connected with the
+            associated save slot.
+        tab (tk.Frame): The visible tab in the session frame.
+
+    &#34;&#34;&#34;
+    def __init__(self, stlplanner, saveslot=None, **options):
+        &#34;&#34;&#34;The constructor creates a new session associated with the
+        given `legends.saveslot.SaveSlot` object. If none is provided,
+        the session displays buttons that activate choices from the
+        `File` menu.
+
+        Args:
+            stlplanner (STLPlanner): The `STLPlanner` instance to be
+                assigned as the parent of this session.
+
+        &#34;&#34;&#34;
+        tk.Frame.__init__(self, stlplanner, **options)
+        self.saveslot = saveslot
+        self.timeBar = None
+        self.tab = tk.Frame(self)
+        self.tab.pack()
+        if saveslot is None:
+            self.startFrame()
+        else:
+            self.makeTimeBar()
+            self.rosterTab()
+
+    def startFrame(self):
+        &#34;&#34;&#34;Build the starting frame, with choices from the `File` menu.
+
+        &#34;&#34;&#34;
+        buttonbox = tk.Frame(self.tab)
+        tk.Button(
+            buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
+        ).grid(row=0, column=0, sticky=EW)
+        tk.Button(
+            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+        ).grid(row=1, column=0, sticky=EW)
+        tk.Label(
+            buttonbox, text=&#39;Extract data from your local save file&#39;
+        ).grid(row=0, column=1, sticky=W)
+        tk.Label(
+            buttonbox, text=&#39;Create a roster of maxed characters&#39;
+        ).grid(row=1, column=1, sticky=W)
+        buttonbox.pack(padx=50, pady=50)
+
+    def makeTimeBar(self):
+        &#34;&#34;&#34;Builds a horizontal bar (a `tk.Frame` instance) containing
+        timestamp information from the associated save slot, then
+        assigns the bar to the `timeBar` attribute. If there is no save
+        slot, or the time bar already exists, or the `STLPlanner` master
+        prohibits it, the method does nothing.
+
+        &#34;&#34;&#34;
+        if (
+            self.saveslot is None
+            or self.timeBar is not None
+            or not self.master.showTimestamps.get()
+        ):
+            return
+
+        # build bar and initialize variables
+        self.timeBar = tk.Frame(self)
+        timestamps = self.saveslot.timestamps
+        start = (
+            &#39;start date: &#39;
+            + timestamps.startDate.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
+        )
+        last = (
+            &#39;last played: &#39;
+            + timestamps.timeLastPlayed.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
+        )
+        total = (
+            &#39;play duration: &#39; + cleanTime(timestamps.playDuration)
+        )
+        average = (
+            &#39;play time per day: &#39; + cleanTime(timestamps.playTimePerDay)
+        )
+
+        # build labels
+        labels = [None] * 4
+        for j in range(4):
+            labels[j] = tk.Label(
+                self.timeBar, borderwidth=2, relief=GROOVE, padx=10
+            )
+        for index, text in enumerate([start, last, total, average]):
+            labels[index].config(text=text)
+
+        # pack labels and bar
+        for label in labels:
+            label.pack(side=LEFT)
+        self.timeBar.pack(side=TOP)
+
+    def removeTimeBar(self):
+        &#34;&#34;&#34;If the time bar exists, it is destroyed and the `timeBar`
+        attribute is set to `None`.
+
+        &#34;&#34;&#34;
+        if self.timeBar is not None:
+            self.timeBar.destroy()
+            self.timeBar = None
+
+    def rosterTab(self):
+        &#34;&#34;&#34;Loads a new `legends.ui.rostertab.RosterTab` instance into
+        the `tab` attribute.
+
+        &#34;&#34;&#34;
+        self.tab.destroy()
+        self.tab = RosterTab(self)
+        self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
+        self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.ui.stlplanner.cleanTime"><code class="name flex">
+<span>def <span class="ident">cleanTime</span></span>(<span>delta)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts a <code>timedelta</code> object into a string description that
+shows the number of days (if positive), hours, and minutes.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>delta</code></strong> :&ensp;<code>timedelta</code></dt>
+<dd>The <code>timedelta</code> object to convert.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The string description.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cleanTime(delta):
+    &#34;&#34;&#34;Converts a `timedelta` object into a string description that
+    shows the number of days (if positive), hours, and minutes.
+
+    Args:
+        delta (timedelta): The `timedelta` object to convert.
+
+    Returns:
+        str: The string description.
+
+    &#34;&#34;&#34;
+    minutes = int(delta.total_seconds()/60)
+    hours, minutes = minutes//60, minutes % 60
+    days, hours = hours//24, hours % 24
+    display = &#39;{} days &#39;.format(days) if days &gt; 1 else &#39;&#39;
+    display += &#39;{} hrs {} min&#39;.format(hours, minutes)
+    return display</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.ui.stlplanner.STLPlanner"><code class="flex name class">
+<span>class <span class="ident">STLPlanner</span></span>
+<span>(</span><span>*args, **kargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The <em>STL Planner</em> main window.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>showTimestamps</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd><code>True</code> if the info bar with
+timestamp data should be shown. Defaults to <code>True</code>.</dd>
+<dt><strong><code>disableOnModal</code></strong> :&ensp;<code>list</code></dt>
+<dd>[(<code>tk.Menu</code>, <code>int</code>)]: Each item in this
+list is a 2-tuple that represents a menu option which should
+be disabled when a modal dialog is open. The first value is
+the menu in which the option exists. The second value is the
+0-based index of the option within that menu. Defaults to an
+empty list.</dd>
+<dt><strong><code>session</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.Session" href="#legends.ui.stlplanner.Session">Session</a></code></dt>
+<dd>The currently running user session. Defaults
+to a new <code><a title="legends.ui.stlplanner.Session" href="#legends.ui.stlplanner.Session">Session</a></code> instance with no save slot.</dd>
+</dl>
+<p>The constructor passes its arguments to the <code>tk.Tk</code>
+constructor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class STLPlanner(tk.Tk):
+    &#34;&#34;&#34;The *STL Planner* main window.
+
+    Args:
+        showTimestamps (tk.BooleanVar): `True` if the info bar with
+            timestamp data should be shown. Defaults to `True`.
+        disableOnModal (list): [(`tk.Menu`, `int`)]: Each item in this
+            list is a 2-tuple that represents a menu option which should
+            be disabled when a modal dialog is open. The first value is
+            the menu in which the option exists. The second value is the
+            0-based index of the option within that menu. Defaults to an
+            empty list.
+        session (Session): The currently running user session. Defaults
+            to a new `Session` instance with no save slot.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, *args, **kargs):
+        &#34;&#34;&#34;The constructor passes its arguments to the `tk.Tk`
+        constructor.
+
+        &#34;&#34;&#34;
+        # build window and initialize variables
+        tk.Tk.__init__(self, *args, **kargs)
+        self.title(&#39;STL Planner&#39;)
+        self.showTimestamps = tk.BooleanVar(self, True)
+        self.disableOnModal = []
+        self._menuEnabled = True
+        self.buildMenu()
+        self.session = Session(self)
+        self.session.pack()
+
+    @property
+    def menuEnabled(self):
+        &#34;&#34;&#34;`bool`: `True` if the menu options in `disableOnModal` are
+        enabled. Upon setting this property, those menu options&#39; states
+        are set accordingly.
+        &#34;&#34;&#34;
+        return self._menuEnabled
+
+    @menuEnabled.setter
+    def menuEnabled(self, value):
+        self._menuEnabled = value
+        state = NORMAL if value else DISABLED
+        for menu, index in self.disableOnModal:
+            menu.entryconfig(index, state=state)
+
+    def buildMenu(self):
+        &#34;&#34;&#34;Builds the menu bar.
+
+        &#34;&#34;&#34;
+        menuBar = tk.Menu(self)
+        self.config(menu=menuBar)
+
+        # build the File menu
+        fileMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label=&#39;File&#39;, menu=fileMenu)
+
+        # build the File &gt; New Session submenu
+        newSessionSubmenu = tk.Menu(fileMenu)
+        fileMenu.add_cascade(label=&#39;New Session&#39;, menu=newSessionSubmenu)
+
+        # populate the File &gt; New Session submenu
+        newSessionSubmenu.add_command(
+            label=&#39;From Save File...&#39;, command=self.newFromFile
+        )
+        self.disableOnModal.append((newSessionSubmenu, 0))
+        newSessionSubmenu.add_command(
+            label=&#39;Maxed Characters&#39;, command=self.newMaxChars
+        )
+        self.disableOnModal.append((newSessionSubmenu, 1))
+
+        # build and populate the Session menu
+        sessionMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label=&#39;Session&#39;, menu=sessionMenu)
+        sessionMenu.add_checkbutton(
+            label=&#39;Show Timestamps&#39;, variable=self.showTimestamps,
+            command=self.setTimestamps
+        )
+        self.disableOnModal.append((sessionMenu, 0))
+        sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+        self.disableOnModal.append((sessionMenu, 1))
+
+        # build and populate the Help menu
+        helpMenu = tk.Menu(menuBar)
+        menuBar.add_cascade(label=&#39;Help&#39;, menu=helpMenu)
+        helpMenu.add_command(
+            label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
+        )
+        self.disableOnModal.append((helpMenu, 0))
+
+    def newSession(self, saveslot):
+        &#34;&#34;&#34;Clears the current session and starts a new one with the
+        given `legends.saveslot.SaveSlot` object.
+
+        Args:
+            saveslot (legends.saveslot.SaveSlot): The
+                `legends.saveslot.SaveSlot` instance to associate with
+                the new session.
+
+        &#34;&#34;&#34;
+        self.session.destroy()
+        self.session = Session(self, saveslot)
+        self.session.pack()
+
+    def askCloseSession(self):
+        &#34;&#34;&#34;Returns `True` if there is no active session. (An active
+        session is one whose `saveslot` attribute is not `None`.) If
+        there is an active session, asks the user if it is okay to close
+        it.
+
+        Returns:
+            bool: `True` if it is okay to close the current session.
+
+        &#34;&#34;&#34;
+        if self.session.saveslot is None:
+            return True
+        return askyesno(self, &#39;Close Session&#39;, &#39;Close current session?&#39;)
+
+    def newFromFile(self):
+        &#34;&#34;&#34;Prompts the user for a save slot, then builds a
+        `legends.saveslot.SaveSlot` object and starts a new session.
+
+        &#34;&#34;&#34;
+        if self.askCloseSession():
+            try:
+                save = decryptSaveFile()
+            except FileNotFoundError:
+                showerror(self, &#39;File Not Found&#39;, &#39;Save file not found.&#39;)
+                return
+            saveslot = askSlot(self, save)
+            if saveslot is None:
+                return
+            self.newSession(saveslot)
+
+    def newMaxChars(self):
+        &#34;&#34;&#34;Prompts the user to choose from an array of options, then
+        starts a new session using a roster of maxed characters.
+
+        &#34;&#34;&#34;
+        if self.askCloseSession():
+            result = askMaxChars(self)
+            if result is None:
+                return
+            chars, maxGear = result
+            saveslot = SaveSlot()
+            saveslot.roster.fillChars(chars, maxGear)
+            self.newSession(saveslot)
+
+    def setTimestamps(self, *args): # pylint: disable=unused-argument
+        &#34;&#34;&#34;Sets the visibility of the timestamps in the active session
+        according to the value of the `showTimestamps` attribute.
+
+        &#34;&#34;&#34;
+        if self.showTimestamps.get():
+            self.session.makeTimeBar()
+        else:
+            self.session.removeTimeBar()
+
+    def inventory(self):
+        &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+        showing the player&#39;s inventory. Calls an error popup if the
+        inventory is either not found or empty.
+
+        &#34;&#34;&#34;
+        if (
+            self.session.saveslot is None
+            or not self.session.saveslot.inventory
+        ):
+            showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
+            return
+        InventoryScreen(self)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Tk</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.ui.stlplanner.STLPlanner.menuEnabled"><code class="name">var <span class="ident">menuEnabled</span></code></dt>
+<dd>
+<div class="desc"><p><code>bool</code>: <code>True</code> if the menu options in <code>disableOnModal</code> are
+enabled. Upon setting this property, those menu options' states
+are set accordingly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def menuEnabled(self):
+    &#34;&#34;&#34;`bool`: `True` if the menu options in `disableOnModal` are
+    enabled. Upon setting this property, those menu options&#39; states
+    are set accordingly.
+    &#34;&#34;&#34;
+    return self._menuEnabled</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.stlplanner.STLPlanner.askCloseSession"><code class="name flex">
+<span>def <span class="ident">askCloseSession</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns <code>True</code> if there is no active session. (An active
+session is one whose <code>saveslot</code> attribute is not <code>None</code>.) If
+there is an active session, asks the user if it is okay to close
+it.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd><code>True</code> if it is okay to close the current session.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def askCloseSession(self):
+    &#34;&#34;&#34;Returns `True` if there is no active session. (An active
+    session is one whose `saveslot` attribute is not `None`.) If
+    there is an active session, asks the user if it is okay to close
+    it.
+
+    Returns:
+        bool: `True` if it is okay to close the current session.
+
+    &#34;&#34;&#34;
+    if self.session.saveslot is None:
+        return True
+    return askyesno(self, &#39;Close Session&#39;, &#39;Close current session?&#39;)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.buildMenu"><code class="name flex">
+<span>def <span class="ident">buildMenu</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds the menu bar.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def buildMenu(self):
+    &#34;&#34;&#34;Builds the menu bar.
+
+    &#34;&#34;&#34;
+    menuBar = tk.Menu(self)
+    self.config(menu=menuBar)
+
+    # build the File menu
+    fileMenu = tk.Menu(menuBar)
+    menuBar.add_cascade(label=&#39;File&#39;, menu=fileMenu)
+
+    # build the File &gt; New Session submenu
+    newSessionSubmenu = tk.Menu(fileMenu)
+    fileMenu.add_cascade(label=&#39;New Session&#39;, menu=newSessionSubmenu)
+
+    # populate the File &gt; New Session submenu
+    newSessionSubmenu.add_command(
+        label=&#39;From Save File...&#39;, command=self.newFromFile
+    )
+    self.disableOnModal.append((newSessionSubmenu, 0))
+    newSessionSubmenu.add_command(
+        label=&#39;Maxed Characters&#39;, command=self.newMaxChars
+    )
+    self.disableOnModal.append((newSessionSubmenu, 1))
+
+    # build and populate the Session menu
+    sessionMenu = tk.Menu(menuBar)
+    menuBar.add_cascade(label=&#39;Session&#39;, menu=sessionMenu)
+    sessionMenu.add_checkbutton(
+        label=&#39;Show Timestamps&#39;, variable=self.showTimestamps,
+        command=self.setTimestamps
+    )
+    self.disableOnModal.append((sessionMenu, 0))
+    sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+    self.disableOnModal.append((sessionMenu, 1))
+
+    # build and populate the Help menu
+    helpMenu = tk.Menu(menuBar)
+    menuBar.add_cascade(label=&#39;Help&#39;, menu=helpMenu)
+    helpMenu.add_command(
+        label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
+    )
+    self.disableOnModal.append((helpMenu, 0))</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.inventory"><code class="name flex">
+<span>def <span class="ident">inventory</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calls an <code><a title="legends.ui.dialogs.InventoryScreen" href="dialogs.html#legends.ui.dialogs.InventoryScreen">InventoryScreen</a></code> message,
+showing the player's inventory. Calls an error popup if the
+inventory is either not found or empty.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def inventory(self):
+    &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+    showing the player&#39;s inventory. Calls an error popup if the
+    inventory is either not found or empty.
+
+    &#34;&#34;&#34;
+    if (
+        self.session.saveslot is None
+        or not self.session.saveslot.inventory
+    ):
+        showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
+        return
+    InventoryScreen(self)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.newFromFile"><code class="name flex">
+<span>def <span class="ident">newFromFile</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prompts the user for a save slot, then builds a
+<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object and starts a new session.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def newFromFile(self):
+    &#34;&#34;&#34;Prompts the user for a save slot, then builds a
+    `legends.saveslot.SaveSlot` object and starts a new session.
+
+    &#34;&#34;&#34;
+    if self.askCloseSession():
+        try:
+            save = decryptSaveFile()
+        except FileNotFoundError:
+            showerror(self, &#39;File Not Found&#39;, &#39;Save file not found.&#39;)
+            return
+        saveslot = askSlot(self, save)
+        if saveslot is None:
+            return
+        self.newSession(saveslot)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.newMaxChars"><code class="name flex">
+<span>def <span class="ident">newMaxChars</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Prompts the user to choose from an array of options, then
+starts a new session using a roster of maxed characters.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def newMaxChars(self):
+    &#34;&#34;&#34;Prompts the user to choose from an array of options, then
+    starts a new session using a roster of maxed characters.
+
+    &#34;&#34;&#34;
+    if self.askCloseSession():
+        result = askMaxChars(self)
+        if result is None:
+            return
+        chars, maxGear = result
+        saveslot = SaveSlot()
+        saveslot.roster.fillChars(chars, maxGear)
+        self.newSession(saveslot)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.newSession"><code class="name flex">
+<span>def <span class="ident">newSession</span></span>(<span>self, saveslot)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clears the current session and starts a new one with the
+given <code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>saveslot</code></strong> :&ensp;<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code></dt>
+<dd>The
+<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> instance to associate with
+the new session.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def newSession(self, saveslot):
+    &#34;&#34;&#34;Clears the current session and starts a new one with the
+    given `legends.saveslot.SaveSlot` object.
+
+    Args:
+        saveslot (legends.saveslot.SaveSlot): The
+            `legends.saveslot.SaveSlot` instance to associate with
+            the new session.
+
+    &#34;&#34;&#34;
+    self.session.destroy()
+    self.session = Session(self, saveslot)
+    self.session.pack()</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.setTimestamps"><code class="name flex">
+<span>def <span class="ident">setTimestamps</span></span>(<span>self, *args)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the visibility of the timestamps in the active session
+according to the value of the <code>showTimestamps</code> attribute.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setTimestamps(self, *args): # pylint: disable=unused-argument
+    &#34;&#34;&#34;Sets the visibility of the timestamps in the active session
+    according to the value of the `showTimestamps` attribute.
+
+    &#34;&#34;&#34;
+    if self.showTimestamps.get():
+        self.session.makeTimeBar()
+    else:
+        self.session.removeTimeBar()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.ui.stlplanner.Session"><code class="flex name class">
+<span>class <span class="ident">Session</span></span>
+<span>(</span><span>stlplanner, saveslot=None, **options)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A user session in the <em>STL Planner</em> app.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>saveslot</code></strong> :&ensp;<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code></dt>
+<dd>The
+<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object associated with the
+session.</dd>
+<dt><strong><code>timeBar</code></strong> :&ensp;<code>tk.Frame</code></dt>
+<dd>The horizontal bar at the top of the session
+frame that displays time stamp info connected with the
+associated save slot.</dd>
+<dt><strong><code>tab</code></strong> :&ensp;<code>tk.Frame</code></dt>
+<dd>The visible tab in the session frame.</dd>
+</dl>
+<p>The constructor creates a new session associated with the
+given <code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object. If none is provided,
+the session displays buttons that activate choices from the
+<code>File</code> menu.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>stlplanner</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></dt>
+<dd>The <code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> instance to be
+assigned as the parent of this session.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Session(tk.Frame):
+    &#34;&#34;&#34;A user session in the *STL Planner* app.
+
+    Attributes:
+        saveslot (legends.saveslot.SaveSlot): The
+            `legends.saveslot.SaveSlot` object associated with the
+            session.
+        timeBar (tk.Frame): The horizontal bar at the top of the session
+            frame that displays time stamp info connected with the
+            associated save slot.
+        tab (tk.Frame): The visible tab in the session frame.
+
+    &#34;&#34;&#34;
+    def __init__(self, stlplanner, saveslot=None, **options):
+        &#34;&#34;&#34;The constructor creates a new session associated with the
+        given `legends.saveslot.SaveSlot` object. If none is provided,
+        the session displays buttons that activate choices from the
+        `File` menu.
+
+        Args:
+            stlplanner (STLPlanner): The `STLPlanner` instance to be
+                assigned as the parent of this session.
+
+        &#34;&#34;&#34;
+        tk.Frame.__init__(self, stlplanner, **options)
+        self.saveslot = saveslot
+        self.timeBar = None
+        self.tab = tk.Frame(self)
+        self.tab.pack()
+        if saveslot is None:
+            self.startFrame()
+        else:
+            self.makeTimeBar()
+            self.rosterTab()
+
+    def startFrame(self):
+        &#34;&#34;&#34;Build the starting frame, with choices from the `File` menu.
+
+        &#34;&#34;&#34;
+        buttonbox = tk.Frame(self.tab)
+        tk.Button(
+            buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
+        ).grid(row=0, column=0, sticky=EW)
+        tk.Button(
+            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+        ).grid(row=1, column=0, sticky=EW)
+        tk.Label(
+            buttonbox, text=&#39;Extract data from your local save file&#39;
+        ).grid(row=0, column=1, sticky=W)
+        tk.Label(
+            buttonbox, text=&#39;Create a roster of maxed characters&#39;
+        ).grid(row=1, column=1, sticky=W)
+        buttonbox.pack(padx=50, pady=50)
+
+    def makeTimeBar(self):
+        &#34;&#34;&#34;Builds a horizontal bar (a `tk.Frame` instance) containing
+        timestamp information from the associated save slot, then
+        assigns the bar to the `timeBar` attribute. If there is no save
+        slot, or the time bar already exists, or the `STLPlanner` master
+        prohibits it, the method does nothing.
+
+        &#34;&#34;&#34;
+        if (
+            self.saveslot is None
+            or self.timeBar is not None
+            or not self.master.showTimestamps.get()
+        ):
+            return
+
+        # build bar and initialize variables
+        self.timeBar = tk.Frame(self)
+        timestamps = self.saveslot.timestamps
+        start = (
+            &#39;start date: &#39;
+            + timestamps.startDate.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
+        )
+        last = (
+            &#39;last played: &#39;
+            + timestamps.timeLastPlayed.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
+        )
+        total = (
+            &#39;play duration: &#39; + cleanTime(timestamps.playDuration)
+        )
+        average = (
+            &#39;play time per day: &#39; + cleanTime(timestamps.playTimePerDay)
+        )
+
+        # build labels
+        labels = [None] * 4
+        for j in range(4):
+            labels[j] = tk.Label(
+                self.timeBar, borderwidth=2, relief=GROOVE, padx=10
+            )
+        for index, text in enumerate([start, last, total, average]):
+            labels[index].config(text=text)
+
+        # pack labels and bar
+        for label in labels:
+            label.pack(side=LEFT)
+        self.timeBar.pack(side=TOP)
+
+    def removeTimeBar(self):
+        &#34;&#34;&#34;If the time bar exists, it is destroyed and the `timeBar`
+        attribute is set to `None`.
+
+        &#34;&#34;&#34;
+        if self.timeBar is not None:
+            self.timeBar.destroy()
+            self.timeBar = None
+
+    def rosterTab(self):
+        &#34;&#34;&#34;Loads a new `legends.ui.rostertab.RosterTab` instance into
+        the `tab` attribute.
+
+        &#34;&#34;&#34;
+        self.tab.destroy()
+        self.tab = RosterTab(self)
+        self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
+        self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Frame</li>
+<li>tkinter.Widget</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Pack</li>
+<li>tkinter.Place</li>
+<li>tkinter.Grid</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.stlplanner.Session.makeTimeBar"><code class="name flex">
+<span>def <span class="ident">makeTimeBar</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds a horizontal bar (a <code>tk.Frame</code> instance) containing
+timestamp information from the associated save slot, then
+assigns the bar to the <code>timeBar</code> attribute. If there is no save
+slot, or the time bar already exists, or the <code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> master
+prohibits it, the method does nothing.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def makeTimeBar(self):
+    &#34;&#34;&#34;Builds a horizontal bar (a `tk.Frame` instance) containing
+    timestamp information from the associated save slot, then
+    assigns the bar to the `timeBar` attribute. If there is no save
+    slot, or the time bar already exists, or the `STLPlanner` master
+    prohibits it, the method does nothing.
+
+    &#34;&#34;&#34;
+    if (
+        self.saveslot is None
+        or self.timeBar is not None
+        or not self.master.showTimestamps.get()
+    ):
+        return
+
+    # build bar and initialize variables
+    self.timeBar = tk.Frame(self)
+    timestamps = self.saveslot.timestamps
+    start = (
+        &#39;start date: &#39;
+        + timestamps.startDate.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
+    )
+    last = (
+        &#39;last played: &#39;
+        + timestamps.timeLastPlayed.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
+    )
+    total = (
+        &#39;play duration: &#39; + cleanTime(timestamps.playDuration)
+    )
+    average = (
+        &#39;play time per day: &#39; + cleanTime(timestamps.playTimePerDay)
+    )
+
+    # build labels
+    labels = [None] * 4
+    for j in range(4):
+        labels[j] = tk.Label(
+            self.timeBar, borderwidth=2, relief=GROOVE, padx=10
+        )
+    for index, text in enumerate([start, last, total, average]):
+        labels[index].config(text=text)
+
+    # pack labels and bar
+    for label in labels:
+        label.pack(side=LEFT)
+    self.timeBar.pack(side=TOP)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.Session.removeTimeBar"><code class="name flex">
+<span>def <span class="ident">removeTimeBar</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If the time bar exists, it is destroyed and the <code>timeBar</code>
+attribute is set to <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def removeTimeBar(self):
+    &#34;&#34;&#34;If the time bar exists, it is destroyed and the `timeBar`
+    attribute is set to `None`.
+
+    &#34;&#34;&#34;
+    if self.timeBar is not None:
+        self.timeBar.destroy()
+        self.timeBar = None</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.Session.rosterTab"><code class="name flex">
+<span>def <span class="ident">rosterTab</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loads a new <code><a title="legends.ui.rostertab.RosterTab" href="rostertab.html#legends.ui.rostertab.RosterTab">RosterTab</a></code> instance into
+the <code>tab</code> attribute.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def rosterTab(self):
+    &#34;&#34;&#34;Loads a new `legends.ui.rostertab.RosterTab` instance into
+    the `tab` attribute.
+
+    &#34;&#34;&#34;
+    self.tab.destroy()
+    self.tab = RosterTab(self)
+    self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
+    self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.Session.startFrame"><code class="name flex">
+<span>def <span class="ident">startFrame</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Build the starting frame, with choices from the <code>File</code> menu.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def startFrame(self):
+    &#34;&#34;&#34;Build the starting frame, with choices from the `File` menu.
+
+    &#34;&#34;&#34;
+    buttonbox = tk.Frame(self.tab)
+    tk.Button(
+        buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
+    ).grid(row=0, column=0, sticky=EW)
+    tk.Button(
+        buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+    ).grid(row=1, column=0, sticky=EW)
+    tk.Label(
+        buttonbox, text=&#39;Extract data from your local save file&#39;
+    ).grid(row=0, column=1, sticky=W)
+    tk.Label(
+        buttonbox, text=&#39;Create a roster of maxed characters&#39;
+    ).grid(row=1, column=1, sticky=W)
+    buttonbox.pack(padx=50, pady=50)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legends.ui" href="index.html">legends.ui</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.ui.stlplanner.cleanTime" href="#legends.ui.stlplanner.cleanTime">cleanTime</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.ui.stlplanner.STLPlanner.askCloseSession" href="#legends.ui.stlplanner.STLPlanner.askCloseSession">askCloseSession</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.buildMenu" href="#legends.ui.stlplanner.STLPlanner.buildMenu">buildMenu</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.inventory" href="#legends.ui.stlplanner.STLPlanner.inventory">inventory</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.menuEnabled" href="#legends.ui.stlplanner.STLPlanner.menuEnabled">menuEnabled</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.newFromFile" href="#legends.ui.stlplanner.STLPlanner.newFromFile">newFromFile</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.newMaxChars" href="#legends.ui.stlplanner.STLPlanner.newMaxChars">newMaxChars</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.newSession" href="#legends.ui.stlplanner.STLPlanner.newSession">newSession</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.setTimestamps" href="#legends.ui.stlplanner.STLPlanner.setTimestamps">setTimestamps</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.stlplanner.Session" href="#legends.ui.stlplanner.Session">Session</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.stlplanner.Session.makeTimeBar" href="#legends.ui.stlplanner.Session.makeTimeBar">makeTimeBar</a></code></li>
+<li><code><a title="legends.ui.stlplanner.Session.removeTimeBar" href="#legends.ui.stlplanner.Session.removeTimeBar">removeTimeBar</a></code></li>
+<li><code><a title="legends.ui.stlplanner.Session.rosterTab" href="#legends.ui.stlplanner.Session.rosterTab">rosterTab</a></code></li>
+<li><code><a title="legends.ui.stlplanner.Session.startFrame" href="#legends.ui.stlplanner.Session.startFrame">startFrame</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

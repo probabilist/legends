@@ -1,0 +1,1180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>legends.utils.customabcs API documentation</title>
+<meta name="description" content="Custom abstract base classes to extend `collections.abc` …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>legends.utils.customabcs</code></h1>
+</header>
+<section id="section-intro">
+<p>Custom abstract base classes to extend <code>collections.abc</code>.</p>
+<p>Includes <code><a title="legends.utils.customabcs.BiMapping" href="#legends.utils.customabcs.BiMapping">BiMapping</a></code> (a one-to-one mapping), <code><a title="legends.utils.customabcs.RelSet" href="#legends.utils.customabcs.RelSet">RelSet</a></code> and
+<code><a title="legends.utils.customabcs.MutableRelSet" href="#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></code> (relational sets that omits set operations), and
+<code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code> (a mapping whose keys can have multiple values).</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Custom abstract base classes to extend `collections.abc`.
+
+Includes `BiMapping` (a one-to-one mapping), `RelSet` and
+`MutableRelSet` (relational sets that omits set operations), and
+`MultiMapping` (a mapping whose keys can have multiple values).
+
+&#34;&#34;&#34;
+
+from collections.abc import MutableMapping, Collection
+
+__all__ = [&#39;ordPair&#39;, &#39;BiMapping&#39;, &#39;RelSet&#39;, &#39;MutableRelSet&#39;, &#39;MultiMapping&#39;]
+
+def ordPair(obj):
+    &#34;&#34;&#34;Checks if the given object is a 2-tuple. Returns `False` if it
+    is not. Returns the 2-tuple itself if it is.
+
+    Args:
+        elem (obj): The object to check.
+
+    Returns:
+        bool: `True` if the object is a 2-tuple.
+
+    &#34;&#34;&#34;
+    return isinstance(obj, tuple) and len(obj) == 2
+
+class BiMapping(MutableMapping):
+    &#34;&#34;&#34;An abstract base class for one-to-one mappings.
+
+    Subclasses should implement `__getitem__`, `__delitem__`,
+    `__iter__`, and `__len__` from the `dict` type. They should also
+    implement two methods unique to the `BiMapping` base class. The
+    first is `__setfreeval__`. This is the same as `__setitem__` from
+    the `dict` type, but it is called only after the `BiMapping` object
+    has verified that the given value is free to assign (i.e. not
+    already assigned to a different key). The second is `__inverse__`.
+    This method should create and return the inverse mapping, which
+    should also be a `BiMapping` object. The inverse object is accessed
+    with the `inverse` property and is used by the underlying
+    `__setitem__` method to check that the given value is free.
+
+    `BiMapping` objects raise a `ValueError` when trying to set a value
+    that is already assigned to a different key.
+
+    &#34;&#34;&#34;
+    @property
+    def inverse(self):
+        &#34;&#34;&#34;The inverse `BiMapping` object.&#34;&#34;&#34;
+        try:
+            return self._inverse
+        except AttributeError:
+            # pylint: disable=protected-access, attribute-defined-outside-init
+            self._inverse = self.__inverse__()
+            self._inverse._inverse = self
+            return self._inverse
+
+    def __setitem__(self, key, val):
+        if (val in self.inverse
+            and (key not in self or self[key] != val)
+        ):
+            raise ValueError(val)
+        self.__setfreeval__(key, val)
+
+    def __getitem__(self, key):
+        raise NotImplementedError
+
+    def __delitem__(self, key):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __setfreeval__(self, key, val):
+        raise NotImplementedError
+
+    def __inverse__(self):
+        raise NotImplementedError
+
+class RelSet(Collection):
+    &#34;&#34;&#34;A relational set.
+
+    It differs from the `Set` abstract base class in `collections.abc`
+    in that subclasses only inherit set relations, not set operations.
+    Subclasses do not need to provide iterator-based construction
+    methods.
+
+    Subclasses must implement `__contains__`, `__iter__`, and
+    `__len__`, and will inherit `__le__`, `__ge__`, `__eq__`, `__ne__`,
+    `__lt__`, `__gt__`, and `isdisjoint`.
+
+    &#34;&#34;&#34;
+    def __contains__(self, elem):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __le__(self, other):
+        return all(elem in other for elem in self)
+
+    def __ge__(self, other):
+        return other &lt;= self
+
+    def __eq__(self, other):
+        return self &lt;= other &lt;= self
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        return self &lt;= other and self != other
+
+    def __gt__(self, other):
+        return other &lt; self
+
+    def isdisjoint(self, other):
+        &#34;&#34;&#34;Returns `True` if self and other are disjoint.&#34;&#34;&#34;
+        return all(elem not in other for elem in self)
+
+class MutableRelSet(RelSet):
+    &#34;&#34;&#34;A mutable relational set.
+
+    It differs from the `MutableSet` abstract base class in
+    `collections.abc` in that subclasses only inherit set relations, not
+    set operations. Subclasses do not need to provide iterator-based
+    construction methods.
+
+    Subclasses must implement `__contains__`, `__iter__`, `__len__`,
+    `add`, and `discard`, and will inherit all the `RelSet` methods, as
+    well as `pop`, `clear`, `remove`, `update`, and `difference_update`.
+
+    &#34;&#34;&#34;
+    def __contains__(self, elem):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def add(self, elem):
+        &#34;&#34;&#34;Adds the given element to the set.&#34;&#34;&#34;
+        raise NotImplementedError
+
+    def discard(self, elem):
+        &#34;&#34;&#34;Removes the given element from the set if present.&#34;&#34;&#34;
+        raise NotImplementedError
+
+    def pop(self):
+        &#34;&#34;&#34;Removes an element from the set and returns it.&#34;&#34;&#34;
+        elem = next(self.__iter__())
+        self.discard(elem)
+        return elem
+
+    def clear(self):
+        &#34;&#34;&#34;Removes all elements from the set.&#34;&#34;&#34;
+        while len(self) &gt; 0:
+            self.pop()
+
+    def remove(self, elem):
+        &#34;&#34;&#34;Removes the given element from the set. Raises a `ValueError`
+        if the element is not present.
+        &#34;&#34;&#34;
+        if elem not in self:
+            raise ValueError(elem)
+        self.discard(elem)
+
+    def update(self, *others):
+        &#34;&#34;&#34;Adds all elements from the given sets.&#34;&#34;&#34;
+        for other in others:
+            for elem in other:
+                self.add(elem)
+
+    def difference_update(self, *others): # pylint: disable=invalid-name
+        &#34;&#34;&#34;Discards all elements from the given sets.&#34;&#34;&#34;
+        for other in others:
+            for elem in other:
+                self.discard(elem)
+
+class MultiMapping(MutableRelSet):
+    &#34;&#34;&#34;A dictionary-like object whose keys can have multiple values.
+
+    A `MultiMapping` is an object that can function as both a dictionary
+    of sets, or as a single set of key-value pairs. To use this abstract
+    base class, you must implement nine methods: four set-like methods,
+    four dictionary-like methods, and one method unique to the
+    `MultiMapping` base class.
+
+    The set-like methods you must implement are `_contains`,
+    `__iter__`, `__len__`, and `_discard`. The methods, `_contains` and
+    `_discard`, are just like the `__contains__` and `discard` method of
+    the `set` type, except they take two arguments (a key and a value)
+    rather than one. You do not need to implement `add`, since this is
+    built automatically from the `__setitem__` method below. Also,
+    `__iter__` should iterate over the key-value pairs.
+
+    The dictionary-like methods you must implement are `__getitem__`,
+    `__setitem__`, `__delitem__`, and `keys`. The `__setitem__` method
+    should add a new value to a key&#39;s current set of values.
+
+    Finally, you should implement `__inverse__`, which builds and
+    returns the inverse multi-mapping object.
+
+    A `MultiMapping` object inherits the following set-like methods:
+    `__le__`, `__lt__`, `__eq__`, `__ne__`, `__gt__`, `__ge__`,
+    `isdisjoint`, `add`, `discard`, `clear`, `pop`, `remove`, `update`,
+    and `difference_update`.
+
+    The only strictly dictionary-like method it inherits is `values`,
+    although `clear` and `update` are also used for dictionaries and
+    function the same.
+
+    Finally, a `MultiMapping` object inherits the `inverse` property,
+    which returns the inverse object built by the `__inverse__` method.
+
+    &#34;&#34;&#34;
+
+    @property
+    def inverse(self):
+        &#34;&#34;&#34;The inverse `MultiMapping` object.&#34;&#34;&#34;
+        try:
+            return self._inverse
+        except AttributeError:
+            # pylint: disable=protected-access, attribute-defined-outside-init
+            self._inverse = self.__inverse__()
+            self._inverse._inverse = self
+            return self._inverse
+
+    def __contains__(self, elem):
+        if ordPair(elem):
+            return self._contains(*elem)
+        return False
+
+    def _contains(self, key, val):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def discard(self, elem):
+        &#34;&#34;&#34;Removes the given key-value pair, if present. Does nothing if
+        `elem` if not a 2-tuple.
+
+        Args:
+            elem (tuple): (`key`, `value`) The key-value pair to remove.
+
+        &#34;&#34;&#34;
+        if ordPair(elem):
+            self._discard(*elem)
+
+    def _discard(self, key, val):
+        raise NotImplementedError
+
+    def __getitem__(self, key):
+        raise NotImplementedError
+
+    def __setitem__(self, key, val):
+        raise NotImplementedError
+
+    def __delitem__(self, key):
+        raise NotImplementedError
+
+    def keys(self):
+        &#34;&#34;&#34;Returns an iterator over the keys of the `MultiMapping`
+        instance.
+
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __inverse__(self):
+        raise NotImplementedError
+
+    def add(self, elem):
+        &#34;&#34;&#34;`m.add((key, val))` is equivalent to `m[key] = val`.
+
+        Args:
+            elem (tuple): (`key`, `value`) The key-value pair to add.
+
+        Raises:
+            ValueError: If `elem` is not a 2-tuple.
+
+        &#34;&#34;&#34;
+        if not isinstance(elem, tuple) or len(elem) != 2:
+            raise ValueError(elem)
+        key, val = elem
+        self.__setitem__(key, val)
+
+    def values(self):
+        &#34;&#34;&#34;`m.values()` is equivalent to `m.inverse.keys()`.
+
+        Returns:
+            iterable: An iterable over the values of the `MultiMapping`
+                instance.
+
+        &#34;&#34;&#34;
+        return self.inverse.keys()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.utils.customabcs.ordPair"><code class="name flex">
+<span>def <span class="ident">ordPair</span></span>(<span>obj)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if the given object is a 2-tuple. Returns <code>False</code> if it
+is not. Returns the 2-tuple itself if it is.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>elem</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The object to check.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd><code>True</code> if the object is a 2-tuple.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ordPair(obj):
+    &#34;&#34;&#34;Checks if the given object is a 2-tuple. Returns `False` if it
+    is not. Returns the 2-tuple itself if it is.
+
+    Args:
+        elem (obj): The object to check.
+
+    Returns:
+        bool: `True` if the object is a 2-tuple.
+
+    &#34;&#34;&#34;
+    return isinstance(obj, tuple) and len(obj) == 2</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.utils.customabcs.BiMapping"><code class="flex name class">
+<span>class <span class="ident">BiMapping</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>An abstract base class for one-to-one mappings.</p>
+<p>Subclasses should implement <code>__getitem__</code>, <code>__delitem__</code>,
+<code>__iter__</code>, and <code>__len__</code> from the <code>dict</code> type. They should also
+implement two methods unique to the <code><a title="legends.utils.customabcs.BiMapping" href="#legends.utils.customabcs.BiMapping">BiMapping</a></code> base class. The
+first is <code>__setfreeval__</code>. This is the same as <code>__setitem__</code> from
+the <code>dict</code> type, but it is called only after the <code><a title="legends.utils.customabcs.BiMapping" href="#legends.utils.customabcs.BiMapping">BiMapping</a></code> object
+has verified that the given value is free to assign (i.e. not
+already assigned to a different key). The second is <code>__inverse__</code>.
+This method should create and return the inverse mapping, which
+should also be a <code><a title="legends.utils.customabcs.BiMapping" href="#legends.utils.customabcs.BiMapping">BiMapping</a></code> object. The inverse object is accessed
+with the <code>inverse</code> property and is used by the underlying
+<code>__setitem__</code> method to check that the given value is free.</p>
+<p><code><a title="legends.utils.customabcs.BiMapping" href="#legends.utils.customabcs.BiMapping">BiMapping</a></code> objects raise a <code>ValueError</code> when trying to set a value
+that is already assigned to a different key.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BiMapping(MutableMapping):
+    &#34;&#34;&#34;An abstract base class for one-to-one mappings.
+
+    Subclasses should implement `__getitem__`, `__delitem__`,
+    `__iter__`, and `__len__` from the `dict` type. They should also
+    implement two methods unique to the `BiMapping` base class. The
+    first is `__setfreeval__`. This is the same as `__setitem__` from
+    the `dict` type, but it is called only after the `BiMapping` object
+    has verified that the given value is free to assign (i.e. not
+    already assigned to a different key). The second is `__inverse__`.
+    This method should create and return the inverse mapping, which
+    should also be a `BiMapping` object. The inverse object is accessed
+    with the `inverse` property and is used by the underlying
+    `__setitem__` method to check that the given value is free.
+
+    `BiMapping` objects raise a `ValueError` when trying to set a value
+    that is already assigned to a different key.
+
+    &#34;&#34;&#34;
+    @property
+    def inverse(self):
+        &#34;&#34;&#34;The inverse `BiMapping` object.&#34;&#34;&#34;
+        try:
+            return self._inverse
+        except AttributeError:
+            # pylint: disable=protected-access, attribute-defined-outside-init
+            self._inverse = self.__inverse__()
+            self._inverse._inverse = self
+            return self._inverse
+
+    def __setitem__(self, key, val):
+        if (val in self.inverse
+            and (key not in self or self[key] != val)
+        ):
+            raise ValueError(val)
+        self.__setfreeval__(key, val)
+
+    def __getitem__(self, key):
+        raise NotImplementedError
+
+    def __delitem__(self, key):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __setfreeval__(self, key, val):
+        raise NotImplementedError
+
+    def __inverse__(self):
+        raise NotImplementedError</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.OneToOne" href="objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></li>
+<li><a title="legends.utils.relations.bidict" href="relations.html#legends.utils.relations.bidict">bidict</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.utils.customabcs.BiMapping.inverse"><code class="name">var <span class="ident">inverse</span></code></dt>
+<dd>
+<div class="desc"><p>The inverse <code><a title="legends.utils.customabcs.BiMapping" href="#legends.utils.customabcs.BiMapping">BiMapping</a></code> object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def inverse(self):
+    &#34;&#34;&#34;The inverse `BiMapping` object.&#34;&#34;&#34;
+    try:
+        return self._inverse
+    except AttributeError:
+        # pylint: disable=protected-access, attribute-defined-outside-init
+        self._inverse = self.__inverse__()
+        self._inverse._inverse = self
+        return self._inverse</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.utils.customabcs.MultiMapping"><code class="flex name class">
+<span>class <span class="ident">MultiMapping</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A dictionary-like object whose keys can have multiple values.</p>
+<p>A <code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code> is an object that can function as both a dictionary
+of sets, or as a single set of key-value pairs. To use this abstract
+base class, you must implement nine methods: four set-like methods,
+four dictionary-like methods, and one method unique to the
+<code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code> base class.</p>
+<p>The set-like methods you must implement are <code>_contains</code>,
+<code>__iter__</code>, <code>__len__</code>, and <code>_discard</code>. The methods, <code>_contains</code> and
+<code>_discard</code>, are just like the <code>__contains__</code> and <code>discard</code> method of
+the <code>set</code> type, except they take two arguments (a key and a value)
+rather than one. You do not need to implement <code>add</code>, since this is
+built automatically from the <code>__setitem__</code> method below. Also,
+<code>__iter__</code> should iterate over the key-value pairs.</p>
+<p>The dictionary-like methods you must implement are <code>__getitem__</code>,
+<code>__setitem__</code>, <code>__delitem__</code>, and <code>keys</code>. The <code>__setitem__</code> method
+should add a new value to a key's current set of values.</p>
+<p>Finally, you should implement <code>__inverse__</code>, which builds and
+returns the inverse multi-mapping object.</p>
+<p>A <code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code> object inherits the following set-like methods:
+<code>__le__</code>, <code>__lt__</code>, <code>__eq__</code>, <code>__ne__</code>, <code>__gt__</code>, <code>__ge__</code>,
+<code>isdisjoint</code>, <code>add</code>, <code>discard</code>, <code>clear</code>, <code>pop</code>, <code>remove</code>, <code>update</code>,
+and <code>difference_update</code>.</p>
+<p>The only strictly dictionary-like method it inherits is <code>values</code>,
+although <code>clear</code> and <code>update</code> are also used for dictionaries and
+function the same.</p>
+<p>Finally, a <code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code> object inherits the <code>inverse</code> property,
+which returns the inverse object built by the <code>__inverse__</code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MultiMapping(MutableRelSet):
+    &#34;&#34;&#34;A dictionary-like object whose keys can have multiple values.
+
+    A `MultiMapping` is an object that can function as both a dictionary
+    of sets, or as a single set of key-value pairs. To use this abstract
+    base class, you must implement nine methods: four set-like methods,
+    four dictionary-like methods, and one method unique to the
+    `MultiMapping` base class.
+
+    The set-like methods you must implement are `_contains`,
+    `__iter__`, `__len__`, and `_discard`. The methods, `_contains` and
+    `_discard`, are just like the `__contains__` and `discard` method of
+    the `set` type, except they take two arguments (a key and a value)
+    rather than one. You do not need to implement `add`, since this is
+    built automatically from the `__setitem__` method below. Also,
+    `__iter__` should iterate over the key-value pairs.
+
+    The dictionary-like methods you must implement are `__getitem__`,
+    `__setitem__`, `__delitem__`, and `keys`. The `__setitem__` method
+    should add a new value to a key&#39;s current set of values.
+
+    Finally, you should implement `__inverse__`, which builds and
+    returns the inverse multi-mapping object.
+
+    A `MultiMapping` object inherits the following set-like methods:
+    `__le__`, `__lt__`, `__eq__`, `__ne__`, `__gt__`, `__ge__`,
+    `isdisjoint`, `add`, `discard`, `clear`, `pop`, `remove`, `update`,
+    and `difference_update`.
+
+    The only strictly dictionary-like method it inherits is `values`,
+    although `clear` and `update` are also used for dictionaries and
+    function the same.
+
+    Finally, a `MultiMapping` object inherits the `inverse` property,
+    which returns the inverse object built by the `__inverse__` method.
+
+    &#34;&#34;&#34;
+
+    @property
+    def inverse(self):
+        &#34;&#34;&#34;The inverse `MultiMapping` object.&#34;&#34;&#34;
+        try:
+            return self._inverse
+        except AttributeError:
+            # pylint: disable=protected-access, attribute-defined-outside-init
+            self._inverse = self.__inverse__()
+            self._inverse._inverse = self
+            return self._inverse
+
+    def __contains__(self, elem):
+        if ordPair(elem):
+            return self._contains(*elem)
+        return False
+
+    def _contains(self, key, val):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def discard(self, elem):
+        &#34;&#34;&#34;Removes the given key-value pair, if present. Does nothing if
+        `elem` if not a 2-tuple.
+
+        Args:
+            elem (tuple): (`key`, `value`) The key-value pair to remove.
+
+        &#34;&#34;&#34;
+        if ordPair(elem):
+            self._discard(*elem)
+
+    def _discard(self, key, val):
+        raise NotImplementedError
+
+    def __getitem__(self, key):
+        raise NotImplementedError
+
+    def __setitem__(self, key, val):
+        raise NotImplementedError
+
+    def __delitem__(self, key):
+        raise NotImplementedError
+
+    def keys(self):
+        &#34;&#34;&#34;Returns an iterator over the keys of the `MultiMapping`
+        instance.
+
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def __inverse__(self):
+        raise NotImplementedError
+
+    def add(self, elem):
+        &#34;&#34;&#34;`m.add((key, val))` is equivalent to `m[key] = val`.
+
+        Args:
+            elem (tuple): (`key`, `value`) The key-value pair to add.
+
+        Raises:
+            ValueError: If `elem` is not a 2-tuple.
+
+        &#34;&#34;&#34;
+        if not isinstance(elem, tuple) or len(elem) != 2:
+            raise ValueError(elem)
+        key, val = elem
+        self.__setitem__(key, val)
+
+    def values(self):
+        &#34;&#34;&#34;`m.values()` is equivalent to `m.inverse.keys()`.
+
+        Returns:
+            iterable: An iterable over the values of the `MultiMapping`
+                instance.
+
+        &#34;&#34;&#34;
+        return self.inverse.keys()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.customabcs.MutableRelSet" href="#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></li>
+<li><a title="legends.utils.customabcs.RelSet" href="#legends.utils.customabcs.RelSet">RelSet</a></li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.ManyToMany" href="objrelations.html#legends.utils.objrelations.ManyToMany">ManyToMany</a></li>
+<li><a title="legends.utils.relations.dictofsets" href="relations.html#legends.utils.relations.dictofsets">dictofsets</a></li>
+<li><a title="legends.utils.relations.multidict" href="relations.html#legends.utils.relations.multidict">multidict</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.utils.customabcs.MultiMapping.inverse"><code class="name">var <span class="ident">inverse</span></code></dt>
+<dd>
+<div class="desc"><p>The inverse <code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code> object.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def inverse(self):
+    &#34;&#34;&#34;The inverse `MultiMapping` object.&#34;&#34;&#34;
+    try:
+        return self._inverse
+    except AttributeError:
+        # pylint: disable=protected-access, attribute-defined-outside-init
+        self._inverse = self.__inverse__()
+        self._inverse._inverse = self
+        return self._inverse</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.utils.customabcs.MultiMapping.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, elem)</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code>m.add((key, val))</code> is equivalent to <code>m[key] = val</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>elem</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>(<code>key</code>, <code>value</code>) The key-value pair to add.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If <code>elem</code> is not a 2-tuple.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, elem):
+    &#34;&#34;&#34;`m.add((key, val))` is equivalent to `m[key] = val`.
+
+    Args:
+        elem (tuple): (`key`, `value`) The key-value pair to add.
+
+    Raises:
+        ValueError: If `elem` is not a 2-tuple.
+
+    &#34;&#34;&#34;
+    if not isinstance(elem, tuple) or len(elem) != 2:
+        raise ValueError(elem)
+    key, val = elem
+    self.__setitem__(key, val)</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MultiMapping.discard"><code class="name flex">
+<span>def <span class="ident">discard</span></span>(<span>self, elem)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the given key-value pair, if present. Does nothing if
+<code>elem</code> if not a 2-tuple.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>elem</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>(<code>key</code>, <code>value</code>) The key-value pair to remove.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def discard(self, elem):
+    &#34;&#34;&#34;Removes the given key-value pair, if present. Does nothing if
+    `elem` if not a 2-tuple.
+
+    Args:
+        elem (tuple): (`key`, `value`) The key-value pair to remove.
+
+    &#34;&#34;&#34;
+    if ordPair(elem):
+        self._discard(*elem)</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MultiMapping.keys"><code class="name flex">
+<span>def <span class="ident">keys</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an iterator over the keys of the <code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code>
+instance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def keys(self):
+    &#34;&#34;&#34;Returns an iterator over the keys of the `MultiMapping`
+    instance.
+
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MultiMapping.values"><code class="name flex">
+<span>def <span class="ident">values</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p><code>m.values()</code> is equivalent to <code>m.inverse.keys()</code>.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>iterable</code></dt>
+<dd>An iterable over the values of the <code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code>
+instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def values(self):
+    &#34;&#34;&#34;`m.values()` is equivalent to `m.inverse.keys()`.
+
+    Returns:
+        iterable: An iterable over the values of the `MultiMapping`
+            instance.
+
+    &#34;&#34;&#34;
+    return self.inverse.keys()</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.customabcs.MutableRelSet" href="#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.customabcs.MutableRelSet.clear" href="#legends.utils.customabcs.MutableRelSet.clear">clear</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.difference_update" href="#legends.utils.customabcs.MutableRelSet.difference_update">difference_update</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.isdisjoint" href="#legends.utils.customabcs.RelSet.isdisjoint">isdisjoint</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.pop" href="#legends.utils.customabcs.MutableRelSet.pop">pop</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.remove" href="#legends.utils.customabcs.MutableRelSet.remove">remove</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.update" href="#legends.utils.customabcs.MutableRelSet.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.utils.customabcs.MutableRelSet"><code class="flex name class">
+<span>class <span class="ident">MutableRelSet</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A mutable relational set.</p>
+<p>It differs from the <code>MutableSet</code> abstract base class in
+<code>collections.abc</code> in that subclasses only inherit set relations, not
+set operations. Subclasses do not need to provide iterator-based
+construction methods.</p>
+<p>Subclasses must implement <code>__contains__</code>, <code>__iter__</code>, <code>__len__</code>,
+<code>add</code>, and <code>discard</code>, and will inherit all the <code><a title="legends.utils.customabcs.RelSet" href="#legends.utils.customabcs.RelSet">RelSet</a></code> methods, as
+well as <code>pop</code>, <code>clear</code>, <code>remove</code>, <code>update</code>, and <code>difference_update</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MutableRelSet(RelSet):
+    &#34;&#34;&#34;A mutable relational set.
+
+    It differs from the `MutableSet` abstract base class in
+    `collections.abc` in that subclasses only inherit set relations, not
+    set operations. Subclasses do not need to provide iterator-based
+    construction methods.
+
+    Subclasses must implement `__contains__`, `__iter__`, `__len__`,
+    `add`, and `discard`, and will inherit all the `RelSet` methods, as
+    well as `pop`, `clear`, `remove`, `update`, and `difference_update`.
+
+    &#34;&#34;&#34;
+    def __contains__(self, elem):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def add(self, elem):
+        &#34;&#34;&#34;Adds the given element to the set.&#34;&#34;&#34;
+        raise NotImplementedError
+
+    def discard(self, elem):
+        &#34;&#34;&#34;Removes the given element from the set if present.&#34;&#34;&#34;
+        raise NotImplementedError
+
+    def pop(self):
+        &#34;&#34;&#34;Removes an element from the set and returns it.&#34;&#34;&#34;
+        elem = next(self.__iter__())
+        self.discard(elem)
+        return elem
+
+    def clear(self):
+        &#34;&#34;&#34;Removes all elements from the set.&#34;&#34;&#34;
+        while len(self) &gt; 0:
+            self.pop()
+
+    def remove(self, elem):
+        &#34;&#34;&#34;Removes the given element from the set. Raises a `ValueError`
+        if the element is not present.
+        &#34;&#34;&#34;
+        if elem not in self:
+            raise ValueError(elem)
+        self.discard(elem)
+
+    def update(self, *others):
+        &#34;&#34;&#34;Adds all elements from the given sets.&#34;&#34;&#34;
+        for other in others:
+            for elem in other:
+                self.add(elem)
+
+    def difference_update(self, *others): # pylint: disable=invalid-name
+        &#34;&#34;&#34;Discards all elements from the given sets.&#34;&#34;&#34;
+        for other in others:
+            for elem in other:
+                self.discard(elem)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.customabcs.RelSet" href="#legends.utils.customabcs.RelSet">RelSet</a></li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.utils.customabcs.MutableRelSet.add"><code class="name flex">
+<span>def <span class="ident">add</span></span>(<span>self, elem)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds the given element to the set.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add(self, elem):
+    &#34;&#34;&#34;Adds the given element to the set.&#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MutableRelSet.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes all elements from the set.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clear(self):
+    &#34;&#34;&#34;Removes all elements from the set.&#34;&#34;&#34;
+    while len(self) &gt; 0:
+        self.pop()</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MutableRelSet.difference_update"><code class="name flex">
+<span>def <span class="ident">difference_update</span></span>(<span>self, *others)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Discards all elements from the given sets.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def difference_update(self, *others): # pylint: disable=invalid-name
+    &#34;&#34;&#34;Discards all elements from the given sets.&#34;&#34;&#34;
+    for other in others:
+        for elem in other:
+            self.discard(elem)</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MutableRelSet.discard"><code class="name flex">
+<span>def <span class="ident">discard</span></span>(<span>self, elem)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the given element from the set if present.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def discard(self, elem):
+    &#34;&#34;&#34;Removes the given element from the set if present.&#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MutableRelSet.pop"><code class="name flex">
+<span>def <span class="ident">pop</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes an element from the set and returns it.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pop(self):
+    &#34;&#34;&#34;Removes an element from the set and returns it.&#34;&#34;&#34;
+    elem = next(self.__iter__())
+    self.discard(elem)
+    return elem</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MutableRelSet.remove"><code class="name flex">
+<span>def <span class="ident">remove</span></span>(<span>self, elem)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the given element from the set. Raises a <code>ValueError</code>
+if the element is not present.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove(self, elem):
+    &#34;&#34;&#34;Removes the given element from the set. Raises a `ValueError`
+    if the element is not present.
+    &#34;&#34;&#34;
+    if elem not in self:
+        raise ValueError(elem)
+    self.discard(elem)</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.customabcs.MutableRelSet.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, *others)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds all elements from the given sets.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, *others):
+    &#34;&#34;&#34;Adds all elements from the given sets.&#34;&#34;&#34;
+    for other in others:
+        for elem in other:
+            self.add(elem)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.customabcs.RelSet" href="#legends.utils.customabcs.RelSet">RelSet</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.customabcs.RelSet.isdisjoint" href="#legends.utils.customabcs.RelSet.isdisjoint">isdisjoint</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.utils.customabcs.RelSet"><code class="flex name class">
+<span>class <span class="ident">RelSet</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A relational set.</p>
+<p>It differs from the <code>Set</code> abstract base class in <code>collections.abc</code>
+in that subclasses only inherit set relations, not set operations.
+Subclasses do not need to provide iterator-based construction
+methods.</p>
+<p>Subclasses must implement <code>__contains__</code>, <code>__iter__</code>, and
+<code>__len__</code>, and will inherit <code>__le__</code>, <code>__ge__</code>, <code>__eq__</code>, <code>__ne__</code>,
+<code>__lt__</code>, <code>__gt__</code>, and <code>isdisjoint</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RelSet(Collection):
+    &#34;&#34;&#34;A relational set.
+
+    It differs from the `Set` abstract base class in `collections.abc`
+    in that subclasses only inherit set relations, not set operations.
+    Subclasses do not need to provide iterator-based construction
+    methods.
+
+    Subclasses must implement `__contains__`, `__iter__`, and
+    `__len__`, and will inherit `__le__`, `__ge__`, `__eq__`, `__ne__`,
+    `__lt__`, `__gt__`, and `isdisjoint`.
+
+    &#34;&#34;&#34;
+    def __contains__(self, elem):
+        raise NotImplementedError
+
+    def __iter__(self):
+        raise NotImplementedError
+
+    def __len__(self):
+        raise NotImplementedError
+
+    def __le__(self, other):
+        return all(elem in other for elem in self)
+
+    def __ge__(self, other):
+        return other &lt;= self
+
+    def __eq__(self, other):
+        return self &lt;= other &lt;= self
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __lt__(self, other):
+        return self &lt;= other and self != other
+
+    def __gt__(self, other):
+        return other &lt; self
+
+    def isdisjoint(self, other):
+        &#34;&#34;&#34;Returns `True` if self and other are disjoint.&#34;&#34;&#34;
+        return all(elem not in other for elem in self)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.utils.customabcs.MutableRelSet" href="#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.utils.customabcs.RelSet.isdisjoint"><code class="name flex">
+<span>def <span class="ident">isdisjoint</span></span>(<span>self, other)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns <code>True</code> if self and other are disjoint.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def isdisjoint(self, other):
+    &#34;&#34;&#34;Returns `True` if self and other are disjoint.&#34;&#34;&#34;
+    return all(elem not in other for elem in self)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="legends.utils" href="index.html">legends.utils</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.utils.customabcs.ordPair" href="#legends.utils.customabcs.ordPair">ordPair</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.utils.customabcs.BiMapping" href="#legends.utils.customabcs.BiMapping">BiMapping</a></code></h4>
+<ul class="">
+<li><code><a title="legends.utils.customabcs.BiMapping.inverse" href="#legends.utils.customabcs.BiMapping.inverse">inverse</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.utils.customabcs.MultiMapping" href="#legends.utils.customabcs.MultiMapping">MultiMapping</a></code></h4>
+<ul class="">
+<li><code><a title="legends.utils.customabcs.MultiMapping.add" href="#legends.utils.customabcs.MultiMapping.add">add</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.discard" href="#legends.utils.customabcs.MultiMapping.discard">discard</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.inverse" href="#legends.utils.customabcs.MultiMapping.inverse">inverse</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.keys" href="#legends.utils.customabcs.MultiMapping.keys">keys</a></code></li>
+<li><code><a title="legends.utils.customabcs.MultiMapping.values" href="#legends.utils.customabcs.MultiMapping.values">values</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.utils.customabcs.MutableRelSet" href="#legends.utils.customabcs.MutableRelSet">MutableRelSet</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.utils.customabcs.MutableRelSet.add" href="#legends.utils.customabcs.MutableRelSet.add">add</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.clear" href="#legends.utils.customabcs.MutableRelSet.clear">clear</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.difference_update" href="#legends.utils.customabcs.MutableRelSet.difference_update">difference_update</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.discard" href="#legends.utils.customabcs.MutableRelSet.discard">discard</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.pop" href="#legends.utils.customabcs.MutableRelSet.pop">pop</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.remove" href="#legends.utils.customabcs.MutableRelSet.remove">remove</a></code></li>
+<li><code><a title="legends.utils.customabcs.MutableRelSet.update" href="#legends.utils.customabcs.MutableRelSet.update">update</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.utils.customabcs.RelSet" href="#legends.utils.customabcs.RelSet">RelSet</a></code></h4>
+<ul class="">
+<li><code><a title="legends.utils.customabcs.RelSet.isdisjoint" href="#legends.utils.customabcs.RelSet.isdisjoint">isdisjoint</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
