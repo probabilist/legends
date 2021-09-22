@@ -4,5 +4,5 @@ title: legends project website
 
 # Links
 
-* `legends` package <a href='legends/index.html'>documentation</a>
-* <a href='skills.html'>List of skills</a> (all playable characters, both current and upcoming)
+* `legends` package [documentation](https://probabilist.github.io/legends/legends/)
+* [List of skills](https://probabilist.github.io/legends/skills.html) (all playable characters, both current and upcoming)
