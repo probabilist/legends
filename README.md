@@ -19,7 +19,7 @@ The *STL Planner* app must be run on a Mac. To import your game data, the Mac mu
 
 ### Download
 
-Version 0.10.2: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1l6TSYY2-BA-2yk0G5Nq9vY9q1a4SmEKA/view?usp=sharing)
+Version 0.10.3: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1pek9Y1jD1nguGL3z6uZoD7eF2t9sbj63/view?usp=sharing)
 
 ### Install
 

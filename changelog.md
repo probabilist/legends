@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.10.3
+
+* The in-game name of the character with name ID, 'JudgeQ', is simply 'Q'. Because of this, changed the short name on the character card from 'Judge Q' to 'Q'.
+
 ## Version 0.10.2
 
 * Added 'Judge Q' to the list of upcoming characters.

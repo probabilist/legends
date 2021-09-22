@@ -8,9 +8,12 @@ dist
 docs/legends
 .python-version
 _notes.md
+bridge-skill.png
 daily.py
 pythonref*
 README.html
+skills.md
 startrek.json
 tests.py
+tests2.py
 tkinter
