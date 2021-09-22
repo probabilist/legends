@@ -62,7 +62,7 @@ The `legends` package uses other packages that you might not have installed. To 
 
 ### Documentation
 
-Complete documentation can be found at https://probabilist.github.io/legends/.
+Complete documentation can be found at https://probabilist.github.io/legends/legends/.
 
 ### Running *STL Planner* from a command line
 
