@@ -1,4 +1,4 @@
-"""Created a markdown file of all *Star Trek: Legends* skills.
+"""Creates a markdown file of all *Star Trek: Legends* skills.
 
 Includes skills for all playable characters, both current and upcoming.
 
