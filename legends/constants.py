@@ -15,8 +15,8 @@ Attributes:
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     HELP (str): The contents of the file, `legends/help.txt`.
-    ITEMS (list of Item): A list of all items in the game, as parsed
-        from `GSItem`.
+    ITEMS (dict): {`str`:`Item`} A dictionary mapping each item ID in
+        `GSItem` to an `Item` instance built from that item ID.
     POWER_GRADIENT (dict): {`str`:`float`} A dictionary mapping stat
         names to the amount that a character's power would increase if
         that stat were to increase by 1.
@@ -89,7 +89,7 @@ __all__ = [
     'STAT_ABBREVIATIONS', 'STAT_INITIALS', 'POWER_GRADIENT', 'POWER_AT_ORIGIN',
     'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS', 'PART_STAT_UNLOCKED',
     'PART_STAT_VALUES', 'ENABLED', 'UPCOMING', 'SUMMON_POOL',
-    'SUMMON_POOL_IDS', 'HELP', 'ITEMS'
+    'SUMMON_POOL_IDS', 'HELP', 'Item', 'ITEMS'
 ]
 
 rootPath = abspath(dirname(__file__))
@@ -254,29 +254,39 @@ with open(rootPath + '/help.txt', encoding='utf-8') as f:
 class Item():
     """An item in STL.
 
-    Attributes:
-        itemID (str): The in-data item ID of the item. Should be a
-            key in `GSItem`.
-        category (str): The in-data category of the item, with two
-            exceptions. The in-data category of gear leveling and
-            gear ranking materials is 'Item'. This is manually changed
-            to 'Gear Leveling Materials' and 'Gear Ranking Materials',
-            respectively.
+    An `Item` instance has no public attributes. All its data should be
+    accessed through its read-only properties. It is meant to be used
+    like an immutable data type.
 
     """
+
+    _betterCategoryNames = {
+        'BiomimeticGel': 'Bio-Gel',
+        'Item': 'General Items',
+        'ProtoMatter': 'Protomatter',
+    }
+
     def __init__(self, itemID):
         """The constructor builds the item from the given item ID,
-        looking up the required information in `GSItem`.
+        which should match a key in `GSItem`.
 
         """
-        self.itemID = itemID
+        self._itemID = itemID
         itemData = GSItem[itemID] # pylint: disable=undefined-variable
-        self.category = itemData['category']
+        dataCat = itemData['category']
+        self._category = self._betterCategoryNames.get(dataCat, dataCat)
         if itemData['icon'][:4] == 'Gear':
             if itemData['rarity'] == 'Common':
-                self.category = 'Gear Leveling Materials'
+                self._category = 'Gear Leveling Materials'
             else:
-                self.category = 'Gear Ranking Materials'
+                self._category = 'Gear Ranking Materials'
+
+    @property
+    def itemID(self):
+        """`str`: The in-data item ID of the item. Should match a key in
+        `GSItem`.
+        """
+        return self._itemID
 
     @property
     def name(self):
@@ -287,6 +297,18 @@ class Item():
             DESCRIPTIONS[itemData['name']] if 'name' in itemData
             else self.itemID
         )
+
+    @property
+    def category(self):
+        """`str`: The category of the item. Categories appear in
+        `GSItem`. The `Item` class replaces the category found there in
+        the following cases. It replaces 'BiomimeticGel' with 'Bio-Gel',
+        'Item' with 'General Items', and 'ProtoMatter' with
+        'Protomatter'. Also, if the item is a gear-leveling or gear
+        ranking material, the category is replaced by 'Gear Leveling
+        Materials' or 'Gear Ranking Materials', respectively.
+        """
+        return self._category
 
     @property
     def xp(self):
@@ -302,5 +324,5 @@ class Item():
     def __repr__(self):
         return '<Item: {!r}>'.format(self.name)
 
-# pylint: disable-next =undefined-variable
+# pylint: disable-next=undefined-variable
 ITEMS = {itemID: Item(itemID) for itemID in GSItem}

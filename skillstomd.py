@@ -42,16 +42,16 @@ def skillToMarkdown(skillID, level):
             casEff['effect'], casEff['fraction']
         )
 
-    targetType = 'single'
+    targetSelectionMethod = 'single'
     if data['isAOE']:
-        targetType = 'multiple'
+        targetSelectionMethod = 'multiple'
     elif data['isMultiRandom']:
-        targetType = 'multiple random'
+        targetSelectionMethod = 'multiple random'
     mdown += '**Target:** {} {} {} ({})\n\n'.format(
         'All' if data['isAOE'] else data['numTargets'],
         data['targetState'],
         data['targetType'],
-        targetType
+        targetSelectionMethod
     )
 
     mdown += '**Cooldown:** {} ({} start)\n\n'.format(

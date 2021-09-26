@@ -31,13 +31,16 @@
 
 &#34;&#34;&#34;
 
+from collections.abc import MutableMapping
 from datetime import datetime, timedelta, timezone
 # pylint: disable-next=no-name-in-module
-from legends.constants import GSCharacter
+from legends.constants import GSCharacter, GSItem
+from legends.constants import ITEMS
 from legends.roster import Roster
 
 __all__ = [
-    &#39;ticksToTimedelta&#39;, &#39;ticksToDatetime&#39;, &#39;SaveSlot&#39;, &#39;STLTimeStamps&#39;
+    &#39;ticksToTimedelta&#39;, &#39;ticksToDatetime&#39;, &#39;SaveSlot&#39;, &#39;STLTimeStamps&#39;,
+    &#39;Inventory&#39;
 ]
 
 def ticksToTimedelta(ticks):
@@ -85,8 +88,8 @@ class SaveSlot():
             player&#39;s inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as &#39;favorite&#39;.
-        inventory (dict): {`str`:`int`} A dictionary mapping an item ID
-            to the quantity of that item in the player&#39;s inventory.
+        inventory (Inventory): The inventory associated with the save
+            slot.
 
     &#34;&#34;&#34;
 
@@ -95,7 +98,7 @@ class SaveSlot():
         self.roster = Roster()
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
-        self.inventory = {}
+        self.inventory = Inventory()
 
     def fromFile(self, save, slot):
         &#34;&#34;&#34;Uses the given save data to populate the calling instance&#39;s
@@ -120,7 +123,8 @@ class SaveSlot():
         self.roster.fromSaveData(save, slot)
         for nameID in self.tokens:
             self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
-        self.inventory = save[key][&#39;items&#39;]
+        for itemID, qty in save[key][&#39;items&#39;].items():
+            self.inventory[ITEMS[itemID]] = qty
 
     def sort(self, func, descending=True):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the `roster`
@@ -191,7 +195,100 @@ class STLTimeStamps():
         )
         self.playDuration = ticksToTimedelta(
             int(save[&#39;{} playDuration&#39;.format(slot)])
-        )</code></pre>
+        )
+
+class Inventory(MutableMapping):
+    &#34;&#34;&#34;A collection of items in STL.
+
+    The `Inventory` class is a dictionary-like data structure, mapping
+    each item in `ITEMS` to the quantity of that item that exists in the
+    player&#39;s inventory. Keys cannot be deleted. Instead, deleting a key
+    simply changes its value to 0. Iterating over an `Inventory` object
+    will skip over items that are either irrelevant to the `legends`
+    package, or are implemented elsewhere. The skipped items are
+    determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
+    To iterate over all keys, simply iterate over `ITEMS`.
+    The `__len__()` method also does not consider these skipped items.
+
+    &#34;&#34;&#34;
+
+    hiddenCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
+    &#34;&#34;&#34;`list of str`: A list of category names, as they appear in the
+    `category` attribute of an `legends.constants.Item` instance, that
+    are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    hiddenItemIDs = [
+        &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
+        &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
+        &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
+        &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
+        &#39;Shards_McCoy&#39;, &#39;Dungeon Currency&#39;, &#39;Dungeon Stamina&#39;
+    ]
+    &#34;&#34;&#34;`list of str`: A list of item IDs, as they appear in `GSItem`,
+    that are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    def __init__(self, initDict=None):
+        &#34;&#34;&#34;The constructor initializes the `Inventory` instance with one
+        key for each item in `ITEMS`, and all values 0. If the
+        `initData` argument is given, it is used to initialize the
+        values.
+
+        Args:
+            initData (dict): {`str`:`int`} A dictionary mapping item
+                IDs, as they appear in `GSItem`, to nonnegative
+                integers. Used to initialize the quantities in the
+                `Inventory` instance.
+
+        &#34;&#34;&#34;
+        self._data = {}
+        for itemID in GSItem:
+            self._data[itemID] = 0
+        initDict = {} if initDict is None else initDict
+        for itemID, qty in initDict.items():
+            self._data[itemID] = qty
+
+    def __getitem__(self, item):
+        return self._data[item.itemID]
+
+    def __setitem__(self, item, qty):
+        self._data[item.itemID] = qty
+
+    def __delitem__(self, item):
+        self._data[item.itemID] = 0
+
+    def __iter__(self):
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                yield ITEMS[itemID]
+
+    def __len__(self):
+        count = 0
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                count += 1
+        return count
+
+    def _hidden(self, itemID):
+        if itemID in self.hiddenItemIDs:
+            return True
+        if ITEMS[itemID].category in self.hiddenCategories:
+            return True
+        return False
+
+    def keysByCategory(self, category):
+        &#34;&#34;&#34;Returns an iterator over all keys that match the given
+        category, skipping any keys that are skipped during normal
+        iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        &#34;&#34;&#34;
+        return (item for item in self if item.category == category)</code></pre>
 </details>
 </section>
 <section>
@@ -283,6 +380,187 @@ uses ticks to mark time.</p>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.saveslot.Inventory"><code class="flex name class">
+<span>class <span class="ident">Inventory</span></span>
+<span>(</span><span>initDict=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A collection of items in STL.</p>
+<p>The <code><a title="legends.saveslot.Inventory" href="#legends.saveslot.Inventory">Inventory</a></code> class is a dictionary-like data structure, mapping
+each item in <code>ITEMS</code> to the quantity of that item that exists in the
+player's inventory. Keys cannot be deleted. Instead, deleting a key
+simply changes its value to 0. Iterating over an <code><a title="legends.saveslot.Inventory" href="#legends.saveslot.Inventory">Inventory</a></code> object
+will skip over items that are either irrelevant to the <code><a title="legends" href="index.html">legends</a></code>
+package, or are implemented elsewhere. The skipped items are
+determined by the <code>hiddenItemIDs</code> and <code>hiddenCategories</code> attributes.
+To iterate over all keys, simply iterate over <code>ITEMS</code>.
+The <code>__len__()</code> method also does not consider these skipped items.</p>
+<p>The constructor initializes the <code><a title="legends.saveslot.Inventory" href="#legends.saveslot.Inventory">Inventory</a></code> instance with one
+key for each item in <code>ITEMS</code>, and all values 0. If the
+<code>initData</code> argument is given, it is used to initialize the
+values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>initData</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int</code>} A dictionary mapping item
+IDs, as they appear in <code>GSItem</code>, to nonnegative
+integers. Used to initialize the quantities in the
+<code><a title="legends.saveslot.Inventory" href="#legends.saveslot.Inventory">Inventory</a></code> instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Inventory(MutableMapping):
+    &#34;&#34;&#34;A collection of items in STL.
+
+    The `Inventory` class is a dictionary-like data structure, mapping
+    each item in `ITEMS` to the quantity of that item that exists in the
+    player&#39;s inventory. Keys cannot be deleted. Instead, deleting a key
+    simply changes its value to 0. Iterating over an `Inventory` object
+    will skip over items that are either irrelevant to the `legends`
+    package, or are implemented elsewhere. The skipped items are
+    determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
+    To iterate over all keys, simply iterate over `ITEMS`.
+    The `__len__()` method also does not consider these skipped items.
+
+    &#34;&#34;&#34;
+
+    hiddenCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
+    &#34;&#34;&#34;`list of str`: A list of category names, as they appear in the
+    `category` attribute of an `legends.constants.Item` instance, that
+    are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    hiddenItemIDs = [
+        &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
+        &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
+        &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
+        &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
+        &#39;Shards_McCoy&#39;, &#39;Dungeon Currency&#39;, &#39;Dungeon Stamina&#39;
+    ]
+    &#34;&#34;&#34;`list of str`: A list of item IDs, as they appear in `GSItem`,
+    that are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    def __init__(self, initDict=None):
+        &#34;&#34;&#34;The constructor initializes the `Inventory` instance with one
+        key for each item in `ITEMS`, and all values 0. If the
+        `initData` argument is given, it is used to initialize the
+        values.
+
+        Args:
+            initData (dict): {`str`:`int`} A dictionary mapping item
+                IDs, as they appear in `GSItem`, to nonnegative
+                integers. Used to initialize the quantities in the
+                `Inventory` instance.
+
+        &#34;&#34;&#34;
+        self._data = {}
+        for itemID in GSItem:
+            self._data[itemID] = 0
+        initDict = {} if initDict is None else initDict
+        for itemID, qty in initDict.items():
+            self._data[itemID] = qty
+
+    def __getitem__(self, item):
+        return self._data[item.itemID]
+
+    def __setitem__(self, item, qty):
+        self._data[item.itemID] = qty
+
+    def __delitem__(self, item):
+        self._data[item.itemID] = 0
+
+    def __iter__(self):
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                yield ITEMS[itemID]
+
+    def __len__(self):
+        count = 0
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                count += 1
+        return count
+
+    def _hidden(self, itemID):
+        if itemID in self.hiddenItemIDs:
+            return True
+        if ITEMS[itemID].category in self.hiddenCategories:
+            return True
+        return False
+
+    def keysByCategory(self, category):
+        &#34;&#34;&#34;Returns an iterator over all keys that match the given
+        category, skipping any keys that are skipped during normal
+        iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        &#34;&#34;&#34;
+        return (item for item in self if item.category == category)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="legends.saveslot.Inventory.hiddenCategories"><code class="name">var <span class="ident">hiddenCategories</span></code></dt>
+<dd>
+<div class="desc"><p><code>list of str</code>: A list of category names, as they appear in the
+<code>category</code> attribute of an <code><a title="legends.constants.Item" href="constants.html#legends.constants.Item">Item</a></code> instance, that
+are of limited use or implemented elsewhere in the <code><a title="legends" href="index.html">legends</a></code>
+package.</p></div>
+</dd>
+<dt id="legends.saveslot.Inventory.hiddenItemIDs"><code class="name">var <span class="ident">hiddenItemIDs</span></code></dt>
+<dd>
+<div class="desc"><p><code>list of str</code>: A list of item IDs, as they appear in <code>GSItem</code>,
+that are of limited use or implemented elsewhere in the <code><a title="legends" href="index.html">legends</a></code>
+package.</p></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.saveslot.Inventory.keysByCategory"><code class="name flex">
+<span>def <span class="ident">keysByCategory</span></span>(<span>self, category)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an iterator over all keys that match the given
+category, skipping any keys that are skipped during normal
+iteration.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>category</code></strong> :&ensp;<code>str</code></dt>
+<dd>The category to iterate over.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def keysByCategory(self, category):
+    &#34;&#34;&#34;Returns an iterator over all keys that match the given
+    category, skipping any keys that are skipped during normal
+    iteration.
+
+    Args:
+        category (str): The category to iterate over.
+
+    &#34;&#34;&#34;
+    return (item for item in self if item.category == category)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="legends.saveslot.STLTimeStamps"><code class="flex name class">
 <span>class <span class="ident">STLTimeStamps</span></span>
 </code></dt>
@@ -450,9 +728,9 @@ player's inventory.</dd>
 <dt><strong><code>favorites</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
 <dd>A list of
 characters the player has marked as 'favorite'.</dd>
-<dt><strong><code>inventory</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>int</code>} A dictionary mapping an item ID
-to the quantity of that item in the player's inventory.</dd>
+<dt><strong><code>inventory</code></strong> :&ensp;<code><a title="legends.saveslot.Inventory" href="#legends.saveslot.Inventory">Inventory</a></code></dt>
+<dd>The inventory associated with the save
+slot.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -471,8 +749,8 @@ to the quantity of that item in the player's inventory.</dd>
             player&#39;s inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as &#39;favorite&#39;.
-        inventory (dict): {`str`:`int`} A dictionary mapping an item ID
-            to the quantity of that item in the player&#39;s inventory.
+        inventory (Inventory): The inventory associated with the save
+            slot.
 
     &#34;&#34;&#34;
 
@@ -481,7 +759,7 @@ to the quantity of that item in the player's inventory.</dd>
         self.roster = Roster()
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
-        self.inventory = {}
+        self.inventory = Inventory()
 
     def fromFile(self, save, slot):
         &#34;&#34;&#34;Uses the given save data to populate the calling instance&#39;s
@@ -506,7 +784,8 @@ to the quantity of that item in the player's inventory.</dd>
         self.roster.fromSaveData(save, slot)
         for nameID in self.tokens:
             self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
-        self.inventory = save[key][&#39;items&#39;]
+        for itemID, qty in save[key][&#39;items&#39;].items():
+            self.inventory[ITEMS[itemID]] = qty
 
     def sort(self, func, descending=True):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the `roster`
@@ -576,7 +855,8 @@ or if the given save slot data is empty.</dd>
     self.roster.fromSaveData(save, slot)
     for nameID in self.tokens:
         self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
-    self.inventory = save[key][&#39;items&#39;]</code></pre>
+    for itemID, qty in save[key][&#39;items&#39;].items():
+        self.inventory[ITEMS[itemID]] = qty</code></pre>
 </details>
 </dd>
 <dt id="legends.saveslot.SaveSlot.sort"><code class="name flex">
@@ -640,6 +920,14 @@ in descending order.</dd>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="legends.saveslot.Inventory" href="#legends.saveslot.Inventory">Inventory</a></code></h4>
+<ul class="">
+<li><code><a title="legends.saveslot.Inventory.hiddenCategories" href="#legends.saveslot.Inventory.hiddenCategories">hiddenCategories</a></code></li>
+<li><code><a title="legends.saveslot.Inventory.hiddenItemIDs" href="#legends.saveslot.Inventory.hiddenItemIDs">hiddenItemIDs</a></code></li>
+<li><code><a title="legends.saveslot.Inventory.keysByCategory" href="#legends.saveslot.Inventory.keysByCategory">keysByCategory</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="legends.saveslot.STLTimeStamps" href="#legends.saveslot.STLTimeStamps">STLTimeStamps</a></code></h4>
 <ul class="">

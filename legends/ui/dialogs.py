@@ -14,7 +14,7 @@ from tkinter.scrolledtext import ScrolledText
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.constants import (
-    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS, ITEMS
+    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS
 )
 from legends.saveslot import SaveSlot
 
@@ -701,40 +701,27 @@ class InventoryScreen(ModalMessage):
 
         """
         inv = self.root.session.saveslot.inventory
-        # ignoredCategories = ['Token', 'PlayerAvatar', 'Emote']
-        ignoredItemIDs = [
-            'Credits', 'Dilithium', 'Tritanium', 'Player XP', 'PvP Stamina',
-            'Alliance Stamina', 'EventPoint', 'PvP Chest Points',
-            'Shards Advanced', 'Shards Elite', 'Shards Credit',
-            'Shards Biomimetic', 'Shards Protomatter', 'Shards_Worf',
-            'Shards_McCoy'
+        displayOrder = [
+            'Currency', 'Bio-Gel', 'Gear Leveling Materials',
+            'General Items', 'Protomatter', 'Gear Ranking Materials'
         ]
-        categories = {
-            'Currency': 'Currency',
-            'BiomimeticGel': 'Bio-Gel',
-            'Gear Leveling Materials': 'Gear Leveling Materials',
-            'Item': 'General Items',
-            'ProtoMatter': 'Protomatter',
-            'Gear Ranking Materials': 'Gear Ranking Materials'
-        }
+
         row = 0
         col = 0
-        for index, cat in enumerate(categories.items()):
-            dataCat, displayCat = cat
+        for index, cat in enumerate(displayOrder):
             if index == 3:
                 row = 0
                 col = 2
-            catLabel = tk.Label(master, text=displayCat, font=(None, 13,
-               'bold'))
-            catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
             if index % 3 > 0:
-                catLabel.grid_configure(pady=(20,0))
-
+                tk.Label(master, text='').grid(row=row, column=col)
+                row += 1
+            tk.Label(master, text=cat, font=(None, 13, 'bold')).grid(
+                row=row, column=col, columnspan=2, sticky=W
+            )
             row += 1
-            for itemID, qty in inv.items():
-                item = ITEMS[itemID]
-                if itemID in ignoredItemIDs or item.category != dataCat:
-                    continue
+
+            for item in inv.keysByCategory(cat):
+                qty = inv[item]
                 tk.Label(master, text=item.name).grid(
                     row=row, column=col, sticky=W, padx=(20,0)
                 )

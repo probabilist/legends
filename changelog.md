@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.10.4
+
+* Rewrote the `Item` class to be immutable.
+* Added an `Inventory` class to `saveslot.py`.
+* In the `SaveSlot` class, changed the `inventory` attribute and the `fromFile` method to work with the new `Inventory` class.
+* Changed the `InventoryScreen` class to be compatible with the changes to the `SaveSlot` class.
+
 ## Version 0.10.3
 
 * The in-game name of the character with name ID, 'JudgeQ', is simply 'Q'. Because of this, changed the short name on the character card from 'Judge Q' to 'Q'.

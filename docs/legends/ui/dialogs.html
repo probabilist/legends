@@ -43,7 +43,7 @@ from tkinter.scrolledtext import ScrolledText
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.constants import (
-    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS, ITEMS
+    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS
 )
 from legends.saveslot import SaveSlot
 
@@ -730,40 +730,27 @@ class InventoryScreen(ModalMessage):
 
         &#34;&#34;&#34;
         inv = self.root.session.saveslot.inventory
-        # ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
-        ignoredItemIDs = [
-            &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
-            &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
-            &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
-            &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
-            &#39;Shards_McCoy&#39;
+        displayOrder = [
+            &#39;Currency&#39;, &#39;Bio-Gel&#39;, &#39;Gear Leveling Materials&#39;,
+            &#39;General Items&#39;, &#39;Protomatter&#39;, &#39;Gear Ranking Materials&#39;
         ]
-        categories = {
-            &#39;Currency&#39;: &#39;Currency&#39;,
-            &#39;BiomimeticGel&#39;: &#39;Bio-Gel&#39;,
-            &#39;Gear Leveling Materials&#39;: &#39;Gear Leveling Materials&#39;,
-            &#39;Item&#39;: &#39;General Items&#39;,
-            &#39;ProtoMatter&#39;: &#39;Protomatter&#39;,
-            &#39;Gear Ranking Materials&#39;: &#39;Gear Ranking Materials&#39;
-        }
+
         row = 0
         col = 0
-        for index, cat in enumerate(categories.items()):
-            dataCat, displayCat = cat
+        for index, cat in enumerate(displayOrder):
             if index == 3:
                 row = 0
                 col = 2
-            catLabel = tk.Label(master, text=displayCat, font=(None, 13,
-               &#39;bold&#39;))
-            catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
             if index % 3 &gt; 0:
-                catLabel.grid_configure(pady=(20,0))
-
+                tk.Label(master, text=&#39;&#39;).grid(row=row, column=col)
+                row += 1
+            tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;)).grid(
+                row=row, column=col, columnspan=2, sticky=W
+            )
             row += 1
-            for itemID, qty in inv.items():
-                item = ITEMS[itemID]
-                if itemID in ignoredItemIDs or item.category != dataCat:
-                    continue
+
+            for item in inv.keysByCategory(cat):
+                qty = inv[item]
                 tk.Label(master, text=item.name).grid(
                     row=row, column=col, sticky=W, padx=(20,0)
                 )
@@ -1919,40 +1906,27 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 
         &#34;&#34;&#34;
         inv = self.root.session.saveslot.inventory
-        # ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
-        ignoredItemIDs = [
-            &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
-            &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
-            &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
-            &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
-            &#39;Shards_McCoy&#39;
+        displayOrder = [
+            &#39;Currency&#39;, &#39;Bio-Gel&#39;, &#39;Gear Leveling Materials&#39;,
+            &#39;General Items&#39;, &#39;Protomatter&#39;, &#39;Gear Ranking Materials&#39;
         ]
-        categories = {
-            &#39;Currency&#39;: &#39;Currency&#39;,
-            &#39;BiomimeticGel&#39;: &#39;Bio-Gel&#39;,
-            &#39;Gear Leveling Materials&#39;: &#39;Gear Leveling Materials&#39;,
-            &#39;Item&#39;: &#39;General Items&#39;,
-            &#39;ProtoMatter&#39;: &#39;Protomatter&#39;,
-            &#39;Gear Ranking Materials&#39;: &#39;Gear Ranking Materials&#39;
-        }
+
         row = 0
         col = 0
-        for index, cat in enumerate(categories.items()):
-            dataCat, displayCat = cat
+        for index, cat in enumerate(displayOrder):
             if index == 3:
                 row = 0
                 col = 2
-            catLabel = tk.Label(master, text=displayCat, font=(None, 13,
-               &#39;bold&#39;))
-            catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
             if index % 3 &gt; 0:
-                catLabel.grid_configure(pady=(20,0))
-
+                tk.Label(master, text=&#39;&#39;).grid(row=row, column=col)
+                row += 1
+            tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;)).grid(
+                row=row, column=col, columnspan=2, sticky=W
+            )
             row += 1
-            for itemID, qty in inv.items():
-                item = ITEMS[itemID]
-                if itemID in ignoredItemIDs or item.category != dataCat:
-                    continue
+
+            for item in inv.keysByCategory(cat):
+                qty = inv[item]
                 tk.Label(master, text=item.name).grid(
                     row=row, column=col, sticky=W, padx=(20,0)
                 )
@@ -1986,40 +1960,27 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 
     &#34;&#34;&#34;
     inv = self.root.session.saveslot.inventory
-    # ignoredCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
-    ignoredItemIDs = [
-        &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
-        &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
-        &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
-        &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
-        &#39;Shards_McCoy&#39;
+    displayOrder = [
+        &#39;Currency&#39;, &#39;Bio-Gel&#39;, &#39;Gear Leveling Materials&#39;,
+        &#39;General Items&#39;, &#39;Protomatter&#39;, &#39;Gear Ranking Materials&#39;
     ]
-    categories = {
-        &#39;Currency&#39;: &#39;Currency&#39;,
-        &#39;BiomimeticGel&#39;: &#39;Bio-Gel&#39;,
-        &#39;Gear Leveling Materials&#39;: &#39;Gear Leveling Materials&#39;,
-        &#39;Item&#39;: &#39;General Items&#39;,
-        &#39;ProtoMatter&#39;: &#39;Protomatter&#39;,
-        &#39;Gear Ranking Materials&#39;: &#39;Gear Ranking Materials&#39;
-    }
+
     row = 0
     col = 0
-    for index, cat in enumerate(categories.items()):
-        dataCat, displayCat = cat
+    for index, cat in enumerate(displayOrder):
         if index == 3:
             row = 0
             col = 2
-        catLabel = tk.Label(master, text=displayCat, font=(None, 13,
-           &#39;bold&#39;))
-        catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
         if index % 3 &gt; 0:
-            catLabel.grid_configure(pady=(20,0))
-
+            tk.Label(master, text=&#39;&#39;).grid(row=row, column=col)
+            row += 1
+        tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;)).grid(
+            row=row, column=col, columnspan=2, sticky=W
+        )
         row += 1
-        for itemID, qty in inv.items():
-            item = ITEMS[itemID]
-            if itemID in ignoredItemIDs or item.category != dataCat:
-                continue
+
+        for item in inv.keysByCategory(cat):
+            qty = inv[item]
             tk.Label(master, text=item.name).grid(
                 row=row, column=col, sticky=W, padx=(20,0)
             )

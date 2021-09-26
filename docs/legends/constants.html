@@ -29,7 +29,7 @@ points to a Python dictionary built from the file's contents.</p>
 <p>NOTE: (1) The constant <code>GSBaseStat</code> differs from the data file
 'GSBaseStat.json'. In the constant, 'MaxHealth' is renamed to 'Health'.
 (2) The file 'Item.json' is converted to the constant <code>Item_asset</code> to
-prevent conflict with the <code>Item</code> class.</p>
+prevent conflict with the <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> class.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>DESCRIPTIONS</code></strong> :&ensp;<code>dict</code></dt>
@@ -40,9 +40,9 @@ into a Python dictionary.</dd>
 on the Crew screen.</dd>
 <dt><strong><code>HELP</code></strong> :&ensp;<code>str</code></dt>
 <dd>The contents of the file, <code>legends/help.txt</code>.</dd>
-<dt><strong><code>ITEMS</code></strong> :&ensp;<code>list</code> of <code>Item</code></dt>
-<dd>A list of all items in the game, as parsed
-from <code>GSItem</code>.</dd>
+<dt><strong><code>ITEMS</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code>} A dictionary mapping each item ID in
+<code>GSItem</code> to an <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> instance built from that item ID.</dd>
 <dt><strong><code>POWER_GRADIENT</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>float</code>} A dictionary mapping stat
 names to the amount that a character's power would increase if
@@ -136,8 +136,8 @@ Attributes:
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     HELP (str): The contents of the file, `legends/help.txt`.
-    ITEMS (list of Item): A list of all items in the game, as parsed
-        from `GSItem`.
+    ITEMS (dict): {`str`:`Item`} A dictionary mapping each item ID in
+        `GSItem` to an `Item` instance built from that item ID.
     POWER_GRADIENT (dict): {`str`:`float`} A dictionary mapping stat
         names to the amount that a character&#39;s power would increase if
         that stat were to increase by 1.
@@ -210,7 +210,7 @@ __all__ = [
     &#39;STAT_ABBREVIATIONS&#39;, &#39;STAT_INITIALS&#39;, &#39;POWER_GRADIENT&#39;, &#39;POWER_AT_ORIGIN&#39;,
     &#39;DESCRIPTIONS&#39;, &#39;ROLES&#39;, &#39;RARITIES&#39;, &#39;RARITY_COLORS&#39;, &#39;PART_STAT_UNLOCKED&#39;,
     &#39;PART_STAT_VALUES&#39;, &#39;ENABLED&#39;, &#39;UPCOMING&#39;, &#39;SUMMON_POOL&#39;,
-    &#39;SUMMON_POOL_IDS&#39;, &#39;HELP&#39;, &#39;ITEMS&#39;
+    &#39;SUMMON_POOL_IDS&#39;, &#39;HELP&#39;, &#39;Item&#39;, &#39;ITEMS&#39;
 ]
 
 rootPath = abspath(dirname(__file__))
@@ -375,29 +375,39 @@ with open(rootPath + &#39;/help.txt&#39;, encoding=&#39;utf-8&#39;) as f:
 class Item():
     &#34;&#34;&#34;An item in STL.
 
-    Attributes:
-        itemID (str): The in-data item ID of the item. Should be a
-            key in `GSItem`.
-        category (str): The in-data category of the item, with two
-            exceptions. The in-data category of gear leveling and
-            gear ranking materials is &#39;Item&#39;. This is manually changed
-            to &#39;Gear Leveling Materials&#39; and &#39;Gear Ranking Materials&#39;,
-            respectively.
+    An `Item` instance has no public attributes. All its data should be
+    accessed through its read-only properties. It is meant to be used
+    like an immutable data type.
 
     &#34;&#34;&#34;
+
+    _betterCategoryNames = {
+        &#39;BiomimeticGel&#39;: &#39;Bio-Gel&#39;,
+        &#39;Item&#39;: &#39;General Items&#39;,
+        &#39;ProtoMatter&#39;: &#39;Protomatter&#39;,
+    }
+
     def __init__(self, itemID):
         &#34;&#34;&#34;The constructor builds the item from the given item ID,
-        looking up the required information in `GSItem`.
+        which should match a key in `GSItem`.
 
         &#34;&#34;&#34;
-        self.itemID = itemID
+        self._itemID = itemID
         itemData = GSItem[itemID] # pylint: disable=undefined-variable
-        self.category = itemData[&#39;category&#39;]
+        dataCat = itemData[&#39;category&#39;]
+        self._category = self._betterCategoryNames.get(dataCat, dataCat)
         if itemData[&#39;icon&#39;][:4] == &#39;Gear&#39;:
             if itemData[&#39;rarity&#39;] == &#39;Common&#39;:
-                self.category = &#39;Gear Leveling Materials&#39;
+                self._category = &#39;Gear Leveling Materials&#39;
             else:
-                self.category = &#39;Gear Ranking Materials&#39;
+                self._category = &#39;Gear Ranking Materials&#39;
+
+    @property
+    def itemID(self):
+        &#34;&#34;&#34;`str`: The in-data item ID of the item. Should match a key in
+        `GSItem`.
+        &#34;&#34;&#34;
+        return self._itemID
 
     @property
     def name(self):
@@ -408,6 +418,18 @@ class Item():
             DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
             else self.itemID
         )
+
+    @property
+    def category(self):
+        &#34;&#34;&#34;`str`: The category of the item. Categories appear in
+        `GSItem`. The `Item` class replaces the category found there in
+        the following cases. It replaces &#39;BiomimeticGel&#39; with &#39;Bio-Gel&#39;,
+        &#39;Item&#39; with &#39;General Items&#39;, and &#39;ProtoMatter&#39; with
+        &#39;Protomatter&#39;. Also, if the item is a gear-leveling or gear
+        ranking material, the category is replaced by &#39;Gear Leveling
+        Materials&#39; or &#39;Gear Ranking Materials&#39;, respectively.
+        &#34;&#34;&#34;
+        return self._category
 
     @property
     def xp(self):
@@ -423,7 +445,7 @@ class Item():
     def __repr__(self):
         return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)
 
-# pylint: disable-next =undefined-variable
+# pylint: disable-next=undefined-variable
 ITEMS = {itemID: Item(itemID) for itemID in GSItem}</code></pre>
 </details>
 </section>
@@ -434,6 +456,181 @@ ITEMS = {itemID: Item(itemID) for itemID in GSItem}</code></pre>
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.constants.Item"><code class="flex name class">
+<span>class <span class="ident">Item</span></span>
+<span>(</span><span>itemID)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An item in STL.</p>
+<p>An <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> instance has no public attributes. All its data should be
+accessed through its read-only properties. It is meant to be used
+like an immutable data type.</p>
+<p>The constructor builds the item from the given item ID,
+which should match a key in <code>GSItem</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Item():
+    &#34;&#34;&#34;An item in STL.
+
+    An `Item` instance has no public attributes. All its data should be
+    accessed through its read-only properties. It is meant to be used
+    like an immutable data type.
+
+    &#34;&#34;&#34;
+
+    _betterCategoryNames = {
+        &#39;BiomimeticGel&#39;: &#39;Bio-Gel&#39;,
+        &#39;Item&#39;: &#39;General Items&#39;,
+        &#39;ProtoMatter&#39;: &#39;Protomatter&#39;,
+    }
+
+    def __init__(self, itemID):
+        &#34;&#34;&#34;The constructor builds the item from the given item ID,
+        which should match a key in `GSItem`.
+
+        &#34;&#34;&#34;
+        self._itemID = itemID
+        itemData = GSItem[itemID] # pylint: disable=undefined-variable
+        dataCat = itemData[&#39;category&#39;]
+        self._category = self._betterCategoryNames.get(dataCat, dataCat)
+        if itemData[&#39;icon&#39;][:4] == &#39;Gear&#39;:
+            if itemData[&#39;rarity&#39;] == &#39;Common&#39;:
+                self._category = &#39;Gear Leveling Materials&#39;
+            else:
+                self._category = &#39;Gear Ranking Materials&#39;
+
+    @property
+    def itemID(self):
+        &#34;&#34;&#34;`str`: The in-data item ID of the item. Should match a key in
+        `GSItem`.
+        &#34;&#34;&#34;
+        return self._itemID
+
+    @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game name of the item.&#34;&#34;&#34;
+        # pylint: disable-next=undefined-variable
+        itemData = GSItem[self.itemID]
+        return (
+            DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
+            else self.itemID
+        )
+
+    @property
+    def category(self):
+        &#34;&#34;&#34;`str`: The category of the item. Categories appear in
+        `GSItem`. The `Item` class replaces the category found there in
+        the following cases. It replaces &#39;BiomimeticGel&#39; with &#39;Bio-Gel&#39;,
+        &#39;Item&#39; with &#39;General Items&#39;, and &#39;ProtoMatter&#39; with
+        &#39;Protomatter&#39;. Also, if the item is a gear-leveling or gear
+        ranking material, the category is replaced by &#39;Gear Leveling
+        Materials&#39; or &#39;Gear Ranking Materials&#39;, respectively.
+        &#34;&#34;&#34;
+        return self._category
+
+    @property
+    def xp(self):
+        &#34;&#34;&#34;`int`: If the item is a bio-gel, this is the amount of xp it
+        awards; otherwise it is 0.
+        &#34;&#34;&#34;
+        try:
+            # pylint: disable-next=undefined-variable
+            return GSItem[self.itemID][&#39;DataBiomimeticGel&#39;][&#39;Xp&#39;]
+        except KeyError:
+            return 0
+
+    def __repr__(self):
+        return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.constants.Item.category"><code class="name">var <span class="ident">category</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The category of the item. Categories appear in
+<code>GSItem</code>. The <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> class replaces the category found there in
+the following cases. It replaces 'BiomimeticGel' with 'Bio-Gel',
+'Item' with 'General Items', and 'ProtoMatter' with
+'Protomatter'. Also, if the item is a gear-leveling or gear
+ranking material, the category is replaced by 'Gear Leveling
+Materials' or 'Gear Ranking Materials', respectively.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def category(self):
+    &#34;&#34;&#34;`str`: The category of the item. Categories appear in
+    `GSItem`. The `Item` class replaces the category found there in
+    the following cases. It replaces &#39;BiomimeticGel&#39; with &#39;Bio-Gel&#39;,
+    &#39;Item&#39; with &#39;General Items&#39;, and &#39;ProtoMatter&#39; with
+    &#39;Protomatter&#39;. Also, if the item is a gear-leveling or gear
+    ranking material, the category is replaced by &#39;Gear Leveling
+    Materials&#39; or &#39;Gear Ranking Materials&#39;, respectively.
+    &#34;&#34;&#34;
+    return self._category</code></pre>
+</details>
+</dd>
+<dt id="legends.constants.Item.itemID"><code class="name">var <span class="ident">itemID</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The in-data item ID of the item. Should match a key in
+<code>GSItem</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def itemID(self):
+    &#34;&#34;&#34;`str`: The in-data item ID of the item. Should match a key in
+    `GSItem`.
+    &#34;&#34;&#34;
+    return self._itemID</code></pre>
+</details>
+</dd>
+<dt id="legends.constants.Item.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The in-game name of the item.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self):
+    &#34;&#34;&#34;`str`: The in-game name of the item.&#34;&#34;&#34;
+    # pylint: disable-next=undefined-variable
+    itemData = GSItem[self.itemID]
+    return (
+        DESCRIPTIONS[itemData[&#39;name&#39;]] if &#39;name&#39; in itemData
+        else self.itemID
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.constants.Item.xp"><code class="name">var <span class="ident">xp</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: If the item is a bio-gel, this is the amount of xp it
+awards; otherwise it is 0.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def xp(self):
+    &#34;&#34;&#34;`int`: If the item is a bio-gel, this is the amount of xp it
+    awards; otherwise it is 0.
+    &#34;&#34;&#34;
+    try:
+        # pylint: disable-next=undefined-variable
+        return GSItem[self.itemID][&#39;DataBiomimeticGel&#39;][&#39;Xp&#39;]
+    except KeyError:
+        return 0</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -445,6 +642,19 @@ ITEMS = {itemID: Item(itemID) for itemID in GSItem}</code></pre>
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code></h4>
+<ul class="">
+<li><code><a title="legends.constants.Item.category" href="#legends.constants.Item.category">category</a></code></li>
+<li><code><a title="legends.constants.Item.itemID" href="#legends.constants.Item.itemID">itemID</a></code></li>
+<li><code><a title="legends.constants.Item.name" href="#legends.constants.Item.name">name</a></code></li>
+<li><code><a title="legends.constants.Item.xp" href="#legends.constants.Item.xp">xp</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
