@@ -204,7 +204,7 @@ Examples:
 from os import listdir
 from os.path import abspath, dirname
 from json import load
-from legends.utils import bidict
+from legends.utils.relations import bidict
 
 __all__ = [
     &#39;STAT_ABBREVIATIONS&#39;, &#39;STAT_INITIALS&#39;, &#39;POWER_GRADIENT&#39;, &#39;POWER_AT_ORIGIN&#39;,
@@ -442,6 +442,17 @@ class Item():
         except KeyError:
             return 0
 
+    @property
+    def role(self):
+        &#34;&#34;&#34;`str`: If the item is protomatter, this is the role that the
+        protomatter is meant for; otherwise it is `None`.
+        &#34;&#34;&#34;
+        if self.category != &#39;Protomatter&#39;:
+            return None
+        roleName = self.itemID[6:-3]
+        roleName = &#39;Engineering&#39; if roleName == &#39;Engineer&#39; else roleName
+        return roleName
+
     def __repr__(self):
         return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)
 
@@ -543,6 +554,17 @@ which should match a key in <code>GSItem</code>.</p></div>
         except KeyError:
             return 0
 
+    @property
+    def role(self):
+        &#34;&#34;&#34;`str`: If the item is protomatter, this is the role that the
+        protomatter is meant for; otherwise it is `None`.
+        &#34;&#34;&#34;
+        if self.category != &#39;Protomatter&#39;:
+            return None
+        roleName = self.itemID[6:-3]
+        roleName = &#39;Engineering&#39; if roleName == &#39;Engineer&#39; else roleName
+        return roleName
+
     def __repr__(self):
         return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)</code></pre>
 </details>
@@ -608,6 +630,26 @@ def name(self):
     )</code></pre>
 </details>
 </dd>
+<dt id="legends.constants.Item.role"><code class="name">var <span class="ident">role</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: If the item is protomatter, this is the role that the
+protomatter is meant for; otherwise it is <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def role(self):
+    &#34;&#34;&#34;`str`: If the item is protomatter, this is the role that the
+    protomatter is meant for; otherwise it is `None`.
+    &#34;&#34;&#34;
+    if self.category != &#39;Protomatter&#39;:
+        return None
+    roleName = self.itemID[6:-3]
+    roleName = &#39;Engineering&#39; if roleName == &#39;Engineer&#39; else roleName
+    return roleName</code></pre>
+</details>
+</dd>
 <dt id="legends.constants.Item.xp"><code class="name">var <span class="ident">xp</span></code></dt>
 <dd>
 <div class="desc"><p><code>int</code>: If the item is a bio-gel, this is the amount of xp it
@@ -652,6 +694,7 @@ def xp(self):
 <li><code><a title="legends.constants.Item.category" href="#legends.constants.Item.category">category</a></code></li>
 <li><code><a title="legends.constants.Item.itemID" href="#legends.constants.Item.itemID">itemID</a></code></li>
 <li><code><a title="legends.constants.Item.name" href="#legends.constants.Item.name">name</a></code></li>
+<li><code><a title="legends.constants.Item.role" href="#legends.constants.Item.role">role</a></code></li>
 <li><code><a title="legends.constants.Item.xp" href="#legends.constants.Item.xp">xp</a></code></li>
 </ul>
 </li>

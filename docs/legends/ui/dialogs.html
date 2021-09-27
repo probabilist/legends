@@ -40,12 +40,14 @@ from tkinter.messagebox import showinfo as _showinfo
 from tkinter.messagebox import askyesno as _askyesno
 from tkinter.simpledialog import Dialog
 from tkinter.scrolledtext import ScrolledText
+from legends.utils.relations import bidict
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.constants import (
-    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS
+    RARITIES, ROLES, ENABLED, UPCOMING, SUMMON_POOL, HELP, STAT_INITIALS, ITEMS
 )
-from legends.saveslot import SaveSlot
+from legends.gameobjects import xpFromLevel, levelFromXP
+from legends.saveslot import SaveSlot, Inventory
 
 __all__ = [
     &#39;addroot&#39;, &#39;showerror&#39;, &#39;showinfo&#39;, &#39;askyesno&#39;, &#39;askSlot&#39;,
@@ -721,43 +723,179 @@ class OptimalSummons(ModalMessage):
 class InventoryScreen(ModalMessage):
     &#34;&#34;&#34;A message dialog showing the player&#39;s inventory.
 
+    Attributes:
+        levelMap (legends.utils.relations.bidict): {`int`:`int`} After
+            fully leveling, from 1 to 99, as many characters as possible
+            with the bio-gel items in the inventory, a certain amount of
+            excess bio-gel will remain. A `key`, `value` pair in this
+            dictionary means that this excess bio-gel can level a
+            character of level `key` to level `value`.
+        startLevel (tk.StringVar): The level displayed in the starting
+            level combo-box.
+        endLevel (tk.StringVar): The level displayed in the ending level
+            combo-box.
+
     &#34;&#34;&#34;
     def __init__(self, root, parent=None):
+        self.root = root
+        self.levelMap = bidict()
+        extraXP = self.inventory.xp % xpFromLevel(99)
+        for start in range(1,99):
+            end = levelFromXP(xpFromLevel(start) + extraXP)
+            try:
+                self.levelMap[start] = end
+            except ValueError:
+                pass
+        self.startLevel = tk.StringVar(None, &#39;1&#39;)
+        self.endLevel = tk.StringVar()
+        self.setEndLevel()
         ModalMessage.__init__(self, root, parent, &#39;Inventory&#39;)
+
+    @property
+    def inventory(self):
+        &#34;&#34;&#34;`legends.gameobjects.Inventory`: The inventory associated
+        with the current session.
+        &#34;&#34;&#34;
+        return self.root.session.saveslot.inventory
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with the
+        current session.
+        &#34;&#34;&#34;
+        return self.root.session.saveslot.roster
 
     def body(self, master):
         &#34;&#34;&#34;Create the body of the dialog.
 
         &#34;&#34;&#34;
-        inv = self.root.session.saveslot.inventory
-        displayOrder = [
-            &#39;Currency&#39;, &#39;Bio-Gel&#39;, &#39;Gear Leveling Materials&#39;,
-            &#39;General Items&#39;, &#39;Protomatter&#39;, &#39;Gear Ranking Materials&#39;
-        ]
+        # grid the inventory quantities
+        self.displayCat(master, &#39;Currency&#39;, (0, 0))
+        self.displayCat(master, &#39;General Items&#39;, (0, 2))
+        self.displayCat(master, &#39;Bio-Gel&#39;, (4, 0), True)
+        self.displayCat(master, &#39;Protomatter&#39;, (10, 0), True)
+        self.displayCat(master, &#39;Gear Leveling Materials&#39;, (16, 0), True)
+        self.displayCat(master, &#39;Gear Ranking Materials&#39;, (16, 2), True)
 
-        row = 0
-        col = 0
-        for index, cat in enumerate(displayOrder):
-            if index == 3:
-                row = 0
-                col = 2
-            if index % 3 &gt; 0:
-                tk.Label(master, text=&#39;&#39;).grid(row=row, column=col)
-                row += 1
-            tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;)).grid(
-                row=row, column=col, columnspan=2, sticky=W
+        # show total XP
+        tk.Label(
+            master, text=&#39;TOTAL BIO-GEL XP:&#39;, font=(None, 13, &#39;italic&#39;)
+        ).grid(row=5, column=2, sticky=W, padx=(20,0))
+        tk.Label(
+            master, text=&#39;{:,}&#39;.format(self.inventory.xp)
+        ).grid(row=5, column=3, sticky=E, padx=(0,20))
+
+        # show number of characters can level
+        chars = int(self.inventory.xp/xpFromLevel(99))
+        tk.Label(
+            master,
+            text=&#39;Can fully level {} character{},&#39;.format(
+                chars,
+                &#39;s&#39; if chars &gt; 1 else &#39;&#39;
             )
-            row += 1
+        ).grid(row=6, column=2, columnspan=2, padx=(20,20))
 
-            for item in inv.keysByCategory(cat):
-                qty = inv[item]
-                tk.Label(master, text=item.name).grid(
-                    row=row, column=col, sticky=W, padx=(20,0)
+        # show additional character, partial level
+        tk.Label(
+            master, text=&#39;and one more from&#39;
+        ).grid(row=7, column=2, columnspan=2, padx=(20,20))
+
+        # build combo-box level-checking tool
+        bar = tk.Frame(master)
+
+        # starting level combo-box
+        tk.Label(bar, text=&#39;Level&#39;).pack(side=LEFT)
+        startLevelBox = ttk.Combobox(
+            bar, textvariable=self.startLevel,
+            values=[str(level) for level in self.levelMap],
+            state=&#39;readonly&#39;, width=2
+        )
+        startLevelBox.pack(side=LEFT)
+        startLevelBox.bind(
+            &#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.setEndLevel()
+        )
+
+        # ending level combo-box
+        tk.Label(
+            bar, text=&#39;to&#39;
+        ).pack(side=LEFT)
+        endLevelBox = ttk.Combobox(
+            bar, textvariable=self.endLevel,
+            values=[str(level) for level in self.levelMap.values()],
+            state=&#39;readonly&#39;, width=2
+        )
+        endLevelBox.pack(side=LEFT)
+        endLevelBox.bind(
+            &#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.setStartLevel()
+        )
+
+        # pack combo-box level-checking tool
+        bar.grid(row=8, column=2, columnspan=2, padx=(20,20))
+
+        # show protomatter needed to max roster
+        tk.Label(
+            master, text=&#39;Needed to Max Roster&#39;, font=(None, 13, &#39;italic&#39;)
+        ).grid(row=10, column=2, columnspan=2, sticky=W, pady=(20,0))
+        for index, item in enumerate(self.inventory.keysByCat(&#39;Protomatter&#39;)):
+            totalNeeded = Inventory()
+            for char in self.roster.chars.values():
+                if char.role == item.role:
+                    totalNeeded = sum(
+                        (skill.itemsToMax for skill in char.skills.values()),
+                        totalNeeded
+                    )
+            tk.Label(
+                master, text=&#39;{:,} + {:,} Latinum&#39;.format(
+                    totalNeeded[item],
+                    totalNeeded[ITEMS[&#39;Latinum&#39;]]
                 )
-                tk.Label(master, text=&#39;{:,}&#39;.format(qty)).grid(
-                    row=row, column=col + 1, sticky=E, padx=(0,20)
-                )
-                row += 1</code></pre>
+            ).grid(row=11+index, column=2, sticky=W)
+
+    def setStartLevel(self):
+        &#34;&#34;&#34;Sets the `tkinter` variable in the `startLevel` attribute
+        according to the value of `endLevel`.
+
+        &#34;&#34;&#34;
+        self.startLevel.set(str(
+            self.levelMap.inverse[int(self.endLevel.get())]
+        ))
+
+    def setEndLevel(self):
+        &#34;&#34;&#34;Sets the `tkinter` variable in the `endLevel` attribute
+        according to the value of `startLevel`.
+
+        &#34;&#34;&#34;
+        self.endLevel.set(str(
+            self.levelMap[int(self.startLevel.get())]
+        ))
+
+    def displayCat(self, master, cat, coords, pad=False):
+        &#34;&#34;&#34;Grids the headings, labels, and item quantities for the given
+        category onto the given master object.
+
+        Args:
+            master (obj): The `tkinter` object to assign as master.
+            cat (str): The category of items to grid.
+            coords (tuple): (`int`,`int`) The row and column of the top
+                left corner of the display.
+            pad (bool): `True` if the display should have vertical
+                padding above it.
+
+        &#34;&#34;&#34;
+        row, col = coords
+        catLabel = tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;))
+        catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
+        if pad:
+            catLabel.grid_configure(pady=(20,0))
+        row += 1
+        for item, qty in self.inventory.itemsByCat(cat):
+            tk.Label(master, text=item.name).grid(
+                row=row, column=col, sticky=W, padx=(20,0)
+            )
+            tk.Label(master, text=&#39;{:,}&#39;.format(qty)).grid(
+                row=row, column=col + 1, sticky=E, padx=(0,20)
+            )
+            row += 1</code></pre>
 </details>
 </section>
 <section>
@@ -1888,6 +2026,22 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 </code></dt>
 <dd>
 <div class="desc"><p>A message dialog showing the player's inventory.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>levelMap</code></strong> :&ensp;<code><a title="legends.utils.relations.bidict" href="../utils/relations.html#legends.utils.relations.bidict">bidict</a></code></dt>
+<dd>{<code>int</code>:<code>int</code>} After
+fully leveling, from 1 to 99, as many characters as possible
+with the bio-gel items in the inventory, a certain amount of
+excess bio-gel will remain. A <code>key</code>, <code>value</code> pair in this
+dictionary means that this excess bio-gel can level a
+character of level <code>key</code> to level <code>value</code>.</dd>
+<dt><strong><code>startLevel</code></strong> :&ensp;<code>tk.StringVar</code></dt>
+<dd>The level displayed in the starting
+level combo-box.</dd>
+<dt><strong><code>endLevel</code></strong> :&ensp;<code>tk.StringVar</code></dt>
+<dd>The level displayed in the ending level
+combo-box.</dd>
+</dl>
 <p>The constructor disables the root menu before calling the
 <code>tk.simpledialog.Dialog</code> constructor.</p></div>
 <details class="source">
@@ -1897,43 +2051,179 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 <pre><code class="python">class InventoryScreen(ModalMessage):
     &#34;&#34;&#34;A message dialog showing the player&#39;s inventory.
 
+    Attributes:
+        levelMap (legends.utils.relations.bidict): {`int`:`int`} After
+            fully leveling, from 1 to 99, as many characters as possible
+            with the bio-gel items in the inventory, a certain amount of
+            excess bio-gel will remain. A `key`, `value` pair in this
+            dictionary means that this excess bio-gel can level a
+            character of level `key` to level `value`.
+        startLevel (tk.StringVar): The level displayed in the starting
+            level combo-box.
+        endLevel (tk.StringVar): The level displayed in the ending level
+            combo-box.
+
     &#34;&#34;&#34;
     def __init__(self, root, parent=None):
+        self.root = root
+        self.levelMap = bidict()
+        extraXP = self.inventory.xp % xpFromLevel(99)
+        for start in range(1,99):
+            end = levelFromXP(xpFromLevel(start) + extraXP)
+            try:
+                self.levelMap[start] = end
+            except ValueError:
+                pass
+        self.startLevel = tk.StringVar(None, &#39;1&#39;)
+        self.endLevel = tk.StringVar()
+        self.setEndLevel()
         ModalMessage.__init__(self, root, parent, &#39;Inventory&#39;)
+
+    @property
+    def inventory(self):
+        &#34;&#34;&#34;`legends.gameobjects.Inventory`: The inventory associated
+        with the current session.
+        &#34;&#34;&#34;
+        return self.root.session.saveslot.inventory
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with the
+        current session.
+        &#34;&#34;&#34;
+        return self.root.session.saveslot.roster
 
     def body(self, master):
         &#34;&#34;&#34;Create the body of the dialog.
 
         &#34;&#34;&#34;
-        inv = self.root.session.saveslot.inventory
-        displayOrder = [
-            &#39;Currency&#39;, &#39;Bio-Gel&#39;, &#39;Gear Leveling Materials&#39;,
-            &#39;General Items&#39;, &#39;Protomatter&#39;, &#39;Gear Ranking Materials&#39;
-        ]
+        # grid the inventory quantities
+        self.displayCat(master, &#39;Currency&#39;, (0, 0))
+        self.displayCat(master, &#39;General Items&#39;, (0, 2))
+        self.displayCat(master, &#39;Bio-Gel&#39;, (4, 0), True)
+        self.displayCat(master, &#39;Protomatter&#39;, (10, 0), True)
+        self.displayCat(master, &#39;Gear Leveling Materials&#39;, (16, 0), True)
+        self.displayCat(master, &#39;Gear Ranking Materials&#39;, (16, 2), True)
 
-        row = 0
-        col = 0
-        for index, cat in enumerate(displayOrder):
-            if index == 3:
-                row = 0
-                col = 2
-            if index % 3 &gt; 0:
-                tk.Label(master, text=&#39;&#39;).grid(row=row, column=col)
-                row += 1
-            tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;)).grid(
-                row=row, column=col, columnspan=2, sticky=W
+        # show total XP
+        tk.Label(
+            master, text=&#39;TOTAL BIO-GEL XP:&#39;, font=(None, 13, &#39;italic&#39;)
+        ).grid(row=5, column=2, sticky=W, padx=(20,0))
+        tk.Label(
+            master, text=&#39;{:,}&#39;.format(self.inventory.xp)
+        ).grid(row=5, column=3, sticky=E, padx=(0,20))
+
+        # show number of characters can level
+        chars = int(self.inventory.xp/xpFromLevel(99))
+        tk.Label(
+            master,
+            text=&#39;Can fully level {} character{},&#39;.format(
+                chars,
+                &#39;s&#39; if chars &gt; 1 else &#39;&#39;
             )
-            row += 1
+        ).grid(row=6, column=2, columnspan=2, padx=(20,20))
 
-            for item in inv.keysByCategory(cat):
-                qty = inv[item]
-                tk.Label(master, text=item.name).grid(
-                    row=row, column=col, sticky=W, padx=(20,0)
+        # show additional character, partial level
+        tk.Label(
+            master, text=&#39;and one more from&#39;
+        ).grid(row=7, column=2, columnspan=2, padx=(20,20))
+
+        # build combo-box level-checking tool
+        bar = tk.Frame(master)
+
+        # starting level combo-box
+        tk.Label(bar, text=&#39;Level&#39;).pack(side=LEFT)
+        startLevelBox = ttk.Combobox(
+            bar, textvariable=self.startLevel,
+            values=[str(level) for level in self.levelMap],
+            state=&#39;readonly&#39;, width=2
+        )
+        startLevelBox.pack(side=LEFT)
+        startLevelBox.bind(
+            &#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.setEndLevel()
+        )
+
+        # ending level combo-box
+        tk.Label(
+            bar, text=&#39;to&#39;
+        ).pack(side=LEFT)
+        endLevelBox = ttk.Combobox(
+            bar, textvariable=self.endLevel,
+            values=[str(level) for level in self.levelMap.values()],
+            state=&#39;readonly&#39;, width=2
+        )
+        endLevelBox.pack(side=LEFT)
+        endLevelBox.bind(
+            &#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.setStartLevel()
+        )
+
+        # pack combo-box level-checking tool
+        bar.grid(row=8, column=2, columnspan=2, padx=(20,20))
+
+        # show protomatter needed to max roster
+        tk.Label(
+            master, text=&#39;Needed to Max Roster&#39;, font=(None, 13, &#39;italic&#39;)
+        ).grid(row=10, column=2, columnspan=2, sticky=W, pady=(20,0))
+        for index, item in enumerate(self.inventory.keysByCat(&#39;Protomatter&#39;)):
+            totalNeeded = Inventory()
+            for char in self.roster.chars.values():
+                if char.role == item.role:
+                    totalNeeded = sum(
+                        (skill.itemsToMax for skill in char.skills.values()),
+                        totalNeeded
+                    )
+            tk.Label(
+                master, text=&#39;{:,} + {:,} Latinum&#39;.format(
+                    totalNeeded[item],
+                    totalNeeded[ITEMS[&#39;Latinum&#39;]]
                 )
-                tk.Label(master, text=&#39;{:,}&#39;.format(qty)).grid(
-                    row=row, column=col + 1, sticky=E, padx=(0,20)
-                )
-                row += 1</code></pre>
+            ).grid(row=11+index, column=2, sticky=W)
+
+    def setStartLevel(self):
+        &#34;&#34;&#34;Sets the `tkinter` variable in the `startLevel` attribute
+        according to the value of `endLevel`.
+
+        &#34;&#34;&#34;
+        self.startLevel.set(str(
+            self.levelMap.inverse[int(self.endLevel.get())]
+        ))
+
+    def setEndLevel(self):
+        &#34;&#34;&#34;Sets the `tkinter` variable in the `endLevel` attribute
+        according to the value of `startLevel`.
+
+        &#34;&#34;&#34;
+        self.endLevel.set(str(
+            self.levelMap[int(self.startLevel.get())]
+        ))
+
+    def displayCat(self, master, cat, coords, pad=False):
+        &#34;&#34;&#34;Grids the headings, labels, and item quantities for the given
+        category onto the given master object.
+
+        Args:
+            master (obj): The `tkinter` object to assign as master.
+            cat (str): The category of items to grid.
+            coords (tuple): (`int`,`int`) The row and column of the top
+                left corner of the display.
+            pad (bool): `True` if the display should have vertical
+                padding above it.
+
+        &#34;&#34;&#34;
+        row, col = coords
+        catLabel = tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;))
+        catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
+        if pad:
+            catLabel.grid_configure(pady=(20,0))
+        row += 1
+        for item, qty in self.inventory.itemsByCat(cat):
+            tk.Label(master, text=item.name).grid(
+                row=row, column=col, sticky=W, padx=(20,0)
+            )
+            tk.Label(master, text=&#39;{:,}&#39;.format(qty)).grid(
+                row=row, column=col + 1, sticky=E, padx=(0,20)
+            )
+            row += 1</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1944,6 +2234,41 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
 <li>tkinter.Misc</li>
 <li>tkinter.Wm</li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.ui.dialogs.InventoryScreen.inventory"><code class="name">var <span class="ident">inventory</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.gameobjects.Inventory" href="../gameobjects.html#legends.gameobjects.Inventory">Inventory</a></code>: The inventory associated
+with the current session.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def inventory(self):
+    &#34;&#34;&#34;`legends.gameobjects.Inventory`: The inventory associated
+    with the current session.
+    &#34;&#34;&#34;
+    return self.root.session.saveslot.inventory</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.InventoryScreen.roster"><code class="name">var <span class="ident">roster</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.Roster" href="../roster.html#legends.roster.Roster">Roster</a></code>: The roster associated with the
+current session.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def roster(self):
+    &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with the
+    current session.
+    &#34;&#34;&#34;
+    return self.root.session.saveslot.roster</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="legends.ui.dialogs.InventoryScreen.body"><code class="name flex">
@@ -1959,35 +2284,179 @@ inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
     &#34;&#34;&#34;Create the body of the dialog.
 
     &#34;&#34;&#34;
-    inv = self.root.session.saveslot.inventory
-    displayOrder = [
-        &#39;Currency&#39;, &#39;Bio-Gel&#39;, &#39;Gear Leveling Materials&#39;,
-        &#39;General Items&#39;, &#39;Protomatter&#39;, &#39;Gear Ranking Materials&#39;
-    ]
+    # grid the inventory quantities
+    self.displayCat(master, &#39;Currency&#39;, (0, 0))
+    self.displayCat(master, &#39;General Items&#39;, (0, 2))
+    self.displayCat(master, &#39;Bio-Gel&#39;, (4, 0), True)
+    self.displayCat(master, &#39;Protomatter&#39;, (10, 0), True)
+    self.displayCat(master, &#39;Gear Leveling Materials&#39;, (16, 0), True)
+    self.displayCat(master, &#39;Gear Ranking Materials&#39;, (16, 2), True)
 
-    row = 0
-    col = 0
-    for index, cat in enumerate(displayOrder):
-        if index == 3:
-            row = 0
-            col = 2
-        if index % 3 &gt; 0:
-            tk.Label(master, text=&#39;&#39;).grid(row=row, column=col)
-            row += 1
-        tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;)).grid(
-            row=row, column=col, columnspan=2, sticky=W
+    # show total XP
+    tk.Label(
+        master, text=&#39;TOTAL BIO-GEL XP:&#39;, font=(None, 13, &#39;italic&#39;)
+    ).grid(row=5, column=2, sticky=W, padx=(20,0))
+    tk.Label(
+        master, text=&#39;{:,}&#39;.format(self.inventory.xp)
+    ).grid(row=5, column=3, sticky=E, padx=(0,20))
+
+    # show number of characters can level
+    chars = int(self.inventory.xp/xpFromLevel(99))
+    tk.Label(
+        master,
+        text=&#39;Can fully level {} character{},&#39;.format(
+            chars,
+            &#39;s&#39; if chars &gt; 1 else &#39;&#39;
         )
-        row += 1
+    ).grid(row=6, column=2, columnspan=2, padx=(20,20))
 
-        for item in inv.keysByCategory(cat):
-            qty = inv[item]
-            tk.Label(master, text=item.name).grid(
-                row=row, column=col, sticky=W, padx=(20,0)
+    # show additional character, partial level
+    tk.Label(
+        master, text=&#39;and one more from&#39;
+    ).grid(row=7, column=2, columnspan=2, padx=(20,20))
+
+    # build combo-box level-checking tool
+    bar = tk.Frame(master)
+
+    # starting level combo-box
+    tk.Label(bar, text=&#39;Level&#39;).pack(side=LEFT)
+    startLevelBox = ttk.Combobox(
+        bar, textvariable=self.startLevel,
+        values=[str(level) for level in self.levelMap],
+        state=&#39;readonly&#39;, width=2
+    )
+    startLevelBox.pack(side=LEFT)
+    startLevelBox.bind(
+        &#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.setEndLevel()
+    )
+
+    # ending level combo-box
+    tk.Label(
+        bar, text=&#39;to&#39;
+    ).pack(side=LEFT)
+    endLevelBox = ttk.Combobox(
+        bar, textvariable=self.endLevel,
+        values=[str(level) for level in self.levelMap.values()],
+        state=&#39;readonly&#39;, width=2
+    )
+    endLevelBox.pack(side=LEFT)
+    endLevelBox.bind(
+        &#39;&lt;&lt;ComboboxSelected&gt;&gt;&#39;, lambda event:self.setStartLevel()
+    )
+
+    # pack combo-box level-checking tool
+    bar.grid(row=8, column=2, columnspan=2, padx=(20,20))
+
+    # show protomatter needed to max roster
+    tk.Label(
+        master, text=&#39;Needed to Max Roster&#39;, font=(None, 13, &#39;italic&#39;)
+    ).grid(row=10, column=2, columnspan=2, sticky=W, pady=(20,0))
+    for index, item in enumerate(self.inventory.keysByCat(&#39;Protomatter&#39;)):
+        totalNeeded = Inventory()
+        for char in self.roster.chars.values():
+            if char.role == item.role:
+                totalNeeded = sum(
+                    (skill.itemsToMax for skill in char.skills.values()),
+                    totalNeeded
+                )
+        tk.Label(
+            master, text=&#39;{:,} + {:,} Latinum&#39;.format(
+                totalNeeded[item],
+                totalNeeded[ITEMS[&#39;Latinum&#39;]]
             )
-            tk.Label(master, text=&#39;{:,}&#39;.format(qty)).grid(
-                row=row, column=col + 1, sticky=E, padx=(0,20)
-            )
-            row += 1</code></pre>
+        ).grid(row=11+index, column=2, sticky=W)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.InventoryScreen.displayCat"><code class="name flex">
+<span>def <span class="ident">displayCat</span></span>(<span>self, master, cat, coords, pad=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Grids the headings, labels, and item quantities for the given
+category onto the given master object.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>master</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The <code>tkinter</code> object to assign as master.</dd>
+<dt><strong><code>cat</code></strong> :&ensp;<code>str</code></dt>
+<dd>The category of items to grid.</dd>
+<dt><strong><code>coords</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>(<code>int</code>,<code>int</code>) The row and column of the top
+left corner of the display.</dd>
+<dt><strong><code>pad</code></strong> :&ensp;<code>bool</code></dt>
+<dd><code>True</code> if the display should have vertical
+padding above it.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def displayCat(self, master, cat, coords, pad=False):
+    &#34;&#34;&#34;Grids the headings, labels, and item quantities for the given
+    category onto the given master object.
+
+    Args:
+        master (obj): The `tkinter` object to assign as master.
+        cat (str): The category of items to grid.
+        coords (tuple): (`int`,`int`) The row and column of the top
+            left corner of the display.
+        pad (bool): `True` if the display should have vertical
+            padding above it.
+
+    &#34;&#34;&#34;
+    row, col = coords
+    catLabel = tk.Label(master, text=cat, font=(None, 13, &#39;bold&#39;))
+    catLabel.grid(row=row, column=col, columnspan=2, sticky=W)
+    if pad:
+        catLabel.grid_configure(pady=(20,0))
+    row += 1
+    for item, qty in self.inventory.itemsByCat(cat):
+        tk.Label(master, text=item.name).grid(
+            row=row, column=col, sticky=W, padx=(20,0)
+        )
+        tk.Label(master, text=&#39;{:,}&#39;.format(qty)).grid(
+            row=row, column=col + 1, sticky=E, padx=(0,20)
+        )
+        row += 1</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.InventoryScreen.setEndLevel"><code class="name flex">
+<span>def <span class="ident">setEndLevel</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the <code>tkinter</code> variable in the <code>endLevel</code> attribute
+according to the value of <code>startLevel</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setEndLevel(self):
+    &#34;&#34;&#34;Sets the `tkinter` variable in the `endLevel` attribute
+    according to the value of `startLevel`.
+
+    &#34;&#34;&#34;
+    self.endLevel.set(str(
+        self.levelMap[int(self.startLevel.get())]
+    ))</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.InventoryScreen.setStartLevel"><code class="name flex">
+<span>def <span class="ident">setStartLevel</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the <code>tkinter</code> variable in the <code>startLevel</code> attribute
+according to the value of <code>endLevel</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setStartLevel(self):
+    &#34;&#34;&#34;Sets the `tkinter` variable in the `startLevel` attribute
+    according to the value of `endLevel`.
+
+    &#34;&#34;&#34;
+    self.startLevel.set(str(
+        self.levelMap.inverse[int(self.endLevel.get())]
+    ))</code></pre>
 </details>
 </dd>
 </dl>
@@ -2734,8 +3203,13 @@ given filter.</p>
 </li>
 <li>
 <h4><code><a title="legends.ui.dialogs.InventoryScreen" href="#legends.ui.dialogs.InventoryScreen">InventoryScreen</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="legends.ui.dialogs.InventoryScreen.body" href="#legends.ui.dialogs.InventoryScreen.body">body</a></code></li>
+<li><code><a title="legends.ui.dialogs.InventoryScreen.displayCat" href="#legends.ui.dialogs.InventoryScreen.displayCat">displayCat</a></code></li>
+<li><code><a title="legends.ui.dialogs.InventoryScreen.inventory" href="#legends.ui.dialogs.InventoryScreen.inventory">inventory</a></code></li>
+<li><code><a title="legends.ui.dialogs.InventoryScreen.roster" href="#legends.ui.dialogs.InventoryScreen.roster">roster</a></code></li>
+<li><code><a title="legends.ui.dialogs.InventoryScreen.setEndLevel" href="#legends.ui.dialogs.InventoryScreen.setEndLevel">setEndLevel</a></code></li>
+<li><code><a title="legends.ui.dialogs.InventoryScreen.setStartLevel" href="#legends.ui.dialogs.InventoryScreen.setStartLevel">setStartLevel</a></code></li>
 </ul>
 </li>
 <li>

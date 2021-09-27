@@ -83,7 +83,7 @@ Examples:
 from os import listdir
 from os.path import abspath, dirname
 from json import load
-from legends.utils import bidict
+from legends.utils.relations import bidict
 
 __all__ = [
     'STAT_ABBREVIATIONS', 'STAT_INITIALS', 'POWER_GRADIENT', 'POWER_AT_ORIGIN',
@@ -320,6 +320,17 @@ class Item():
             return GSItem[self.itemID]['DataBiomimeticGel']['Xp']
         except KeyError:
             return 0
+
+    @property
+    def role(self):
+        """`str`: If the item is protomatter, this is the role that the
+        protomatter is meant for; otherwise it is `None`.
+        """
+        if self.category != 'Protomatter':
+            return None
+        roleName = self.itemID[6:-3]
+        roleName = 'Engineering' if roleName == 'Engineer' else roleName
+        return roleName
 
     def __repr__(self):
         return '<Item: {!r}>'.format(self.name)

@@ -1,5 +1,18 @@
 # Change log
 
+## Version 0.11.0
+
+* Added a `role` property to the `Item` class.
+* Added `skillUpgradeCost` and `skillToMaxCost` functions.
+* Added an `itemsToMax` property to `Skill` class.
+* Renamed `keysByCategory` method in `Inventory` to `keysByCat`.
+* Added `itemsByCat` method to `Inventory`.
+* Moved `Inventory` class to `gameobjects.py`.
+* Added `levelMap`, `startLevel`, and `endLevel` attributes to `InventoryScreen` class.
+* Added `inventory` and `roster` properties to `InventoryScreen` class.
+* Rewrote `body` method in `InventoryScreen` class.
+* Added `setStartLevel`, `setEndLevel`, and `displayCat` methods to `InventoryScreen`
+
 ## Version 0.10.4
 
 * Rewrote the `Item` class to be immutable.

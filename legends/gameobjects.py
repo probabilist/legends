@@ -3,20 +3,23 @@
 """
 
 from re import findall
+from collections.abc import MutableMapping
 from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
 from legends.constants import (
-    GSSkill, GSCharacter, GSLevel, GSGear, GSRank, GSBaseStat, GSGearLevel
+    GSSkill, GSCharacter, GSLevel, GSGear, GSRank, GSBaseStat, GSGearLevel,
+    GSSkillUpgrade, GSItem
 )
 from legends.constants import (
-    DESCRIPTIONS, RARITIES, PART_STAT_VALUES, PART_STAT_UNLOCKED
+    DESCRIPTIONS, RARITIES, PART_STAT_VALUES, PART_STAT_UNLOCKED, ITEMS
 )
 from legends.stats import Stats
 
 __all__ = [
     'levelFromXP', 'xpFromLevel', 'tokensNeeded', 'getCharStats',
-    'getGearStats', 'getPartStats', 'Gear', 'Particle', 'GearSlot', 'PartSlot',
-    'Character', 'Skill'
+    'getGearStats', 'getPartStats', 'skillUpgradeCost', 'skillToMaxCost',
+    'Gear', 'Particle', 'GearSlot', 'PartSlot', 'Character', 'Skill',
+    'Inventory'
 ]
 
 def levelFromXP(xp, rarity='Common'):
@@ -155,6 +158,48 @@ def getPartStats(rarity, level, statList):
             PART_STAT_VALUES[statName][rarity][level - 1]
         )
     return stats
+
+def skillUpgradeCost(skillID, level):
+    """Computes and returns the cost of leveling the given skill to the
+    given level, from the previous level.
+
+    Args:
+        skillID (str): The skill ID, as it appears in `GSSkill`, of the
+            given skill.
+        level (int): The level to which the skill is being upgraded. If
+            set to 1, returns the cost of unlocking the skill.
+
+    Returns:
+        Inventory: The items needed to upgrade are stored and returned
+            in an `Inventory` instance.
+
+    """
+    key = 'GSSkillKey(id = "{}", level = "{}")'.format(skillID, level)
+    cost = Inventory()
+    for itemID, qty in GSSkillUpgrade[key]['price']['AllItems'].items():
+        cost[ITEMS[itemID]] += qty
+    return cost
+
+def skillToMaxCost(skillID, currLvl):
+    """Computes and returns the cost of leveling the given skill to
+    Level 2, from the given current level.
+
+    Args:
+        skillID (str): The skill ID, as it appears in `GSSkill`, of the
+            given skill.
+        currLevel (int): The current level of the skill. If set to 0,
+            the skill is currently locked.
+
+    Returns:
+        Inventory: The items needed to upgrade are stored and returned
+            in an `Inventory` instance.
+
+    """
+    cost = Inventory()
+    while currLvl < 2:
+        currLvl += 1
+        cost = cost + skillUpgradeCost(skillID, currLvl)
+    return cost
 
 class Gear(Managed):
     """A piece of gear in STL.
@@ -539,8 +584,140 @@ class Skill():
         )
         return GSSkill[key]
 
+    @property
+    def itemsToMax(self):
+        """`Inventory`: The items needed to upgrade the skill to Level
+        2.
+        """
+        level = self.level if self.unlocked else 0
+        return skillToMaxCost(self.skillID, level)
+
     def __repr__(self):
         return (
             '<Skill: ' + self.name + ', Level ' + str(self.level) + ', '
             + ('unlocked' if self.unlocked else 'locked') + '>'
         )
+
+class Inventory(MutableMapping):
+    """A collection of items in STL.
+
+    The `Inventory` class is a dictionary-like data structure, mapping
+    each item in `ITEMS` to the quantity of that item that exists in the
+    player's inventory. Keys cannot be deleted. Instead, deleting a key
+    simply changes its value to 0. Iterating over an `Inventory` object
+    will skip over items that are either irrelevant to the `legends`
+    package, or are implemented elsewhere. The skipped items are
+    determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
+    To iterate over all keys, simply iterate over `ITEMS`.
+    The `__len__()` method also does not consider these skipped items.
+
+    """
+
+    hiddenCategories = ['Token', 'PlayerAvatar', 'Emote']
+    """`list of str`: A list of category names, as they appear in the
+    `category` attribute of an `legends.constants.Item` instance, that
+    are of limited use or implemented elsewhere in the `legends`
+    package.
+    """
+
+    hiddenItemIDs = [
+        'Credits', 'Dilithium', 'Tritanium', 'Player XP', 'PvP Stamina',
+        'Alliance Stamina', 'EventPoint', 'PvP Chest Points',
+        'Shards Advanced', 'Shards Elite', 'Shards Credit',
+        'Shards Biomimetic', 'Shards Protomatter', 'Shards_Worf',
+        'Shards_McCoy', 'Dungeon Currency', 'Dungeon Stamina'
+    ]
+    """`list of str`: A list of item IDs, as they appear in `GSItem`,
+    that are of limited use or implemented elsewhere in the `legends`
+    package.
+    """
+
+    def __init__(self, initDict=None):
+        """The constructor initializes the `Inventory` instance with one
+        key for each item in `ITEMS`, and all values 0. If the
+        `initData` argument is given, it is used to initialize the
+        values.
+
+        Args:
+            initData (dict): {`str`:`int`} A dictionary mapping item
+                IDs, as they appear in `GSItem`, to nonnegative
+                integers. Used to initialize the quantities in the
+                `Inventory` instance.
+
+        """
+        self._data = {}
+        for itemID in GSItem:
+            self._data[itemID] = 0
+        initDict = {} if initDict is None else initDict
+        for itemID, qty in initDict.items():
+            self._data[itemID] = qty
+
+    @property
+    def xp(self):
+        """`int`: The total xp of all Bio-Gel items in the inventory."""
+        return sum(qty * item.xp for item, qty in self.itemsByCat('Bio-Gel'))
+
+    def __getitem__(self, item):
+        return self._data[item.itemID]
+
+    def __setitem__(self, item, qty):
+        self._data[item.itemID] = qty
+
+    def __delitem__(self, item):
+        self._data[item.itemID] = 0
+
+    def __iter__(self):
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                yield ITEMS[itemID]
+
+    def __len__(self):
+        count = 0
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                count += 1
+        return count
+
+    def __add__(self, other):
+        result = Inventory()
+        for item in self:
+            result[item] = self[item] + other[item]
+        return result
+
+    def _hidden(self, itemID):
+        if itemID in self.hiddenItemIDs:
+            return True
+        if ITEMS[itemID].category in self.hiddenCategories:
+            return True
+        return False
+
+    def keysByCat(self, category):
+        """Returns an iterator over all keys that match the given
+        category, skipping any keys that are skipped during normal
+        iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        """
+        return (item for item in self if item.category == category)
+
+    def itemsByCat(self, category):
+        """Returns an iterator over all (key, value) tuples that match
+        the given category, skipping any keys that are skipped during
+        normal iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        """
+        return (
+            (item, qty) for item, qty in self.items()
+            if item.category == category
+        )
+
+    def __repr__(self):
+        return 'Inventory({!r})'.format({
+            itemID: qty for itemID, qty in self._data.items()
+            if qty > 0
+        })
