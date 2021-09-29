@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.12.0
+
+* Restructured module for greater compartmentalization and natural groupings.
+
 ## Version 0.11.0
 
 * Added a `role` property to the `Item` class.

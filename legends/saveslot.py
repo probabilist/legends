@@ -3,47 +3,16 @@
 """
 
 from datetime import datetime, timedelta, timezone
+from legends.utils.functions import ticksToDatetime, ticksToTimedelta
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
-from legends.constants import ITEMS
-from legends.gameobjects import Inventory
+from legends.constants import Inventory, ITEMS
 from legends.roster import Roster
 
 __all__ = [
-    'ticksToTimedelta', 'ticksToDatetime', 'SaveSlot', 'STLTimeStamps'
+    'SaveSlot',
+    'STLTimeStamps'
 ]
-
-def ticksToTimedelta(ticks):
-    """Converts a duration measured in "ticks" to a Python `timedelta`
-    object. There are 10 "ticks" in a microsecond. The .NET framework
-    uses ticks to mark time.
-
-    Args:
-        ticks (int): The number of tenths of a microsecond.
-
-    Returns:
-        timedelta: The converted duration.
-
-    """
-    return timedelta(microseconds=ticks//10)
-
-def ticksToDatetime(ticks):
-    """Converts a .NET timestamp to a Python `datetime` object. A .NET
-    timestamp returns the number of "ticks" since 1/1/0001. There are 10
-    "ticks" in a microsecond. (For comparison, a POSIX timestamp returns
-    the number of seconds since 1/1/1970.)
-
-    Args:
-        ticks (int): A timestamp in the .NET format.
-
-    Returns:
-        datetime: The converted timestamp.
-
-    """
-    return (
-        datetime(1, 1, 1, tzinfo=timezone.utc)
-        + timedelta(microseconds=ticks//10)
-    )
 
 class SaveSlot():
     """Data from one of three save slots in an STL save file.
@@ -58,7 +27,7 @@ class SaveSlot():
             player's inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as 'favorite'.
-        inventory (legends.gameobjects.Inventory): The inventory
+        inventory (legends.constants.Inventory): The inventory
             associated with the save slot.
 
     """
@@ -77,7 +46,7 @@ class SaveSlot():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
@@ -152,7 +121,7 @@ class STLTimeStamps():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the time stamps.
 

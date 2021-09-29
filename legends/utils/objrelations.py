@@ -10,10 +10,16 @@ any of these relations must be instances of the `Managed` class. The
 from types import MethodType
 from legends.utils.customabcs import BiMapping, MultiMapping
 from legends.utils.relations import (
-    bidict, multidict, inversedict, invertibledict
+    bidict, inversedict, invertibledict, multidict
 )
 
-__all__ = ['Managed', 'OneToOne', 'ManyToMany', 'ManyToOne', 'OneToMany']
+__all__ = [
+    'Managed',
+    'ManyToMany',
+    'ManyToOne',
+    'OneToMany',
+    'OneToOne'
+]
 
 class Managed(): # pylint: disable=too-few-public-methods
     """A class whose instances are tracked by ID number.
@@ -30,87 +36,6 @@ class Managed(): # pylint: disable=too-few-public-methods
         obj = object.__new__(cls)
         Managed._m_objects[id(obj)] = obj
         return obj
-
-class OneToOne(BiMapping, Managed):
-    """A one-to-one relation mapping objects to objects.
-
-    All objects in the relation need to be `Managed` objects, but
-    otherwise, a `OneToOne` object functions just like a
-    `legends.utils.relations.bidict` object.
-
-    Subclasses may wish to override the `OneToOne.validate` method to
-    provide restrictions on adding a pair to the relation. The
-    `OneToOne.validate` method is called whenever `__setitem__` is
-    called. If `OneToOne.validate` returns `True`, the `__setitem__`
-    method proceeds normally. Otherwise, `__setitem__` does nothing. If
-    the subclass wishes to raise an error when validation fails, the
-    error should be raised from within the `OneToOne.validate` method.
-
-    Attributes:
-        map (legends.utils.relations.bidict): {`int`:`int`} The relation
-            is stored under the hood as a
-            `legends.utils.relations.bidict` mapping IDs to IDs, where
-            the IDs are provided by the `Manager` class.
-
-    """
-
-    def __init__(self):
-        self.map = bidict()
-
-    def __getitem__(self, key):
-        try:
-            valID = self.map[id(key)]
-        except KeyError as ex:
-            raise KeyError(key) from ex
-        return Managed._m_objects[valID]
-
-    def __delitem__(self, key):
-        try:
-            del self.map[id(key)]
-        except KeyError as ex:
-            raise KeyError(key) from ex
-
-    def __iter__(self):
-        return (Managed._m_objects[keyID] for keyID in self.map)
-
-    def __len__(self):
-        return len(self.map)
-
-    def __setfreeval__(self, key, val):
-        if self.validate(key, val): # pylint: disable=not-callable
-            self.map[id(key)] = id(val)
-
-    def __inverse__(self):
-        inverse = OneToOne()
-        inverse.map = self.map.inverse
-        def validate(slf, key, val):
-            return slf.inverse.validate(val, key)
-        inverse.validate = MethodType(validate, inverse)
-        return inverse
-
-    # pylint: disable-next=method-hidden, unused-argument, no-self-use
-    def validate(self, key, val):
-        """Checks if the given key-value pair may be added to the
-        relation. As implemented here, the method always returns True.
-        Subclasses should override this method to produce custom
-        behavior.
-
-        Args:
-            key (obj): The key to validate.
-            val (obj): The value to validate.
-
-        Returns:
-            bool: `True` if the key-value pair may be added, `False`
-                otherwise.
-
-        """
-        return True
-
-    def __repr__(self):
-        disp = 'OneToOne({'
-        for key, val in self.items():
-            disp += repr(key) + ': ' + repr(val) + ',\n '
-        return disp + '})'
 
 class ManyToMany(MultiMapping, Managed):
     """A many-to-many relation mapping objects to objects.
@@ -294,4 +219,85 @@ class OneToMany(ManyToMany):
         disp = 'OneToMany({'
         for key in self.keys():
             disp += repr(key) + ': ' + repr(self[key]) + ',\n '
+        return disp + '})'
+
+class OneToOne(BiMapping, Managed):
+    """A one-to-one relation mapping objects to objects.
+
+    All objects in the relation need to be `Managed` objects, but
+    otherwise, a `OneToOne` object functions just like a
+    `legends.utils.relations.bidict` object.
+
+    Subclasses may wish to override the `OneToOne.validate` method to
+    provide restrictions on adding a pair to the relation. The
+    `OneToOne.validate` method is called whenever `__setitem__` is
+    called. If `OneToOne.validate` returns `True`, the `__setitem__`
+    method proceeds normally. Otherwise, `__setitem__` does nothing. If
+    the subclass wishes to raise an error when validation fails, the
+    error should be raised from within the `OneToOne.validate` method.
+
+    Attributes:
+        map (legends.utils.relations.bidict): {`int`:`int`} The relation
+            is stored under the hood as a
+            `legends.utils.relations.bidict` mapping IDs to IDs, where
+            the IDs are provided by the `Manager` class.
+
+    """
+
+    def __init__(self):
+        self.map = bidict()
+
+    def __getitem__(self, key):
+        try:
+            valID = self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+        return Managed._m_objects[valID]
+
+    def __delitem__(self, key):
+        try:
+            del self.map[id(key)]
+        except KeyError as ex:
+            raise KeyError(key) from ex
+
+    def __iter__(self):
+        return (Managed._m_objects[keyID] for keyID in self.map)
+
+    def __len__(self):
+        return len(self.map)
+
+    def __setfreeval__(self, key, val):
+        if self.validate(key, val): # pylint: disable=not-callable
+            self.map[id(key)] = id(val)
+
+    def __inverse__(self):
+        inverse = OneToOne()
+        inverse.map = self.map.inverse
+        def validate(slf, key, val):
+            return slf.inverse.validate(val, key)
+        inverse.validate = MethodType(validate, inverse)
+        return inverse
+
+    # pylint: disable-next=method-hidden, unused-argument, no-self-use
+    def validate(self, key, val):
+        """Checks if the given key-value pair may be added to the
+        relation. As implemented here, the method always returns True.
+        Subclasses should override this method to produce custom
+        behavior.
+
+        Args:
+            key (obj): The key to validate.
+            val (obj): The value to validate.
+
+        Returns:
+            bool: `True` if the key-value pair may be added, `False`
+                otherwise.
+
+        """
+        return True
+
+    def __repr__(self):
+        disp = 'OneToOne({'
+        for key, val in self.items():
+            disp += repr(key) + ': ' + repr(val) + ',\n '
         return disp + '})'

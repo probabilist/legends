@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>legends.constants API documentation</title>
-<meta name="description" content="The constants used in the `legends` package …" />
+<meta name="description" content="Constants and custom data structures used in the `legends` package …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,7 +22,7 @@
 <h1 class="title">Module <code>legends.constants</code></h1>
 </header>
 <section id="section-intro">
-<p>The constants used in the <code><a title="legends" href="index.html">legends</a></code> package.</p>
+<p>Constants and custom data structures used in the <code><a title="legends" href="index.html">legends</a></code> package.</p>
 <p>Each json file in <code>legends/data</code> is converted to a constant. The
 variable name is the file name without extension, and the variable
 points to a Python dictionary built from the file's contents.</p>
@@ -58,23 +58,6 @@ high.</dd>
 rarities to color names in <code>tkinter</code>.</dd>
 <dt><strong><code>ROLES</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
 <dd>A list of roles in the game.</dd>
-<dt><strong><code>STAT_ABBREVIATIONS</code></strong> :&ensp;<code>dict</code></dt>
-<dd>A dictionary mapping stat names as they
-appear in <code>GSBaseStat</code> to abbreviations used throughout this
-package, typically for attribute names.</dd>
-<dt><strong><code>SUMMON_POOL</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>dict</code>} A dictionary mapping pool names
-('Core' or one the roles in <code>ROLES</code>) to a dictionary with three
-keys: 'nameIDs', which maps to a dictionary connecting name IDs
-of the characters in that particular summon pool to their summon
-probabilities; 'rarityChances', which maps to the probabilities
-of summoning the available rarities; and 'cost', which maps to
-the number of orbs required to summon from that pool. See the
-examples below.</dd>
-<dt><strong><code>SUMMON_POOL_IDS</code></strong> :&ensp;<code><a title="legends.utils.relations.bidict" href="utils/relations.html#legends.utils.relations.bidict">bidict</a></code></dt>
-<dd>An invertible
-dictionary mapping pool names their summon IDs, which are used
-by the game data to identify particular summon pools.</dd>
 <dt><strong><code>PART_STAT_UNLOCKED</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:[<code>int</code>]}: A dictionary
 mapping particle rarities to a list whose indices denote the
@@ -88,6 +71,27 @@ names to a list whose indices denote the 0-based level of the
 particle and whose values denote the value of the given stat on
 a particle of the given rarity and level. See the examples
 below.</dd>
+<dt><strong><code>STAT_ABBREVIATIONS</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} A dictionary mapping stat
+names as they appear in <code>GSBaseStat</code> to abbreviations used
+throughout this package, typically for attribute names.</dd>
+<dt><strong><code>STAT_INITIALS</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} A dictionary mapping stat names
+as they appear in <code>GSBaseStat</code> to one or two letter short forms,
+typically used in GUI elements where brevity is essential.</dd>
+<dt><strong><code>SUMMON_POOL</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>dict</code>} A dictionary mapping pool names
+('Core' or one the roles in <code>ROLES</code>) to a dictionary with three
+keys: 'nameIDs', which maps to a dictionary connecting name IDs
+of the characters in that particular summon pool to their summon
+probabilities; 'rarityChances', which maps to the probabilities
+of summoning the available rarities; and 'cost', which maps to
+the number of orbs required to summon from that pool. See the
+examples below.</dd>
+<dt><strong><code>SUMMON_POOL_IDS</code></strong> :&ensp;<code><a title="legends.utils.relations.bidict" href="utils/relations.html#legends.utils.relations.bidict">bidict</a></code></dt>
+<dd>An invertible
+dictionary mapping pool names their summon IDs, which are used
+by the game data to identify particular summon pools.</dd>
 <dt><strong><code>UPCOMING</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
 <dd>A list of name IDs of characters believed to
 be in the queue for future release.</dd>
@@ -119,7 +123,7 @@ is 10%:</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;The constants used in the `legends` package.
+<pre><code class="python">&#34;&#34;&#34;Constants and custom data structures used in the `legends` package.
 
 Each json file in `legends/data` is converted to a constant. The
 variable name is the file name without extension, and the variable
@@ -148,20 +152,6 @@ Attributes:
     RARITY_COLORS (dict): {`str`:`str`} A dictionary mapping character
         rarities to color names in `tkinter`.
     ROLES (list of str): A list of roles in the game.
-    STAT_ABBREVIATIONS (dict): A dictionary mapping stat names as they
-        appear in `GSBaseStat` to abbreviations used throughout this
-        package, typically for attribute names.
-    SUMMON_POOL (dict): {`str`:`dict`} A dictionary mapping pool names
-        (&#39;Core&#39; or one the roles in `ROLES`) to a dictionary with three
-        keys: &#39;nameIDs&#39;, which maps to a dictionary connecting name IDs
-        of the characters in that particular summon pool to their summon
-        probabilities; &#39;rarityChances&#39;, which maps to the probabilities
-        of summoning the available rarities; and &#39;cost&#39;, which maps to
-        the number of orbs required to summon from that pool. See the
-        examples below.
-    SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
-        dictionary mapping pool names their summon IDs, which are used
-        by the game data to identify particular summon pools.
     PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
         mapping particle rarities to a list whose indices denote the
         0-based level of the particle and whose values denote the number
@@ -173,6 +163,23 @@ Attributes:
         particle and whose values denote the value of the given stat on
         a particle of the given rarity and level. See the examples
         below.
+    STAT_ABBREVIATIONS (dict): {`str`:`str`} A dictionary mapping stat
+        names as they appear in `GSBaseStat` to abbreviations used
+        throughout this package, typically for attribute names.
+    STAT_INITIALS (dict): {`str`:`str`} A dictionary mapping stat names
+        as they appear in `GSBaseStat` to one or two letter short forms,
+        typically used in GUI elements where brevity is essential.
+    SUMMON_POOL (dict): {`str`:`dict`} A dictionary mapping pool names
+        (&#39;Core&#39; or one the roles in `ROLES`) to a dictionary with three
+        keys: &#39;nameIDs&#39;, which maps to a dictionary connecting name IDs
+        of the characters in that particular summon pool to their summon
+        probabilities; &#39;rarityChances&#39;, which maps to the probabilities
+        of summoning the available rarities; and &#39;cost&#39;, which maps to
+        the number of orbs required to summon from that pool. See the
+        examples below.
+    SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
+        dictionary mapping pool names their summon IDs, which are used
+        by the game data to identify particular summon pools.
     UPCOMING (list of str): A list of name IDs of characters believed to
         be in the queue for future release.
 
@@ -201,16 +208,31 @@ Examples:
 
 &#34;&#34;&#34;
 
+from collections.abc import MutableMapping
+from json import load
 from os import listdir
 from os.path import abspath, dirname
-from json import load
 from legends.utils.relations import bidict
 
 __all__ = [
-    &#39;STAT_ABBREVIATIONS&#39;, &#39;STAT_INITIALS&#39;, &#39;POWER_GRADIENT&#39;, &#39;POWER_AT_ORIGIN&#39;,
-    &#39;DESCRIPTIONS&#39;, &#39;ROLES&#39;, &#39;RARITIES&#39;, &#39;RARITY_COLORS&#39;, &#39;PART_STAT_UNLOCKED&#39;,
-    &#39;PART_STAT_VALUES&#39;, &#39;ENABLED&#39;, &#39;UPCOMING&#39;, &#39;SUMMON_POOL&#39;,
-    &#39;SUMMON_POOL_IDS&#39;, &#39;HELP&#39;, &#39;Item&#39;, &#39;ITEMS&#39;
+    &#39;DESCRIPTIONS&#39;,
+    &#39;ENABLED&#39;,
+    &#39;HELP&#39;,
+    &#39;Item&#39;,
+    &#39;ITEMS&#39;,
+    &#39;POWER_GRADIENT&#39;,
+    &#39;POWER_AT_ORIGIN&#39;,
+    &#39;PART_STAT_UNLOCKED&#39;,
+    &#39;RARITIES&#39;,
+    &#39;PART_STAT_VALUES&#39;,
+    &#39;RARITY_COLORS&#39;,
+    &#39;ROLES&#39;,
+    &#39;STAT_ABBREVIATIONS&#39;,
+    &#39;STAT_INITIALS&#39;,
+    &#39;SUMMON_POOL&#39;,
+    &#39;SUMMON_POOL_IDS&#39;,
+    &#39;UPCOMING&#39;,
+    &#39;Inventory&#39;
 ]
 
 rootPath = abspath(dirname(__file__))
@@ -234,39 +256,6 @@ _.update(GSBaseStat)
 del _[&#39;MaxHealth&#39;]
 GSBaseStat = _
 
-STAT_ABBREVIATIONS = {
-    &#39;Health&#39;: &#39;hlth&#39;,
-    &#39;Attack&#39;: &#39;att&#39;,
-    &#39;Speed&#39;: &#39;spd&#39;,
-    &#39;Defense&#39;: &#39;dfn&#39;,
-    &#39;Tech&#39;: &#39;tech&#39;,
-    &#39;CritDamage&#39;: &#39;cd&#39;,
-    &#39;CritChance&#39;: &#39;cc&#39;,
-    &#39;GlancingDamage&#39;: &#39;gd&#39;,
-    &#39;GlancingChance&#39;: &#39;gc&#39;,
-    &#39;Resolve&#39;: &#39;res&#39;
-}
-STAT_INITIALS = {
-    &#39;Health&#39;: &#39;H&#39;,
-    &#39;Attack&#39;: &#39;A&#39;,
-    &#39;Speed&#39;: &#39;S&#39;,
-    &#39;Defense&#39;: &#39;D&#39;,
-    &#39;Tech&#39;: &#39;T&#39;,
-    &#39;CritDamage&#39;: &#39;CD&#39;,
-    &#39;CritChance&#39;: &#39;CC&#39;,
-    &#39;GlancingDamage&#39;: &#39;GD&#39;,
-    &#39;GlancingChance&#39;: &#39;GC&#39;,
-    &#39;Resolve&#39;: &#39;R&#39;
-}
-
-POWER_GRADIENT = {}
-POWER_AT_ORIGIN = 0
-for statName, statData in GSBaseStat.items():
-    m = statData[&#39;MinValue&#39;]
-    M = statData[&#39;MaxValue&#39;]
-    POWER_GRADIENT[statName] = 10 / (M - m)
-    POWER_AT_ORIGIN += (-m) * 10 / (M - m)
-
 DESCRIPTIONS = {}
 for D in lang_en_us[&#39;List&#39;]: # pylint: disable=undefined-variable
     key = D[&#39;key&#39;]
@@ -274,99 +263,10 @@ for D in lang_en_us[&#39;List&#39;]: # pylint: disable=undefined-variable
     if key:
         DESCRIPTIONS[key] = value
 
-ROLES = [&#39;Command&#39;, &#39;Engineering&#39;, &#39;Medical&#39;, &#39;Science&#39;, &#39;Security&#39;]
-RARITIES = [&#39;Common&#39;, &#39;Rare&#39;, &#39;VeryRare&#39;, &#39;Epic&#39;, &#39;Legendary&#39;]
-RARITY_COLORS = {
-    &#39;Common&#39;: &#39;cyan&#39;,
-    &#39;Rare&#39;: &#39;lawn green&#39;,
-    &#39;VeryRare&#39;: &#39;orange&#39;,
-    &#39;Epic&#39;: &#39;MediumPurple1&#39;,
-    &#39;Legendary&#39;: &#39;yellow&#39;
-}
-
-PART_STAT_UNLOCKED = {
-    &#39;Common&#39;: [1, 2, 2, 2, 2],
-    &#39;Rare&#39;: [1, 2, 2, 2, 2],
-    &#39;VeryRare&#39;: [1, 2, 2, 3, 3],
-    &#39;Epic&#39;: [2, 3, 3, 4, 4],
-    &#39;Legendary&#39;: [2, 3, 3, 4, 4]
-}
-
-# initialize PART_STAT_VALUES
-PART_STAT_VALUES = {
-    statName: {rarity: [0] * 5 for rarity in RARITIES}
-    for statName in
-    GSAccessoryStatGeneration # pylint: disable=undefined-variable
-}
-# fill PART_STAT_VALUES
-# pylint: disable-next=undefined-variable
-for data in GSAccessoryStatGrowth.values():
-    statName = data[&#39;Stat&#39;]
-    level = data[&#39;Level&#39;]
-    rarity = data[&#39;Rarity&#39;]
-    statVal = data[&#39;StatIncrease&#39;]
-    PART_STAT_VALUES[statName][rarity][level - 1] = statVal
-
 ENABLED = [
     # pylint: disable-next=undefined-variable
     nameID for nameID, data in GSCharacter.items() if data[&#39;Type&#39;] == &#39;Normal&#39;
 ]
-UPCOMING = [&#39;Tuvok&#39;, &#39;Gowron&#39;, &#39;JadziaDax&#39;, &#39;PicardOld&#39;, &#39;JudgeQ&#39;]
-
-# initialize SUMMON_POOL and SUMMON_POOL_IDS
-SUMMON_POOL = {&#39;Core&#39;: {&#39;nameIDs&#39;: {}}}
-SUMMON_POOL.update({role: {&#39;nameIDs&#39;: {}} for role in ROLES})
-SUMMON_POOL_IDS = bidict()
-# build SUMMON_POOL_IDS; keep only highest unlocked summon pools
-for pool in SUMMON_POOL:
-    summonID = max(
-        (
-            # pylint: disable-next=undefined-variable
-            data[&#39;summonId&#39;] for key, data in GSSummonSetup.items()
-            if key[7:10] == pool[:3]
-        ),
-        key=lambda summonID:int(summonID[-2:])
-    )
-    SUMMON_POOL_IDS[pool] = summonID
-# retrieve rarity chances
-for data in GSSummonPools.values(): # pylint: disable=undefined-variable
-    summonID = data[&#39;summonID&#39;]
-    if summonID in SUMMON_POOL_IDS.values():
-        pool = SUMMON_POOL_IDS.inverse[summonID]
-        SUMMON_POOL[pool][&#39;rarityChances&#39;] = data[&#39;rarityChances&#39;]
-# retrieve costs
-for data in GSSummonSetup.values(): # pylint: disable=undefined-variable
-    summonID = data[&#39;summonId&#39;]
-    if summonID in SUMMON_POOL_IDS.values():
-        pool = SUMMON_POOL_IDS.inverse[summonID]
-        SUMMON_POOL[pool][&#39;cost&#39;] = data[&#39;costQuantity&#39;]
-# retrieve characters in each summon pool
-for data in GSSummonItems.values(): # pylint: disable=undefined-variable
-    for summonID in data[&#39;filterGroups&#39;]:
-        if summonID in SUMMON_POOL_IDS.values():
-            pool = SUMMON_POOL_IDS.inverse[summonID]
-            SUMMON_POOL[pool][&#39;nameIDs&#39;][data[&#39;itemID&#39;]] = None
-# raise an error if Core does not contain everyone in other pools
-for pool, data in SUMMON_POOL.items():
-    if pool == &#39;Core&#39;:
-        continue
-    for nameID in data[&#39;nameIDs&#39;]:
-        if nameID not in SUMMON_POOL[&#39;Core&#39;][&#39;nameIDs&#39;]:
-            raise ValueError(
-                &#39;{} in {} summon pool but not in Core&#39;.format(nameID, pool)
-            )
-# add summoning probabilities
-for pool, data in SUMMON_POOL.items():
-    for rarity in RARITIES:
-        nameIDs = [
-            nameID for nameID in data[&#39;nameIDs&#39;]
-            # pylint: disable-next=undefined-variable
-            if GSCharacter[nameID][&#39;Rarity&#39;] == rarity
-        ]
-        if nameIDs:
-            prob = data[&#39;rarityChances&#39;][rarity] / len(nameIDs)
-            for nameID in nameIDs:
-                data[&#39;nameIDs&#39;][nameID] = prob
 
 # read and store the help file
 with open(rootPath + &#39;/help.txt&#39;, encoding=&#39;utf-8&#39;) as f:
@@ -457,7 +357,256 @@ class Item():
         return &#39;&lt;Item: {!r}&gt;&#39;.format(self.name)
 
 # pylint: disable-next=undefined-variable
-ITEMS = {itemID: Item(itemID) for itemID in GSItem}</code></pre>
+ITEMS = {itemID: Item(itemID) for itemID in GSItem}
+
+POWER_GRADIENT = {}
+POWER_AT_ORIGIN = 0
+for statName, statData in GSBaseStat.items():
+    m = statData[&#39;MinValue&#39;]
+    M = statData[&#39;MaxValue&#39;]
+    POWER_GRADIENT[statName] = 10 / (M - m)
+    POWER_AT_ORIGIN += (-m) * 10 / (M - m)
+
+PART_STAT_UNLOCKED = {
+    &#39;Common&#39;: [1, 2, 2, 2, 2],
+    &#39;Rare&#39;: [1, 2, 2, 2, 2],
+    &#39;VeryRare&#39;: [1, 2, 2, 3, 3],
+    &#39;Epic&#39;: [2, 3, 3, 4, 4],
+    &#39;Legendary&#39;: [2, 3, 3, 4, 4]
+}
+
+RARITIES = [&#39;Common&#39;, &#39;Rare&#39;, &#39;VeryRare&#39;, &#39;Epic&#39;, &#39;Legendary&#39;]
+
+# initialize PART_STAT_VALUES
+PART_STAT_VALUES = {
+    statName: {rarity: [0] * 5 for rarity in RARITIES}
+    for statName in
+    GSAccessoryStatGeneration # pylint: disable=undefined-variable
+}
+# fill PART_STAT_VALUES
+# pylint: disable-next=undefined-variable
+for data in GSAccessoryStatGrowth.values():
+    statName = data[&#39;Stat&#39;]
+    level = data[&#39;Level&#39;]
+    rarity = data[&#39;Rarity&#39;]
+    statVal = data[&#39;StatIncrease&#39;]
+    PART_STAT_VALUES[statName][rarity][level - 1] = statVal
+
+RARITY_COLORS = {
+    &#39;Common&#39;: &#39;cyan&#39;,
+    &#39;Rare&#39;: &#39;lawn green&#39;,
+    &#39;VeryRare&#39;: &#39;orange&#39;,
+    &#39;Epic&#39;: &#39;MediumPurple1&#39;,
+    &#39;Legendary&#39;: &#39;yellow&#39;
+}
+
+ROLES = [&#39;Command&#39;, &#39;Engineering&#39;, &#39;Medical&#39;, &#39;Science&#39;, &#39;Security&#39;]
+
+STAT_ABBREVIATIONS = {
+    &#39;Health&#39;: &#39;hlth&#39;,
+    &#39;Attack&#39;: &#39;att&#39;,
+    &#39;Speed&#39;: &#39;spd&#39;,
+    &#39;Defense&#39;: &#39;dfn&#39;,
+    &#39;Tech&#39;: &#39;tech&#39;,
+    &#39;CritDamage&#39;: &#39;cd&#39;,
+    &#39;CritChance&#39;: &#39;cc&#39;,
+    &#39;GlancingDamage&#39;: &#39;gd&#39;,
+    &#39;GlancingChance&#39;: &#39;gc&#39;,
+    &#39;Resolve&#39;: &#39;res&#39;
+}
+STAT_INITIALS = {
+    &#39;Health&#39;: &#39;H&#39;,
+    &#39;Attack&#39;: &#39;A&#39;,
+    &#39;Speed&#39;: &#39;S&#39;,
+    &#39;Defense&#39;: &#39;D&#39;,
+    &#39;Tech&#39;: &#39;T&#39;,
+    &#39;CritDamage&#39;: &#39;CD&#39;,
+    &#39;CritChance&#39;: &#39;CC&#39;,
+    &#39;GlancingDamage&#39;: &#39;GD&#39;,
+    &#39;GlancingChance&#39;: &#39;GC&#39;,
+    &#39;Resolve&#39;: &#39;R&#39;
+}
+
+# initialize SUMMON_POOL and SUMMON_POOL_IDS
+SUMMON_POOL = {&#39;Core&#39;: {&#39;nameIDs&#39;: {}}}
+SUMMON_POOL.update({role: {&#39;nameIDs&#39;: {}} for role in ROLES})
+SUMMON_POOL_IDS = bidict()
+# build SUMMON_POOL_IDS; keep only highest unlocked summon pools
+for pool in SUMMON_POOL:
+    summonID = max(
+        (
+            # pylint: disable-next=undefined-variable
+            data[&#39;summonId&#39;] for key, data in GSSummonSetup.items()
+            if key[7:10] == pool[:3]
+        ),
+        key=lambda summonID:int(summonID[-2:])
+    )
+    SUMMON_POOL_IDS[pool] = summonID
+# retrieve rarity chances
+for data in GSSummonPools.values(): # pylint: disable=undefined-variable
+    summonID = data[&#39;summonID&#39;]
+    if summonID in SUMMON_POOL_IDS.values():
+        pool = SUMMON_POOL_IDS.inverse[summonID]
+        SUMMON_POOL[pool][&#39;rarityChances&#39;] = data[&#39;rarityChances&#39;]
+# retrieve costs
+for data in GSSummonSetup.values(): # pylint: disable=undefined-variable
+    summonID = data[&#39;summonId&#39;]
+    if summonID in SUMMON_POOL_IDS.values():
+        pool = SUMMON_POOL_IDS.inverse[summonID]
+        SUMMON_POOL[pool][&#39;cost&#39;] = data[&#39;costQuantity&#39;]
+# retrieve characters in each summon pool
+for data in GSSummonItems.values(): # pylint: disable=undefined-variable
+    for summonID in data[&#39;filterGroups&#39;]:
+        if summonID in SUMMON_POOL_IDS.values():
+            pool = SUMMON_POOL_IDS.inverse[summonID]
+            SUMMON_POOL[pool][&#39;nameIDs&#39;][data[&#39;itemID&#39;]] = None
+# raise an error if Core does not contain everyone in other pools
+for pool, data in SUMMON_POOL.items():
+    if pool == &#39;Core&#39;:
+        continue
+    for nameID in data[&#39;nameIDs&#39;]:
+        if nameID not in SUMMON_POOL[&#39;Core&#39;][&#39;nameIDs&#39;]:
+            raise ValueError(
+                &#39;{} in {} summon pool but not in Core&#39;.format(nameID, pool)
+            )
+# add summoning probabilities
+for pool, data in SUMMON_POOL.items():
+    for rarity in RARITIES:
+        nameIDs = [
+            nameID for nameID in data[&#39;nameIDs&#39;]
+            # pylint: disable-next=undefined-variable
+            if GSCharacter[nameID][&#39;Rarity&#39;] == rarity
+        ]
+        if nameIDs:
+            prob = data[&#39;rarityChances&#39;][rarity] / len(nameIDs)
+            for nameID in nameIDs:
+                data[&#39;nameIDs&#39;][nameID] = prob
+
+UPCOMING = [&#39;Tuvok&#39;, &#39;Gowron&#39;, &#39;JadziaDax&#39;, &#39;PicardOld&#39;, &#39;JudgeQ&#39;]
+
+class Inventory(MutableMapping):
+    &#34;&#34;&#34;A collection of items in STL.
+
+    The `Inventory` class is a dictionary-like data structure, mapping
+    each item in `ITEMS` to the quantity of that item that exists in the
+    player&#39;s inventory. Keys cannot be deleted. Instead, deleting a key
+    simply changes its value to 0. Iterating over an `Inventory` object
+    will skip over items that are either irrelevant to the `legends`
+    package, or are implemented elsewhere. The skipped items are
+    determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
+    To iterate over all keys, simply iterate over `ITEMS`.
+    The `__len__()` method also does not consider these skipped items.
+
+    &#34;&#34;&#34;
+
+    hiddenCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
+    &#34;&#34;&#34;`list of str`: A list of category names, as they appear in the
+    `category` attribute of an `legends.constants.Item` instance, that
+    are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    hiddenItemIDs = [
+        &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
+        &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
+        &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
+        &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
+        &#39;Shards_McCoy&#39;, &#39;Dungeon Currency&#39;, &#39;Dungeon Stamina&#39;
+    ]
+    &#34;&#34;&#34;`list of str`: A list of item IDs, as they appear in `GSItem`,
+    that are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    def __init__(self, initDict=None):
+        &#34;&#34;&#34;The constructor initializes the `Inventory` instance with one
+        key for each item in `ITEMS`, and all values 0. If the
+        `initData` argument is given, it is used to initialize the
+        values.
+
+        Args:
+            initData (dict): {`str`:`int`} A dictionary mapping item
+                IDs, as they appear in `GSItem`, to nonnegative
+                integers. Used to initialize the quantities in the
+                `Inventory` instance.
+
+        &#34;&#34;&#34;
+        self._data = {}
+        for itemID in GSItem: # pylint: disable=undefined-variable
+            self._data[itemID] = 0
+        initDict = {} if initDict is None else initDict
+        for itemID, qty in initDict.items():
+            self._data[itemID] = qty
+
+    @property
+    def xp(self):
+        &#34;&#34;&#34;`int`: The total xp of all Bio-Gel items in the inventory.&#34;&#34;&#34;
+        return sum(qty * item.xp for item, qty in self.itemsByCat(&#39;Bio-Gel&#39;))
+
+    def __getitem__(self, item):
+        return self._data[item.itemID]
+
+    def __setitem__(self, item, qty):
+        self._data[item.itemID] = qty
+
+    def __delitem__(self, item):
+        self._data[item.itemID] = 0
+
+    def __iter__(self):
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                yield ITEMS[itemID]
+
+    def __len__(self):
+        count = 0
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                count += 1
+        return count
+
+    def __add__(self, other):
+        result = Inventory()
+        for item in self:
+            result[item] = self[item] + other[item]
+        return result
+
+    def _hidden(self, itemID):
+        if itemID in self.hiddenItemIDs:
+            return True
+        if ITEMS[itemID].category in self.hiddenCategories:
+            return True
+        return False
+
+    def keysByCat(self, category):
+        &#34;&#34;&#34;Returns an iterator over all keys that match the given
+        category, skipping any keys that are skipped during normal
+        iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        &#34;&#34;&#34;
+        return (item for item in self if item.category == category)
+
+    def itemsByCat(self, category):
+        &#34;&#34;&#34;Returns an iterator over all (key, value) tuples that match
+        the given category, skipping any keys that are skipped during
+        normal iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        &#34;&#34;&#34;
+        return (
+            (item, qty) for item, qty in self.items()
+            if item.category == category
+        )
+
+    def __repr__(self):
+        return &#39;Inventory({!r})&#39;.format({
+            itemID: qty for itemID, qty in self._data.items()
+            if qty &gt; 0
+        })</code></pre>
 </details>
 </section>
 <section>
@@ -469,6 +618,265 @@ ITEMS = {itemID: Item(itemID) for itemID in GSItem}</code></pre>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.constants.Inventory"><code class="flex name class">
+<span>class <span class="ident">Inventory</span></span>
+<span>(</span><span>initDict=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A collection of items in STL.</p>
+<p>The <code><a title="legends.constants.Inventory" href="#legends.constants.Inventory">Inventory</a></code> class is a dictionary-like data structure, mapping
+each item in <code>ITEMS</code> to the quantity of that item that exists in the
+player's inventory. Keys cannot be deleted. Instead, deleting a key
+simply changes its value to 0. Iterating over an <code><a title="legends.constants.Inventory" href="#legends.constants.Inventory">Inventory</a></code> object
+will skip over items that are either irrelevant to the <code><a title="legends" href="index.html">legends</a></code>
+package, or are implemented elsewhere. The skipped items are
+determined by the <code>hiddenItemIDs</code> and <code>hiddenCategories</code> attributes.
+To iterate over all keys, simply iterate over <code>ITEMS</code>.
+The <code>__len__()</code> method also does not consider these skipped items.</p>
+<p>The constructor initializes the <code><a title="legends.constants.Inventory" href="#legends.constants.Inventory">Inventory</a></code> instance with one
+key for each item in <code>ITEMS</code>, and all values 0. If the
+<code>initData</code> argument is given, it is used to initialize the
+values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>initData</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int</code>} A dictionary mapping item
+IDs, as they appear in <code>GSItem</code>, to nonnegative
+integers. Used to initialize the quantities in the
+<code><a title="legends.constants.Inventory" href="#legends.constants.Inventory">Inventory</a></code> instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Inventory(MutableMapping):
+    &#34;&#34;&#34;A collection of items in STL.
+
+    The `Inventory` class is a dictionary-like data structure, mapping
+    each item in `ITEMS` to the quantity of that item that exists in the
+    player&#39;s inventory. Keys cannot be deleted. Instead, deleting a key
+    simply changes its value to 0. Iterating over an `Inventory` object
+    will skip over items that are either irrelevant to the `legends`
+    package, or are implemented elsewhere. The skipped items are
+    determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
+    To iterate over all keys, simply iterate over `ITEMS`.
+    The `__len__()` method also does not consider these skipped items.
+
+    &#34;&#34;&#34;
+
+    hiddenCategories = [&#39;Token&#39;, &#39;PlayerAvatar&#39;, &#39;Emote&#39;]
+    &#34;&#34;&#34;`list of str`: A list of category names, as they appear in the
+    `category` attribute of an `legends.constants.Item` instance, that
+    are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    hiddenItemIDs = [
+        &#39;Credits&#39;, &#39;Dilithium&#39;, &#39;Tritanium&#39;, &#39;Player XP&#39;, &#39;PvP Stamina&#39;,
+        &#39;Alliance Stamina&#39;, &#39;EventPoint&#39;, &#39;PvP Chest Points&#39;,
+        &#39;Shards Advanced&#39;, &#39;Shards Elite&#39;, &#39;Shards Credit&#39;,
+        &#39;Shards Biomimetic&#39;, &#39;Shards Protomatter&#39;, &#39;Shards_Worf&#39;,
+        &#39;Shards_McCoy&#39;, &#39;Dungeon Currency&#39;, &#39;Dungeon Stamina&#39;
+    ]
+    &#34;&#34;&#34;`list of str`: A list of item IDs, as they appear in `GSItem`,
+    that are of limited use or implemented elsewhere in the `legends`
+    package.
+    &#34;&#34;&#34;
+
+    def __init__(self, initDict=None):
+        &#34;&#34;&#34;The constructor initializes the `Inventory` instance with one
+        key for each item in `ITEMS`, and all values 0. If the
+        `initData` argument is given, it is used to initialize the
+        values.
+
+        Args:
+            initData (dict): {`str`:`int`} A dictionary mapping item
+                IDs, as they appear in `GSItem`, to nonnegative
+                integers. Used to initialize the quantities in the
+                `Inventory` instance.
+
+        &#34;&#34;&#34;
+        self._data = {}
+        for itemID in GSItem: # pylint: disable=undefined-variable
+            self._data[itemID] = 0
+        initDict = {} if initDict is None else initDict
+        for itemID, qty in initDict.items():
+            self._data[itemID] = qty
+
+    @property
+    def xp(self):
+        &#34;&#34;&#34;`int`: The total xp of all Bio-Gel items in the inventory.&#34;&#34;&#34;
+        return sum(qty * item.xp for item, qty in self.itemsByCat(&#39;Bio-Gel&#39;))
+
+    def __getitem__(self, item):
+        return self._data[item.itemID]
+
+    def __setitem__(self, item, qty):
+        self._data[item.itemID] = qty
+
+    def __delitem__(self, item):
+        self._data[item.itemID] = 0
+
+    def __iter__(self):
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                yield ITEMS[itemID]
+
+    def __len__(self):
+        count = 0
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                count += 1
+        return count
+
+    def __add__(self, other):
+        result = Inventory()
+        for item in self:
+            result[item] = self[item] + other[item]
+        return result
+
+    def _hidden(self, itemID):
+        if itemID in self.hiddenItemIDs:
+            return True
+        if ITEMS[itemID].category in self.hiddenCategories:
+            return True
+        return False
+
+    def keysByCat(self, category):
+        &#34;&#34;&#34;Returns an iterator over all keys that match the given
+        category, skipping any keys that are skipped during normal
+        iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        &#34;&#34;&#34;
+        return (item for item in self if item.category == category)
+
+    def itemsByCat(self, category):
+        &#34;&#34;&#34;Returns an iterator over all (key, value) tuples that match
+        the given category, skipping any keys that are skipped during
+        normal iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        &#34;&#34;&#34;
+        return (
+            (item, qty) for item, qty in self.items()
+            if item.category == category
+        )
+
+    def __repr__(self):
+        return &#39;Inventory({!r})&#39;.format({
+            itemID: qty for itemID, qty in self._data.items()
+            if qty &gt; 0
+        })</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="legends.constants.Inventory.hiddenCategories"><code class="name">var <span class="ident">hiddenCategories</span></code></dt>
+<dd>
+<div class="desc"><p><code>list of str</code>: A list of category names, as they appear in the
+<code>category</code> attribute of an <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> instance, that
+are of limited use or implemented elsewhere in the <code><a title="legends" href="index.html">legends</a></code>
+package.</p></div>
+</dd>
+<dt id="legends.constants.Inventory.hiddenItemIDs"><code class="name">var <span class="ident">hiddenItemIDs</span></code></dt>
+<dd>
+<div class="desc"><p><code>list of str</code>: A list of item IDs, as they appear in <code>GSItem</code>,
+that are of limited use or implemented elsewhere in the <code><a title="legends" href="index.html">legends</a></code>
+package.</p></div>
+</dd>
+</dl>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.constants.Inventory.xp"><code class="name">var <span class="ident">xp</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The total xp of all Bio-Gel items in the inventory.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def xp(self):
+    &#34;&#34;&#34;`int`: The total xp of all Bio-Gel items in the inventory.&#34;&#34;&#34;
+    return sum(qty * item.xp for item, qty in self.itemsByCat(&#39;Bio-Gel&#39;))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.constants.Inventory.itemsByCat"><code class="name flex">
+<span>def <span class="ident">itemsByCat</span></span>(<span>self, category)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an iterator over all (key, value) tuples that match
+the given category, skipping any keys that are skipped during
+normal iteration.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>category</code></strong> :&ensp;<code>str</code></dt>
+<dd>The category to iterate over.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def itemsByCat(self, category):
+    &#34;&#34;&#34;Returns an iterator over all (key, value) tuples that match
+    the given category, skipping any keys that are skipped during
+    normal iteration.
+
+    Args:
+        category (str): The category to iterate over.
+
+    &#34;&#34;&#34;
+    return (
+        (item, qty) for item, qty in self.items()
+        if item.category == category
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.constants.Inventory.keysByCat"><code class="name flex">
+<span>def <span class="ident">keysByCat</span></span>(<span>self, category)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an iterator over all keys that match the given
+category, skipping any keys that are skipped during normal
+iteration.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>category</code></strong> :&ensp;<code>str</code></dt>
+<dd>The category to iterate over.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def keysByCat(self, category):
+    &#34;&#34;&#34;Returns an iterator over all keys that match the given
+    category, skipping any keys that are skipped during normal
+    iteration.
+
+    Args:
+        category (str): The category to iterate over.
+
+    &#34;&#34;&#34;
+    return (item for item in self if item.category == category)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="legends.constants.Item"><code class="flex name class">
 <span>class <span class="ident">Item</span></span>
 <span>(</span><span>itemID)</span>
@@ -688,6 +1096,16 @@ def xp(self):
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="legends.constants.Inventory" href="#legends.constants.Inventory">Inventory</a></code></h4>
+<ul class="">
+<li><code><a title="legends.constants.Inventory.hiddenCategories" href="#legends.constants.Inventory.hiddenCategories">hiddenCategories</a></code></li>
+<li><code><a title="legends.constants.Inventory.hiddenItemIDs" href="#legends.constants.Inventory.hiddenItemIDs">hiddenItemIDs</a></code></li>
+<li><code><a title="legends.constants.Inventory.itemsByCat" href="#legends.constants.Inventory.itemsByCat">itemsByCat</a></code></li>
+<li><code><a title="legends.constants.Inventory.keysByCat" href="#legends.constants.Inventory.keysByCat">keysByCat</a></code></li>
+<li><code><a title="legends.constants.Inventory.xp" href="#legends.constants.Inventory.xp">xp</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code></h4>
 <ul class="">

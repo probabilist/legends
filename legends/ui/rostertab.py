@@ -3,36 +3,380 @@
 """
 
 import tkinter as tk
-from tkinter import ttk, X, BOTH, GROOVE, LEFT, RIGHT, NSEW, YES, W
+from tkinter import ttk
 from tkinter.filedialog import asksaveasfilename
-from getpass import getuser
 from csv import DictWriter
+from getpass import getuser
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
-from legends.constants import GSLevel
 from legends.constants import (
-    RARITY_COLORS, STAT_INITIALS, POWER_AT_ORIGIN, ENABLED
+    ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS, SUMMON_POOL
 )
-from legends.ui.dialogs import askRosterFilter, RosterFilter, OptimalSummons
+from legends.ui.charcard import CharCard
+from legends.ui.dialogs import ModalDialog, ModalMessage
 
-__all__ = ['maxXP', 'RosterTab', 'CharCard', 'RosterInfoBar']
+__all__ = [
+    'AskRosterFilter',
+    'OptimalSummons',
+    'RosterFilter',
+    'RosterInfoBar',
+    'RosterTab'
+]
 
-def maxXP(rarity):
-    """Returns the maximum XP of a character of the given rarity.
+class AskRosterFilter(ModalDialog):
+    """A modal dialog used for adjusting `RosterFilter` objects.
 
-    Args:
-        rarity (str): The rarity of the character.
+    The constructor must be given a `RosterFilter` object. That object
+    will be used to initialize the window, but will not be modified.
+
+    Attributes:
+        filt (RosterFilter): The `RosterFilter` object controlled and
+            modified by the dialog window.
+        result (RosterFilter or None): Inherited from `ModalDialog`,
+            which inherited it from `tk.simpledialog.Dialog`. Defaults
+            to `None`. Is set by the `AskRosterFilter.apply` method to
+            the value of the `filt` attribute.
 
     """
-    return GSLevel[rarity + '_99']['Experience']
+    def __init__(self, root, rosterFilter, parent=None):
+        """The constructor sets the `filt` attribute, then calls the
+        `ModalDialog` constructor.
+
+        Args:
+            root (legends.ui.stlplanner.STLPlanner): The currently
+                running `legends.ui.stlplanner.STLPlanner` instance.
+                Passed to the `ModalDialog` constructor.
+            rosterFilter (RosterFilter): The instance's `filt` attribute
+                is assigned a copy of this argument.
+
+        """
+        self.filt = RosterFilter(rosterFilter)
+        ModalDialog.__init__(self, root, parent, 'Filter characters')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        widgets = {}
+
+        # create the rarity and role checkboxes
+        widgets['rarityCheckboxes'] = tk.Frame(master)
+        for rarity in RARITIES:
+            tk.Checkbutton(
+                widgets['rarityCheckboxes'], text=rarity,
+                variable=self.filt.rarities[rarity]
+            ).pack(side=tk.LEFT)
+        widgets['roleCheckboxes'] = tk.Frame(master)
+        for role in ROLES:
+            tk.Checkbutton(
+                widgets['roleCheckboxes'], text=role,
+                variable=self.filt.roles[role]
+            ).pack(side=tk.LEFT)
+
+        # create the rank and level linked scales
+        widgets['rankMinScale'], widgets['rankMaxScale'] = (
+            self.makeLinkedScales(master, 'ranks', 9)
+        )
+        widgets['levelMinScale'], widgets['levelMaxScale'] = (
+            self.makeLinkedScales(master, 'levels', 99)
+        )
+
+        # grid the body content
+        labels = [
+            'Rarity:', 'Role:',
+            'Min rank:', 'Max rank:', 'Min level:', 'Max level:'
+        ]
+        for row, label, widget in zip(range(6), labels, widgets.values()):
+            tk.Label(master, text=label, font=(None, 13, 'bold')).grid(
+                row=row, column=0, sticky=tk.E
+            )
+            widget.grid(row=row, column=1, sticky=tk.W)
+
+    def makeLinkedScales(self, master, attrName, maxVal):
+        """Creates and returns a pair of linked Scale widgets. Each
+        scale has values from 1 to `maxVal`. If `attrName` is 'ranks',
+        the scales are associated with the `tkinter` variables stored in
+        the `ranks` attribute of the calling instance's `filt`
+        attribute. Similarly if `attrName` is 'levels'.
+
+        The first scale controls the minimum value; the second controls
+        the maximum. The scales are configured so that the minimum value
+        cannot exceed the maximum.
+
+        The given `master` argument is assigned as the parent of both
+        scales.
+
+        Args:
+            master (obj): The tkinter object to assign as parent.
+            attrName (str): One of 'ranks' or 'levels'
+            maxVal (int): The maximum value of the linked scales.
+
+        Returns:
+            list of tk.Scale: The two linked scales.
+
+        """
+        varTuple = getattr(self.filt, attrName)
+        funcs = [min, max]
+        scales = [None, None]
+        for j in (0, 1):
+            k = 1 - j
+            scales[j] = tk.Scale(
+                master, variable=varTuple[j], from_=1, to=maxVal,
+                length=400, orient=tk.HORIZONTAL
+            )
+            scales[j].config(command=lambda val, k=k: varTuple[k].set(
+                funcs[k](int(val), varTuple[k].get()))
+            )
+        return scales
+
+    def buttonbox(self):
+        """Add a 'Clear All' button to the button box.
+
+        """
+        ModalDialog.buttonbox(self)
+        self.box.pack_forget()
+        tk.Button(
+            self.box, text="Clear All", width=10, command=self.clear
+        ).pack(side=tk.LEFT, padx=5, pady=5)
+        self.box.pack(expand=tk.YES, fill=tk.X)
+
+    def clear(self):
+        """Reset the `filt` attribute to default values.
+
+        """
+        self.filt.set(RosterFilter())
+
+    def apply(self):
+        """Set the `result` attribute.
+
+        """
+        self.result = self.filt
+
+class OptimalSummons(ModalMessage):
+    """A message dialog showing the summon pool rates.
+
+    Attributes:
+        excludeCommons (tk.BooleanVar): `True` is the summon rate
+            calculations should exclude Common characters.
+        values (dict): {`str`:`tk.StringVar`} A dictionary mapping pool
+            names to a formatted string representation of the average
+            number of tokens per 150 orbs received from the pool.
+        labels (dict): {`str`:(`tk.Label`,`tk.Label`)} A dictionary
+            mapping pool names to the pair of labels associated with
+            that pool in the body of the message dialog.
+
+    """
+    def __init__(self, root, parent=None):
+        self.excludeCommons = tk.BooleanVar(None, True)
+        self.values = {}
+        self.labels = {}
+        for pool in SUMMON_POOL:
+            self.values[pool] = tk.StringVar()
+        ModalMessage.__init__(self, root, parent, 'Summon Rates')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        tk.Label(
+            master,
+            text='Average Tokens per 150 Orbs',
+            font=(None, 13, 'bold')
+        ).pack(pady=(0,10))
+        results = tk.Frame(master)
+        results.pack()
+        for row, pool in enumerate(SUMMON_POOL):
+            self.labels[pool] = (
+                tk.Label(
+                    results, text='{} Pool:'.format(pool)
+                ),
+                tk.Label(
+                    results, textvariable=self.values[pool], width=5
+                )
+            )
+            self.labels[pool][0].grid(row=row, column=0, sticky=tk.W)
+            self.labels[pool][1].grid(row=row, column=1, sticky=tk.E)
+        tk.Checkbutton(
+            master,
+            text='exclude Common characters',
+            variable=self.excludeCommons, command=self.refresh
+        ).pack(pady=(10,0))
+        self.refresh()
+
+    def refresh(self):
+        """Updates the values in the `values` attribute and sets the
+        font emphasis of the labels so that the highest summon rate is
+        bold and the others are normal.
+
+        """
+        bestPool = ''
+        bestPoolTokens = -1
+        tokens = {}
+        for pool in SUMMON_POOL:
+            roster = self.root.session.saveslot.roster
+            tokens[pool] = 150 * roster.tokensPerOrb(
+                pool, self.excludeCommons.get()
+            )
+            self.values[pool].set('{:.2f}'.format(tokens[pool]))
+            self.setPoolEmphasis(pool, 'normal')
+            if tokens[pool] > bestPoolTokens:
+                bestPool, bestPoolTokens = pool, tokens[pool]
+        self.setPoolEmphasis(bestPool, 'bold')
+
+    def setPoolEmphasis(self, pool, emphasis):
+        """Finds the labels associated with the given pool and sets
+        their font to have the given emphasis.
+
+        Args:
+            pool (str): The name of a summon pool.
+            emphasis (str): One of 'normal' or 'bold'.
+
+        """
+        self.labels[pool][0].config(font=(None, 11, emphasis))
+        self.labels[pool][1].config(font=(None, 11, emphasis))
+
+class RosterFilter():
+    """Stores information about filtering a
+    `legends.ui.rostertab.RosterTab`.
+
+    Attributes:
+        rarities (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
+            rarities to `tkinter` boolean variables indicating whether
+            the rarity is to be included in the
+            `legends.ui.rostertab.RosterTab`.
+        roles (dict): {`str`:`tk.BooleanVar`} A dictionary mapping roles
+            to `tkinter` boolean variables indicating whether the role
+            is to be included in the `legends.ui.rostertab.RosterTab`.
+        ranks (tuple): (`tk.IntVar`, `tk.IntVar`) The first value is the
+            minimum rank to include in the
+            `legends.ui.rostertab.RosterTab`. The second is the maximum.
+        levels (tuple): (`tk.IntVar`, `tk.IntVar`) The first value is
+            the minimum level to include in the
+            `legends.ui.rostertab.RosterTab`. The second is the maximum.
+
+    """
+
+    def __init__(self, filt=None):
+        """The constructor creates a new `RosterFilter` object with the
+        same values as the given `RosterFilter` object. If `None` is
+        provided, the new filter will not omit anything.
+
+        Args:
+            filt (RosterFilter): The filter used to initialize the new
+                filter.
+
+        """
+        self.rarities = {
+            rarity: tk.BooleanVar(None, True) for rarity in RARITIES
+        }
+        self.roles = {
+            role: tk.BooleanVar(None, True) for role in ROLES
+        }
+        self.ranks = (tk.IntVar(None, 1), tk.IntVar(None, 9))
+        self.levels = (tk.IntVar(None, 1), tk.IntVar(None, 99))
+        if filt is not None:
+            self.set(filt)
+
+    def set(self, filt):
+        """Sets the values of the calling instance to match those of the
+        given filter.
+
+        Args:
+            filt (RosterFilter): The filter from which to copy values.
+
+        """
+        for rarity, var in self.rarities.items():
+            var.set(filt.rarities[rarity].get())
+        for role, var in self.roles.items():
+            var.set(filt.roles[role].get())
+        for j in (0, 1):
+            self.ranks[j].set(filt.ranks[j].get())
+        for j in (0, 1):
+            self.levels[j].set(filt.levels[j].get())
+
+    def dictify(self):
+        """Creates and returns a dictionary mapping the calling
+        instance's attribute names to its values, with each `tkinter`
+        variable replaced by its value.
+
+        Returns:
+            dict: The constructed dictionary.
+
+        """
+        D = {}
+        D['rarities'] = {
+            rarity: var.get() for rarity, var in self.rarities.items()
+        }
+        D['roles'] = {
+            role: var.get() for role, var in self.roles.items()
+        }
+        D['ranks'] = (self.ranks[0].get(), self.ranks[1].get())
+        D['levels'] = (self.levels[0].get(), self.levels[1].get())
+        return D
+
+    def __eq__(self, other):
+        return self.dictify() == other.dictify()
+
+    def __repr__(self):
+        return 'RosterFilter({})'.format(self.dictify())
+
+class RosterInfoBar(tk.Frame):
+    """A frame for displaying aggregate data about the user's roster.
+
+    Attributes:
+        totalXP (tk.Label): A label displaying the total XP.
+        totalPower (tk.Label): A label displaying the total power.
+        charCount (tk.Label): A label displaying the number of
+            characters in the roster.
+
+    """
+    def __init__(self, parent=None, **options):
+        """The constructor passes its arguments to the `tk.Frame`
+        constructor, then builds and packs the attribute labels.
+
+        """
+        tk.Frame.__init__(self, parent, **options)
+        self.totalXP = tk.Label(
+            self, borderwidth=2, relief=tk.GROOVE, padx=10
+        )
+        self.totalXP.pack(side=tk.LEFT)
+        self.totalPower = tk.Label(
+            self, borderwidth=2, relief=tk.GROOVE, padx=10
+        )
+        self.totalPower.pack(side=tk.LEFT)
+        self.charCount = tk.Label(
+            self, borderwidth=2, relief=tk.GROOVE, padx=10
+        )
+        self.charCount.pack(side=tk.LEFT)
+
+    def makeStats(self, chars, roster):
+        """Computes and redisplays roster statistics using the given
+        collection of characters.
+
+        Args:
+            chars (iterable of legends.gameobjects.Character): The
+                characters to use when computing statistics.
+            roster (legends.roster.Roster): The roster to which the
+                characters belong.
+
+        """
+        self.totalXP.config(text='Total XP: {:,}'.format(sum(
+            char.xp for char in chars
+        )))
+        self.totalPower.config(text='Total power: {:,.0f}'.format(sum(
+            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+            for char in chars
+        )))
+        self.charCount.config(text='Characters: {}/{}'.format(
+            len(list(chars)), len(ENABLED)
+        ))
 
 class RosterTab(tk.Frame):
     """Displays the player's character collection.
 
     Attributes:
-        filter (legends.ui.dialogs.RosterFilter): The
-            `legends.ui.dialogs.RosterFilter` object storing the current
-            filter settings.
+        filter (RosterFilter): The `RosterFilter` object storing the
+            current filter settings.
         scrollArea (legends.utils.scrollframe.ScrollFrame): The
             `legends.utils.scrollframe.ScrollFrame` used to hold the
             character cards.
@@ -53,8 +397,8 @@ class RosterTab(tk.Frame):
         session.
 
         Args:
-            session (legends.ui.stlplanner.Session): The session to
-                assign as the instance's parent.
+            session (legends.ui.session.Session): The session to assign
+                as the instance's parent.
 
         """
         # build frame and initialize variables
@@ -67,8 +411,8 @@ class RosterTab(tk.Frame):
         self.infoBar = RosterInfoBar(self)
 
         # pack frame content
-        self.actionBar().pack(expand=YES, fill=X)
-        self.scrollArea.pack(expand=YES, fill=BOTH)
+        self.actionBar().pack(expand=tk.YES, fill=tk.X)
+        self.scrollArea.pack(expand=tk.YES, fill=tk.BOTH)
         self.infoBar.pack()
 
         # fill scroll area with character cards
@@ -90,8 +434,8 @@ class RosterTab(tk.Frame):
 
     @property
     def cards(self):
-        """`dict`: {`str`:`CharCard`} A dictionary mapping a character's
-        name ID attribute to its character card.
+        """`dict`: {`str`:`legends.ui.charcard.CharCard`} A dictionary
+        mapping a character's name ID attribute to its character card.
         """
         return {
             card.char.nameID : card
@@ -136,7 +480,7 @@ class RosterTab(tk.Frame):
         ]
         for char in chars:
             CharCard(char, self).grid(
-                row=count // columns, column=count % columns, sticky=NSEW
+                row=count // columns, column=count % columns, sticky=tk.NSEW
             )
             count += 1
         self.infoBar.makeStats(chars, self.roster)
@@ -194,25 +538,25 @@ class RosterTab(tk.Frame):
         sortMenu.bind('<<ComboboxSelected>>', lambda event:self.sort())
 
         # pack and return bar
-        tk.Label(bar, text='sort by:').pack(side=LEFT)
-        sortMenu.pack(side=LEFT)
+        tk.Label(bar, text='sort by:').pack(side=tk.LEFT)
+        sortMenu.pack(side=tk.LEFT)
         tk.Checkbutton(
             bar, text='descending', variable=self.descending, command=self.sort
-        ).pack(side=LEFT)
+        ).pack(side=tk.LEFT)
         tk.Button(
             bar, text='filter', width=6, command=self.adjustFilter
-        ).pack(side=LEFT)
+        ).pack(side=tk.LEFT)
         tk.Button(
             bar, text='export', width=6, command=self.export
-        ).pack(side=LEFT)
+        ).pack(side=tk.LEFT)
         tk.Button(
             bar, text='summon pools', command=self.optimalSummons
-        ).pack(side=RIGHT)
+        ).pack(side=tk.RIGHT)
         return bar
 
     def optimalSummons(self):
-        """Raises an `legends.ui.dialogs.OptimalSummons` message window
-        showing the summon rates for the various summon pools.
+        """Raises an `OptimalSummons` message window showing the summon
+        rates for the various summon pools.
 
         """
         OptimalSummons(self.root)
@@ -241,12 +585,12 @@ class RosterTab(tk.Frame):
         self.fillCards()
 
     def adjustFilter(self):
-        """Creates an `legends.ui.dialogs.AskRosterFilter` window,
-        giving the user an opportunity to adjust the filter settings.
-        Then refreshes the character cards and info bar.
+        """Creates an `AskRosterFilter` window, giving the user an
+        opportunity to adjust the filter settings. Then refreshes the
+        character cards and info bar.
 
         """
-        filt = askRosterFilter(self.root, self.filter)
+        filt = AskRosterFilter(self.root, self.filter).result
         if filt is not None:
             self.filter = filt
             self.refresh()
@@ -254,7 +598,8 @@ class RosterTab(tk.Frame):
     def export(self):
         """Exports the data in the character cards to a csv file. Each
         row in the file corresponds to a card, and the data in that row
-        is the data generated by the card's `CharCard.dictify` method.
+        is the data generated by the card's
+        `legends.ui.charcard.CharCard.dictify` method.
 
         """
         filename = asksaveasfilename(
@@ -272,267 +617,3 @@ class RosterTab(tk.Frame):
             writer = DictWriter(f, fields)
             writer.writeheader()
             writer.writerows(cardDicts)
-
-class CharCard(tk.Frame):
-    """A small tile containing basic information about a character.
-
-    Attributes:
-        char (legends.gameobjects.Character): The character from which
-            the card is built.
-        nameLabel (tk.Label): The label containing the character's name.
-            Clicking it toggles the character's `favorite` property.
-
-    """
-
-    def __init__(self, char, rostertab, **options):
-        """The constructor builds the card and associates it with the
-        given `legends.ui.rostertab.RosterTab`.
-
-        Args:
-            char (legends.gameobjects.Character): The character from
-                which to build the card.
-            rostertab (legends.ui.rostertab.RosterTab): The
-                `legends.ui.rostertab.RosterTab` object to which this
-                card belongs.
-
-        """
-        # build card and initialize variables
-        tk.Frame.__init__(self, rostertab.scrollArea.content, **options)
-        self.char = char
-
-        # build name and stat plates
-        bgColor = RARITY_COLORS[char.rarity]
-        namePlate = self.namePlate(bgColor)
-        statPlate = self.statPlate(bgColor)
-
-        # set card color configuration
-        self.config(bg=bgColor, highlightthickness=2)
-        self.colorByFav()
-
-        # pack card contents
-        namePlate.pack(side=LEFT)
-        statPlate.pack(side=RIGHT)
-
-    @property
-    def favorite(self):
-        """`bool`: True if the player has selected this character as a
-        favorite.
-        """
-        return self.char in self.saveslot.favorites
-
-    @property
-    def saveslot(self):
-        """`legends.saveslot.SaveSlot`: The save slot in which the
-        character is located.
-        """
-        content = self.master
-        canvas = content.master
-        scrollArea = canvas.master
-        rostertab = scrollArea.master
-        session = rostertab.master
-        return session.saveslot
-
-    def namePlate(self, bgColor):
-        """Builds and returns the character name plate with the given
-        background color.
-
-        Args:
-            bgColor (str): The `tkinter` name of the given background
-                color.
-
-        Returns:
-            tk.Frame: The constructed name plate.
-
-        """
-        plate = tk.Frame(self, bg=bgColor, height=118, width=105)
-        plate.pack_propagate(0)
-        data = self.dictify()
-
-        # build name label
-        self.nameLabel = tk.Label(
-            plate, text=data['name'], bg=bgColor,
-            font=(None, 16, 'bold')
-        )
-        self.nameLabel.bind('<Button-1>', self.toggleFav)
-
-        # pack name plate contents and return the plate
-        tk.Label(
-            plate,
-            text='{}\nRank {}\nTokens: {}/{}'.format(
-                data['role'],
-                data['rank'],
-                data['tokens'],
-                data['tokensNeeded']
-            ),
-            bg=bgColor,
-            font=(None, 11, 'italic')
-        ).pack()
-        self.nameLabel.pack(expand=YES, fill=X)
-        tk.Label(
-            plate,
-            text=('Level {}\nXP: {:,}\n({:.1%})'.format(
-                data['level'],
-                data['xp'],
-                data['xp']/maxXP(data['rarity'])
-            )),
-            bg=bgColor,
-            font=(None, 11, 'italic')
-        ).pack()
-        return plate
-
-    def statPlate(self, bgColor):
-        """Build and returns the character stat plate with the given
-        background color.
-
-        Args:
-            bgColor (str): The `tkinter` name of the given background
-                color.
-
-        Returns:
-            tk.Frame: The constructed stat plate.
-
-        """
-        plate = tk.Frame(self, bg=bgColor)
-        data = self.dictify()
-        # statObj = self.saveslot.roster.charStats(self.char.nameID)
-        font = (None, 9)
-
-        # cycle through the 10 basic stats
-        for index, statName in enumerate(STAT_INITIALS):
-            # format the stat value
-            statVal = data[statName]
-            if index == 2: # the speed stat
-                statText = '{:.2f}'.format(statVal)
-            elif index > 4: # the percentage stats
-                statText = (
-                    '{:.1f}'.format(100 * statVal).rstrip('0').rstrip('.')
-                    + '%'
-                )
-            else:
-                statText = '{:.0f}'.format(statVal)
-
-            # grid the 10 basic stats
-            row, col = index % 5, 2 * int(index/5)
-            tk.Label(
-                plate, text=STAT_INITIALS[statName] + ':',
-                bg=bgColor, font=font
-            ).grid(row=row, column=col, sticky=W)
-            tk.Label(
-                plate, text=statText, bg=bgColor, font=font,
-                width=4 + col, anchor=W
-            ).grid(row=row, column=col + 1, sticky=W)
-
-        # grid the extra stats
-        moreStats = {k + ':': data[k] for k in ['MGL', 'MGR', 'MSL']}
-        for row, item in enumerate(moreStats.items()):
-            text, statVal = item
-            tk.Label(
-                plate, text=text, bg=bgColor, font=font
-            ).grid(row=row, column=5, sticky=W)
-            tk.Label(
-                plate, text=str(statVal), bg=bgColor, font=font,
-                width=5, anchor=W
-            ).grid(row=row, column=6, sticky=W)
-
-        # grid the power stat and return the plate
-        tk.Label(
-            plate,
-            text='POWER: {:.0f}'.format(data['power']),
-            bg=bgColor, font=(None, 11) + ('bold',)
-        ).grid(row=5, column=0, columnspan=4)
-        return plate
-
-    def toggleFav(self, event): # pylint: disable=unused-argument
-        """Toggles the character's `favorite` property and recolors the
-        card.
-        """
-        if self.char in self.saveslot.favorites:
-            self.saveslot.favorites.remove(self.char)
-        else:
-            self.saveslot.favorites.append(self.char)
-        self.colorByFav()
-
-    def colorByFav(self):
-        """Colors the border and name of the character red if marked as
-        a favorite; black otherwise.
-
-        """
-        color = 'red2' if self.favorite else 'black'
-        self.config(
-            highlightbackground=color, highlightcolor=color
-        )
-        self.nameLabel.config(fg=color)
-
-    def dictify(self):
-        """Creates and returns a dictionary representation of the data
-        depicted on this card.
-
-        Returns:
-            dict: The dictionary of data from the card.
-
-        """
-        D = {
-            'name': self.char.shortName,
-            'rarity': self.char.rarity,
-            'role': self.char.role,
-            'rank': self.char.rank,
-            'tokens': self.saveslot.tokens[self.char.nameID],
-            'tokensNeeded': self.char.tokensNeeded,
-            'level': self.char.level,
-            'xp': self.char.xp
-        }
-        statObj = self.saveslot.roster.charStats(self.char.nameID)
-        for statName in STAT_INITIALS:
-            D[statName] = statObj.get(statName)
-        D['power'] = POWER_AT_ORIGIN + statObj.power
-        D.update({
-            'MGL': self.saveslot.roster.missingGearLevels(self.char.nameID),
-            'MGR': self.saveslot.roster.missingGearRanks(self.char.nameID),
-            'MSL': self.char.missingSkillLevels
-        })
-        return D
-
-class RosterInfoBar(tk.Frame):
-    """A frame for displaying aggregate data about the user's roster.
-
-    Attributes:
-        totalXP (tk.Label): A label displaying the total XP.
-        totalPower (tk.Label): A label displaying the total power.
-        charCount (tk.Label): A label displaying the number of
-            characters in the roster.
-
-    """
-    def __init__(self, parent=None, **options):
-        """The constructor passes its arguments to the `tk.Frame`
-        constructor, then builds and packs the attribute labels.
-
-        """
-        tk.Frame.__init__(self, parent, **options)
-        self.totalXP = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
-        self.totalXP.pack(side=LEFT)
-        self.totalPower = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
-        self.totalPower.pack(side=LEFT)
-        self.charCount = tk.Label(self, borderwidth=2, relief=GROOVE, padx=10)
-        self.charCount.pack(side=LEFT)
-
-    def makeStats(self, chars, roster):
-        """Computes and redisplays roster statistics using the given
-        collection of characters.
-
-        Args:
-            chars (iterable of legends.gameobjects.Character): The
-                characters to use when computing statistics.
-            roster (legends.roster.Roster): The roster to which the
-                characters belong.
-
-        """
-        self.totalXP.config(text='Total XP: {:,}'.format(sum(
-            char.xp for char in chars
-        )))
-        self.totalPower.config(text='Total power: {:,.0f}'.format(sum(
-            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
-            for char in chars
-        )))
-        self.charCount.config(text='Characters: {}/{}'.format(
-            len(list(chars)), len(ENABLED)
-        ))

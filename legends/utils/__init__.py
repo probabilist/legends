@@ -10,7 +10,8 @@ Example:
 
 """
 
+from legends.utils.functions import *
 from legends.utils.customabcs import *
-from legends.utils.objrelations import *
 from legends.utils.relations import *
+from legends.utils.objrelations import *
 from legends.utils.scrollframe import *

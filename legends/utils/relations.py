@@ -10,11 +10,15 @@ values), and `invertibledict` (a dictionary that can be inverted to an
 """
 
 from collections import defaultdict
-from legends.utils.customabcs import ordPair, BiMapping, MultiMapping
+from legends.utils.customabcs import BiMapping, MultiMapping, ordPair
 
 __all__ = [
-    'bidict', 'dictplus', 'dictofsets', 'multidict', 'inversedict',
-    'invertibledict'
+    'bidict',
+    'dictofsets',
+    'dictplus',
+    'inversedict',
+    'invertibledict',
+    'multidict'
 ]
 
 class bidict(BiMapping): # pylint: disable=invalid-name
@@ -61,27 +65,6 @@ class bidict(BiMapping): # pylint: disable=invalid-name
 
     def __repr__(self):
         return 'bidict(' + repr(self._forward) + ')'
-
-class dictplus(dict): # pylint: disable=invalid-name
-    """A dictionary with a `discard` method.
-
-    """
-
-    def discard(self, elem):
-        """Removes the given key-value pair, if present. Does nothing if
-        `elem` is not a 2-tuple.
-
-        Args:
-            elem (tuple): (`key`, `value`) The key-value pair to remove.
-
-        """
-        if ordPair(elem):
-            key, val = elem
-            if key in self and self[key] == val:
-                del self[key]
-
-    def __repr__(self):
-        return 'dictplus(' + dict.__repr__(self) + ')'
 
 class dictofsets(MultiMapping): # pylint: disable=invalid-name
     """A rudimentary multi-valued dictionary.
@@ -148,6 +131,27 @@ class dictofsets(MultiMapping): # pylint: disable=invalid-name
 
     def __repr__(self):
         return 'dictofsets(' + repr(dict(self._dict)) + ')'
+
+class dictplus(dict): # pylint: disable=invalid-name
+    """A dictionary with a `discard` method.
+
+    """
+
+    def discard(self, elem):
+        """Removes the given key-value pair, if present. Does nothing if
+        `elem` is not a 2-tuple.
+
+        Args:
+            elem (tuple): (`key`, `value`) The key-value pair to remove.
+
+        """
+        if ordPair(elem):
+            key, val = elem
+            if key in self and self[key] == val:
+                del self[key]
+
+    def __repr__(self):
+        return 'dictplus(' + dict.__repr__(self) + ')'
 
 class multidict(MultiMapping): # pylint: disable=invalid-name
     """A more robust multi-valued dictionary that is easily inverted.

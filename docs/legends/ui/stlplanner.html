@@ -35,33 +35,199 @@ The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 &#34;&#34;&#34;
 
 import tkinter as tk
-from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
-from legends.savefile import decryptSaveFile
+from tkinter import ttk
+from tkinter.scrolledtext import ScrolledText
+# pylint: disable-next=no-name-in-module
+from legends.constants import GSCharacter
+from legends.constants import (
+    ENABLED, HELP, SUMMON_POOL, STAT_INITIALS, UPCOMING
+)
+from legends.functions import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
-    showerror, askSlot, askMaxChars, askyesno, HelpScreen, InventoryScreen
+    askyesno, ModalDialog, ModalMessage, showerror
 )
-from legends.ui.rostertab import RosterTab
+from legends.ui.session import InventoryScreen, Session
 
-__all__ = [&#39;cleanTime&#39;, &#39;STLPlanner&#39;, &#39;Session&#39;]
+__all__ = [&#39;AskMaxChars&#39;, &#39;AskSlot&#39;, &#39;HelpScreen&#39;, &#39;STLPlanner&#39;]
 
-def cleanTime(delta):
-    &#34;&#34;&#34;Converts a `timedelta` object into a string description that
-    shows the number of days (if positive), hours, and minutes.
+class AskMaxChars(ModalDialog):
+    &#34;&#34;&#34;A modal dialog used for creating a maxed roster.
 
-    Args:
-        delta (timedelta): The `timedelta` object to convert.
-
-    Returns:
-        str: The string description.
+    Attributes:
+        crew (tk.BooleanVar): True if the user wants to use the
+            characters in the Crew screen (i.e. those that are not
+            disabled).
+        upcoming (tk.BooleanVar): True if the user wants to use upcoming
+            characters.
+        summonableOnly (tk.BooleanVar): True if the user wants to
+            exclude characters that are not summonable.
+        storeOnly (tk.BooleanVar): True if the user wants to exclude
+            characters whose tokens are not in the daily store.
+        maxGear (tk.BooleanVar): True if the user wants the maxed
+            characters to also have maxed gear.
+        result (tuple): ([`str`], `bool`) The first value in the tuple is
+            the list of name IDs of characters the user wants to include
+            in the roster. The second value is `True` if the user wants
+            the maxed characters to also have maxed gear.
 
     &#34;&#34;&#34;
-    minutes = int(delta.total_seconds()/60)
-    hours, minutes = minutes//60, minutes % 60
-    days, hours = hours//24, hours % 24
-    display = &#39;{} days &#39;.format(days) if days &gt; 1 else &#39;&#39;
-    display += &#39;{} hrs {} min&#39;.format(hours, minutes)
-    return display
+    def __init__(self, root, parent=None):
+        self.crew = tk.BooleanVar(None, True)
+        self.upcoming = tk.BooleanVar(None, False)
+        self.summonableOnly = tk.BooleanVar(None, False)
+        self.storeOnly = tk.BooleanVar(None, False)
+        self.maxGear = tk.BooleanVar(None, True)
+        ModalDialog.__init__(self, root, parent, &#39;Choose character options&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        tk.Checkbutton(
+            master, text=&#39;include characters in Crew screen&#39;,
+            variable=self.crew
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text=&#39;include upcoming characters&#39;,
+            variable=self.upcoming
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text=&#39;exclude non-summonable characters&#39;,
+            variable=self.summonableOnly
+        ).pack(anchor=tk.W, padx=5, pady=(15,0))
+        tk.Checkbutton(
+            master, text=&#39;exclude characters not in daily store&#39;,
+            variable=self.storeOnly
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text=&#39;equip max gear on characters&#39;,
+            variable=self.maxGear
+        ).pack(anchor=tk.W, padx=5, pady=(15,0))
+
+    def validate(self):
+        &#34;&#34;&#34;Ensure that the user has selected at least one character,
+        then set the result.
+
+        &#34;&#34;&#34;
+        include = ENABLED if self.crew.get() else []
+        include.extend(UPCOMING if self.upcoming.get() else [])
+        nameIDs = []
+        for nameID in include:
+            if (
+                self.summonableOnly.get()
+                and nameID not in SUMMON_POOL[&#39;Core&#39;][&#39;nameIDs&#39;]
+            ):
+                continue
+            if (
+                self.storeOnly.get()
+                and not GSCharacter[nameID][&#39;DailyTokenVisible&#39;]
+            ):
+                continue
+            nameIDs.append(nameID)
+        if len(nameIDs) == 0:
+            showerror(
+                self.root, &#39;Empty Selection&#39;,
+                &#39;These choices produce no characters.&#39;
+            )
+            return False
+        self.result = nameIDs, self.maxGear.get()
+        return True
+
+class AskSlot(ModalDialog):
+    &#34;&#34;&#34;A modal dialog that prompts the user to select a save slot.
+
+    Save slots are denoted in the game data as 0, 1, or 2. In the
+    `AskSlot` window, they are shown to the user as &#39;1&#39;, &#39;2&#39;, or &#39;3&#39;.
+
+    Attributes:
+        save (dict): A decrypted dictionary representation of the
+            player&#39;s save file, as returned by the
+            `legends.functions.decryptSaveFile` function.
+        displaySlot (tk.StringVar): The currently selected slot, as it
+            is displayed in the window.
+        result (SaveSlot or None): Inherited from `ModalDialog`, which
+            inherited it from `tk.simpledialog.Dialog`. Defaults to
+            `None`. Is set by the `AskSlot.validate` method to a
+            `SaveSlot` instance created from the chosen slot number.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, save, parent=None):
+        self.save = save
+        self.displaySlot = tk.StringVar(None, &#39;1&#39;)
+        ModalDialog.__init__(self, root, parent, &#39;Choose a save slot&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        # create an informational label
+        msg = (
+            &#34;Open Star Trek: Legends on this Mac and let it load to the &#34;
+            + &#34;splash screen. This will allow your cloud save to sync to &#34;
+            + &#34;the local hard drive. Then choose the save slot data you would &#34;
+            + &#34;like to use.&#34;
+        )
+        tk.Label(master, wraplength=250, justify=tk.LEFT, text=msg).pack()
+
+        # create the subframe used for selecting the slot
+        slotBar = tk.Frame(master)
+        tk.Label(slotBar, text=&#39;Extract from save slot:&#39;).pack(side=tk.LEFT)
+        cbox = ttk.Combobox(
+            slotBar,
+            textvariable=self.displaySlot,
+            values=[&#39;1&#39;, &#39;2&#39;, &#39;3&#39;],
+            state=&#39;readonly&#39;,
+            width=1
+        )
+        cbox.pack()
+
+        # pack the subframe and return the combobox for focus
+        slotBar.pack(pady=10)
+        return cbox
+
+    def validate(self):
+        &#34;&#34;&#34;Set the `result` attribute and return `True`.
+
+        &#34;&#34;&#34;
+        slot = int(self.displaySlot.get()) - 1
+        key = &#39;{} data&#39;.format(slot)
+        if key not in self.save or not self.save[key]:
+            showerror(
+                self.root,
+                &#39;Slot Error&#39;,
+                &#39;No save data found in slot {}.&#39;.format(slot + 1)
+            )
+            return False
+        self.result = SaveSlot()
+        self.result.fromFile(self.save, slot)
+        return True
+
+class HelpScreen(ModalMessage):
+    &#34;&#34;&#34;A message dialog giving help on the *STL Planner* app.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, &#39;Roster Help&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        text = ScrolledText(master)
+        glossary = &#39;\n&#39;.join(
+            &#39;    {} = {}&#39;.format(v.rjust(3), k)
+            for k,v in STAT_INITIALS.items()
+        )
+        glossary += (
+            &#39;\n    MGL = Missing gear levels&#39;
+            + &#39;\n    MGR = Missing gear ranks&#39;
+            + &#39;\n    MSL = Missing skill levels&#39;
+        )
+        text.insert(&#39;1.0&#39;, HELP.format(glossary))
+        text.config(state=tk.DISABLED)
+        text.focus()
+        text.pack()
 
 class STLPlanner(tk.Tk):
     &#34;&#34;&#34;The *STL Planner* main window.
@@ -75,8 +241,9 @@ class STLPlanner(tk.Tk):
             the menu in which the option exists. The second value is the
             0-based index of the option within that menu. Defaults to an
             empty list.
-        session (Session): The currently running user session. Defaults
-            to a new `Session` instance with no save slot.
+        session (legends.ui.session.Session): The currently running user
+            session. Defaults to a new `legends.ui.session.Session`
+            instance with no save slot.
 
     &#34;&#34;&#34;
 
@@ -106,7 +273,7 @@ class STLPlanner(tk.Tk):
     @menuEnabled.setter
     def menuEnabled(self, value):
         self._menuEnabled = value
-        state = NORMAL if value else DISABLED
+        state = tk.NORMAL if value else tk.DISABLED
         for menu, index in self.disableOnModal:
             menu.entryconfig(index, state=state)
 
@@ -193,7 +360,7 @@ class STLPlanner(tk.Tk):
             except FileNotFoundError:
                 showerror(self, &#39;File Not Found&#39;, &#39;Save file not found.&#39;)
                 return
-            saveslot = askSlot(self, save)
+            saveslot = AskSlot(self, save).result
             if saveslot is None:
                 return
             self.newSession(saveslot)
@@ -204,7 +371,7 @@ class STLPlanner(tk.Tk):
 
         &#34;&#34;&#34;
         if self.askCloseSession():
-            result = askMaxChars(self)
+            result = AskMaxChars(self).result
             if result is None:
                 return
             chars, maxGear = result
@@ -223,7 +390,7 @@ class STLPlanner(tk.Tk):
             self.session.removeTimeBar()
 
     def inventory(self):
-        &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+        &#34;&#34;&#34;Calls an `legends.ui.session.InventoryScreen` message,
         showing the player&#39;s inventory. Calls an error popup if the
         inventory is either not found or empty.
 
@@ -234,127 +401,7 @@ class STLPlanner(tk.Tk):
         ):
             showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
             return
-        InventoryScreen(self)
-
-class Session(tk.Frame):
-    &#34;&#34;&#34;A user session in the *STL Planner* app.
-
-    Attributes:
-        saveslot (legends.saveslot.SaveSlot): The
-            `legends.saveslot.SaveSlot` object associated with the
-            session.
-        timeBar (tk.Frame): The horizontal bar at the top of the session
-            frame that displays time stamp info connected with the
-            associated save slot.
-        tab (tk.Frame): The visible tab in the session frame.
-
-    &#34;&#34;&#34;
-    def __init__(self, stlplanner, saveslot=None, **options):
-        &#34;&#34;&#34;The constructor creates a new session associated with the
-        given `legends.saveslot.SaveSlot` object. If none is provided,
-        the session displays buttons that activate choices from the
-        `File` menu.
-
-        Args:
-            stlplanner (STLPlanner): The `STLPlanner` instance to be
-                assigned as the parent of this session.
-
-        &#34;&#34;&#34;
-        tk.Frame.__init__(self, stlplanner, **options)
-        self.saveslot = saveslot
-        self.timeBar = None
-        self.tab = tk.Frame(self)
-        self.tab.pack()
-        if saveslot is None:
-            self.startFrame()
-        else:
-            self.makeTimeBar()
-            self.rosterTab()
-
-    def startFrame(self):
-        &#34;&#34;&#34;Build the starting frame, with choices from the `File` menu.
-
-        &#34;&#34;&#34;
-        buttonbox = tk.Frame(self.tab)
-        tk.Button(
-            buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
-        ).grid(row=0, column=0, sticky=EW)
-        tk.Button(
-            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
-        ).grid(row=1, column=0, sticky=EW)
-        tk.Label(
-            buttonbox, text=&#39;Extract data from your local save file&#39;
-        ).grid(row=0, column=1, sticky=W)
-        tk.Label(
-            buttonbox, text=&#39;Create a roster of maxed characters&#39;
-        ).grid(row=1, column=1, sticky=W)
-        buttonbox.pack(padx=50, pady=50)
-
-    def makeTimeBar(self):
-        &#34;&#34;&#34;Builds a horizontal bar (a `tk.Frame` instance) containing
-        timestamp information from the associated save slot, then
-        assigns the bar to the `timeBar` attribute. If there is no save
-        slot, or the time bar already exists, or the `STLPlanner` master
-        prohibits it, the method does nothing.
-
-        &#34;&#34;&#34;
-        if (
-            self.saveslot is None
-            or self.timeBar is not None
-            or not self.master.showTimestamps.get()
-        ):
-            return
-
-        # build bar and initialize variables
-        self.timeBar = tk.Frame(self)
-        timestamps = self.saveslot.timestamps
-        start = (
-            &#39;start date: &#39;
-            + timestamps.startDate.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
-        )
-        last = (
-            &#39;last played: &#39;
-            + timestamps.timeLastPlayed.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
-        )
-        total = (
-            &#39;play duration: &#39; + cleanTime(timestamps.playDuration)
-        )
-        average = (
-            &#39;play time per day: &#39; + cleanTime(timestamps.playTimePerDay)
-        )
-
-        # build labels
-        labels = [None] * 4
-        for j in range(4):
-            labels[j] = tk.Label(
-                self.timeBar, borderwidth=2, relief=GROOVE, padx=10
-            )
-        for index, text in enumerate([start, last, total, average]):
-            labels[index].config(text=text)
-
-        # pack labels and bar
-        for label in labels:
-            label.pack(side=LEFT)
-        self.timeBar.pack(side=TOP)
-
-    def removeTimeBar(self):
-        &#34;&#34;&#34;If the time bar exists, it is destroyed and the `timeBar`
-        attribute is set to `None`.
-
-        &#34;&#34;&#34;
-        if self.timeBar is not None:
-            self.timeBar.destroy()
-            self.timeBar = None
-
-    def rosterTab(self):
-        &#34;&#34;&#34;Loads a new `legends.ui.rostertab.RosterTab` instance into
-        the `tab` attribute.
-
-        &#34;&#34;&#34;
-        self.tab.destroy()
-        self.tab = RosterTab(self)
-        self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
-        self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
+        InventoryScreen(self)</code></pre>
 </details>
 </section>
 <section>
@@ -362,52 +409,503 @@ class Session(tk.Frame):
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="legends.ui.stlplanner.cleanTime"><code class="name flex">
-<span>def <span class="ident">cleanTime</span></span>(<span>delta)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Converts a <code>timedelta</code> object into a string description that
-shows the number of days (if positive), hours, and minutes.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>delta</code></strong> :&ensp;<code>timedelta</code></dt>
-<dd>The <code>timedelta</code> object to convert.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>str</code></dt>
-<dd>The string description.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def cleanTime(delta):
-    &#34;&#34;&#34;Converts a `timedelta` object into a string description that
-    shows the number of days (if positive), hours, and minutes.
-
-    Args:
-        delta (timedelta): The `timedelta` object to convert.
-
-    Returns:
-        str: The string description.
-
-    &#34;&#34;&#34;
-    minutes = int(delta.total_seconds()/60)
-    hours, minutes = minutes//60, minutes % 60
-    days, hours = hours//24, hours % 24
-    display = &#39;{} days &#39;.format(days) if days &gt; 1 else &#39;&#39;
-    display += &#39;{} hrs {} min&#39;.format(hours, minutes)
-    return display</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.ui.stlplanner.AskMaxChars"><code class="flex name class">
+<span>class <span class="ident">AskMaxChars</span></span>
+<span>(</span><span>root, parent=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A modal dialog used for creating a maxed roster.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>crew</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd>True if the user wants to use the
+characters in the Crew screen (i.e. those that are not
+disabled).</dd>
+<dt><strong><code>upcoming</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd>True if the user wants to use upcoming
+characters.</dd>
+<dt><strong><code>summonableOnly</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd>True if the user wants to
+exclude characters that are not summonable.</dd>
+<dt><strong><code>storeOnly</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd>True if the user wants to exclude
+characters whose tokens are not in the daily store.</dd>
+<dt><strong><code>maxGear</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd>True if the user wants the maxed
+characters to also have maxed gear.</dd>
+<dt><strong><code>result</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>([<code>str</code>], <code>bool</code>) The first value in the tuple is
+the list of name IDs of characters the user wants to include
+in the roster. The second value is <code>True</code> if the user wants
+the maxed characters to also have maxed gear.</dd>
+</dl>
+<p>The constructor disables the root menu before calling the
+<code>tk.simpledialog.Dialog</code> constructor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AskMaxChars(ModalDialog):
+    &#34;&#34;&#34;A modal dialog used for creating a maxed roster.
+
+    Attributes:
+        crew (tk.BooleanVar): True if the user wants to use the
+            characters in the Crew screen (i.e. those that are not
+            disabled).
+        upcoming (tk.BooleanVar): True if the user wants to use upcoming
+            characters.
+        summonableOnly (tk.BooleanVar): True if the user wants to
+            exclude characters that are not summonable.
+        storeOnly (tk.BooleanVar): True if the user wants to exclude
+            characters whose tokens are not in the daily store.
+        maxGear (tk.BooleanVar): True if the user wants the maxed
+            characters to also have maxed gear.
+        result (tuple): ([`str`], `bool`) The first value in the tuple is
+            the list of name IDs of characters the user wants to include
+            in the roster. The second value is `True` if the user wants
+            the maxed characters to also have maxed gear.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, parent=None):
+        self.crew = tk.BooleanVar(None, True)
+        self.upcoming = tk.BooleanVar(None, False)
+        self.summonableOnly = tk.BooleanVar(None, False)
+        self.storeOnly = tk.BooleanVar(None, False)
+        self.maxGear = tk.BooleanVar(None, True)
+        ModalDialog.__init__(self, root, parent, &#39;Choose character options&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        tk.Checkbutton(
+            master, text=&#39;include characters in Crew screen&#39;,
+            variable=self.crew
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text=&#39;include upcoming characters&#39;,
+            variable=self.upcoming
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text=&#39;exclude non-summonable characters&#39;,
+            variable=self.summonableOnly
+        ).pack(anchor=tk.W, padx=5, pady=(15,0))
+        tk.Checkbutton(
+            master, text=&#39;exclude characters not in daily store&#39;,
+            variable=self.storeOnly
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text=&#39;equip max gear on characters&#39;,
+            variable=self.maxGear
+        ).pack(anchor=tk.W, padx=5, pady=(15,0))
+
+    def validate(self):
+        &#34;&#34;&#34;Ensure that the user has selected at least one character,
+        then set the result.
+
+        &#34;&#34;&#34;
+        include = ENABLED if self.crew.get() else []
+        include.extend(UPCOMING if self.upcoming.get() else [])
+        nameIDs = []
+        for nameID in include:
+            if (
+                self.summonableOnly.get()
+                and nameID not in SUMMON_POOL[&#39;Core&#39;][&#39;nameIDs&#39;]
+            ):
+                continue
+            if (
+                self.storeOnly.get()
+                and not GSCharacter[nameID][&#39;DailyTokenVisible&#39;]
+            ):
+                continue
+            nameIDs.append(nameID)
+        if len(nameIDs) == 0:
+            showerror(
+                self.root, &#39;Empty Selection&#39;,
+                &#39;These choices produce no characters.&#39;
+            )
+            return False
+        self.result = nameIDs, self.maxGear.get()
+        return True</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.ModalMessage" href="dialogs.html#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
+<li>tkinter.simpledialog.Dialog</li>
+<li>tkinter.Toplevel</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.stlplanner.AskMaxChars.body"><code class="name flex">
+<span>def <span class="ident">body</span></span>(<span>self, master)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the body of the dialog.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def body(self, master):
+    &#34;&#34;&#34;Create the body of the dialog.
+
+    &#34;&#34;&#34;
+    tk.Checkbutton(
+        master, text=&#39;include characters in Crew screen&#39;,
+        variable=self.crew
+    ).pack(anchor=tk.W, padx=5)
+    tk.Checkbutton(
+        master, text=&#39;include upcoming characters&#39;,
+        variable=self.upcoming
+    ).pack(anchor=tk.W, padx=5)
+    tk.Checkbutton(
+        master, text=&#39;exclude non-summonable characters&#39;,
+        variable=self.summonableOnly
+    ).pack(anchor=tk.W, padx=5, pady=(15,0))
+    tk.Checkbutton(
+        master, text=&#39;exclude characters not in daily store&#39;,
+        variable=self.storeOnly
+    ).pack(anchor=tk.W, padx=5)
+    tk.Checkbutton(
+        master, text=&#39;equip max gear on characters&#39;,
+        variable=self.maxGear
+    ).pack(anchor=tk.W, padx=5, pady=(15,0))</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.AskMaxChars.validate"><code class="name flex">
+<span>def <span class="ident">validate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Ensure that the user has selected at least one character,
+then set the result.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate(self):
+    &#34;&#34;&#34;Ensure that the user has selected at least one character,
+    then set the result.
+
+    &#34;&#34;&#34;
+    include = ENABLED if self.crew.get() else []
+    include.extend(UPCOMING if self.upcoming.get() else [])
+    nameIDs = []
+    for nameID in include:
+        if (
+            self.summonableOnly.get()
+            and nameID not in SUMMON_POOL[&#39;Core&#39;][&#39;nameIDs&#39;]
+        ):
+            continue
+        if (
+            self.storeOnly.get()
+            and not GSCharacter[nameID][&#39;DailyTokenVisible&#39;]
+        ):
+            continue
+        nameIDs.append(nameID)
+    if len(nameIDs) == 0:
+        showerror(
+            self.root, &#39;Empty Selection&#39;,
+            &#39;These choices produce no characters.&#39;
+        )
+        return False
+    self.result = nameIDs, self.maxGear.get()
+    return True</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalDialog.buttonbox" href="dialogs.html#legends.ui.dialogs.ModalDialog.buttonbox">buttonbox</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="dialogs.html#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.ui.stlplanner.AskSlot"><code class="flex name class">
+<span>class <span class="ident">AskSlot</span></span>
+<span>(</span><span>root, save, parent=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A modal dialog that prompts the user to select a save slot.</p>
+<p>Save slots are denoted in the game data as 0, 1, or 2. In the
+<code><a title="legends.ui.stlplanner.AskSlot" href="#legends.ui.stlplanner.AskSlot">AskSlot</a></code> window, they are shown to the user as '1', '2', or '3'.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
+<dd>A decrypted dictionary representation of the
+player's save file, as returned by the
+<code><a title="legends.functions.decryptSaveFile" href="../functions.html#legends.functions.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<dt><strong><code>displaySlot</code></strong> :&ensp;<code>tk.StringVar</code></dt>
+<dd>The currently selected slot, as it
+is displayed in the window.</dd>
+<dt><strong><code>result</code></strong> :&ensp;<code>SaveSlot</code> or <code>None</code></dt>
+<dd>Inherited from <code>ModalDialog</code>, which
+inherited it from <code>tk.simpledialog.Dialog</code>. Defaults to
+<code>None</code>. Is set by the <code><a title="legends.ui.stlplanner.AskSlot.validate" href="#legends.ui.stlplanner.AskSlot.validate">AskSlot.validate()</a></code> method to a
+<code>SaveSlot</code> instance created from the chosen slot number.</dd>
+</dl>
+<p>The constructor disables the root menu before calling the
+<code>tk.simpledialog.Dialog</code> constructor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AskSlot(ModalDialog):
+    &#34;&#34;&#34;A modal dialog that prompts the user to select a save slot.
+
+    Save slots are denoted in the game data as 0, 1, or 2. In the
+    `AskSlot` window, they are shown to the user as &#39;1&#39;, &#39;2&#39;, or &#39;3&#39;.
+
+    Attributes:
+        save (dict): A decrypted dictionary representation of the
+            player&#39;s save file, as returned by the
+            `legends.functions.decryptSaveFile` function.
+        displaySlot (tk.StringVar): The currently selected slot, as it
+            is displayed in the window.
+        result (SaveSlot or None): Inherited from `ModalDialog`, which
+            inherited it from `tk.simpledialog.Dialog`. Defaults to
+            `None`. Is set by the `AskSlot.validate` method to a
+            `SaveSlot` instance created from the chosen slot number.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, save, parent=None):
+        self.save = save
+        self.displaySlot = tk.StringVar(None, &#39;1&#39;)
+        ModalDialog.__init__(self, root, parent, &#39;Choose a save slot&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        # create an informational label
+        msg = (
+            &#34;Open Star Trek: Legends on this Mac and let it load to the &#34;
+            + &#34;splash screen. This will allow your cloud save to sync to &#34;
+            + &#34;the local hard drive. Then choose the save slot data you would &#34;
+            + &#34;like to use.&#34;
+        )
+        tk.Label(master, wraplength=250, justify=tk.LEFT, text=msg).pack()
+
+        # create the subframe used for selecting the slot
+        slotBar = tk.Frame(master)
+        tk.Label(slotBar, text=&#39;Extract from save slot:&#39;).pack(side=tk.LEFT)
+        cbox = ttk.Combobox(
+            slotBar,
+            textvariable=self.displaySlot,
+            values=[&#39;1&#39;, &#39;2&#39;, &#39;3&#39;],
+            state=&#39;readonly&#39;,
+            width=1
+        )
+        cbox.pack()
+
+        # pack the subframe and return the combobox for focus
+        slotBar.pack(pady=10)
+        return cbox
+
+    def validate(self):
+        &#34;&#34;&#34;Set the `result` attribute and return `True`.
+
+        &#34;&#34;&#34;
+        slot = int(self.displaySlot.get()) - 1
+        key = &#39;{} data&#39;.format(slot)
+        if key not in self.save or not self.save[key]:
+            showerror(
+                self.root,
+                &#39;Slot Error&#39;,
+                &#39;No save data found in slot {}.&#39;.format(slot + 1)
+            )
+            return False
+        self.result = SaveSlot()
+        self.result.fromFile(self.save, slot)
+        return True</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.ModalMessage" href="dialogs.html#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
+<li>tkinter.simpledialog.Dialog</li>
+<li>tkinter.Toplevel</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.stlplanner.AskSlot.body"><code class="name flex">
+<span>def <span class="ident">body</span></span>(<span>self, master)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the body of the dialog.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def body(self, master):
+    &#34;&#34;&#34;Create the body of the dialog.
+
+    &#34;&#34;&#34;
+    # create an informational label
+    msg = (
+        &#34;Open Star Trek: Legends on this Mac and let it load to the &#34;
+        + &#34;splash screen. This will allow your cloud save to sync to &#34;
+        + &#34;the local hard drive. Then choose the save slot data you would &#34;
+        + &#34;like to use.&#34;
+    )
+    tk.Label(master, wraplength=250, justify=tk.LEFT, text=msg).pack()
+
+    # create the subframe used for selecting the slot
+    slotBar = tk.Frame(master)
+    tk.Label(slotBar, text=&#39;Extract from save slot:&#39;).pack(side=tk.LEFT)
+    cbox = ttk.Combobox(
+        slotBar,
+        textvariable=self.displaySlot,
+        values=[&#39;1&#39;, &#39;2&#39;, &#39;3&#39;],
+        state=&#39;readonly&#39;,
+        width=1
+    )
+    cbox.pack()
+
+    # pack the subframe and return the combobox for focus
+    slotBar.pack(pady=10)
+    return cbox</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.AskSlot.validate"><code class="name flex">
+<span>def <span class="ident">validate</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the <code>result</code> attribute and return <code>True</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def validate(self):
+    &#34;&#34;&#34;Set the `result` attribute and return `True`.
+
+    &#34;&#34;&#34;
+    slot = int(self.displaySlot.get()) - 1
+    key = &#39;{} data&#39;.format(slot)
+    if key not in self.save or not self.save[key]:
+        showerror(
+            self.root,
+            &#39;Slot Error&#39;,
+            &#39;No save data found in slot {}.&#39;.format(slot + 1)
+        )
+        return False
+    self.result = SaveSlot()
+    self.result.fromFile(self.save, slot)
+    return True</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalDialog.buttonbox" href="dialogs.html#legends.ui.dialogs.ModalDialog.buttonbox">buttonbox</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="dialogs.html#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.ui.stlplanner.HelpScreen"><code class="flex name class">
+<span>class <span class="ident">HelpScreen</span></span>
+<span>(</span><span>root, parent=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A message dialog giving help on the <em>STL Planner</em> app.</p>
+<p>The constructor disables the root menu before calling the
+<code>tk.simpledialog.Dialog</code> constructor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class HelpScreen(ModalMessage):
+    &#34;&#34;&#34;A message dialog giving help on the *STL Planner* app.
+
+    &#34;&#34;&#34;
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, &#39;Roster Help&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        text = ScrolledText(master)
+        glossary = &#39;\n&#39;.join(
+            &#39;    {} = {}&#39;.format(v.rjust(3), k)
+            for k,v in STAT_INITIALS.items()
+        )
+        glossary += (
+            &#39;\n    MGL = Missing gear levels&#39;
+            + &#39;\n    MGR = Missing gear ranks&#39;
+            + &#39;\n    MSL = Missing skill levels&#39;
+        )
+        text.insert(&#39;1.0&#39;, HELP.format(glossary))
+        text.config(state=tk.DISABLED)
+        text.focus()
+        text.pack()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.ModalMessage" href="dialogs.html#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
+<li>tkinter.simpledialog.Dialog</li>
+<li>tkinter.Toplevel</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.stlplanner.HelpScreen.body"><code class="name flex">
+<span>def <span class="ident">body</span></span>(<span>self, master)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the body of the dialog.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def body(self, master):
+    &#34;&#34;&#34;Create the body of the dialog.
+
+    &#34;&#34;&#34;
+    text = ScrolledText(master)
+    glossary = &#39;\n&#39;.join(
+        &#39;    {} = {}&#39;.format(v.rjust(3), k)
+        for k,v in STAT_INITIALS.items()
+    )
+    glossary += (
+        &#39;\n    MGL = Missing gear levels&#39;
+        + &#39;\n    MGR = Missing gear ranks&#39;
+        + &#39;\n    MSL = Missing skill levels&#39;
+    )
+    text.insert(&#39;1.0&#39;, HELP.format(glossary))
+    text.config(state=tk.DISABLED)
+    text.focus()
+    text.pack()</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.ui.dialogs.ModalMessage" href="dialogs.html#legends.ui.dialogs.ModalMessage">ModalMessage</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalMessage.buttonbox" href="dialogs.html#legends.ui.dialogs.ModalMessage.buttonbox">buttonbox</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalMessage.destroy" href="dialogs.html#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="legends.ui.stlplanner.STLPlanner"><code class="flex name class">
 <span>class <span class="ident">STLPlanner</span></span>
 <span>(</span><span>*args, **kargs)</span>
@@ -426,9 +924,10 @@ be disabled when a modal dialog is open. The first value is
 the menu in which the option exists. The second value is the
 0-based index of the option within that menu. Defaults to an
 empty list.</dd>
-<dt><strong><code>session</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.Session" href="#legends.ui.stlplanner.Session">Session</a></code></dt>
-<dd>The currently running user session. Defaults
-to a new <code><a title="legends.ui.stlplanner.Session" href="#legends.ui.stlplanner.Session">Session</a></code> instance with no save slot.</dd>
+<dt><strong><code>session</code></strong> :&ensp;<code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code></dt>
+<dd>The currently running user
+session. Defaults to a new <code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code>
+instance with no save slot.</dd>
 </dl>
 <p>The constructor passes its arguments to the <code>tk.Tk</code>
 constructor.</p></div>
@@ -448,8 +947,9 @@ constructor.</p></div>
             the menu in which the option exists. The second value is the
             0-based index of the option within that menu. Defaults to an
             empty list.
-        session (Session): The currently running user session. Defaults
-            to a new `Session` instance with no save slot.
+        session (legends.ui.session.Session): The currently running user
+            session. Defaults to a new `legends.ui.session.Session`
+            instance with no save slot.
 
     &#34;&#34;&#34;
 
@@ -479,7 +979,7 @@ constructor.</p></div>
     @menuEnabled.setter
     def menuEnabled(self, value):
         self._menuEnabled = value
-        state = NORMAL if value else DISABLED
+        state = tk.NORMAL if value else tk.DISABLED
         for menu, index in self.disableOnModal:
             menu.entryconfig(index, state=state)
 
@@ -566,7 +1066,7 @@ constructor.</p></div>
             except FileNotFoundError:
                 showerror(self, &#39;File Not Found&#39;, &#39;Save file not found.&#39;)
                 return
-            saveslot = askSlot(self, save)
+            saveslot = AskSlot(self, save).result
             if saveslot is None:
                 return
             self.newSession(saveslot)
@@ -577,7 +1077,7 @@ constructor.</p></div>
 
         &#34;&#34;&#34;
         if self.askCloseSession():
-            result = askMaxChars(self)
+            result = AskMaxChars(self).result
             if result is None:
                 return
             chars, maxGear = result
@@ -596,7 +1096,7 @@ constructor.</p></div>
             self.session.removeTimeBar()
 
     def inventory(self):
-        &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+        &#34;&#34;&#34;Calls an `legends.ui.session.InventoryScreen` message,
         showing the player&#39;s inventory. Calls an error popup if the
         inventory is either not found or empty.
 
@@ -728,7 +1228,7 @@ it.</p>
 <span>def <span class="ident">inventory</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Calls an <code><a title="legends.ui.dialogs.InventoryScreen" href="dialogs.html#legends.ui.dialogs.InventoryScreen">InventoryScreen</a></code> message,
+<div class="desc"><p>Calls an <code><a title="legends.ui.session.InventoryScreen" href="session.html#legends.ui.session.InventoryScreen">InventoryScreen</a></code> message,
 showing the player's inventory. Calls an error popup if the
 inventory is either not found or empty.</p></div>
 <details class="source">
@@ -736,7 +1236,7 @@ inventory is either not found or empty.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def inventory(self):
-    &#34;&#34;&#34;Calls an `legends.ui.dialogs.InventoryScreen` message,
+    &#34;&#34;&#34;Calls an `legends.ui.session.InventoryScreen` message,
     showing the player&#39;s inventory. Calls an error popup if the
     inventory is either not found or empty.
 
@@ -771,7 +1271,7 @@ inventory is either not found or empty.</p></div>
         except FileNotFoundError:
             showerror(self, &#39;File Not Found&#39;, &#39;Save file not found.&#39;)
             return
-        saveslot = askSlot(self, save)
+        saveslot = AskSlot(self, save).result
         if saveslot is None:
             return
         self.newSession(saveslot)</code></pre>
@@ -793,7 +1293,7 @@ starts a new session using a roster of maxed characters.</p></div>
 
     &#34;&#34;&#34;
     if self.askCloseSession():
-        result = askMaxChars(self)
+        result = AskMaxChars(self).result
         if result is None:
             return
         chars, maxGear = result
@@ -857,304 +1357,6 @@ according to the value of the <code>showTimestamps</code> attribute.</p></div>
 </dd>
 </dl>
 </dd>
-<dt id="legends.ui.stlplanner.Session"><code class="flex name class">
-<span>class <span class="ident">Session</span></span>
-<span>(</span><span>stlplanner, saveslot=None, **options)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>A user session in the <em>STL Planner</em> app.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>saveslot</code></strong> :&ensp;<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code></dt>
-<dd>The
-<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object associated with the
-session.</dd>
-<dt><strong><code>timeBar</code></strong> :&ensp;<code>tk.Frame</code></dt>
-<dd>The horizontal bar at the top of the session
-frame that displays time stamp info connected with the
-associated save slot.</dd>
-<dt><strong><code>tab</code></strong> :&ensp;<code>tk.Frame</code></dt>
-<dd>The visible tab in the session frame.</dd>
-</dl>
-<p>The constructor creates a new session associated with the
-given <code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object. If none is provided,
-the session displays buttons that activate choices from the
-<code>File</code> menu.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>stlplanner</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></dt>
-<dd>The <code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> instance to be
-assigned as the parent of this session.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Session(tk.Frame):
-    &#34;&#34;&#34;A user session in the *STL Planner* app.
-
-    Attributes:
-        saveslot (legends.saveslot.SaveSlot): The
-            `legends.saveslot.SaveSlot` object associated with the
-            session.
-        timeBar (tk.Frame): The horizontal bar at the top of the session
-            frame that displays time stamp info connected with the
-            associated save slot.
-        tab (tk.Frame): The visible tab in the session frame.
-
-    &#34;&#34;&#34;
-    def __init__(self, stlplanner, saveslot=None, **options):
-        &#34;&#34;&#34;The constructor creates a new session associated with the
-        given `legends.saveslot.SaveSlot` object. If none is provided,
-        the session displays buttons that activate choices from the
-        `File` menu.
-
-        Args:
-            stlplanner (STLPlanner): The `STLPlanner` instance to be
-                assigned as the parent of this session.
-
-        &#34;&#34;&#34;
-        tk.Frame.__init__(self, stlplanner, **options)
-        self.saveslot = saveslot
-        self.timeBar = None
-        self.tab = tk.Frame(self)
-        self.tab.pack()
-        if saveslot is None:
-            self.startFrame()
-        else:
-            self.makeTimeBar()
-            self.rosterTab()
-
-    def startFrame(self):
-        &#34;&#34;&#34;Build the starting frame, with choices from the `File` menu.
-
-        &#34;&#34;&#34;
-        buttonbox = tk.Frame(self.tab)
-        tk.Button(
-            buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
-        ).grid(row=0, column=0, sticky=EW)
-        tk.Button(
-            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
-        ).grid(row=1, column=0, sticky=EW)
-        tk.Label(
-            buttonbox, text=&#39;Extract data from your local save file&#39;
-        ).grid(row=0, column=1, sticky=W)
-        tk.Label(
-            buttonbox, text=&#39;Create a roster of maxed characters&#39;
-        ).grid(row=1, column=1, sticky=W)
-        buttonbox.pack(padx=50, pady=50)
-
-    def makeTimeBar(self):
-        &#34;&#34;&#34;Builds a horizontal bar (a `tk.Frame` instance) containing
-        timestamp information from the associated save slot, then
-        assigns the bar to the `timeBar` attribute. If there is no save
-        slot, or the time bar already exists, or the `STLPlanner` master
-        prohibits it, the method does nothing.
-
-        &#34;&#34;&#34;
-        if (
-            self.saveslot is None
-            or self.timeBar is not None
-            or not self.master.showTimestamps.get()
-        ):
-            return
-
-        # build bar and initialize variables
-        self.timeBar = tk.Frame(self)
-        timestamps = self.saveslot.timestamps
-        start = (
-            &#39;start date: &#39;
-            + timestamps.startDate.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
-        )
-        last = (
-            &#39;last played: &#39;
-            + timestamps.timeLastPlayed.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
-        )
-        total = (
-            &#39;play duration: &#39; + cleanTime(timestamps.playDuration)
-        )
-        average = (
-            &#39;play time per day: &#39; + cleanTime(timestamps.playTimePerDay)
-        )
-
-        # build labels
-        labels = [None] * 4
-        for j in range(4):
-            labels[j] = tk.Label(
-                self.timeBar, borderwidth=2, relief=GROOVE, padx=10
-            )
-        for index, text in enumerate([start, last, total, average]):
-            labels[index].config(text=text)
-
-        # pack labels and bar
-        for label in labels:
-            label.pack(side=LEFT)
-        self.timeBar.pack(side=TOP)
-
-    def removeTimeBar(self):
-        &#34;&#34;&#34;If the time bar exists, it is destroyed and the `timeBar`
-        attribute is set to `None`.
-
-        &#34;&#34;&#34;
-        if self.timeBar is not None:
-            self.timeBar.destroy()
-            self.timeBar = None
-
-    def rosterTab(self):
-        &#34;&#34;&#34;Loads a new `legends.ui.rostertab.RosterTab` instance into
-        the `tab` attribute.
-
-        &#34;&#34;&#34;
-        self.tab.destroy()
-        self.tab = RosterTab(self)
-        self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
-        self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>tkinter.Frame</li>
-<li>tkinter.Widget</li>
-<li>tkinter.BaseWidget</li>
-<li>tkinter.Misc</li>
-<li>tkinter.Pack</li>
-<li>tkinter.Place</li>
-<li>tkinter.Grid</li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="legends.ui.stlplanner.Session.makeTimeBar"><code class="name flex">
-<span>def <span class="ident">makeTimeBar</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Builds a horizontal bar (a <code>tk.Frame</code> instance) containing
-timestamp information from the associated save slot, then
-assigns the bar to the <code>timeBar</code> attribute. If there is no save
-slot, or the time bar already exists, or the <code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> master
-prohibits it, the method does nothing.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def makeTimeBar(self):
-    &#34;&#34;&#34;Builds a horizontal bar (a `tk.Frame` instance) containing
-    timestamp information from the associated save slot, then
-    assigns the bar to the `timeBar` attribute. If there is no save
-    slot, or the time bar already exists, or the `STLPlanner` master
-    prohibits it, the method does nothing.
-
-    &#34;&#34;&#34;
-    if (
-        self.saveslot is None
-        or self.timeBar is not None
-        or not self.master.showTimestamps.get()
-    ):
-        return
-
-    # build bar and initialize variables
-    self.timeBar = tk.Frame(self)
-    timestamps = self.saveslot.timestamps
-    start = (
-        &#39;start date: &#39;
-        + timestamps.startDate.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
-    )
-    last = (
-        &#39;last played: &#39;
-        + timestamps.timeLastPlayed.strftime(&#39;%b %-d %Y %H:%M %Z&#39;)
-    )
-    total = (
-        &#39;play duration: &#39; + cleanTime(timestamps.playDuration)
-    )
-    average = (
-        &#39;play time per day: &#39; + cleanTime(timestamps.playTimePerDay)
-    )
-
-    # build labels
-    labels = [None] * 4
-    for j in range(4):
-        labels[j] = tk.Label(
-            self.timeBar, borderwidth=2, relief=GROOVE, padx=10
-        )
-    for index, text in enumerate([start, last, total, average]):
-        labels[index].config(text=text)
-
-    # pack labels and bar
-    for label in labels:
-        label.pack(side=LEFT)
-    self.timeBar.pack(side=TOP)</code></pre>
-</details>
-</dd>
-<dt id="legends.ui.stlplanner.Session.removeTimeBar"><code class="name flex">
-<span>def <span class="ident">removeTimeBar</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>If the time bar exists, it is destroyed and the <code>timeBar</code>
-attribute is set to <code>None</code>.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def removeTimeBar(self):
-    &#34;&#34;&#34;If the time bar exists, it is destroyed and the `timeBar`
-    attribute is set to `None`.
-
-    &#34;&#34;&#34;
-    if self.timeBar is not None:
-        self.timeBar.destroy()
-        self.timeBar = None</code></pre>
-</details>
-</dd>
-<dt id="legends.ui.stlplanner.Session.rosterTab"><code class="name flex">
-<span>def <span class="ident">rosterTab</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Loads a new <code><a title="legends.ui.rostertab.RosterTab" href="rostertab.html#legends.ui.rostertab.RosterTab">RosterTab</a></code> instance into
-the <code>tab</code> attribute.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def rosterTab(self):
-    &#34;&#34;&#34;Loads a new `legends.ui.rostertab.RosterTab` instance into
-    the `tab` attribute.
-
-    &#34;&#34;&#34;
-    self.tab.destroy()
-    self.tab = RosterTab(self)
-    self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
-    self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
-</details>
-</dd>
-<dt id="legends.ui.stlplanner.Session.startFrame"><code class="name flex">
-<span>def <span class="ident">startFrame</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Build the starting frame, with choices from the <code>File</code> menu.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def startFrame(self):
-    &#34;&#34;&#34;Build the starting frame, with choices from the `File` menu.
-
-    &#34;&#34;&#34;
-    buttonbox = tk.Frame(self.tab)
-    tk.Button(
-        buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
-    ).grid(row=0, column=0, sticky=EW)
-    tk.Button(
-        buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
-    ).grid(row=1, column=0, sticky=EW)
-    tk.Label(
-        buttonbox, text=&#39;Extract data from your local save file&#39;
-    ).grid(row=0, column=1, sticky=W)
-    tk.Label(
-        buttonbox, text=&#39;Create a roster of maxed characters&#39;
-    ).grid(row=1, column=1, sticky=W)
-    buttonbox.pack(padx=50, pady=50)</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 </dl>
 </section>
 </article>
@@ -1169,13 +1371,28 @@ the <code>tab</code> attribute.</p></div>
 <li><code><a title="legends.ui" href="index.html">legends.ui</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="legends.ui.stlplanner.cleanTime" href="#legends.ui.stlplanner.cleanTime">cleanTime</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="legends.ui.stlplanner.AskMaxChars" href="#legends.ui.stlplanner.AskMaxChars">AskMaxChars</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.stlplanner.AskMaxChars.body" href="#legends.ui.stlplanner.AskMaxChars.body">body</a></code></li>
+<li><code><a title="legends.ui.stlplanner.AskMaxChars.validate" href="#legends.ui.stlplanner.AskMaxChars.validate">validate</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.stlplanner.AskSlot" href="#legends.ui.stlplanner.AskSlot">AskSlot</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.stlplanner.AskSlot.body" href="#legends.ui.stlplanner.AskSlot.body">body</a></code></li>
+<li><code><a title="legends.ui.stlplanner.AskSlot.validate" href="#legends.ui.stlplanner.AskSlot.validate">validate</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.stlplanner.HelpScreen" href="#legends.ui.stlplanner.HelpScreen">HelpScreen</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.stlplanner.HelpScreen.body" href="#legends.ui.stlplanner.HelpScreen.body">body</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="legends.ui.stlplanner.STLPlanner" href="#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></h4>
 <ul class="two-column">
@@ -1187,15 +1404,6 @@ the <code>tab</code> attribute.</p></div>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newMaxChars" href="#legends.ui.stlplanner.STLPlanner.newMaxChars">newMaxChars</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newSession" href="#legends.ui.stlplanner.STLPlanner.newSession">newSession</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.setTimestamps" href="#legends.ui.stlplanner.STLPlanner.setTimestamps">setTimestamps</a></code></li>
-</ul>
-</li>
-<li>
-<h4><code><a title="legends.ui.stlplanner.Session" href="#legends.ui.stlplanner.Session">Session</a></code></h4>
-<ul class="">
-<li><code><a title="legends.ui.stlplanner.Session.makeTimeBar" href="#legends.ui.stlplanner.Session.makeTimeBar">makeTimeBar</a></code></li>
-<li><code><a title="legends.ui.stlplanner.Session.removeTimeBar" href="#legends.ui.stlplanner.Session.removeTimeBar">removeTimeBar</a></code></li>
-<li><code><a title="legends.ui.stlplanner.Session.rosterTab" href="#legends.ui.stlplanner.Session.rosterTab">rosterTab</a></code></li>
-<li><code><a title="legends.ui.stlplanner.Session.startFrame" href="#legends.ui.stlplanner.Session.startFrame">startFrame</a></code></li>
 </ul>
 </li>
 </ul>

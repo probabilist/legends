@@ -2,27 +2,10 @@
 
 """
 
-from legends.constants import STAT_ABBREVIATIONS, POWER_GRADIENT
+from legends.utils.functions import formatDict
+from legends.constants import POWER_GRADIENT, STAT_ABBREVIATIONS
 
-__all__ = ['formatDict', 'StatObject', 'Stats']
-
-def formatDict(D):
-    """Formats the given dictionary for display, putting each key-value
-    pair on its own line.
-
-    Args:
-        D (dict): The dictionary to format.
-
-    Returns:
-        str: The formatted string.
-
-    """
-    lines = [repr(k) + ': ' + repr(v) for k, v in D.items()]
-    display = '{' + lines[0] + ',\n'
-    for line in lines[1:-1]:
-        display += ' ' + line + ',\n'
-    display += ' ' + lines[-1] + '}'
-    return display
+__all__ = ['StatObject', 'Stats']
 
 class StatObject():
     """An object that stores named statistics as attributes.
@@ -50,14 +33,14 @@ class StatObject():
 
     def __add__(self, other):
         result = self.__class__()
-        for statName in self.statAbbrs:
-            statSum = getattr(self, statName) + getattr(other, statName)
-            setattr(result, statName, statSum)
+        for statAbbr in self.statAbbrs:
+            statSum = getattr(self, statAbbr) + getattr(other, statAbbr)
+            setattr(result, statAbbr, statSum)
         return result
 
     def __repr__(self):
         return 'StatObject({})'.format(formatDict({
-            statName: getattr(self, statName) for statName in self.statAbbrs
+            statAbbr: getattr(self, statAbbr) for statAbbr in self.statAbbrs
         }))
 
 class Stats(StatObject):

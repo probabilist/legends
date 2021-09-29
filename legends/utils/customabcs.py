@@ -6,9 +6,15 @@ Includes `BiMapping` (a one-to-one mapping), `RelSet` and
 
 """
 
-from collections.abc import MutableMapping, Collection
+from collections.abc import Collection, MutableMapping
 
-__all__ = ['ordPair', 'BiMapping', 'RelSet', 'MutableRelSet', 'MultiMapping']
+__all__ = [
+    'ordPair',
+    'BiMapping',
+    'MultiMapping',
+    'MutableRelSet',
+    'RelSet'
+]
 
 def ordPair(obj):
     """Checks if the given object is a 2-tuple. Returns `False` if it

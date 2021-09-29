@@ -32,47 +32,16 @@
 &#34;&#34;&#34;
 
 from datetime import datetime, timedelta, timezone
+from legends.utils.functions import ticksToDatetime, ticksToTimedelta
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
-from legends.constants import ITEMS
-from legends.gameobjects import Inventory
+from legends.constants import Inventory, ITEMS
 from legends.roster import Roster
 
 __all__ = [
-    &#39;ticksToTimedelta&#39;, &#39;ticksToDatetime&#39;, &#39;SaveSlot&#39;, &#39;STLTimeStamps&#39;
+    &#39;SaveSlot&#39;,
+    &#39;STLTimeStamps&#39;
 ]
-
-def ticksToTimedelta(ticks):
-    &#34;&#34;&#34;Converts a duration measured in &#34;ticks&#34; to a Python `timedelta`
-    object. There are 10 &#34;ticks&#34; in a microsecond. The .NET framework
-    uses ticks to mark time.
-
-    Args:
-        ticks (int): The number of tenths of a microsecond.
-
-    Returns:
-        timedelta: The converted duration.
-
-    &#34;&#34;&#34;
-    return timedelta(microseconds=ticks//10)
-
-def ticksToDatetime(ticks):
-    &#34;&#34;&#34;Converts a .NET timestamp to a Python `datetime` object. A .NET
-    timestamp returns the number of &#34;ticks&#34; since 1/1/0001. There are 10
-    &#34;ticks&#34; in a microsecond. (For comparison, a POSIX timestamp returns
-    the number of seconds since 1/1/1970.)
-
-    Args:
-        ticks (int): A timestamp in the .NET format.
-
-    Returns:
-        datetime: The converted timestamp.
-
-    &#34;&#34;&#34;
-    return (
-        datetime(1, 1, 1, tzinfo=timezone.utc)
-        + timedelta(microseconds=ticks//10)
-    )
 
 class SaveSlot():
     &#34;&#34;&#34;Data from one of three save slots in an STL save file.
@@ -87,7 +56,7 @@ class SaveSlot():
             player&#39;s inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as &#39;favorite&#39;.
-        inventory (legends.gameobjects.Inventory): The inventory
+        inventory (legends.constants.Inventory): The inventory
             associated with the save slot.
 
     &#34;&#34;&#34;
@@ -106,7 +75,7 @@ class SaveSlot():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
@@ -181,7 +150,7 @@ class STLTimeStamps():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the time stamps.
 
@@ -202,86 +171,6 @@ class STLTimeStamps():
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="legends.saveslot.ticksToDatetime"><code class="name flex">
-<span>def <span class="ident">ticksToDatetime</span></span>(<span>ticks)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Converts a .NET timestamp to a Python <code>datetime</code> object. A .NET
-timestamp returns the number of "ticks" since 1/1/0001. There are 10
-"ticks" in a microsecond. (For comparison, a POSIX timestamp returns
-the number of seconds since 1/1/1970.)</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>ticks</code></strong> :&ensp;<code>int</code></dt>
-<dd>A timestamp in the .NET format.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>datetime</code></dt>
-<dd>The converted timestamp.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def ticksToDatetime(ticks):
-    &#34;&#34;&#34;Converts a .NET timestamp to a Python `datetime` object. A .NET
-    timestamp returns the number of &#34;ticks&#34; since 1/1/0001. There are 10
-    &#34;ticks&#34; in a microsecond. (For comparison, a POSIX timestamp returns
-    the number of seconds since 1/1/1970.)
-
-    Args:
-        ticks (int): A timestamp in the .NET format.
-
-    Returns:
-        datetime: The converted timestamp.
-
-    &#34;&#34;&#34;
-    return (
-        datetime(1, 1, 1, tzinfo=timezone.utc)
-        + timedelta(microseconds=ticks//10)
-    )</code></pre>
-</details>
-</dd>
-<dt id="legends.saveslot.ticksToTimedelta"><code class="name flex">
-<span>def <span class="ident">ticksToTimedelta</span></span>(<span>ticks)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Converts a duration measured in "ticks" to a Python <code>timedelta</code>
-object. There are 10 "ticks" in a microsecond. The .NET framework
-uses ticks to mark time.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>ticks</code></strong> :&ensp;<code>int</code></dt>
-<dd>The number of tenths of a microsecond.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>timedelta</code></dt>
-<dd>The converted duration.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def ticksToTimedelta(ticks):
-    &#34;&#34;&#34;Converts a duration measured in &#34;ticks&#34; to a Python `timedelta`
-    object. There are 10 &#34;ticks&#34; in a microsecond. The .NET framework
-    uses ticks to mark time.
-
-    Args:
-        ticks (int): The number of tenths of a microsecond.
-
-    Returns:
-        timedelta: The converted duration.
-
-    &#34;&#34;&#34;
-    return timedelta(microseconds=ticks//10)</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -350,7 +239,7 @@ playing the associated save slot. Defaults to 0.</dd>
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the time stamps.
 
@@ -399,7 +288,7 @@ contained in the given save data.</p>
 <dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
 <dd>A decrypted dictionary representation of the
 player's save file, as returned by the
-<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<code><a title="legends.functions.decryptSaveFile" href="functions.html#legends.functions.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
 <dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
 <dd>The 0-based index of the save slot from which to
 read the time stamps.</dd>
@@ -415,7 +304,7 @@ read the time stamps.</dd>
     Args:
         save (dict): A decrypted dictionary representation of the
             player&#39;s save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the time stamps.
 
@@ -453,7 +342,7 @@ player's inventory.</dd>
 <dt><strong><code>favorites</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
 <dd>A list of
 characters the player has marked as 'favorite'.</dd>
-<dt><strong><code>inventory</code></strong> :&ensp;<code><a title="legends.gameobjects.Inventory" href="gameobjects.html#legends.gameobjects.Inventory">Inventory</a></code></dt>
+<dt><strong><code>inventory</code></strong> :&ensp;<code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
 <dd>The inventory
 associated with the save slot.</dd>
 </dl></div>
@@ -474,7 +363,7 @@ associated with the save slot.</dd>
             player&#39;s inventory.
         favorites (list of legends.gameobjects.Character): A list of
             characters the player has marked as &#39;favorite&#39;.
-        inventory (legends.gameobjects.Inventory): The inventory
+        inventory (legends.constants.Inventory): The inventory
             associated with the save slot.
 
     &#34;&#34;&#34;
@@ -493,7 +382,7 @@ associated with the save slot.</dd>
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 draw the data.
 
@@ -542,7 +431,7 @@ attributes.</p>
 <dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
 <dd>A decrypted dictionary representation of the
 player's save file, as returned by the
-<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<code><a title="legends.functions.decryptSaveFile" href="functions.html#legends.functions.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
 <dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
 <dd>The 0-based index of the save slot from which to
 draw the data.</dd>
@@ -564,7 +453,7 @@ or if the given save slot data is empty.</dd>
     Args:
         save (dict): A decrypted dictionary representation of the
             player&#39;s save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             draw the data.
 
@@ -635,12 +524,6 @@ in descending order.</dd>
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="legends.saveslot.ticksToDatetime" href="#legends.saveslot.ticksToDatetime">ticksToDatetime</a></code></li>
-<li><code><a title="legends.saveslot.ticksToTimedelta" href="#legends.saveslot.ticksToTimedelta">ticksToTimedelta</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

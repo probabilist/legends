@@ -8,10 +8,14 @@ from legends.utils.objrelations import OneToOne
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSAccessoryItems, GSCharacter
 from legends.constants import DESCRIPTIONS, SUMMON_POOL
-from legends.gameobjects import Gear, Particle, Character
+from legends.gameobjects import Character, Gear, Particle
 from legends.stats import Stats
 
-__all__ = ['readGear', 'readParts', 'Roster']
+__all__ = [
+    'readGear',
+    'readParts',
+    'Roster'
+]
 
 def readGear(save, slot):
     """The STL save file contains a list of gear, each one having a
@@ -23,7 +27,7 @@ def readGear(save, slot):
     Args:
         save (dict): A decrypted dictionary representation of the
             player's save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -49,7 +53,7 @@ def readParts(save, slot):
     Args:
         save (dict): A decrypted dictionary representation of the
             player's save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -103,7 +107,7 @@ class Roster():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
@@ -154,7 +158,7 @@ class Roster():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player's save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 

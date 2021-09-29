@@ -5,33 +5,199 @@ The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 """
 
 import tkinter as tk
-from tkinter import GROOVE, LEFT, Y, YES, DISABLED, NORMAL, W, EW, TOP, BOTTOM
-from legends.savefile import decryptSaveFile
+from tkinter import ttk
+from tkinter.scrolledtext import ScrolledText
+# pylint: disable-next=no-name-in-module
+from legends.constants import GSCharacter
+from legends.constants import (
+    ENABLED, HELP, SUMMON_POOL, STAT_INITIALS, UPCOMING
+)
+from legends.functions import decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
-    showerror, askSlot, askMaxChars, askyesno, HelpScreen, InventoryScreen
+    askyesno, ModalDialog, ModalMessage, showerror
 )
-from legends.ui.rostertab import RosterTab
+from legends.ui.session import InventoryScreen, Session
 
-__all__ = ['cleanTime', 'STLPlanner', 'Session']
+__all__ = ['AskMaxChars', 'AskSlot', 'HelpScreen', 'STLPlanner']
 
-def cleanTime(delta):
-    """Converts a `timedelta` object into a string description that
-    shows the number of days (if positive), hours, and minutes.
+class AskMaxChars(ModalDialog):
+    """A modal dialog used for creating a maxed roster.
 
-    Args:
-        delta (timedelta): The `timedelta` object to convert.
-
-    Returns:
-        str: The string description.
+    Attributes:
+        crew (tk.BooleanVar): True if the user wants to use the
+            characters in the Crew screen (i.e. those that are not
+            disabled).
+        upcoming (tk.BooleanVar): True if the user wants to use upcoming
+            characters.
+        summonableOnly (tk.BooleanVar): True if the user wants to
+            exclude characters that are not summonable.
+        storeOnly (tk.BooleanVar): True if the user wants to exclude
+            characters whose tokens are not in the daily store.
+        maxGear (tk.BooleanVar): True if the user wants the maxed
+            characters to also have maxed gear.
+        result (tuple): ([`str`], `bool`) The first value in the tuple is
+            the list of name IDs of characters the user wants to include
+            in the roster. The second value is `True` if the user wants
+            the maxed characters to also have maxed gear.
 
     """
-    minutes = int(delta.total_seconds()/60)
-    hours, minutes = minutes//60, minutes % 60
-    days, hours = hours//24, hours % 24
-    display = '{} days '.format(days) if days > 1 else ''
-    display += '{} hrs {} min'.format(hours, minutes)
-    return display
+    def __init__(self, root, parent=None):
+        self.crew = tk.BooleanVar(None, True)
+        self.upcoming = tk.BooleanVar(None, False)
+        self.summonableOnly = tk.BooleanVar(None, False)
+        self.storeOnly = tk.BooleanVar(None, False)
+        self.maxGear = tk.BooleanVar(None, True)
+        ModalDialog.__init__(self, root, parent, 'Choose character options')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        tk.Checkbutton(
+            master, text='include characters in Crew screen',
+            variable=self.crew
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text='include upcoming characters',
+            variable=self.upcoming
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text='exclude non-summonable characters',
+            variable=self.summonableOnly
+        ).pack(anchor=tk.W, padx=5, pady=(15,0))
+        tk.Checkbutton(
+            master, text='exclude characters not in daily store',
+            variable=self.storeOnly
+        ).pack(anchor=tk.W, padx=5)
+        tk.Checkbutton(
+            master, text='equip max gear on characters',
+            variable=self.maxGear
+        ).pack(anchor=tk.W, padx=5, pady=(15,0))
+
+    def validate(self):
+        """Ensure that the user has selected at least one character,
+        then set the result.
+
+        """
+        include = ENABLED if self.crew.get() else []
+        include.extend(UPCOMING if self.upcoming.get() else [])
+        nameIDs = []
+        for nameID in include:
+            if (
+                self.summonableOnly.get()
+                and nameID not in SUMMON_POOL['Core']['nameIDs']
+            ):
+                continue
+            if (
+                self.storeOnly.get()
+                and not GSCharacter[nameID]['DailyTokenVisible']
+            ):
+                continue
+            nameIDs.append(nameID)
+        if len(nameIDs) == 0:
+            showerror(
+                self.root, 'Empty Selection',
+                'These choices produce no characters.'
+            )
+            return False
+        self.result = nameIDs, self.maxGear.get()
+        return True
+
+class AskSlot(ModalDialog):
+    """A modal dialog that prompts the user to select a save slot.
+
+    Save slots are denoted in the game data as 0, 1, or 2. In the
+    `AskSlot` window, they are shown to the user as '1', '2', or '3'.
+
+    Attributes:
+        save (dict): A decrypted dictionary representation of the
+            player's save file, as returned by the
+            `legends.functions.decryptSaveFile` function.
+        displaySlot (tk.StringVar): The currently selected slot, as it
+            is displayed in the window.
+        result (SaveSlot or None): Inherited from `ModalDialog`, which
+            inherited it from `tk.simpledialog.Dialog`. Defaults to
+            `None`. Is set by the `AskSlot.validate` method to a
+            `SaveSlot` instance created from the chosen slot number.
+
+    """
+    def __init__(self, root, save, parent=None):
+        self.save = save
+        self.displaySlot = tk.StringVar(None, '1')
+        ModalDialog.__init__(self, root, parent, 'Choose a save slot')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        # create an informational label
+        msg = (
+            "Open Star Trek: Legends on this Mac and let it load to the "
+            + "splash screen. This will allow your cloud save to sync to "
+            + "the local hard drive. Then choose the save slot data you would "
+            + "like to use."
+        )
+        tk.Label(master, wraplength=250, justify=tk.LEFT, text=msg).pack()
+
+        # create the subframe used for selecting the slot
+        slotBar = tk.Frame(master)
+        tk.Label(slotBar, text='Extract from save slot:').pack(side=tk.LEFT)
+        cbox = ttk.Combobox(
+            slotBar,
+            textvariable=self.displaySlot,
+            values=['1', '2', '3'],
+            state='readonly',
+            width=1
+        )
+        cbox.pack()
+
+        # pack the subframe and return the combobox for focus
+        slotBar.pack(pady=10)
+        return cbox
+
+    def validate(self):
+        """Set the `result` attribute and return `True`.
+
+        """
+        slot = int(self.displaySlot.get()) - 1
+        key = '{} data'.format(slot)
+        if key not in self.save or not self.save[key]:
+            showerror(
+                self.root,
+                'Slot Error',
+                'No save data found in slot {}.'.format(slot + 1)
+            )
+            return False
+        self.result = SaveSlot()
+        self.result.fromFile(self.save, slot)
+        return True
+
+class HelpScreen(ModalMessage):
+    """A message dialog giving help on the *STL Planner* app.
+
+    """
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, 'Roster Help')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        text = ScrolledText(master)
+        glossary = '\n'.join(
+            '    {} = {}'.format(v.rjust(3), k)
+            for k,v in STAT_INITIALS.items()
+        )
+        glossary += (
+            '\n    MGL = Missing gear levels'
+            + '\n    MGR = Missing gear ranks'
+            + '\n    MSL = Missing skill levels'
+        )
+        text.insert('1.0', HELP.format(glossary))
+        text.config(state=tk.DISABLED)
+        text.focus()
+        text.pack()
 
 class STLPlanner(tk.Tk):
     """The *STL Planner* main window.
@@ -45,8 +211,9 @@ class STLPlanner(tk.Tk):
             the menu in which the option exists. The second value is the
             0-based index of the option within that menu. Defaults to an
             empty list.
-        session (Session): The currently running user session. Defaults
-            to a new `Session` instance with no save slot.
+        session (legends.ui.session.Session): The currently running user
+            session. Defaults to a new `legends.ui.session.Session`
+            instance with no save slot.
 
     """
 
@@ -76,7 +243,7 @@ class STLPlanner(tk.Tk):
     @menuEnabled.setter
     def menuEnabled(self, value):
         self._menuEnabled = value
-        state = NORMAL if value else DISABLED
+        state = tk.NORMAL if value else tk.DISABLED
         for menu, index in self.disableOnModal:
             menu.entryconfig(index, state=state)
 
@@ -163,7 +330,7 @@ class STLPlanner(tk.Tk):
             except FileNotFoundError:
                 showerror(self, 'File Not Found', 'Save file not found.')
                 return
-            saveslot = askSlot(self, save)
+            saveslot = AskSlot(self, save).result
             if saveslot is None:
                 return
             self.newSession(saveslot)
@@ -174,7 +341,7 @@ class STLPlanner(tk.Tk):
 
         """
         if self.askCloseSession():
-            result = askMaxChars(self)
+            result = AskMaxChars(self).result
             if result is None:
                 return
             chars, maxGear = result
@@ -193,7 +360,7 @@ class STLPlanner(tk.Tk):
             self.session.removeTimeBar()
 
     def inventory(self):
-        """Calls an `legends.ui.dialogs.InventoryScreen` message,
+        """Calls an `legends.ui.session.InventoryScreen` message,
         showing the player's inventory. Calls an error popup if the
         inventory is either not found or empty.
 
@@ -205,123 +372,3 @@ class STLPlanner(tk.Tk):
             showerror(self, 'Inventory Error', 'No inventory found.')
             return
         InventoryScreen(self)
-
-class Session(tk.Frame):
-    """A user session in the *STL Planner* app.
-
-    Attributes:
-        saveslot (legends.saveslot.SaveSlot): The
-            `legends.saveslot.SaveSlot` object associated with the
-            session.
-        timeBar (tk.Frame): The horizontal bar at the top of the session
-            frame that displays time stamp info connected with the
-            associated save slot.
-        tab (tk.Frame): The visible tab in the session frame.
-
-    """
-    def __init__(self, stlplanner, saveslot=None, **options):
-        """The constructor creates a new session associated with the
-        given `legends.saveslot.SaveSlot` object. If none is provided,
-        the session displays buttons that activate choices from the
-        `File` menu.
-
-        Args:
-            stlplanner (STLPlanner): The `STLPlanner` instance to be
-                assigned as the parent of this session.
-
-        """
-        tk.Frame.__init__(self, stlplanner, **options)
-        self.saveslot = saveslot
-        self.timeBar = None
-        self.tab = tk.Frame(self)
-        self.tab.pack()
-        if saveslot is None:
-            self.startFrame()
-        else:
-            self.makeTimeBar()
-            self.rosterTab()
-
-    def startFrame(self):
-        """Build the starting frame, with choices from the `File` menu.
-
-        """
-        buttonbox = tk.Frame(self.tab)
-        tk.Button(
-            buttonbox, text='from HD', command=self.master.newFromFile
-        ).grid(row=0, column=0, sticky=EW)
-        tk.Button(
-            buttonbox, text='MAX', command=self.master.newMaxChars
-        ).grid(row=1, column=0, sticky=EW)
-        tk.Label(
-            buttonbox, text='Extract data from your local save file'
-        ).grid(row=0, column=1, sticky=W)
-        tk.Label(
-            buttonbox, text='Create a roster of maxed characters'
-        ).grid(row=1, column=1, sticky=W)
-        buttonbox.pack(padx=50, pady=50)
-
-    def makeTimeBar(self):
-        """Builds a horizontal bar (a `tk.Frame` instance) containing
-        timestamp information from the associated save slot, then
-        assigns the bar to the `timeBar` attribute. If there is no save
-        slot, or the time bar already exists, or the `STLPlanner` master
-        prohibits it, the method does nothing.
-
-        """
-        if (
-            self.saveslot is None
-            or self.timeBar is not None
-            or not self.master.showTimestamps.get()
-        ):
-            return
-
-        # build bar and initialize variables
-        self.timeBar = tk.Frame(self)
-        timestamps = self.saveslot.timestamps
-        start = (
-            'start date: '
-            + timestamps.startDate.strftime('%b %-d %Y %H:%M %Z')
-        )
-        last = (
-            'last played: '
-            + timestamps.timeLastPlayed.strftime('%b %-d %Y %H:%M %Z')
-        )
-        total = (
-            'play duration: ' + cleanTime(timestamps.playDuration)
-        )
-        average = (
-            'play time per day: ' + cleanTime(timestamps.playTimePerDay)
-        )
-
-        # build labels
-        labels = [None] * 4
-        for j in range(4):
-            labels[j] = tk.Label(
-                self.timeBar, borderwidth=2, relief=GROOVE, padx=10
-            )
-        for index, text in enumerate([start, last, total, average]):
-            labels[index].config(text=text)
-
-        # pack labels and bar
-        for label in labels:
-            label.pack(side=LEFT)
-        self.timeBar.pack(side=TOP)
-
-    def removeTimeBar(self):
-        """If the time bar exists, it is destroyed and the `timeBar`
-        attribute is set to `None`.
-
-        """
-        if self.timeBar is not None:
-            self.timeBar.destroy()
-            self.timeBar = None
-
-    def rosterTab(self):
-        """Loads a new `legends.ui.rostertab.RosterTab` instance into
-        the `tab` attribute.
-
-        """
-        self.tab.destroy()
-        self.tab = RosterTab(self)
-        self.tab.pack(side=BOTTOM, expand=YES, fill=Y)
-        self.master.title('STL Planner - Roster')

@@ -1,4 +1,4 @@
-"""The constants used in the `legends` package.
+"""Constants and custom data structures used in the `legends` package.
 
 Each json file in `legends/data` is converted to a constant. The
 variable name is the file name without extension, and the variable
@@ -27,20 +27,6 @@ Attributes:
     RARITY_COLORS (dict): {`str`:`str`} A dictionary mapping character
         rarities to color names in `tkinter`.
     ROLES (list of str): A list of roles in the game.
-    STAT_ABBREVIATIONS (dict): A dictionary mapping stat names as they
-        appear in `GSBaseStat` to abbreviations used throughout this
-        package, typically for attribute names.
-    SUMMON_POOL (dict): {`str`:`dict`} A dictionary mapping pool names
-        ('Core' or one the roles in `ROLES`) to a dictionary with three
-        keys: 'nameIDs', which maps to a dictionary connecting name IDs
-        of the characters in that particular summon pool to their summon
-        probabilities; 'rarityChances', which maps to the probabilities
-        of summoning the available rarities; and 'cost', which maps to
-        the number of orbs required to summon from that pool. See the
-        examples below.
-    SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
-        dictionary mapping pool names their summon IDs, which are used
-        by the game data to identify particular summon pools.
     PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
         mapping particle rarities to a list whose indices denote the
         0-based level of the particle and whose values denote the number
@@ -52,6 +38,23 @@ Attributes:
         particle and whose values denote the value of the given stat on
         a particle of the given rarity and level. See the examples
         below.
+    STAT_ABBREVIATIONS (dict): {`str`:`str`} A dictionary mapping stat
+        names as they appear in `GSBaseStat` to abbreviations used
+        throughout this package, typically for attribute names.
+    STAT_INITIALS (dict): {`str`:`str`} A dictionary mapping stat names
+        as they appear in `GSBaseStat` to one or two letter short forms,
+        typically used in GUI elements where brevity is essential.
+    SUMMON_POOL (dict): {`str`:`dict`} A dictionary mapping pool names
+        ('Core' or one the roles in `ROLES`) to a dictionary with three
+        keys: 'nameIDs', which maps to a dictionary connecting name IDs
+        of the characters in that particular summon pool to their summon
+        probabilities; 'rarityChances', which maps to the probabilities
+        of summoning the available rarities; and 'cost', which maps to
+        the number of orbs required to summon from that pool. See the
+        examples below.
+    SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
+        dictionary mapping pool names their summon IDs, which are used
+        by the game data to identify particular summon pools.
     UPCOMING (list of str): A list of name IDs of characters believed to
         be in the queue for future release.
 
@@ -80,16 +83,31 @@ Examples:
 
 """
 
+from collections.abc import MutableMapping
+from json import load
 from os import listdir
 from os.path import abspath, dirname
-from json import load
 from legends.utils.relations import bidict
 
 __all__ = [
-    'STAT_ABBREVIATIONS', 'STAT_INITIALS', 'POWER_GRADIENT', 'POWER_AT_ORIGIN',
-    'DESCRIPTIONS', 'ROLES', 'RARITIES', 'RARITY_COLORS', 'PART_STAT_UNLOCKED',
-    'PART_STAT_VALUES', 'ENABLED', 'UPCOMING', 'SUMMON_POOL',
-    'SUMMON_POOL_IDS', 'HELP', 'Item', 'ITEMS'
+    'DESCRIPTIONS',
+    'ENABLED',
+    'HELP',
+    'Item',
+    'ITEMS',
+    'POWER_GRADIENT',
+    'POWER_AT_ORIGIN',
+    'PART_STAT_UNLOCKED',
+    'RARITIES',
+    'PART_STAT_VALUES',
+    'RARITY_COLORS',
+    'ROLES',
+    'STAT_ABBREVIATIONS',
+    'STAT_INITIALS',
+    'SUMMON_POOL',
+    'SUMMON_POOL_IDS',
+    'UPCOMING',
+    'Inventory'
 ]
 
 rootPath = abspath(dirname(__file__))
@@ -113,39 +131,6 @@ _.update(GSBaseStat)
 del _['MaxHealth']
 GSBaseStat = _
 
-STAT_ABBREVIATIONS = {
-    'Health': 'hlth',
-    'Attack': 'att',
-    'Speed': 'spd',
-    'Defense': 'dfn',
-    'Tech': 'tech',
-    'CritDamage': 'cd',
-    'CritChance': 'cc',
-    'GlancingDamage': 'gd',
-    'GlancingChance': 'gc',
-    'Resolve': 'res'
-}
-STAT_INITIALS = {
-    'Health': 'H',
-    'Attack': 'A',
-    'Speed': 'S',
-    'Defense': 'D',
-    'Tech': 'T',
-    'CritDamage': 'CD',
-    'CritChance': 'CC',
-    'GlancingDamage': 'GD',
-    'GlancingChance': 'GC',
-    'Resolve': 'R'
-}
-
-POWER_GRADIENT = {}
-POWER_AT_ORIGIN = 0
-for statName, statData in GSBaseStat.items():
-    m = statData['MinValue']
-    M = statData['MaxValue']
-    POWER_GRADIENT[statName] = 10 / (M - m)
-    POWER_AT_ORIGIN += (-m) * 10 / (M - m)
-
 DESCRIPTIONS = {}
 for D in lang_en_us['List']: # pylint: disable=undefined-variable
     key = D['key']
@@ -153,99 +138,10 @@ for D in lang_en_us['List']: # pylint: disable=undefined-variable
     if key:
         DESCRIPTIONS[key] = value
 
-ROLES = ['Command', 'Engineering', 'Medical', 'Science', 'Security']
-RARITIES = ['Common', 'Rare', 'VeryRare', 'Epic', 'Legendary']
-RARITY_COLORS = {
-    'Common': 'cyan',
-    'Rare': 'lawn green',
-    'VeryRare': 'orange',
-    'Epic': 'MediumPurple1',
-    'Legendary': 'yellow'
-}
-
-PART_STAT_UNLOCKED = {
-    'Common': [1, 2, 2, 2, 2],
-    'Rare': [1, 2, 2, 2, 2],
-    'VeryRare': [1, 2, 2, 3, 3],
-    'Epic': [2, 3, 3, 4, 4],
-    'Legendary': [2, 3, 3, 4, 4]
-}
-
-# initialize PART_STAT_VALUES
-PART_STAT_VALUES = {
-    statName: {rarity: [0] * 5 for rarity in RARITIES}
-    for statName in
-    GSAccessoryStatGeneration # pylint: disable=undefined-variable
-}
-# fill PART_STAT_VALUES
-# pylint: disable-next=undefined-variable
-for data in GSAccessoryStatGrowth.values():
-    statName = data['Stat']
-    level = data['Level']
-    rarity = data['Rarity']
-    statVal = data['StatIncrease']
-    PART_STAT_VALUES[statName][rarity][level - 1] = statVal
-
 ENABLED = [
     # pylint: disable-next=undefined-variable
     nameID for nameID, data in GSCharacter.items() if data['Type'] == 'Normal'
 ]
-UPCOMING = ['Tuvok', 'Gowron', 'JadziaDax', 'PicardOld', 'JudgeQ']
-
-# initialize SUMMON_POOL and SUMMON_POOL_IDS
-SUMMON_POOL = {'Core': {'nameIDs': {}}}
-SUMMON_POOL.update({role: {'nameIDs': {}} for role in ROLES})
-SUMMON_POOL_IDS = bidict()
-# build SUMMON_POOL_IDS; keep only highest unlocked summon pools
-for pool in SUMMON_POOL:
-    summonID = max(
-        (
-            # pylint: disable-next=undefined-variable
-            data['summonId'] for key, data in GSSummonSetup.items()
-            if key[7:10] == pool[:3]
-        ),
-        key=lambda summonID:int(summonID[-2:])
-    )
-    SUMMON_POOL_IDS[pool] = summonID
-# retrieve rarity chances
-for data in GSSummonPools.values(): # pylint: disable=undefined-variable
-    summonID = data['summonID']
-    if summonID in SUMMON_POOL_IDS.values():
-        pool = SUMMON_POOL_IDS.inverse[summonID]
-        SUMMON_POOL[pool]['rarityChances'] = data['rarityChances']
-# retrieve costs
-for data in GSSummonSetup.values(): # pylint: disable=undefined-variable
-    summonID = data['summonId']
-    if summonID in SUMMON_POOL_IDS.values():
-        pool = SUMMON_POOL_IDS.inverse[summonID]
-        SUMMON_POOL[pool]['cost'] = data['costQuantity']
-# retrieve characters in each summon pool
-for data in GSSummonItems.values(): # pylint: disable=undefined-variable
-    for summonID in data['filterGroups']:
-        if summonID in SUMMON_POOL_IDS.values():
-            pool = SUMMON_POOL_IDS.inverse[summonID]
-            SUMMON_POOL[pool]['nameIDs'][data['itemID']] = None
-# raise an error if Core does not contain everyone in other pools
-for pool, data in SUMMON_POOL.items():
-    if pool == 'Core':
-        continue
-    for nameID in data['nameIDs']:
-        if nameID not in SUMMON_POOL['Core']['nameIDs']:
-            raise ValueError(
-                '{} in {} summon pool but not in Core'.format(nameID, pool)
-            )
-# add summoning probabilities
-for pool, data in SUMMON_POOL.items():
-    for rarity in RARITIES:
-        nameIDs = [
-            nameID for nameID in data['nameIDs']
-            # pylint: disable-next=undefined-variable
-            if GSCharacter[nameID]['Rarity'] == rarity
-        ]
-        if nameIDs:
-            prob = data['rarityChances'][rarity] / len(nameIDs)
-            for nameID in nameIDs:
-                data['nameIDs'][nameID] = prob
 
 # read and store the help file
 with open(rootPath + '/help.txt', encoding='utf-8') as f:
@@ -337,3 +233,252 @@ class Item():
 
 # pylint: disable-next=undefined-variable
 ITEMS = {itemID: Item(itemID) for itemID in GSItem}
+
+POWER_GRADIENT = {}
+POWER_AT_ORIGIN = 0
+for statName, statData in GSBaseStat.items():
+    m = statData['MinValue']
+    M = statData['MaxValue']
+    POWER_GRADIENT[statName] = 10 / (M - m)
+    POWER_AT_ORIGIN += (-m) * 10 / (M - m)
+
+PART_STAT_UNLOCKED = {
+    'Common': [1, 2, 2, 2, 2],
+    'Rare': [1, 2, 2, 2, 2],
+    'VeryRare': [1, 2, 2, 3, 3],
+    'Epic': [2, 3, 3, 4, 4],
+    'Legendary': [2, 3, 3, 4, 4]
+}
+
+RARITIES = ['Common', 'Rare', 'VeryRare', 'Epic', 'Legendary']
+
+# initialize PART_STAT_VALUES
+PART_STAT_VALUES = {
+    statName: {rarity: [0] * 5 for rarity in RARITIES}
+    for statName in
+    GSAccessoryStatGeneration # pylint: disable=undefined-variable
+}
+# fill PART_STAT_VALUES
+# pylint: disable-next=undefined-variable
+for data in GSAccessoryStatGrowth.values():
+    statName = data['Stat']
+    level = data['Level']
+    rarity = data['Rarity']
+    statVal = data['StatIncrease']
+    PART_STAT_VALUES[statName][rarity][level - 1] = statVal
+
+RARITY_COLORS = {
+    'Common': 'cyan',
+    'Rare': 'lawn green',
+    'VeryRare': 'orange',
+    'Epic': 'MediumPurple1',
+    'Legendary': 'yellow'
+}
+
+ROLES = ['Command', 'Engineering', 'Medical', 'Science', 'Security']
+
+STAT_ABBREVIATIONS = {
+    'Health': 'hlth',
+    'Attack': 'att',
+    'Speed': 'spd',
+    'Defense': 'dfn',
+    'Tech': 'tech',
+    'CritDamage': 'cd',
+    'CritChance': 'cc',
+    'GlancingDamage': 'gd',
+    'GlancingChance': 'gc',
+    'Resolve': 'res'
+}
+STAT_INITIALS = {
+    'Health': 'H',
+    'Attack': 'A',
+    'Speed': 'S',
+    'Defense': 'D',
+    'Tech': 'T',
+    'CritDamage': 'CD',
+    'CritChance': 'CC',
+    'GlancingDamage': 'GD',
+    'GlancingChance': 'GC',
+    'Resolve': 'R'
+}
+
+# initialize SUMMON_POOL and SUMMON_POOL_IDS
+SUMMON_POOL = {'Core': {'nameIDs': {}}}
+SUMMON_POOL.update({role: {'nameIDs': {}} for role in ROLES})
+SUMMON_POOL_IDS = bidict()
+# build SUMMON_POOL_IDS; keep only highest unlocked summon pools
+for pool in SUMMON_POOL:
+    summonID = max(
+        (
+            # pylint: disable-next=undefined-variable
+            data['summonId'] for key, data in GSSummonSetup.items()
+            if key[7:10] == pool[:3]
+        ),
+        key=lambda summonID:int(summonID[-2:])
+    )
+    SUMMON_POOL_IDS[pool] = summonID
+# retrieve rarity chances
+for data in GSSummonPools.values(): # pylint: disable=undefined-variable
+    summonID = data['summonID']
+    if summonID in SUMMON_POOL_IDS.values():
+        pool = SUMMON_POOL_IDS.inverse[summonID]
+        SUMMON_POOL[pool]['rarityChances'] = data['rarityChances']
+# retrieve costs
+for data in GSSummonSetup.values(): # pylint: disable=undefined-variable
+    summonID = data['summonId']
+    if summonID in SUMMON_POOL_IDS.values():
+        pool = SUMMON_POOL_IDS.inverse[summonID]
+        SUMMON_POOL[pool]['cost'] = data['costQuantity']
+# retrieve characters in each summon pool
+for data in GSSummonItems.values(): # pylint: disable=undefined-variable
+    for summonID in data['filterGroups']:
+        if summonID in SUMMON_POOL_IDS.values():
+            pool = SUMMON_POOL_IDS.inverse[summonID]
+            SUMMON_POOL[pool]['nameIDs'][data['itemID']] = None
+# raise an error if Core does not contain everyone in other pools
+for pool, data in SUMMON_POOL.items():
+    if pool == 'Core':
+        continue
+    for nameID in data['nameIDs']:
+        if nameID not in SUMMON_POOL['Core']['nameIDs']:
+            raise ValueError(
+                '{} in {} summon pool but not in Core'.format(nameID, pool)
+            )
+# add summoning probabilities
+for pool, data in SUMMON_POOL.items():
+    for rarity in RARITIES:
+        nameIDs = [
+            nameID for nameID in data['nameIDs']
+            # pylint: disable-next=undefined-variable
+            if GSCharacter[nameID]['Rarity'] == rarity
+        ]
+        if nameIDs:
+            prob = data['rarityChances'][rarity] / len(nameIDs)
+            for nameID in nameIDs:
+                data['nameIDs'][nameID] = prob
+
+UPCOMING = ['Tuvok', 'Gowron', 'JadziaDax', 'PicardOld', 'JudgeQ']
+
+class Inventory(MutableMapping):
+    """A collection of items in STL.
+
+    The `Inventory` class is a dictionary-like data structure, mapping
+    each item in `ITEMS` to the quantity of that item that exists in the
+    player's inventory. Keys cannot be deleted. Instead, deleting a key
+    simply changes its value to 0. Iterating over an `Inventory` object
+    will skip over items that are either irrelevant to the `legends`
+    package, or are implemented elsewhere. The skipped items are
+    determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
+    To iterate over all keys, simply iterate over `ITEMS`.
+    The `__len__()` method also does not consider these skipped items.
+
+    """
+
+    hiddenCategories = ['Token', 'PlayerAvatar', 'Emote']
+    """`list of str`: A list of category names, as they appear in the
+    `category` attribute of an `legends.constants.Item` instance, that
+    are of limited use or implemented elsewhere in the `legends`
+    package.
+    """
+
+    hiddenItemIDs = [
+        'Credits', 'Dilithium', 'Tritanium', 'Player XP', 'PvP Stamina',
+        'Alliance Stamina', 'EventPoint', 'PvP Chest Points',
+        'Shards Advanced', 'Shards Elite', 'Shards Credit',
+        'Shards Biomimetic', 'Shards Protomatter', 'Shards_Worf',
+        'Shards_McCoy', 'Dungeon Currency', 'Dungeon Stamina'
+    ]
+    """`list of str`: A list of item IDs, as they appear in `GSItem`,
+    that are of limited use or implemented elsewhere in the `legends`
+    package.
+    """
+
+    def __init__(self, initDict=None):
+        """The constructor initializes the `Inventory` instance with one
+        key for each item in `ITEMS`, and all values 0. If the
+        `initData` argument is given, it is used to initialize the
+        values.
+
+        Args:
+            initData (dict): {`str`:`int`} A dictionary mapping item
+                IDs, as they appear in `GSItem`, to nonnegative
+                integers. Used to initialize the quantities in the
+                `Inventory` instance.
+
+        """
+        self._data = {}
+        for itemID in GSItem: # pylint: disable=undefined-variable
+            self._data[itemID] = 0
+        initDict = {} if initDict is None else initDict
+        for itemID, qty in initDict.items():
+            self._data[itemID] = qty
+
+    @property
+    def xp(self):
+        """`int`: The total xp of all Bio-Gel items in the inventory."""
+        return sum(qty * item.xp for item, qty in self.itemsByCat('Bio-Gel'))
+
+    def __getitem__(self, item):
+        return self._data[item.itemID]
+
+    def __setitem__(self, item, qty):
+        self._data[item.itemID] = qty
+
+    def __delitem__(self, item):
+        self._data[item.itemID] = 0
+
+    def __iter__(self):
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                yield ITEMS[itemID]
+
+    def __len__(self):
+        count = 0
+        for itemID in self._data:
+            if not self._hidden(itemID):
+                count += 1
+        return count
+
+    def __add__(self, other):
+        result = Inventory()
+        for item in self:
+            result[item] = self[item] + other[item]
+        return result
+
+    def _hidden(self, itemID):
+        if itemID in self.hiddenItemIDs:
+            return True
+        if ITEMS[itemID].category in self.hiddenCategories:
+            return True
+        return False
+
+    def keysByCat(self, category):
+        """Returns an iterator over all keys that match the given
+        category, skipping any keys that are skipped during normal
+        iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        """
+        return (item for item in self if item.category == category)
+
+    def itemsByCat(self, category):
+        """Returns an iterator over all (key, value) tuples that match
+        the given category, skipping any keys that are skipped during
+        normal iteration.
+
+        Args:
+            category (str): The category to iterate over.
+
+        """
+        return (
+            (item, qty) for item, qty in self.items()
+            if item.category == category
+        )
+
+    def __repr__(self):
+        return 'Inventory({!r})'.format({
+            itemID: qty for itemID, qty in self._data.items()
+            if qty > 0
+        })

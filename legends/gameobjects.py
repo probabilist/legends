@@ -3,395 +3,26 @@
 """
 
 from re import findall
-from collections.abc import MutableMapping
 from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
+from legends.constants import GSCharacter, GSGear, GSSkill
 from legends.constants import (
-    GSSkill, GSCharacter, GSLevel, GSGear, GSRank, GSBaseStat, GSGearLevel,
-    GSSkillUpgrade, GSItem
+    DESCRIPTIONS, PART_STAT_UNLOCKED, RARITIES
 )
-from legends.constants import (
-    DESCRIPTIONS, RARITIES, PART_STAT_VALUES, PART_STAT_UNLOCKED, ITEMS
+from legends.functions import (
+    getCharStats, getGearStats, getPartStats, levelFromXP, skillToMaxCost,
+    tokensNeeded, xpFromLevel
 )
 from legends.stats import Stats
 
 __all__ = [
-    'levelFromXP', 'xpFromLevel', 'tokensNeeded', 'getCharStats',
-    'getGearStats', 'getPartStats', 'skillUpgradeCost', 'skillToMaxCost',
-    'Gear', 'Particle', 'GearSlot', 'PartSlot', 'Character', 'Skill',
-    'Inventory'
+    'Character',
+    'Gear',
+    'GearSlot',
+    'Particle',
+    'PartSlot',
+    'Skill'
 ]
-
-def levelFromXP(xp, rarity='Common'):
-    """Calculates the level of a character from its XP.
-
-    Args:
-        xp (int): The XP of the character.
-        rarity (str): The rarity of the character.
-
-    Returns:
-        int: The level of the character.
-
-    Raises:
-        ValueError: If the level cannot be determined from the given xp
-            value and the data in `GSLevel`.
-
-    """
-    level = None
-    for j in reversed(range(100)):
-        xpNeeded = GSLevel[rarity + '_' + str(j)]['Experience']
-        if xp >= xpNeeded:
-            level = j
-            break
-    else:
-        raise ValueError(repr(xp) + ' could not be converted from XP to level')
-    return level
-
-def xpFromLevel(level, rarity='Common'):
-    """Calculates the minimum XP of a character from its level.
-
-    Args:
-        level (int): The level of the character.
-        rarity (str): The rarity of the character.
-
-    Returns:
-        int: The minimum possible XP the character could have.
-
-    """
-    return GSLevel[rarity + '_' + str(level)]['Experience']
-
-def tokensNeeded(rarity, rank):
-    """Returns the number of tokens needed by a character of the given
-    rarity and rank to move up to the next rank.
-
-    Args:
-        rarity (str): The rarity of the character.
-        rank (int): The current rank of the character.
-
-    Returns:
-        int: The total number of tokens need for the character to
-            advance to the next rank.
-
-    """
-    if rank == 9:
-        return 0
-    # pylint: disable-next=undefined-variable
-    return GSRank['{}_{}'.format(rarity, rank + 1)]['RequiredTokenCount']
-
-def getCharStats(nameID, rank, level):
-    """Calculates a character's naked stats from its nameID, rank, and
-    level.
-
-    Args:
-        nameID (str): The name ID of the character, as it appears in
-            `GSCharacter`.
-        rank (int): The rank of the character.
-        level (int): The level of the character.
-
-    Returns:
-        dict: A dictionary mapping stat names, as they appear in
-            `GSBaseStat`, to stat values.
-
-    """
-    rarity = GSCharacter[nameID]['Rarity']
-    stats = {}
-    for statName, data in GSBaseStat.items():
-        m = data['MinValue'] #pylint: disable=invalid-name
-        M = data['MaxValue'] #pylint: disable=invalid-name
-        t = GSCharacter[nameID][statName] #pylint: disable=invalid-name
-        baseStat = m + t * (M - m)
-        try:
-            levelMod = GSLevel[rarity + '_' + str(level)][
-                    statName + 'Modifier'
-                ]
-            rankMod = GSRank[rarity + '_' + str(rank)][
-                    statName + 'Modifier'
-                ]
-        except KeyError:
-            levelMod = 1
-            rankMod = 1
-        statVal = baseStat * levelMod * rankMod
-        stats[statName] = statVal
-    return stats
-
-def getGearStats(gearID, level):
-    """Calculates a gear's stats from its gear ID and level.
-
-    Args:
-        gearID (str): The gear ID as it appears in `GSGear`.
-        level (int): The level of the gear. (See `Gear.level`.)
-
-    Returns:
-        dict: A dictionary mapping stat names, as they appear in
-            `GSBaseStat`, to stat values.
-
-    """
-    stats = {statName: 0 for statName in GSBaseStat}
-    gearLevelID = '[{}, {}]'.format(gearID, level)
-    numStats = GSGearLevel[gearLevelID]['m_StatBrancheCount']
-    for i in range(numStats):
-        data = GSGear[gearID]['m_Stats'][i]
-        statName = data['m_Type']
-        statBase = data['m_BaseValue']
-        statIncr = data['m_IncreaseValue']
-        statVal = statBase + (level - 10 * i) * statIncr
-        stats[statName] += statVal
-    return stats
-
-def getPartStats(rarity, level, statList):
-    """Calculates a particle's stats from its rarity, level, and list of
-    stat names.
-
-    Args:
-        rarity (str): The particle's rarity.
-        level (int): The particle's level.
-        statList (list of str): The stat names on the particle.
-
-    Returns:
-        dict: A dictionary mapping stat names, as they appear in
-            `GSBaseStat`, to stat values.
-
-    """
-    stats = {statName: 0 for statName in GSBaseStat}
-    for statName in statList:
-        stats[statName] = (
-            PART_STAT_VALUES[statName][rarity][level - 1]
-        )
-    return stats
-
-def skillUpgradeCost(skillID, level):
-    """Computes and returns the cost of leveling the given skill to the
-    given level, from the previous level.
-
-    Args:
-        skillID (str): The skill ID, as it appears in `GSSkill`, of the
-            given skill.
-        level (int): The level to which the skill is being upgraded. If
-            set to 1, returns the cost of unlocking the skill.
-
-    Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `Inventory` instance.
-
-    """
-    key = 'GSSkillKey(id = "{}", level = "{}")'.format(skillID, level)
-    cost = Inventory()
-    for itemID, qty in GSSkillUpgrade[key]['price']['AllItems'].items():
-        cost[ITEMS[itemID]] += qty
-    return cost
-
-def skillToMaxCost(skillID, currLvl):
-    """Computes and returns the cost of leveling the given skill to
-    Level 2, from the given current level.
-
-    Args:
-        skillID (str): The skill ID, as it appears in `GSSkill`, of the
-            given skill.
-        currLevel (int): The current level of the skill. If set to 0,
-            the skill is currently locked.
-
-    Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `Inventory` instance.
-
-    """
-    cost = Inventory()
-    while currLvl < 2:
-        currLvl += 1
-        cost = cost + skillUpgradeCost(skillID, currLvl)
-    return cost
-
-class Gear(Managed):
-    """A piece of gear in STL.
-
-    Attributes:
-        gearID (str): The in-code ID of the gear piece. Should be a key
-            in `GSGear`.
-        stats (legends.stats.Stats): The Stats object that stores the
-            gear's total stats.
-
-    """
-
-    def __init__(self, gearID, level):
-        """The constructor stores the given level in a private attribute
-        that is managed by a class property.
-
-        Args:
-            gearID (str): The gearID of the piece to create.
-            level (int): The level of the piece to create.
-
-        """
-        self.gearID = gearID
-        self._level = level
-        self.stats = Stats()
-        self.updateStats()
-
-    @property
-    def level(self):
-        """`int`: The level of the gear. Level is 1-based and includes
-        rarity. For example, a Level 17 gear piece displays in game as
-        "Epic, Level 2". Modifying this property also calls the
-        `Gear.updateStats` method.
-        """
-        return self._level
-
-    @level.setter
-    def level(self, value):
-        self._level = value
-        self.updateStats()
-
-    @property
-    def rarityIndex(self):
-        """`int`: The index of the rarity in `RARITIES`."""
-        return int((self.level - 1)/5)
-
-    @property
-    def rarity(self):
-        """`str`: The rarity of the gear piece."""
-        return RARITIES[self.rarityIndex]
-
-    @property
-    def slot(self):
-        """`int`: The 0-based index of the slot into which the gear must
-        be placed.
-        """
-        return GSGear[self.gearID]['m_Slot']
-
-    def updateStats(self):
-        """Updates the `stats` attribute.
-
-        """
-        self.stats.update(getGearStats(self.gearID, self.level))
-
-    def __repr__(self):
-        return '<' + repr(self.gearID) + ', level ' + repr(self.level) + '>'
-
-class Particle(Managed):
-    """A particle in STL.
-
-    Attributes:
-        typ (str): The type of the particle. This is what the data
-            refers to as the particle's "display name". Should be one of
-            'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
-            'Temporal Flux', or 'Undo Damage'.
-        rarity (str): The particle's rarity.
-        locked (bool): True if the particle is locked.
-        stats (legends.stats.Stats): The Stats object that stores the
-            particle's total stats.
-
-    """
-
-    def __init__(self, typ, rarity, level, locked=False):
-        """The constructor passes the given level to a private attribute
-        that is managed by a class property.
-
-        Args:
-            typ (str): The type of particle to create.
-            rarity (str): The rarity of the created particle.
-            level (int): The level of the created particle.
-            locked (bool): True if the new particle should be locked.
-
-        """
-        self.typ = typ
-        self.rarity = rarity
-        self._level = level
-        self.locked = locked
-        self._statNames = [None] * 4
-        self.stats = Stats()
-
-    @property
-    def level(self):
-        """`str`: The particle's level. Modifying this property also
-        calls the `Particle.updateStats` method.
-        """
-        return self._level
-
-    @level.setter
-    def level(self, value):
-        self._level = value
-        self.updateStats()
-
-    @property
-    def numStats(self):
-        """`int`: The number of unlocked stats on the particle."""
-        return PART_STAT_UNLOCKED[self.rarity][self.level - 1]
-
-    @property
-    def statNames(self):
-        """`tuple of str`: The names, as they appear in `GSBaseStat`, of
-        the stats that are on the particle. It is always a 4-tuple,
-        though some values may be `None`.
-        """
-        return tuple(self._statNames)
-
-    def setStatName(self, index, statName):
-        """Changes the `statNames` property by setting the value at the
-        given index to the given stat name.
-
-        Args:
-            index (int): The 0-based index of the value in the
-                `statNames` property to change.
-            statName (str): The stat name to assign to the given index.
-
-        """
-        self._statNames[index] = statName
-        self.updateStats()
-
-    def updateStats(self):
-        """Updates the `stats` attribute.
-
-        """
-        statList = [
-            statName for statName in self.statNames[:self.numStats]
-            if statName is not None
-        ]
-        self.stats.update(getPartStats(self.rarity, self.level, statList))
-
-    def __repr__(self):
-        return (
-            '<' + repr(self.typ) + ', ' + repr(self.rarity)
-            + ', level ' + repr(self.level) + '>'
-        )
-
-class GearSlot(Managed): # pylint: disable=too-few-public-methods
-    """A slot into which a piece of gear can be placed.
-
-    Must be implemented as a class, rather than a tuple, so that it can
-    be a `legends.utils.objrelations.Managed` instance, eligible to be
-    part of an object-based relation.
-
-    Attributes:
-        char (Character): The character that owns the slot.
-        index (int): The 0-based index of the slot.
-
-    """
-
-    def __init__(self, char, index):
-        self.char = char
-        self.index = index
-
-    def __repr__(self):
-        return '<' + self.char.nameID + ', gear slot ' + str(self.index) + '>'
-
-class PartSlot(Managed): # pylint: disable=too-few-public-methods
-    """A slot into which a particle can be placed.
-
-    Must be implemented as a class, rather than a tuple, so that it can
-    be a `legends.utils.objrelations.Managed` instance, eligible to be
-    part of an object-based relation.
-
-    Attributes:
-        char (Character): The character that owns the slot.
-        index (int): The 0-based index of the slot.
-
-    """
-
-    def __init__(self, char, index):
-        self.char = char
-        self.index = index
-
-    def __repr__(self):
-        return '<' + self.char.nameID + ', part slot ' + str(self.index) + '>'
 
 class Character():
     """A character in STL.
@@ -557,6 +188,198 @@ class Character():
             + ', level ' + repr(self.level) + '>'
         )
 
+class Gear(Managed):
+    """A piece of gear in STL.
+
+    Attributes:
+        gearID (str): The in-code ID of the gear piece. Should be a key
+            in `GSGear`.
+        stats (legends.stats.Stats): The Stats object that stores the
+            gear's total stats.
+
+    """
+
+    def __init__(self, gearID, level):
+        """The constructor stores the given level in a private attribute
+        that is managed by a class property.
+
+        Args:
+            gearID (str): The gearID of the piece to create.
+            level (int): The level of the piece to create.
+
+        """
+        self.gearID = gearID
+        self._level = level
+        self.stats = Stats()
+        self.updateStats()
+
+    @property
+    def level(self):
+        """`int`: The level of the gear. Level is 1-based and includes
+        rarity. For example, a Level 17 gear piece displays in game as
+        "Epic, Level 2". Modifying this property also calls the
+        `Gear.updateStats` method.
+        """
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        self._level = value
+        self.updateStats()
+
+    @property
+    def rarityIndex(self):
+        """`int`: The index of the rarity in `RARITIES`."""
+        return int((self.level - 1)/5)
+
+    @property
+    def rarity(self):
+        """`str`: The rarity of the gear piece."""
+        return RARITIES[self.rarityIndex]
+
+    @property
+    def slot(self):
+        """`int`: The 0-based index of the slot into which the gear must
+        be placed.
+        """
+        return GSGear[self.gearID]['m_Slot']
+
+    def updateStats(self):
+        """Updates the `stats` attribute.
+
+        """
+        self.stats.update(getGearStats(self.gearID, self.level))
+
+    def __repr__(self):
+        return '<' + repr(self.gearID) + ', level ' + repr(self.level) + '>'
+
+class GearSlot(Managed): # pylint: disable=too-few-public-methods
+    """A slot into which a piece of gear can be placed.
+
+    Must be implemented as a class, rather than a tuple, so that it can
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
+
+    Attributes:
+        char (Character): The character that owns the slot.
+        index (int): The 0-based index of the slot.
+
+    """
+
+    def __init__(self, char, index):
+        self.char = char
+        self.index = index
+
+    def __repr__(self):
+        return '<' + self.char.nameID + ', gear slot ' + str(self.index) + '>'
+
+class Particle(Managed):
+    """A particle in STL.
+
+    Attributes:
+        typ (str): The type of the particle. This is what the data
+            refers to as the particle's "display name". Should be one of
+            'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
+            'Temporal Flux', or 'Undo Damage'.
+        rarity (str): The particle's rarity.
+        locked (bool): True if the particle is locked.
+        stats (legends.stats.Stats): The Stats object that stores the
+            particle's total stats.
+
+    """
+
+    def __init__(self, typ, rarity, level, locked=False):
+        """The constructor passes the given level to a private attribute
+        that is managed by a class property.
+
+        Args:
+            typ (str): The type of particle to create.
+            rarity (str): The rarity of the created particle.
+            level (int): The level of the created particle.
+            locked (bool): True if the new particle should be locked.
+
+        """
+        self.typ = typ
+        self.rarity = rarity
+        self._level = level
+        self.locked = locked
+        self._statNames = [None] * 4
+        self.stats = Stats()
+
+    @property
+    def level(self):
+        """`str`: The particle's level. Modifying this property also
+        calls the `Particle.updateStats` method.
+        """
+        return self._level
+
+    @level.setter
+    def level(self, value):
+        self._level = value
+        self.updateStats()
+
+    @property
+    def numStats(self):
+        """`int`: The number of unlocked stats on the particle."""
+        return PART_STAT_UNLOCKED[self.rarity][self.level - 1]
+
+    @property
+    def statNames(self):
+        """`tuple of str`: The names, as they appear in `GSBaseStat`, of
+        the stats that are on the particle. It is always a 4-tuple,
+        though some values may be `None`.
+        """
+        return tuple(self._statNames)
+
+    def setStatName(self, index, statName):
+        """Changes the `statNames` property by setting the value at the
+        given index to the given stat name.
+
+        Args:
+            index (int): The 0-based index of the value in the
+                `statNames` property to change.
+            statName (str): The stat name to assign to the given index.
+
+        """
+        self._statNames[index] = statName
+        self.updateStats()
+
+    def updateStats(self):
+        """Updates the `stats` attribute.
+
+        """
+        statList = [
+            statName for statName in self.statNames[:self.numStats]
+            if statName is not None
+        ]
+        self.stats.update(getPartStats(self.rarity, self.level, statList))
+
+    def __repr__(self):
+        return (
+            '<' + repr(self.typ) + ', ' + repr(self.rarity)
+            + ', level ' + repr(self.level) + '>'
+        )
+
+class PartSlot(Managed): # pylint: disable=too-few-public-methods
+    """A slot into which a particle can be placed.
+
+    Must be implemented as a class, rather than a tuple, so that it can
+    be a `legends.utils.objrelations.Managed` instance, eligible to be
+    part of an object-based relation.
+
+    Attributes:
+        char (Character): The character that owns the slot.
+        index (int): The 0-based index of the slot.
+
+    """
+
+    def __init__(self, char, index):
+        self.char = char
+        self.index = index
+
+    def __repr__(self):
+        return '<' + self.char.nameID + ', part slot ' + str(self.index) + '>'
+
 class Skill():
     """A skill in STL.
 
@@ -586,8 +409,8 @@ class Skill():
 
     @property
     def itemsToMax(self):
-        """`Inventory`: The items needed to upgrade the skill to Level
-        2.
+        """`legends.constants.Inventory`: The items needed to upgrade
+        the skill to Level 2.
         """
         level = self.level if self.unlocked else 0
         return skillToMaxCost(self.skillID, level)
@@ -597,127 +420,3 @@ class Skill():
             '<Skill: ' + self.name + ', Level ' + str(self.level) + ', '
             + ('unlocked' if self.unlocked else 'locked') + '>'
         )
-
-class Inventory(MutableMapping):
-    """A collection of items in STL.
-
-    The `Inventory` class is a dictionary-like data structure, mapping
-    each item in `ITEMS` to the quantity of that item that exists in the
-    player's inventory. Keys cannot be deleted. Instead, deleting a key
-    simply changes its value to 0. Iterating over an `Inventory` object
-    will skip over items that are either irrelevant to the `legends`
-    package, or are implemented elsewhere. The skipped items are
-    determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
-    To iterate over all keys, simply iterate over `ITEMS`.
-    The `__len__()` method also does not consider these skipped items.
-
-    """
-
-    hiddenCategories = ['Token', 'PlayerAvatar', 'Emote']
-    """`list of str`: A list of category names, as they appear in the
-    `category` attribute of an `legends.constants.Item` instance, that
-    are of limited use or implemented elsewhere in the `legends`
-    package.
-    """
-
-    hiddenItemIDs = [
-        'Credits', 'Dilithium', 'Tritanium', 'Player XP', 'PvP Stamina',
-        'Alliance Stamina', 'EventPoint', 'PvP Chest Points',
-        'Shards Advanced', 'Shards Elite', 'Shards Credit',
-        'Shards Biomimetic', 'Shards Protomatter', 'Shards_Worf',
-        'Shards_McCoy', 'Dungeon Currency', 'Dungeon Stamina'
-    ]
-    """`list of str`: A list of item IDs, as they appear in `GSItem`,
-    that are of limited use or implemented elsewhere in the `legends`
-    package.
-    """
-
-    def __init__(self, initDict=None):
-        """The constructor initializes the `Inventory` instance with one
-        key for each item in `ITEMS`, and all values 0. If the
-        `initData` argument is given, it is used to initialize the
-        values.
-
-        Args:
-            initData (dict): {`str`:`int`} A dictionary mapping item
-                IDs, as they appear in `GSItem`, to nonnegative
-                integers. Used to initialize the quantities in the
-                `Inventory` instance.
-
-        """
-        self._data = {}
-        for itemID in GSItem:
-            self._data[itemID] = 0
-        initDict = {} if initDict is None else initDict
-        for itemID, qty in initDict.items():
-            self._data[itemID] = qty
-
-    @property
-    def xp(self):
-        """`int`: The total xp of all Bio-Gel items in the inventory."""
-        return sum(qty * item.xp for item, qty in self.itemsByCat('Bio-Gel'))
-
-    def __getitem__(self, item):
-        return self._data[item.itemID]
-
-    def __setitem__(self, item, qty):
-        self._data[item.itemID] = qty
-
-    def __delitem__(self, item):
-        self._data[item.itemID] = 0
-
-    def __iter__(self):
-        for itemID in self._data:
-            if not self._hidden(itemID):
-                yield ITEMS[itemID]
-
-    def __len__(self):
-        count = 0
-        for itemID in self._data:
-            if not self._hidden(itemID):
-                count += 1
-        return count
-
-    def __add__(self, other):
-        result = Inventory()
-        for item in self:
-            result[item] = self[item] + other[item]
-        return result
-
-    def _hidden(self, itemID):
-        if itemID in self.hiddenItemIDs:
-            return True
-        if ITEMS[itemID].category in self.hiddenCategories:
-            return True
-        return False
-
-    def keysByCat(self, category):
-        """Returns an iterator over all keys that match the given
-        category, skipping any keys that are skipped during normal
-        iteration.
-
-        Args:
-            category (str): The category to iterate over.
-
-        """
-        return (item for item in self if item.category == category)
-
-    def itemsByCat(self, category):
-        """Returns an iterator over all (key, value) tuples that match
-        the given category, skipping any keys that are skipped during
-        normal iteration.
-
-        Args:
-            category (str): The category to iterate over.
-
-        """
-        return (
-            (item, qty) for item, qty in self.items()
-            if item.category == category
-        )
-
-    def __repr__(self):
-        return 'Inventory({!r})'.format({
-            itemID: qty for itemID, qty in self._data.items()
-            if qty > 0
-        })

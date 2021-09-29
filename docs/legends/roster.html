@@ -37,10 +37,14 @@ from legends.utils.objrelations import OneToOne
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSAccessoryItems, GSCharacter
 from legends.constants import DESCRIPTIONS, SUMMON_POOL
-from legends.gameobjects import Gear, Particle, Character
+from legends.gameobjects import Character, Gear, Particle
 from legends.stats import Stats
 
-__all__ = [&#39;readGear&#39;, &#39;readParts&#39;, &#39;Roster&#39;]
+__all__ = [
+    &#39;readGear&#39;,
+    &#39;readParts&#39;,
+    &#39;Roster&#39;
+]
 
 def readGear(save, slot):
     &#34;&#34;&#34;The STL save file contains a list of gear, each one having a
@@ -52,7 +56,7 @@ def readGear(save, slot):
     Args:
         save (dict): A decrypted dictionary representation of the
             player&#39;s save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -78,7 +82,7 @@ def readParts(save, slot):
     Args:
         save (dict): A decrypted dictionary representation of the
             player&#39;s save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -132,7 +136,7 @@ class Roster():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
@@ -183,7 +187,7 @@ class Roster():
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
@@ -386,7 +390,7 @@ object.</p>
 <dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
 <dd>A decrypted dictionary representation of the
 player's save file, as returned by the
-<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<code><a title="legends.functions.decryptSaveFile" href="functions.html#legends.functions.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
 <dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
 <dd>The 0-based index of the save slot from which to
 read the data.</dd>
@@ -411,7 +415,7 @@ IDs to gear.</dd>
     Args:
         save (dict): A decrypted dictionary representation of the
             player&#39;s save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -442,7 +446,7 @@ number in the save file to the associated
 <dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
 <dd>A decrypted dictionary representation of the
 player's save file, as returned by the
-<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<code><a title="legends.functions.decryptSaveFile" href="functions.html#legends.functions.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
 <dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
 <dd>The 0-based index of the save slot from which to
 read the data.</dd>
@@ -467,7 +471,7 @@ mapping IDs to particles.</dd>
     Args:
         save (dict): A decrypted dictionary representation of the
             player&#39;s save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 
@@ -535,7 +539,7 @@ empty roster is created.</p>
 <dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
 <dd>A decrypted dictionary representation of the
 player's save file, as returned by the
-<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<code><a title="legends.functions.decryptSaveFile" href="functions.html#legends.functions.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
 <dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
 <dd>The 0-based index of the save slot from which to
 read the data.</dd>
@@ -577,7 +581,7 @@ read the data.</dd>
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
@@ -628,7 +632,7 @@ read the data.</dd>
         Args:
             save (dict): A decrypted dictionary representation of the
                 player&#39;s save file, as returned by the
-                `legends.savefile.decryptSaveFile` function.
+                `legends.functions.decryptSaveFile` function.
             slot (int): The 0-based index of the save slot from which to
                 read the data.
 
@@ -994,7 +998,7 @@ from the given save data and slot.</p>
 <dt><strong><code>save</code></strong> :&ensp;<code>dict</code></dt>
 <dd>A decrypted dictionary representation of the
 player's save file, as returned by the
-<code><a title="legends.savefile.decryptSaveFile" href="savefile.html#legends.savefile.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
+<code><a title="legends.functions.decryptSaveFile" href="functions.html#legends.functions.decryptSaveFile">decryptSaveFile()</a></code> function.</dd>
 <dt><strong><code>slot</code></strong> :&ensp;<code>int</code></dt>
 <dd>The 0-based index of the save slot from which to
 read the data.</dd>
@@ -1010,7 +1014,7 @@ read the data.</dd>
     Args:
         save (dict): A decrypted dictionary representation of the
             player&#39;s save file, as returned by the
-            `legends.savefile.decryptSaveFile` function.
+            `legends.functions.decryptSaveFile` function.
         slot (int): The 0-based index of the save slot from which to
             read the data.
 

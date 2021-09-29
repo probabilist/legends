@@ -31,27 +31,10 @@
 
 &#34;&#34;&#34;
 
-from legends.constants import STAT_ABBREVIATIONS, POWER_GRADIENT
+from legends.utils.functions import formatDict
+from legends.constants import POWER_GRADIENT, STAT_ABBREVIATIONS
 
-__all__ = [&#39;formatDict&#39;, &#39;StatObject&#39;, &#39;Stats&#39;]
-
-def formatDict(D):
-    &#34;&#34;&#34;Formats the given dictionary for display, putting each key-value
-    pair on its own line.
-
-    Args:
-        D (dict): The dictionary to format.
-
-    Returns:
-        str: The formatted string.
-
-    &#34;&#34;&#34;
-    lines = [repr(k) + &#39;: &#39; + repr(v) for k, v in D.items()]
-    display = &#39;{&#39; + lines[0] + &#39;,\n&#39;
-    for line in lines[1:-1]:
-        display += &#39; &#39; + line + &#39;,\n&#39;
-    display += &#39; &#39; + lines[-1] + &#39;}&#39;
-    return display
+__all__ = [&#39;StatObject&#39;, &#39;Stats&#39;]
 
 class StatObject():
     &#34;&#34;&#34;An object that stores named statistics as attributes.
@@ -79,14 +62,14 @@ class StatObject():
 
     def __add__(self, other):
         result = self.__class__()
-        for statName in self.statAbbrs:
-            statSum = getattr(self, statName) + getattr(other, statName)
-            setattr(result, statName, statSum)
+        for statAbbr in self.statAbbrs:
+            statSum = getattr(self, statAbbr) + getattr(other, statAbbr)
+            setattr(result, statAbbr, statSum)
         return result
 
     def __repr__(self):
         return &#39;StatObject({})&#39;.format(formatDict({
-            statName: getattr(self, statName) for statName in self.statAbbrs
+            statAbbr: getattr(self, statAbbr) for statAbbr in self.statAbbrs
         }))
 
 class Stats(StatObject):
@@ -158,48 +141,6 @@ class Stats(StatObject):
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
-<dl>
-<dt id="legends.stats.formatDict"><code class="name flex">
-<span>def <span class="ident">formatDict</span></span>(<span>D)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Formats the given dictionary for display, putting each key-value
-pair on its own line.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>D</code></strong> :&ensp;<code>dict</code></dt>
-<dd>The dictionary to format.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>str</code></dt>
-<dd>The formatted string.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def formatDict(D):
-    &#34;&#34;&#34;Formats the given dictionary for display, putting each key-value
-    pair on its own line.
-
-    Args:
-        D (dict): The dictionary to format.
-
-    Returns:
-        str: The formatted string.
-
-    &#34;&#34;&#34;
-    lines = [repr(k) + &#39;: &#39; + repr(v) for k, v in D.items()]
-    display = &#39;{&#39; + lines[0] + &#39;,\n&#39;
-    for line in lines[1:-1]:
-        display += &#39; &#39; + line + &#39;,\n&#39;
-    display += &#39; &#39; + lines[-1] + &#39;}&#39;
-    return display</code></pre>
-</details>
-</dd>
-</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -255,14 +196,14 @@ object attributes.</dd>
 
     def __add__(self, other):
         result = self.__class__()
-        for statName in self.statAbbrs:
-            statSum = getattr(self, statName) + getattr(other, statName)
-            setattr(result, statName, statSum)
+        for statAbbr in self.statAbbrs:
+            statSum = getattr(self, statAbbr) + getattr(other, statAbbr)
+            setattr(result, statAbbr, statSum)
         return result
 
     def __repr__(self):
         return &#39;StatObject({})&#39;.format(formatDict({
-            statName: getattr(self, statName) for statName in self.statAbbrs
+            statAbbr: getattr(self, statAbbr) for statAbbr in self.statAbbrs
         }))</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -468,11 +409,6 @@ numerical values.</dd>
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
-</ul>
-</li>
-<li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
-<li><code><a title="legends.stats.formatDict" href="#legends.stats.formatDict">formatDict</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

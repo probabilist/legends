@@ -5,7 +5,7 @@ can be accessed from the `legends.ui` namespace.
 
 Example:
     >>> import legends
-    >>> legends.ui.Session is legends.ui.stlplanner.Session
+    >>> legends.ui.HelpScreen is legends.ui.stlplanner.HelpScreen
     True
 
 """
