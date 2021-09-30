@@ -1363,6 +1363,10 @@
             "value": "AUFWERTEN"
         },
         {
+            "key": "Common_Buy",
+            "value": "kaufen"
+        },
+        {
             "key": "Common_Cancel",
             "value": "Abbrechen"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "Checkpoints werden alle {0} Level permanent freigeschaltet und erlauben es, zuk\u00fcnftige \u00dcberlebens-Versuche von h\u00f6heren Leveln zu beginnen."
+            "value": "Checkpoints werden alle 20 Level permanent freigeschaltet und erlauben es, zuk\u00fcnftige \u00dcberlebens-Versuche von h\u00f6heren Leveln zu beginnen."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

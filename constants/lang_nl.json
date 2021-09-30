@@ -1363,6 +1363,10 @@
             "value": "UPGRADEN"
         },
         {
+            "key": "Common_Buy",
+            "value": "koop"
+        },
+        {
             "key": "Common_Cancel",
             "value": "Annuleren"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "Checkpoints worden elke {0} levels permanent ontgrendeld, zodat je vanaf hogere levels kunt beginnen voor toekomstige overlevingspogingen."
+            "value": "Checkpoints worden elke 20 levels permanent ontgrendeld, zodat je vanaf hogere levels kunt beginnen voor toekomstige overlevingspogingen."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

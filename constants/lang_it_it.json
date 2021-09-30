@@ -1363,6 +1363,10 @@
             "value": "MIGLIORA"
         },
         {
+            "key": "Common_Buy",
+            "value": "Comperare"
+        },
+        {
             "key": "Common_Cancel",
             "value": "Annulla"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "I checkpoint vengono sbloccati in maniera permanente ogni {0} Livelli, permettendoti, per le partite in modalit\u00e0 Sopravvivenza successive, di partire dai livelli pi\u00f9 alti."
+            "value": "I checkpoint vengono sbloccati in maniera permanente ogni 20 Livelli, permettendoti, per le partite in modalit\u00e0 Sopravvivenza successive, di partire dai livelli pi\u00f9 alti."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

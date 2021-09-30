@@ -1363,6 +1363,10 @@
             "value": "APRIMORAR"
         },
         {
+            "key": "Common_Buy",
+            "value": "Compra"
+        },
+        {
             "key": "Common_Cancel",
             "value": "Cancelar"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "Os pontos de controle s\u00e3o desbloqueados permanentemente a cada {0} n\u00edveis para que seja poss\u00edvel iniciar de n\u00edveis mais altos em sess\u00f5es futuras de sobreviv\u00eancia."
+            "value": "Os pontos de controle s\u00e3o desbloqueados permanentemente a cada 20 n\u00edveis para que seja poss\u00edvel iniciar de n\u00edveis mais altos em sess\u00f5es futuras de sobreviv\u00eancia."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

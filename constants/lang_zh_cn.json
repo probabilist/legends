@@ -1363,6 +1363,10 @@
             "value": "\u5347\u7ea7"
         },
         {
+            "key": "Common_Buy",
+            "value": "\u6536\u8d2d"
+        },
+        {
             "key": "Common_Cancel",
             "value": "\u53d6\u6d88"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "\u68c0\u67e5\u70b9\u6bcf\u8fdb\u884c{0}\u4e2a\u5173\u5361\u5373\u4f1a\u6c38\u4e45\u89e3\u9501\uff0c\u5141\u8bb8\u5728\u5f80\u540e\u7684\u751f\u5b58\u6e38\u620f\u4e2d\u4ece\u66f4\u9ad8\u7684\u5173\u5361\u5f00\u59cb\u6e38\u73a9\u3002"
+            "value": "\u68c0\u67e5\u70b9\u6bcf\u8fdb\u884c20\u4e2a\u5173\u5361\u5373\u4f1a\u6c38\u4e45\u89e3\u9501\uff0c\u5141\u8bb8\u5728\u5f80\u540e\u7684\u751f\u5b58\u6e38\u620f\u4e2d\u4ece\u66f4\u9ad8\u7684\u5173\u5361\u5f00\u59cb\u6e38\u73a9\u3002"
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

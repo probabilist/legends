@@ -103,10 +103,6 @@
             "value": ""
         },
         {
-            "key": "",
-            "value": ""
-        },
-        {
             "key": "Accessories_Autosell_Button_Confirm",
             "value": "CONFIRM"
         },
@@ -1457,6 +1453,10 @@
         {
             "key": "Common_Button_Upgrade",
             "value": "UPGRADE"
+        },
+        {
+            "key": "Common_Buy",
+            "value": "Buy"
         },
         {
             "key": "Common_Cancel",
@@ -30504,7 +30504,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "Checkpoints are permanently unlocked every {0} Levels, allowing you to start from higher levels for future Survival runs."
+            "value": "Checkpoints are permanently unlocked every 20 Levels, allowing you to start from higher levels for future Survival runs."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

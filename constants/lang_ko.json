@@ -1363,6 +1363,10 @@
             "value": "\uc5c5\uadf8\ub808\uc774\ub4dc"
         },
         {
+            "key": "Common_Buy",
+            "value": "\uc0ac\ub2e4"
+        },
+        {
             "key": "Common_Cancel",
             "value": "\ucde8\uc18c"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "\uccb4\ud06c\ud3ec\uc778\ud2b8\ub294 {0}\ub808\ubca8\ub9c8\ub2e4 \uc601\uad6c\uc801\uc73c\ub85c \ud574\uc81c\ub418\uba70, \ucd94\ud6c4 \uc0dd\uc874 \ub808\ubca8\uc744 \ud50c\ub808\uc774\ud560 \ub54c \ud574\ub2f9 \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c\ubd80\ud130 \uc2dc\uc791\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."
+            "value": "\uccb4\ud06c\ud3ec\uc778\ud2b8\ub294 20\ub808\ubca8\ub9c8\ub2e4 \uc601\uad6c\uc801\uc73c\ub85c \ud574\uc81c\ub418\uba70, \ucd94\ud6c4 \uc0dd\uc874 \ub808\ubca8\uc744 \ud50c\ub808\uc774\ud560 \ub54c \ud574\ub2f9 \uccb4\ud06c\ud3ec\uc778\ud2b8\uc5d0\uc11c\ubd80\ud130 \uc2dc\uc791\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

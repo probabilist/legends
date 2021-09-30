@@ -1363,6 +1363,10 @@
             "value": "AM\u00c9LIORER"
         },
         {
+            "key": "Common_Buy",
+            "value": "Acheter"
+        },
+        {
             "key": "Common_Cancel",
             "value": "Annuler"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "Les paliers sont syst\u00e9matiquement d\u00e9bloqu\u00e9s tous les {0} niveaux. Vous pourrez reprendre vos prochaines parties de survie \u00e0 partir de ces paliers."
+            "value": "Les paliers sont syst\u00e9matiquement d\u00e9bloqu\u00e9s tous les 20 niveaux. Vous pourrez reprendre vos prochaines parties de survie \u00e0 partir de ces paliers."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",

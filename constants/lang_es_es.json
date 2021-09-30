@@ -1363,6 +1363,10 @@
             "value": "MEJORA"
         },
         {
+            "key": "Common_Buy",
+            "value": "Compra"
+        },
+        {
             "key": "Common_Cancel",
             "value": "Cancelar"
         },
@@ -30284,7 +30288,7 @@
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Desc",
-            "value": "Los puntos de guardado se desbloquean de forma permanente cada {0} niveles, lo que te permitir\u00e1 empezar nuevas partidas en niveles de supervivencia superiores."
+            "value": "Los puntos de guardado se desbloquean de forma permanente cada 20 niveles, lo que te permitir\u00e1 empezar nuevas partidas en niveles de supervivencia superiores."
         },
         {
             "key": "Tooltip_Dungeon_Checkpoint_Title",
