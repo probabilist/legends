@@ -277,6 +277,22 @@ class Roster():
         )
         return nakedStats + gearStats + partStats
 
+    def maxGearLevel(self, gear):
+        """Returns the maximum possible gear level of the given gear
+        piece, which is determined by the rarity of the character on
+        which it is equipped, and is 1 if it is not equipped.
+
+        Args:
+            gear (legends.gameobjects.Gear): A gear piece.
+
+        Returns:
+            int: The maximum possible level of the given gear piece.
+
+        """
+        if gear not in self.inGearSlot:
+            return 1
+        return self.inGearSlot[gear].char.maxGearLevel
+
     def missingGearLevels(self, nameID):
         """Computes and returns the number of missing gear levels for
         the character with the given name ID.

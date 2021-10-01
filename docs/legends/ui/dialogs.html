@@ -35,10 +35,12 @@ import tkinter as tk
 from tkinter.messagebox import askyesno as _askyesno
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
+from tkinter.filedialog import asksaveasfilename as _asksaveasfilename
 from tkinter.simpledialog import Dialog
 
 __all__ = [
     &#39;addroot&#39;,
+    &#39;asksaveasfilename&#39;,
     &#39;askyesno&#39;,
     &#39;ModalMessage&#39;,
     &#39;ModalDialog&#39;,
@@ -64,6 +66,17 @@ def addroot(func):
             root.menuEnabled = True
         return result
     return newFunc
+
+def asksaveasfilename(root, *args, **kargs):
+    &#34;&#34;&#34;A wrapper around `tk.filedialog.asksaveasfilename` that disables
+    the root menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+
+    &#34;&#34;&#34;
+    return addroot(_asksaveasfilename)(root, *args, **kargs)
 
 def askyesno(root, *args, **kargs):
     &#34;&#34;&#34;A wrapper around `tk.messagebox.askyesno` that disables the root
@@ -216,6 +229,34 @@ their original state after calling the given function.</p></div>
             root.menuEnabled = True
         return result
     return newFunc</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.asksaveasfilename"><code class="name flex">
+<span>def <span class="ident">asksaveasfilename</span></span>(<span>root, *args, **kargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A wrapper around <code>tk.filedialog.asksaveasfilename</code> that disables
+the root menu while the dialog is open.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>root</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></dt>
+<dd>The currently running
+<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def asksaveasfilename(root, *args, **kargs):
+    &#34;&#34;&#34;A wrapper around `tk.filedialog.asksaveasfilename` that disables
+    the root menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+
+    &#34;&#34;&#34;
+    return addroot(_asksaveasfilename)(root, *args, **kargs)</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.dialogs.askyesno"><code class="name flex">
@@ -567,6 +608,7 @@ destroys the window.</p></div>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="legends.ui.dialogs.addroot" href="#legends.ui.dialogs.addroot">addroot</a></code></li>
+<li><code><a title="legends.ui.dialogs.asksaveasfilename" href="#legends.ui.dialogs.asksaveasfilename">asksaveasfilename</a></code></li>
 <li><code><a title="legends.ui.dialogs.askyesno" href="#legends.ui.dialogs.askyesno">askyesno</a></code></li>
 <li><code><a title="legends.ui.dialogs.showerror" href="#legends.ui.dialogs.showerror">showerror</a></code></li>
 <li><code><a title="legends.ui.dialogs.showinfo" href="#legends.ui.dialogs.showinfo">showinfo</a></code></li>

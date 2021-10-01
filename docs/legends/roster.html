@@ -306,6 +306,22 @@ class Roster():
         )
         return nakedStats + gearStats + partStats
 
+    def maxGearLevel(self, gear):
+        &#34;&#34;&#34;Returns the maximum possible gear level of the given gear
+        piece, which is determined by the rarity of the character on
+        which it is equipped, and is 1 if it is not equipped.
+
+        Args:
+            gear (legends.gameobjects.Gear): A gear piece.
+
+        Returns:
+            int: The maximum possible level of the given gear piece.
+
+        &#34;&#34;&#34;
+        if gear not in self.inGearSlot:
+            return 1
+        return self.inGearSlot[gear].char.maxGearLevel
+
     def missingGearLevels(self, nameID):
         &#34;&#34;&#34;Computes and returns the number of missing gear levels for
         the character with the given name ID.
@@ -751,6 +767,22 @@ read the data.</dd>
         )
         return nakedStats + gearStats + partStats
 
+    def maxGearLevel(self, gear):
+        &#34;&#34;&#34;Returns the maximum possible gear level of the given gear
+        piece, which is determined by the rarity of the character on
+        which it is equipped, and is 1 if it is not equipped.
+
+        Args:
+            gear (legends.gameobjects.Gear): A gear piece.
+
+        Returns:
+            int: The maximum possible level of the given gear piece.
+
+        &#34;&#34;&#34;
+        if gear not in self.inGearSlot:
+            return 1
+        return self.inGearSlot[gear].char.maxGearLevel
+
     def missingGearLevels(self, nameID):
         &#34;&#34;&#34;Computes and returns the number of missing gear levels for
         the character with the given name ID.
@@ -1064,6 +1096,44 @@ read the data.</dd>
         self.chars[nameID] = char</code></pre>
 </details>
 </dd>
+<dt id="legends.roster.Roster.maxGearLevel"><code class="name flex">
+<span>def <span class="ident">maxGearLevel</span></span>(<span>self, gear)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the maximum possible gear level of the given gear
+piece, which is determined by the rarity of the character on
+which it is equipped, and is 1 if it is not equipped.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>gear</code></strong> :&ensp;<code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code></dt>
+<dd>A gear piece.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The maximum possible level of the given gear piece.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def maxGearLevel(self, gear):
+    &#34;&#34;&#34;Returns the maximum possible gear level of the given gear
+    piece, which is determined by the rarity of the character on
+    which it is equipped, and is 1 if it is not equipped.
+
+    Args:
+        gear (legends.gameobjects.Gear): A gear piece.
+
+    Returns:
+        int: The maximum possible level of the given gear piece.
+
+    &#34;&#34;&#34;
+    if gear not in self.inGearSlot:
+        return 1
+    return self.inGearSlot[gear].char.maxGearLevel</code></pre>
+</details>
+</dd>
 <dt id="legends.roster.Roster.missingGearLevels"><code class="name flex">
 <span>def <span class="ident">missingGearLevels</span></span>(<span>self, nameID)</span>
 </code></dt>
@@ -1225,6 +1295,7 @@ characters.</dd>
 <li><code><a title="legends.roster.Roster.containsPart" href="#legends.roster.Roster.containsPart">containsPart</a></code></li>
 <li><code><a title="legends.roster.Roster.fillChars" href="#legends.roster.Roster.fillChars">fillChars</a></code></li>
 <li><code><a title="legends.roster.Roster.fromSaveData" href="#legends.roster.Roster.fromSaveData">fromSaveData</a></code></li>
+<li><code><a title="legends.roster.Roster.maxGearLevel" href="#legends.roster.Roster.maxGearLevel">maxGearLevel</a></code></li>
 <li><code><a title="legends.roster.Roster.missingGearLevels" href="#legends.roster.Roster.missingGearLevels">missingGearLevels</a></code></li>
 <li><code><a title="legends.roster.Roster.missingGearRanks" href="#legends.roster.Roster.missingGearRanks">missingGearRanks</a></code></li>
 <li><code><a title="legends.roster.Roster.tokensPerOrb" href="#legends.roster.Roster.tokensPerOrb">tokensPerOrb</a></code></li>

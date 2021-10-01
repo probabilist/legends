@@ -211,9 +211,12 @@ class STLPlanner(tk.Tk):
             the menu in which the option exists. The second value is the
             0-based index of the option within that menu. Defaults to an
             empty list.
-        session (legends.ui.session.Session): The currently running user
-            session. Defaults to a new `legends.ui.session.Session`
-            instance with no save slot.
+        sessionOnly (list): [(`tk.Menu`, `int`)]: Each item in this list
+            is a 2-tuple that represents a menu option which should be
+            disabled whenever there is no active session. The first
+            value is the menu in which the option exists. The second
+            value is the 0-based index of the option within that menu.
+            Defaults to an empty list.
 
     """
 
@@ -227,16 +230,27 @@ class STLPlanner(tk.Tk):
         self.title('STL Planner')
         self.showTimestamps = tk.BooleanVar(self, True)
         self.disableOnModal = []
+        self.sessionOnly = []
         self._menuEnabled = True
         self.buildMenu()
-        self.session = Session(self)
+        self._session = Session(self)
         self.session.pack()
+
+    @property
+    def session(self):
+        """`legends.ui.session.Session`: The currently running user
+        session. Defaults to a new `legends.ui.session.Session` instance
+        with no save slot.
+        """
+        return self._session
 
     @property
     def menuEnabled(self):
         """`bool`: `True` if the menu options in `disableOnModal` are
         enabled. Upon setting this property, those menu options' states
-        are set accordingly.
+        are set accordingly. Menu options in `sessionOnly` are
+        unaffected by changes to this property when there is no active
+        session.
         """
         return self._menuEnabled
 
@@ -245,6 +259,11 @@ class STLPlanner(tk.Tk):
         self._menuEnabled = value
         state = tk.NORMAL if value else tk.DISABLED
         for menu, index in self.disableOnModal:
+            if ((menu, index) in self.sessionOnly
+                and state == tk.NORMAL
+                and self.session.saveslot is None
+            ):
+                continue
             menu.entryconfig(index, state=state)
 
     def buildMenu(self):
@@ -280,8 +299,11 @@ class STLPlanner(tk.Tk):
             command=self.setTimestamps
         )
         self.disableOnModal.append((sessionMenu, 0))
-        sessionMenu.add_command(label='Inventory...', command=self.inventory)
+        sessionMenu.add_command(
+            label='Inventory...', command=self.inventory, state=tk.DISABLED
+        )
         self.disableOnModal.append((sessionMenu, 1))
+        self.sessionOnly.append((sessionMenu, 1))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -293,7 +315,8 @@ class STLPlanner(tk.Tk):
 
     def newSession(self, saveslot):
         """Clears the current session and starts a new one with the
-        given `legends.saveslot.SaveSlot` object.
+        given `legends.saveslot.SaveSlot` object. Sets the `menuEnabled`
+        property to `True`.
 
         Args:
             saveslot (legends.saveslot.SaveSlot): The
@@ -302,7 +325,8 @@ class STLPlanner(tk.Tk):
 
         """
         self.session.destroy()
-        self.session = Session(self, saveslot)
+        self._session = Session(self, saveslot)
+        self.menuEnabled = True
         self.session.pack()
 
     def askCloseSession(self):

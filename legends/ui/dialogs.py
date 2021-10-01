@@ -6,10 +6,12 @@ import tkinter as tk
 from tkinter.messagebox import askyesno as _askyesno
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
+from tkinter.filedialog import asksaveasfilename as _asksaveasfilename
 from tkinter.simpledialog import Dialog
 
 __all__ = [
     'addroot',
+    'asksaveasfilename',
     'askyesno',
     'ModalMessage',
     'ModalDialog',
@@ -35,6 +37,17 @@ def addroot(func):
             root.menuEnabled = True
         return result
     return newFunc
+
+def asksaveasfilename(root, *args, **kargs):
+    """A wrapper around `tk.filedialog.asksaveasfilename` that disables
+    the root menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+
+    """
+    return addroot(_asksaveasfilename)(root, *args, **kargs)
 
 def askyesno(root, *args, **kargs):
     """A wrapper around `tk.messagebox.askyesno` that disables the root

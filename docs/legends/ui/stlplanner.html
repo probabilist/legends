@@ -241,9 +241,12 @@ class STLPlanner(tk.Tk):
             the menu in which the option exists. The second value is the
             0-based index of the option within that menu. Defaults to an
             empty list.
-        session (legends.ui.session.Session): The currently running user
-            session. Defaults to a new `legends.ui.session.Session`
-            instance with no save slot.
+        sessionOnly (list): [(`tk.Menu`, `int`)]: Each item in this list
+            is a 2-tuple that represents a menu option which should be
+            disabled whenever there is no active session. The first
+            value is the menu in which the option exists. The second
+            value is the 0-based index of the option within that menu.
+            Defaults to an empty list.
 
     &#34;&#34;&#34;
 
@@ -257,16 +260,27 @@ class STLPlanner(tk.Tk):
         self.title(&#39;STL Planner&#39;)
         self.showTimestamps = tk.BooleanVar(self, True)
         self.disableOnModal = []
+        self.sessionOnly = []
         self._menuEnabled = True
         self.buildMenu()
-        self.session = Session(self)
+        self._session = Session(self)
         self.session.pack()
+
+    @property
+    def session(self):
+        &#34;&#34;&#34;`legends.ui.session.Session`: The currently running user
+        session. Defaults to a new `legends.ui.session.Session` instance
+        with no save slot.
+        &#34;&#34;&#34;
+        return self._session
 
     @property
     def menuEnabled(self):
         &#34;&#34;&#34;`bool`: `True` if the menu options in `disableOnModal` are
         enabled. Upon setting this property, those menu options&#39; states
-        are set accordingly.
+        are set accordingly. Menu options in `sessionOnly` are
+        unaffected by changes to this property when there is no active
+        session.
         &#34;&#34;&#34;
         return self._menuEnabled
 
@@ -275,6 +289,11 @@ class STLPlanner(tk.Tk):
         self._menuEnabled = value
         state = tk.NORMAL if value else tk.DISABLED
         for menu, index in self.disableOnModal:
+            if ((menu, index) in self.sessionOnly
+                and state == tk.NORMAL
+                and self.session.saveslot is None
+            ):
+                continue
             menu.entryconfig(index, state=state)
 
     def buildMenu(self):
@@ -310,8 +329,11 @@ class STLPlanner(tk.Tk):
             command=self.setTimestamps
         )
         self.disableOnModal.append((sessionMenu, 0))
-        sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+        sessionMenu.add_command(
+            label=&#39;Inventory...&#39;, command=self.inventory, state=tk.DISABLED
+        )
         self.disableOnModal.append((sessionMenu, 1))
+        self.sessionOnly.append((sessionMenu, 1))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -323,7 +345,8 @@ class STLPlanner(tk.Tk):
 
     def newSession(self, saveslot):
         &#34;&#34;&#34;Clears the current session and starts a new one with the
-        given `legends.saveslot.SaveSlot` object.
+        given `legends.saveslot.SaveSlot` object. Sets the `menuEnabled`
+        property to `True`.
 
         Args:
             saveslot (legends.saveslot.SaveSlot): The
@@ -332,7 +355,8 @@ class STLPlanner(tk.Tk):
 
         &#34;&#34;&#34;
         self.session.destroy()
-        self.session = Session(self, saveslot)
+        self._session = Session(self, saveslot)
+        self.menuEnabled = True
         self.session.pack()
 
     def askCloseSession(self):
@@ -924,10 +948,13 @@ be disabled when a modal dialog is open. The first value is
 the menu in which the option exists. The second value is the
 0-based index of the option within that menu. Defaults to an
 empty list.</dd>
-<dt><strong><code>session</code></strong> :&ensp;<code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code></dt>
-<dd>The currently running user
-session. Defaults to a new <code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code>
-instance with no save slot.</dd>
+<dt><strong><code>sessionOnly</code></strong> :&ensp;<code>list</code></dt>
+<dd>[(<code>tk.Menu</code>, <code>int</code>)]: Each item in this list
+is a 2-tuple that represents a menu option which should be
+disabled whenever there is no active session. The first
+value is the menu in which the option exists. The second
+value is the 0-based index of the option within that menu.
+Defaults to an empty list.</dd>
 </dl>
 <p>The constructor passes its arguments to the <code>tk.Tk</code>
 constructor.</p></div>
@@ -947,9 +974,12 @@ constructor.</p></div>
             the menu in which the option exists. The second value is the
             0-based index of the option within that menu. Defaults to an
             empty list.
-        session (legends.ui.session.Session): The currently running user
-            session. Defaults to a new `legends.ui.session.Session`
-            instance with no save slot.
+        sessionOnly (list): [(`tk.Menu`, `int`)]: Each item in this list
+            is a 2-tuple that represents a menu option which should be
+            disabled whenever there is no active session. The first
+            value is the menu in which the option exists. The second
+            value is the 0-based index of the option within that menu.
+            Defaults to an empty list.
 
     &#34;&#34;&#34;
 
@@ -963,16 +993,27 @@ constructor.</p></div>
         self.title(&#39;STL Planner&#39;)
         self.showTimestamps = tk.BooleanVar(self, True)
         self.disableOnModal = []
+        self.sessionOnly = []
         self._menuEnabled = True
         self.buildMenu()
-        self.session = Session(self)
+        self._session = Session(self)
         self.session.pack()
+
+    @property
+    def session(self):
+        &#34;&#34;&#34;`legends.ui.session.Session`: The currently running user
+        session. Defaults to a new `legends.ui.session.Session` instance
+        with no save slot.
+        &#34;&#34;&#34;
+        return self._session
 
     @property
     def menuEnabled(self):
         &#34;&#34;&#34;`bool`: `True` if the menu options in `disableOnModal` are
         enabled. Upon setting this property, those menu options&#39; states
-        are set accordingly.
+        are set accordingly. Menu options in `sessionOnly` are
+        unaffected by changes to this property when there is no active
+        session.
         &#34;&#34;&#34;
         return self._menuEnabled
 
@@ -981,6 +1022,11 @@ constructor.</p></div>
         self._menuEnabled = value
         state = tk.NORMAL if value else tk.DISABLED
         for menu, index in self.disableOnModal:
+            if ((menu, index) in self.sessionOnly
+                and state == tk.NORMAL
+                and self.session.saveslot is None
+            ):
+                continue
             menu.entryconfig(index, state=state)
 
     def buildMenu(self):
@@ -1016,8 +1062,11 @@ constructor.</p></div>
             command=self.setTimestamps
         )
         self.disableOnModal.append((sessionMenu, 0))
-        sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+        sessionMenu.add_command(
+            label=&#39;Inventory...&#39;, command=self.inventory, state=tk.DISABLED
+        )
         self.disableOnModal.append((sessionMenu, 1))
+        self.sessionOnly.append((sessionMenu, 1))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -1029,7 +1078,8 @@ constructor.</p></div>
 
     def newSession(self, saveslot):
         &#34;&#34;&#34;Clears the current session and starts a new one with the
-        given `legends.saveslot.SaveSlot` object.
+        given `legends.saveslot.SaveSlot` object. Sets the `menuEnabled`
+        property to `True`.
 
         Args:
             saveslot (legends.saveslot.SaveSlot): The
@@ -1038,7 +1088,8 @@ constructor.</p></div>
 
         &#34;&#34;&#34;
         self.session.destroy()
-        self.session = Session(self, saveslot)
+        self._session = Session(self, saveslot)
+        self.menuEnabled = True
         self.session.pack()
 
     def askCloseSession(self):
@@ -1121,7 +1172,9 @@ constructor.</p></div>
 <dd>
 <div class="desc"><p><code>bool</code>: <code>True</code> if the menu options in <code>disableOnModal</code> are
 enabled. Upon setting this property, those menu options' states
-are set accordingly.</p></div>
+are set accordingly. Menu options in <code>sessionOnly</code> are
+unaffected by changes to this property when there is no active
+session.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1130,9 +1183,29 @@ are set accordingly.</p></div>
 def menuEnabled(self):
     &#34;&#34;&#34;`bool`: `True` if the menu options in `disableOnModal` are
     enabled. Upon setting this property, those menu options&#39; states
-    are set accordingly.
+    are set accordingly. Menu options in `sessionOnly` are
+    unaffected by changes to this property when there is no active
+    session.
     &#34;&#34;&#34;
     return self._menuEnabled</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.stlplanner.STLPlanner.session"><code class="name">var <span class="ident">session</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code>: The currently running user
+session. Defaults to a new <code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code> instance
+with no save slot.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def session(self):
+    &#34;&#34;&#34;`legends.ui.session.Session`: The currently running user
+    session. Defaults to a new `legends.ui.session.Session` instance
+    with no save slot.
+    &#34;&#34;&#34;
+    return self._session</code></pre>
 </details>
 </dd>
 </dl>
@@ -1212,8 +1285,11 @@ it.</p>
         command=self.setTimestamps
     )
     self.disableOnModal.append((sessionMenu, 0))
-    sessionMenu.add_command(label=&#39;Inventory...&#39;, command=self.inventory)
+    sessionMenu.add_command(
+        label=&#39;Inventory...&#39;, command=self.inventory, state=tk.DISABLED
+    )
     self.disableOnModal.append((sessionMenu, 1))
+    self.sessionOnly.append((sessionMenu, 1))
 
     # build and populate the Help menu
     helpMenu = tk.Menu(menuBar)
@@ -1307,7 +1383,8 @@ starts a new session using a roster of maxed characters.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Clears the current session and starts a new one with the
-given <code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object.</p>
+given <code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object. Sets the <code>menuEnabled</code>
+property to <code>True</code>.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>saveslot</code></strong> :&ensp;<code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code></dt>
@@ -1321,7 +1398,8 @@ the new session.</dd>
 </summary>
 <pre><code class="python">def newSession(self, saveslot):
     &#34;&#34;&#34;Clears the current session and starts a new one with the
-    given `legends.saveslot.SaveSlot` object.
+    given `legends.saveslot.SaveSlot` object. Sets the `menuEnabled`
+    property to `True`.
 
     Args:
         saveslot (legends.saveslot.SaveSlot): The
@@ -1330,7 +1408,8 @@ the new session.</dd>
 
     &#34;&#34;&#34;
     self.session.destroy()
-    self.session = Session(self, saveslot)
+    self._session = Session(self, saveslot)
+    self.menuEnabled = True
     self.session.pack()</code></pre>
 </details>
 </dd>
@@ -1403,6 +1482,7 @@ according to the value of the <code>showTimestamps</code> attribute.</p></div>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newFromFile" href="#legends.ui.stlplanner.STLPlanner.newFromFile">newFromFile</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newMaxChars" href="#legends.ui.stlplanner.STLPlanner.newMaxChars">newMaxChars</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newSession" href="#legends.ui.stlplanner.STLPlanner.newSession">newSession</a></code></li>
+<li><code><a title="legends.ui.stlplanner.STLPlanner.session" href="#legends.ui.stlplanner.STLPlanner.session">session</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.setTimestamps" href="#legends.ui.stlplanner.STLPlanner.setTimestamps">setTimestamps</a></code></li>
 </ul>
 </li>

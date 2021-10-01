@@ -4,7 +4,6 @@
 
 import tkinter as tk
 from tkinter import ttk
-from tkinter.filedialog import asksaveasfilename
 from csv import DictWriter
 from getpass import getuser
 from legends.utils.scrollframe import ScrollFrame
@@ -13,7 +12,7 @@ from legends.constants import (
     ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS, SUMMON_POOL
 )
 from legends.ui.charcard import CharCard
-from legends.ui.dialogs import ModalDialog, ModalMessage
+from legends.ui.dialogs import asksaveasfilename, ModalDialog, ModalMessage
 
 __all__ = [
     'AskRosterFilter',
@@ -561,7 +560,6 @@ class RosterTab(tk.Frame):
         """
         OptimalSummons(self.root)
 
-
     def sort(self):
         """Sorts the dictionary of characters stored in the associated
         `legends.saveslot.SaveSlot` object according the currently
@@ -603,6 +601,7 @@ class RosterTab(tk.Frame):
 
         """
         filename = asksaveasfilename(
+            self.root,
             defaultextension='csv',
             initialdir='/Users/' + getuser() + '/Documents/',
             initialfile='roster.csv',

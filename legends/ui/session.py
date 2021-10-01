@@ -35,6 +35,8 @@ class InventoryScreen(ModalMessage):
         extraXP = self.inventory.xp % xpFromLevel(99)
         for start in range(1,99):
             end = levelFromXP(xpFromLevel(start) + extraXP)
+            if start > 1 and start == end:
+                break
             try:
                 self.levelMap[start] = end
             except ValueError:

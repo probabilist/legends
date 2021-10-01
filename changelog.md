@@ -1,5 +1,19 @@
 # Change log
 
+## Version 0.13.0
+
+* Added a `maxGearLevel` attribute to the `Roster` class.
+* Removed the setter for the `level` property of the `Gear` class and added a `setLevel` method that enforces gear leveling restrictions.
+* Added a `_key` attribute to the `Skill` class and revised its constructor so that skills that come with a newly summoned character are unlocked upon instance creation.
+* Added a custom `asksaveasfilename` function to the `dialogs` module and edited the `RosterTab.export` method to use it.
+* Edited the `InventoryScreen` class to trim the combo-boxes when the player is unable to level a character to 99.
+* Changes to the `STLPlanner` class:
+    - Added a `sessionOnly` attribute for menu items that should only be enabled when there is an active session.
+    - Changed the `session` attribute to a read-only property.
+    - Changed the `menuEnabled` setter to account for the `sessionOnly` menu items.
+    - Added the 'Inventory...' menu item to `sessionOnly` and set it to be initially disabled.
+    - Edited the `newSession` method to enable `sessionOnly` menu items on session creation.
+
 ## Version 0.12.0
 
 * Restructured module for greater compartmentalization and natural groupings.

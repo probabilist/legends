@@ -34,7 +34,7 @@
 from re import findall
 from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
-from legends.constants import GSCharacter, GSGear, GSSkill
+from legends.constants import GSCharacter, GSGear, GSSkill, GSSkillUpgrade
 from legends.constants import (
     DESCRIPTIONS, PART_STAT_UNLOCKED, RARITIES
 )
@@ -228,9 +228,11 @@ class Gear(Managed):
 
     &#34;&#34;&#34;
 
-    def __init__(self, gearID, level):
+    def __init__(self, gearID, level=1):
         &#34;&#34;&#34;The constructor stores the given level in a private attribute
-        that is managed by a class property.
+        that is managed by a class property. At instance creation, the
+        level may be set to anything, without regard to the usual
+        restrictions on gear leveling.
 
         Args:
             gearID (str): The gearID of the piece to create.
@@ -246,15 +248,10 @@ class Gear(Managed):
     def level(self):
         &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
         rarity. For example, a Level 17 gear piece displays in game as
-        &#34;Epic, Level 2&#34;. Modifying this property also calls the
-        `Gear.updateStats` method.
+        &#34;Epic, Level 2&#34;. This property must be modified with the
+        `Gear.setLevel` method.
         &#34;&#34;&#34;
         return self._level
-
-    @level.setter
-    def level(self, value):
-        self._level = value
-        self.updateStats()
 
     @property
     def rarityIndex(self):
@@ -272,6 +269,29 @@ class Gear(Managed):
         be placed.
         &#34;&#34;&#34;
         return GSGear[self.gearID][&#39;m_Slot&#39;]
+
+    def setLevel(self, roster, value):
+        &#34;&#34;&#34;Sets the `level` property to the given value, then calls the
+        `Gear.updateStats` method. A gear piece may only be leveled up
+        if it is equipped on a character, and in that case, the gear
+        piece may not be leveled beyond the rarity of that character.
+        This method must be passed a `legends.roster.Roster` object to
+        which the calling instance belongs. The roster will enforce the
+        leveling requirements.
+
+        Args:
+            roster (legends.roster.Roster): A roster to which the
+                calling belongs.
+            value (int): The value to assign to the `level` property.
+
+        &#34;&#34;&#34;
+        maxLevel = roster.maxGearLevel(self)
+        if value &gt; maxLevel:
+            raise ValueError(
+                &#39;{} cannot go past Level {}&#39;.format(self, maxLevel)
+            )
+        self._level = value
+        self.updateStats()
 
     def updateStats(self):
         &#34;&#34;&#34;Updates the `stats` attribute.
@@ -416,12 +436,19 @@ class Skill():
         skillID (str): The skill&#39;s ID, as it appears in `GSSkill`.
         level (int): The level of the skill.
         unlocked (bool): True if the character has unlocked this skill.
+            Cannot be set False for skills that come with a newly
+            summoned character.
 
     &#34;&#34;&#34;
     def __init__(self, skillID, level=1, unlocked=False):
         self.skillID = skillID
         self.level = level
         self.unlocked = unlocked
+        self._key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
+            self.skillID, self.level
+        )
+        if self._key not in GSSkillUpgrade:
+            self.unlocked = True
 
     @property
     def name(self):
@@ -431,10 +458,7 @@ class Skill():
     @property
     def data(self):
         &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
-        key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
-            self.skillID, self.level
-        )
-        return GSSkill[key]
+        return GSSkill[self._key]
 
     @property
     def itemsToMax(self):
@@ -883,7 +907,7 @@ def xp(self):
 </dd>
 <dt id="legends.gameobjects.Gear"><code class="flex name class">
 <span>class <span class="ident">Gear</span></span>
-<span>(</span><span>gearID, level)</span>
+<span>(</span><span>gearID, level=1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A piece of gear in STL.</p>
@@ -897,7 +921,9 @@ in <code>GSGear</code>.</dd>
 gear's total stats.</dd>
 </dl>
 <p>The constructor stores the given level in a private attribute
-that is managed by a class property.</p>
+that is managed by a class property. At instance creation, the
+level may be set to anything, without regard to the usual
+restrictions on gear leveling.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>gearID</code></strong> :&ensp;<code>str</code></dt>
@@ -920,9 +946,11 @@ that is managed by a class property.</p>
 
     &#34;&#34;&#34;
 
-    def __init__(self, gearID, level):
+    def __init__(self, gearID, level=1):
         &#34;&#34;&#34;The constructor stores the given level in a private attribute
-        that is managed by a class property.
+        that is managed by a class property. At instance creation, the
+        level may be set to anything, without regard to the usual
+        restrictions on gear leveling.
 
         Args:
             gearID (str): The gearID of the piece to create.
@@ -938,15 +966,10 @@ that is managed by a class property.</p>
     def level(self):
         &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
         rarity. For example, a Level 17 gear piece displays in game as
-        &#34;Epic, Level 2&#34;. Modifying this property also calls the
-        `Gear.updateStats` method.
+        &#34;Epic, Level 2&#34;. This property must be modified with the
+        `Gear.setLevel` method.
         &#34;&#34;&#34;
         return self._level
-
-    @level.setter
-    def level(self, value):
-        self._level = value
-        self.updateStats()
 
     @property
     def rarityIndex(self):
@@ -964,6 +987,29 @@ that is managed by a class property.</p>
         be placed.
         &#34;&#34;&#34;
         return GSGear[self.gearID][&#39;m_Slot&#39;]
+
+    def setLevel(self, roster, value):
+        &#34;&#34;&#34;Sets the `level` property to the given value, then calls the
+        `Gear.updateStats` method. A gear piece may only be leveled up
+        if it is equipped on a character, and in that case, the gear
+        piece may not be leveled beyond the rarity of that character.
+        This method must be passed a `legends.roster.Roster` object to
+        which the calling instance belongs. The roster will enforce the
+        leveling requirements.
+
+        Args:
+            roster (legends.roster.Roster): A roster to which the
+                calling belongs.
+            value (int): The value to assign to the `level` property.
+
+        &#34;&#34;&#34;
+        maxLevel = roster.maxGearLevel(self)
+        if value &gt; maxLevel:
+            raise ValueError(
+                &#39;{} cannot go past Level {}&#39;.format(self, maxLevel)
+            )
+        self._level = value
+        self.updateStats()
 
     def updateStats(self):
         &#34;&#34;&#34;Updates the `stats` attribute.
@@ -984,8 +1030,8 @@ that is managed by a class property.</p>
 <dd>
 <div class="desc"><p><code>int</code>: The level of the gear. Level is 1-based and includes
 rarity. For example, a Level 17 gear piece displays in game as
-"Epic, Level 2". Modifying this property also calls the
-<code><a title="legends.gameobjects.Gear.updateStats" href="#legends.gameobjects.Gear.updateStats">Gear.updateStats()</a></code> method.</p></div>
+"Epic, Level 2". This property must be modified with the
+<code><a title="legends.gameobjects.Gear.setLevel" href="#legends.gameobjects.Gear.setLevel">Gear.setLevel()</a></code> method.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -994,8 +1040,8 @@ rarity. For example, a Level 17 gear piece displays in game as
 def level(self):
     &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
     rarity. For example, a Level 17 gear piece displays in game as
-    &#34;Epic, Level 2&#34;. Modifying this property also calls the
-    `Gear.updateStats` method.
+    &#34;Epic, Level 2&#34;. This property must be modified with the
+    `Gear.setLevel` method.
     &#34;&#34;&#34;
     return self._level</code></pre>
 </details>
@@ -1045,6 +1091,53 @@ def slot(self):
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="legends.gameobjects.Gear.setLevel"><code class="name flex">
+<span>def <span class="ident">setLevel</span></span>(<span>self, roster, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the <code>level</code> property to the given value, then calls the
+<code><a title="legends.gameobjects.Gear.updateStats" href="#legends.gameobjects.Gear.updateStats">Gear.updateStats()</a></code> method. A gear piece may only be leveled up
+if it is equipped on a character, and in that case, the gear
+piece may not be leveled beyond the rarity of that character.
+This method must be passed a <code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code> object to
+which the calling instance belongs. The roster will enforce the
+leveling requirements.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>roster</code></strong> :&ensp;<code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code></dt>
+<dd>A roster to which the
+calling belongs.</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>int</code></dt>
+<dd>The value to assign to the <code>level</code> property.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setLevel(self, roster, value):
+    &#34;&#34;&#34;Sets the `level` property to the given value, then calls the
+    `Gear.updateStats` method. A gear piece may only be leveled up
+    if it is equipped on a character, and in that case, the gear
+    piece may not be leveled beyond the rarity of that character.
+    This method must be passed a `legends.roster.Roster` object to
+    which the calling instance belongs. The roster will enforce the
+    leveling requirements.
+
+    Args:
+        roster (legends.roster.Roster): A roster to which the
+            calling belongs.
+        value (int): The value to assign to the `level` property.
+
+    &#34;&#34;&#34;
+    maxLevel = roster.maxGearLevel(self)
+    if value &gt; maxLevel:
+        raise ValueError(
+            &#39;{} cannot go past Level {}&#39;.format(self, maxLevel)
+        )
+    self._level = value
+    self.updateStats()</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Gear.updateStats"><code class="name flex">
 <span>def <span class="ident">updateStats</span></span>(<span>self)</span>
 </code></dt>
@@ -1401,7 +1494,9 @@ given index to the given stat name.</p>
 <dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
 <dd>The level of the skill.</dd>
 <dt><strong><code>unlocked</code></strong> :&ensp;<code>bool</code></dt>
-<dd>True if the character has unlocked this skill.</dd>
+<dd>True if the character has unlocked this skill.
+Cannot be set False for skills that come with a newly
+summoned character.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -1414,12 +1509,19 @@ given index to the given stat name.</p>
         skillID (str): The skill&#39;s ID, as it appears in `GSSkill`.
         level (int): The level of the skill.
         unlocked (bool): True if the character has unlocked this skill.
+            Cannot be set False for skills that come with a newly
+            summoned character.
 
     &#34;&#34;&#34;
     def __init__(self, skillID, level=1, unlocked=False):
         self.skillID = skillID
         self.level = level
         self.unlocked = unlocked
+        self._key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
+            self.skillID, self.level
+        )
+        if self._key not in GSSkillUpgrade:
+            self.unlocked = True
 
     @property
     def name(self):
@@ -1429,10 +1531,7 @@ given index to the given stat name.</p>
     @property
     def data(self):
         &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
-        key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
-            self.skillID, self.level
-        )
-        return GSSkill[key]
+        return GSSkill[self._key]
 
     @property
     def itemsToMax(self):
@@ -1460,10 +1559,7 @@ given index to the given stat name.</p>
 <pre><code class="python">@property
 def data(self):
     &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
-    key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(
-        self.skillID, self.level
-    )
-    return GSSkill[key]</code></pre>
+    return GSSkill[self._key]</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Skill.itemsToMax"><code class="name">var <span class="ident">itemsToMax</span></code></dt>
@@ -1534,10 +1630,11 @@ def name(self):
 </li>
 <li>
 <h4><code><a title="legends.gameobjects.Gear" href="#legends.gameobjects.Gear">Gear</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="legends.gameobjects.Gear.level" href="#legends.gameobjects.Gear.level">level</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.rarity" href="#legends.gameobjects.Gear.rarity">rarity</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.rarityIndex" href="#legends.gameobjects.Gear.rarityIndex">rarityIndex</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.setLevel" href="#legends.gameobjects.Gear.setLevel">setLevel</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.slot" href="#legends.gameobjects.Gear.slot">slot</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.updateStats" href="#legends.gameobjects.Gear.updateStats">updateStats</a></code></li>
 </ul>
