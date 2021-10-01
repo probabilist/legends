@@ -31,6 +31,8 @@
 
 &#34;&#34;&#34;
 
+from base64 import b64decode
+from zlib import decompress
 from json import loads
 from getpass import getuser
 from plistlib import load
@@ -45,6 +47,7 @@ from legends.constants import Inventory, ITEMS, PART_STAT_VALUES, RARITIES
 __all__ = [
     &#39;charGearToMaxCost&#39;,
     &#39;cleanTime&#39;,
+    &#39;decompressSave&#39;,
     &#39;decryptSaveFile&#39;,
     &#39;gearToMaxCost&#39;,
     &#39;gearUpgradeCost&#39;,
@@ -100,6 +103,24 @@ def cleanTime(delta):
     display += &#39;{} hrs {} min&#39;.format(hours, minutes)
     return display
 
+def decompressSave(text):
+    &#34;&#34;&#34;When sending a support email, the unencrypted data from your save
+    slot is included in the email, but it is compressed. This function
+    decompresses the data, converts it to a dictionary, and returns the
+    dictionary.
+
+    Args:
+        text (str): The compressed, unencrypted save data.
+
+    Returns:
+        dict: The dictionary of data from the save slot.
+
+    &#34;&#34;&#34;
+    b64data = text.encode(&#39;utf-16&#39;)
+    compressedData = b64decode(b64data)
+    data = decompress(compressedData, -15)
+    return loads(data.decode(&#39;ascii&#39;))
+
 def decryptSaveFile():
     &#34;&#34;&#34;Finds the STL save file on the local hard drive, then decrypts
     and parses it into a dictionary.
@@ -116,11 +137,15 @@ def decryptSaveFile():
         if len(saveFile.get(key, &#39;&#39;)) == 0:
             saveFile[key] = {}
             continue
-        saveFile[key] = loads(AESdecrypt(
+        slotData = AESdecrypt(
             saveFile[key],
             &#39;K1FjcmVkc2Vhc29u&#39;,
             &#39;LH75Qxpyf0prVvImu4gqxg==&#39;
-        ))
+        )
+        if slotData[:6] == &#39;compr-&#39;:
+            saveFile[key] = decompressSave(slotData[6:])
+        else:
+            saveFile[key] = loads(slotData)
     return saveFile
 
 def gearToMaxCost(gearID, currLvl, finalLvl):
@@ -456,6 +481,47 @@ shows the number of days (if positive), hours, and minutes.</p>
     return display</code></pre>
 </details>
 </dd>
+<dt id="legends.functions.decompressSave"><code class="name flex">
+<span>def <span class="ident">decompressSave</span></span>(<span>text)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>When sending a support email, the unencrypted data from your save
+slot is included in the email, but it is compressed. This function
+decompresses the data, converts it to a dictionary, and returns the
+dictionary.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
+<dd>The compressed, unencrypted save data.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>The dictionary of data from the save slot.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def decompressSave(text):
+    &#34;&#34;&#34;When sending a support email, the unencrypted data from your save
+    slot is included in the email, but it is compressed. This function
+    decompresses the data, converts it to a dictionary, and returns the
+    dictionary.
+
+    Args:
+        text (str): The compressed, unencrypted save data.
+
+    Returns:
+        dict: The dictionary of data from the save slot.
+
+    &#34;&#34;&#34;
+    b64data = text.encode(&#39;utf-16&#39;)
+    compressedData = b64decode(b64data)
+    data = decompress(compressedData, -15)
+    return loads(data.decode(&#39;ascii&#39;))</code></pre>
+</details>
+</dd>
 <dt id="legends.functions.decryptSaveFile"><code class="name flex">
 <span>def <span class="ident">decryptSaveFile</span></span>(<span>)</span>
 </code></dt>
@@ -487,11 +553,15 @@ and parses it into a dictionary.</p>
         if len(saveFile.get(key, &#39;&#39;)) == 0:
             saveFile[key] = {}
             continue
-        saveFile[key] = loads(AESdecrypt(
+        slotData = AESdecrypt(
             saveFile[key],
             &#39;K1FjcmVkc2Vhc29u&#39;,
             &#39;LH75Qxpyf0prVvImu4gqxg==&#39;
-        ))
+        )
+        if slotData[:6] == &#39;compr-&#39;:
+            saveFile[key] = decompressSave(slotData[6:])
+        else:
+            saveFile[key] = loads(slotData)
     return saveFile</code></pre>
 </details>
 </dd>
@@ -1025,6 +1095,7 @@ advance to the next rank.</dd>
 <ul class="two-column">
 <li><code><a title="legends.functions.charGearToMaxCost" href="#legends.functions.charGearToMaxCost">charGearToMaxCost</a></code></li>
 <li><code><a title="legends.functions.cleanTime" href="#legends.functions.cleanTime">cleanTime</a></code></li>
+<li><code><a title="legends.functions.decompressSave" href="#legends.functions.decompressSave">decompressSave</a></code></li>
 <li><code><a title="legends.functions.decryptSaveFile" href="#legends.functions.decryptSaveFile">decryptSaveFile</a></code></li>
 <li><code><a title="legends.functions.gearToMaxCost" href="#legends.functions.gearToMaxCost">gearToMaxCost</a></code></li>
 <li><code><a title="legends.functions.gearUpgradeCost" href="#legends.functions.gearUpgradeCost">gearUpgradeCost</a></code></li>

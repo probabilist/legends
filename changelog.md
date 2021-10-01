@@ -1,5 +1,11 @@
 # Change log
 
+## Version 0.15.2
+
+* Added a `decompressSave` function.
+* Edited the `decryptSaveFile` function to decompress data when needed.
+* Updated game data.
+
 ## Version 0.15.1
 
 * Added the following functions: `gearUpgradeCost`, `gearToMaxCost`, and `charGearToMaxCost`.

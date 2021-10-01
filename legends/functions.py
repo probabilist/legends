@@ -2,6 +2,8 @@
 
 """
 
+from base64 import b64decode
+from zlib import decompress
 from json import loads
 from getpass import getuser
 from plistlib import load
@@ -16,6 +18,7 @@ from legends.constants import Inventory, ITEMS, PART_STAT_VALUES, RARITIES
 __all__ = [
     'charGearToMaxCost',
     'cleanTime',
+    'decompressSave',
     'decryptSaveFile',
     'gearToMaxCost',
     'gearUpgradeCost',
@@ -71,6 +74,24 @@ def cleanTime(delta):
     display += '{} hrs {} min'.format(hours, minutes)
     return display
 
+def decompressSave(text):
+    """When sending a support email, the unencrypted data from your save
+    slot is included in the email, but it is compressed. This function
+    decompresses the data, converts it to a dictionary, and returns the
+    dictionary.
+
+    Args:
+        text (str): The compressed, unencrypted save data.
+
+    Returns:
+        dict: The dictionary of data from the save slot.
+
+    """
+    b64data = text.encode('utf-16')
+    compressedData = b64decode(b64data)
+    data = decompress(compressedData, -15)
+    return loads(data.decode('ascii'))
+
 def decryptSaveFile():
     """Finds the STL save file on the local hard drive, then decrypts
     and parses it into a dictionary.
@@ -87,11 +108,15 @@ def decryptSaveFile():
         if len(saveFile.get(key, '')) == 0:
             saveFile[key] = {}
             continue
-        saveFile[key] = loads(AESdecrypt(
+        slotData = AESdecrypt(
             saveFile[key],
             'K1FjcmVkc2Vhc29u',
             'LH75Qxpyf0prVvImu4gqxg=='
-        ))
+        )
+        if slotData[:6] == 'compr-':
+            saveFile[key] = decompressSave(slotData[6:])
+        else:
+            saveFile[key] = loads(slotData)
     return saveFile
 
 def gearToMaxCost(gearID, currLvl, finalLvl):
