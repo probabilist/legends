@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.15.1
+
+* Added the following functions: `gearUpgradeCost`, `gearToMaxCost`, and `charGearToMaxCost`.
+
 ## Version 0.15.0
 
 * Added a `DIFFICULTIES` constant.

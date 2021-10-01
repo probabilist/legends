@@ -11,11 +11,14 @@ from legends.constants import (
     GSBaseStat, GSCharacter, GSGear, GSGearLevel, GSLevel, GSRank,
     GSSkillUpgrade
 )
-from legends.constants import Inventory, ITEMS, PART_STAT_VALUES
+from legends.constants import Inventory, ITEMS, PART_STAT_VALUES, RARITIES
 
 __all__ = [
+    'charGearToMaxCost',
     'cleanTime',
     'decryptSaveFile',
+    'gearToMaxCost',
+    'gearUpgradeCost',
     'getCharStats',
     'getGearStats',
     'getPartStats',
@@ -26,6 +29,29 @@ __all__ = [
     'tokensNeeded',
     'xpFromLevel'
 ]
+
+def charGearToMaxCost(rarity, role='Command'):
+    """Computes and returns the cost of leveling all gear on a character
+    of the given rarity and role from level 1 to the maximum possible
+    level for that character.
+
+    Args:
+        rarity (str): The rarity of the character.
+        role (str): The role of the character.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    """
+    maxGearLevel = 5 + 5 * RARITIES.index(rarity)
+    cost = Inventory()
+    for gearID, data in GSGear.items():
+        if data['m_Role'] != role:
+            continue
+        cost += gearToMaxCost(gearID, 1, maxGearLevel)
+    return cost
 
 def cleanTime(delta):
     """Converts a `timedelta` object into a string description that
@@ -67,6 +93,49 @@ def decryptSaveFile():
             'LH75Qxpyf0prVvImu4gqxg=='
         ))
     return saveFile
+
+def gearToMaxCost(gearID, currLvl, finalLvl):
+    """Computes and returns the cost of leveling the given gear from the
+    given current level to the given final level.
+
+    Args:
+        gearID (str): The gear ID, as it appears in `GSGear`, of the
+            given skill.
+        currLevel (int): The current level of the gear.
+        finalLevel (int): The final level of the gear.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    """
+    cost = Inventory()
+    while currLvl < finalLvl:
+        currLvl += 1
+        cost += gearUpgradeCost(gearID, currLvl)
+    return cost
+
+def gearUpgradeCost(gearID, level):
+    """Computes and returns the cost of leveling the given gear to the
+    given level, from the previous level.
+
+    Args:
+        gearID (str): The gear ID, as it appears in `GSGear`, of the
+            given skill.
+        level (int): The level to which the gear is being upgraded.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    """
+    key = '[{}, {}]'.format(gearID, level)
+    cost = Inventory()
+    for itemID, qty in GSGearLevel[key]['m_UpgradePrice']['AllItems'].items():
+        cost[ITEMS[itemID]] += qty
+    return cost
 
 def getCharStats(nameID, rank, level):
     """Calculates a character's naked stats from its nameID, rank, and
@@ -198,14 +267,15 @@ def skillToMaxCost(skillID, currLvl):
             the skill is currently locked.
 
     Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `legends.constants.Inventory` instance.
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
 
     """
     cost = Inventory()
     while currLvl < 2:
         currLvl += 1
-        cost = cost + skillUpgradeCost(skillID, currLvl)
+        cost += skillUpgradeCost(skillID, currLvl)
     return cost
 
 def skillUpgradeCost(skillID, level):
@@ -219,8 +289,9 @@ def skillUpgradeCost(skillID, level):
             set to 1, returns the cost of unlocking the skill.
 
     Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `legends.constants.Inventory` instance.
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
 
     """
     key = 'GSSkillKey(id = "{}", level = "{}")'.format(skillID, level)

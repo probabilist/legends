@@ -40,11 +40,14 @@ from legends.constants import (
     GSBaseStat, GSCharacter, GSGear, GSGearLevel, GSLevel, GSRank,
     GSSkillUpgrade
 )
-from legends.constants import Inventory, ITEMS, PART_STAT_VALUES
+from legends.constants import Inventory, ITEMS, PART_STAT_VALUES, RARITIES
 
 __all__ = [
+    &#39;charGearToMaxCost&#39;,
     &#39;cleanTime&#39;,
     &#39;decryptSaveFile&#39;,
+    &#39;gearToMaxCost&#39;,
+    &#39;gearUpgradeCost&#39;,
     &#39;getCharStats&#39;,
     &#39;getGearStats&#39;,
     &#39;getPartStats&#39;,
@@ -55,6 +58,29 @@ __all__ = [
     &#39;tokensNeeded&#39;,
     &#39;xpFromLevel&#39;
 ]
+
+def charGearToMaxCost(rarity, role=&#39;Command&#39;):
+    &#34;&#34;&#34;Computes and returns the cost of leveling all gear on a character
+    of the given rarity and role from level 1 to the maximum possible
+    level for that character.
+
+    Args:
+        rarity (str): The rarity of the character.
+        role (str): The role of the character.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    &#34;&#34;&#34;
+    maxGearLevel = 5 + 5 * RARITIES.index(rarity)
+    cost = Inventory()
+    for gearID, data in GSGear.items():
+        if data[&#39;m_Role&#39;] != role:
+            continue
+        cost += gearToMaxCost(gearID, 1, maxGearLevel)
+    return cost
 
 def cleanTime(delta):
     &#34;&#34;&#34;Converts a `timedelta` object into a string description that
@@ -96,6 +122,49 @@ def decryptSaveFile():
             &#39;LH75Qxpyf0prVvImu4gqxg==&#39;
         ))
     return saveFile
+
+def gearToMaxCost(gearID, currLvl, finalLvl):
+    &#34;&#34;&#34;Computes and returns the cost of leveling the given gear from the
+    given current level to the given final level.
+
+    Args:
+        gearID (str): The gear ID, as it appears in `GSGear`, of the
+            given skill.
+        currLevel (int): The current level of the gear.
+        finalLevel (int): The final level of the gear.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    &#34;&#34;&#34;
+    cost = Inventory()
+    while currLvl &lt; finalLvl:
+        currLvl += 1
+        cost += gearUpgradeCost(gearID, currLvl)
+    return cost
+
+def gearUpgradeCost(gearID, level):
+    &#34;&#34;&#34;Computes and returns the cost of leveling the given gear to the
+    given level, from the previous level.
+
+    Args:
+        gearID (str): The gear ID, as it appears in `GSGear`, of the
+            given skill.
+        level (int): The level to which the gear is being upgraded.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    &#34;&#34;&#34;
+    key = &#39;[{}, {}]&#39;.format(gearID, level)
+    cost = Inventory()
+    for itemID, qty in GSGearLevel[key][&#39;m_UpgradePrice&#39;][&#39;AllItems&#39;].items():
+        cost[ITEMS[itemID]] += qty
+    return cost
 
 def getCharStats(nameID, rank, level):
     &#34;&#34;&#34;Calculates a character&#39;s naked stats from its nameID, rank, and
@@ -227,14 +296,15 @@ def skillToMaxCost(skillID, currLvl):
             the skill is currently locked.
 
     Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `legends.constants.Inventory` instance.
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
 
     &#34;&#34;&#34;
     cost = Inventory()
     while currLvl &lt; 2:
         currLvl += 1
-        cost = cost + skillUpgradeCost(skillID, currLvl)
+        cost += skillUpgradeCost(skillID, currLvl)
     return cost
 
 def skillUpgradeCost(skillID, level):
@@ -248,8 +318,9 @@ def skillUpgradeCost(skillID, level):
             set to 1, returns the cost of unlocking the skill.
 
     Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `legends.constants.Inventory` instance.
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
 
     &#34;&#34;&#34;
     key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(skillID, level)
@@ -297,6 +368,55 @@ def xpFromLevel(level, rarity=&#39;Common&#39;):
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="legends.functions.charGearToMaxCost"><code class="name flex">
+<span>def <span class="ident">charGearToMaxCost</span></span>(<span>rarity, role='Command')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the cost of leveling all gear on a character
+of the given rarity and role from level 1 to the maximum possible
+level for that character.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
+<dd>The rarity of the character.</dd>
+<dt><strong><code>role</code></strong> :&ensp;<code>str</code></dt>
+<dd>The role of the character.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The items needed to upgrade are
+stored and returned in an <code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code>
+instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def charGearToMaxCost(rarity, role=&#39;Command&#39;):
+    &#34;&#34;&#34;Computes and returns the cost of leveling all gear on a character
+    of the given rarity and role from level 1 to the maximum possible
+    level for that character.
+
+    Args:
+        rarity (str): The rarity of the character.
+        role (str): The role of the character.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    &#34;&#34;&#34;
+    maxGearLevel = 5 + 5 * RARITIES.index(rarity)
+    cost = Inventory()
+    for gearID, data in GSGear.items():
+        if data[&#39;m_Role&#39;] != role:
+            continue
+        cost += gearToMaxCost(gearID, 1, maxGearLevel)
+    return cost</code></pre>
+</details>
+</dd>
 <dt id="legends.functions.cleanTime"><code class="name flex">
 <span>def <span class="ident">cleanTime</span></span>(<span>delta)</span>
 </code></dt>
@@ -373,6 +493,103 @@ and parses it into a dictionary.</p>
             &#39;LH75Qxpyf0prVvImu4gqxg==&#39;
         ))
     return saveFile</code></pre>
+</details>
+</dd>
+<dt id="legends.functions.gearToMaxCost"><code class="name flex">
+<span>def <span class="ident">gearToMaxCost</span></span>(<span>gearID, currLvl, finalLvl)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the cost of leveling the given gear from the
+given current level to the given final level.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>gearID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The gear ID, as it appears in <code>GSGear</code>, of the
+given skill.</dd>
+<dt><strong><code>currLevel</code></strong> :&ensp;<code>int</code></dt>
+<dd>The current level of the gear.</dd>
+<dt><strong><code>finalLevel</code></strong> :&ensp;<code>int</code></dt>
+<dd>The final level of the gear.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The items needed to upgrade are
+stored and returned in an <code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code>
+instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gearToMaxCost(gearID, currLvl, finalLvl):
+    &#34;&#34;&#34;Computes and returns the cost of leveling the given gear from the
+    given current level to the given final level.
+
+    Args:
+        gearID (str): The gear ID, as it appears in `GSGear`, of the
+            given skill.
+        currLevel (int): The current level of the gear.
+        finalLevel (int): The final level of the gear.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    &#34;&#34;&#34;
+    cost = Inventory()
+    while currLvl &lt; finalLvl:
+        currLvl += 1
+        cost += gearUpgradeCost(gearID, currLvl)
+    return cost</code></pre>
+</details>
+</dd>
+<dt id="legends.functions.gearUpgradeCost"><code class="name flex">
+<span>def <span class="ident">gearUpgradeCost</span></span>(<span>gearID, level)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the cost of leveling the given gear to the
+given level, from the previous level.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>gearID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The gear ID, as it appears in <code>GSGear</code>, of the
+given skill.</dd>
+<dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
+<dd>The level to which the gear is being upgraded.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The items needed to upgrade are
+stored and returned in an <code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code>
+instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gearUpgradeCost(gearID, level):
+    &#34;&#34;&#34;Computes and returns the cost of leveling the given gear to the
+    given level, from the previous level.
+
+    Args:
+        gearID (str): The gear ID, as it appears in `GSGear`, of the
+            given skill.
+        level (int): The level to which the gear is being upgraded.
+
+    Returns:
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
+
+    &#34;&#34;&#34;
+    key = &#39;[{}, {}]&#39;.format(gearID, level)
+    cost = Inventory()
+    for itemID, qty in GSGearLevel[key][&#39;m_UpgradePrice&#39;][&#39;AllItems&#39;].items():
+        cost[ITEMS[itemID]] += qty
+    return cost</code></pre>
 </details>
 </dd>
 <dt id="legends.functions.getCharStats"><code class="name flex">
@@ -630,9 +847,10 @@ the skill is currently locked.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Inventory</code></dt>
-<dd>The items needed to upgrade are stored and returned
-in an <code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code> instance.</dd>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The items needed to upgrade are
+stored and returned in an <code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code>
+instance.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -649,14 +867,15 @@ in an <code><a title="legends.constants.Inventory" href="constants.html#legends.
             the skill is currently locked.
 
     Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `legends.constants.Inventory` instance.
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
 
     &#34;&#34;&#34;
     cost = Inventory()
     while currLvl &lt; 2:
         currLvl += 1
-        cost = cost + skillUpgradeCost(skillID, currLvl)
+        cost += skillUpgradeCost(skillID, currLvl)
     return cost</code></pre>
 </details>
 </dd>
@@ -677,9 +896,10 @@ set to 1, returns the cost of unlocking the skill.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Inventory</code></dt>
-<dd>The items needed to upgrade are stored and returned
-in an <code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code> instance.</dd>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The items needed to upgrade are
+stored and returned in an <code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code>
+instance.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -696,8 +916,9 @@ in an <code><a title="legends.constants.Inventory" href="constants.html#legends.
             set to 1, returns the cost of unlocking the skill.
 
     Returns:
-        Inventory: The items needed to upgrade are stored and returned
-            in an `legends.constants.Inventory` instance.
+        legends.constants.Inventory: The items needed to upgrade are
+            stored and returned in an `legends.constants.Inventory`
+            instance.
 
     &#34;&#34;&#34;
     key = &#39;GSSkillKey(id = &#34;{}&#34;, level = &#34;{}&#34;)&#39;.format(skillID, level)
@@ -802,8 +1023,11 @@ advance to the next rank.</dd>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
+<li><code><a title="legends.functions.charGearToMaxCost" href="#legends.functions.charGearToMaxCost">charGearToMaxCost</a></code></li>
 <li><code><a title="legends.functions.cleanTime" href="#legends.functions.cleanTime">cleanTime</a></code></li>
 <li><code><a title="legends.functions.decryptSaveFile" href="#legends.functions.decryptSaveFile">decryptSaveFile</a></code></li>
+<li><code><a title="legends.functions.gearToMaxCost" href="#legends.functions.gearToMaxCost">gearToMaxCost</a></code></li>
+<li><code><a title="legends.functions.gearUpgradeCost" href="#legends.functions.gearUpgradeCost">gearUpgradeCost</a></code></li>
 <li><code><a title="legends.functions.getCharStats" href="#legends.functions.getCharStats">getCharStats</a></code></li>
 <li><code><a title="legends.functions.getGearStats" href="#legends.functions.getGearStats">getGearStats</a></code></li>
 <li><code><a title="legends.functions.getPartStats" href="#legends.functions.getPartStats">getPartStats</a></code></li>
