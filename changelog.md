@@ -1,5 +1,13 @@
 # Change log
 
+## Version 0.14.0
+
+* Added a `SessionSettings` class to store session settings that should be remembered.
+* Added a `settings` attribute to the `Session` class.
+* Edited the `OptimalSummons` class to remember the user's choice about excluding commons.
+* The `filter` attribute of the `RosterTab` class is now the `rosterFilter` attribute of the `SessionSettings` class.
+* Edited the `export` method of the `RosterTab` class to remember the user's choice of directory and file name.
+
 ## Version 0.13.0
 
 * Added a `maxGearLevel` attribute to the `Roster` class.

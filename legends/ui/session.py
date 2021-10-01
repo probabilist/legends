@@ -4,14 +4,15 @@
 
 import tkinter as tk
 from tkinter import ttk
+from getpass import getuser
 from legends.utils.relations import bidict
 from legends.constants import ITEMS
 from legends.functions import cleanTime, levelFromXP, xpFromLevel
 from legends.saveslot import Inventory
 from legends.ui.dialogs import ModalMessage
-from legends.ui.rostertab import RosterTab
+from legends.ui.rostertab import RosterTab, RosterFilter
 
-__all__ = ['InventoryScreen', 'Session']
+__all__ = ['InventoryScreen', 'Session', 'SessionSettings']
 
 class InventoryScreen(ModalMessage):
     """A message dialog showing the player's inventory.
@@ -199,6 +200,8 @@ class Session(tk.Frame):
         saveslot (legends.saveslot.SaveSlot): The
             `legends.saveslot.SaveSlot` object associated with the
             session.
+        settings (SessionSettings): The `SessionSettings` instance that
+            stores the settings for the current session.
         timeBar (tk.Frame): The horizontal bar at the top of the session
             frame that displays time stamp info connected with the
             associated save slot.
@@ -219,6 +222,7 @@ class Session(tk.Frame):
         tk.Frame.__init__(self, stlplanner, **options)
         self.saveslot = saveslot
         self.timeBar = None
+        self.settings = SessionSettings()
         self.tab = tk.Frame(self)
         self.tab.pack()
         if saveslot is None:
@@ -311,3 +315,23 @@ class Session(tk.Frame):
         self.tab = RosterTab(self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
         self.master.title('STL Planner - Roster')
+
+class SessionSettings(): # pylint: disable=too-few-public-methods
+    """Stores the settings for a `Session`.
+
+    Attributes:
+        rosterFilter (legends.ui.rostertab.RosterFilter): The
+            `legends.ui.rostertab.RosterFilter` object storing the
+            current filter settings for the roster tab.
+        rosterExportFile (str): The path to use when prompting the user
+            to export their roster to a spreadsheet.
+        excludeCommons (tk.BooleanVar): `True` is the summon rate
+            calculations made by the roster tab should exclude Common
+            characters.
+
+    """
+
+    def __init__(self):
+        self.rosterFilter = RosterFilter()
+        self.rosterExportFile = '/Users/' + getuser() + '/Documents/roster.csv'
+        self.excludeCommons = tk.BooleanVar(None, True)

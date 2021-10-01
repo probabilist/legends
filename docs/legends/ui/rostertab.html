@@ -34,7 +34,7 @@
 import tkinter as tk
 from tkinter import ttk
 from csv import DictWriter
-from getpass import getuser
+import os
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import (
@@ -184,8 +184,6 @@ class OptimalSummons(ModalMessage):
     &#34;&#34;&#34;A message dialog showing the summon pool rates.
 
     Attributes:
-        excludeCommons (tk.BooleanVar): `True` is the summon rate
-            calculations should exclude Common characters.
         values (dict): {`str`:`tk.StringVar`} A dictionary mapping pool
             names to a formatted string representation of the average
             number of tokens per 150 orbs received from the pool.
@@ -195,7 +193,6 @@ class OptimalSummons(ModalMessage):
 
     &#34;&#34;&#34;
     def __init__(self, root, parent=None):
-        self.excludeCommons = tk.BooleanVar(None, True)
         self.values = {}
         self.labels = {}
         for pool in SUMMON_POOL:
@@ -227,7 +224,8 @@ class OptimalSummons(ModalMessage):
         tk.Checkbutton(
             master,
             text=&#39;exclude Common characters&#39;,
-            variable=self.excludeCommons, command=self.refresh
+            variable=self.root.session.settings.excludeCommons,
+            command=self.refresh
         ).pack(pady=(10,0))
         self.refresh()
 
@@ -243,7 +241,7 @@ class OptimalSummons(ModalMessage):
         for pool in SUMMON_POOL:
             roster = self.root.session.saveslot.roster
             tokens[pool] = 150 * roster.tokensPerOrb(
-                pool, self.excludeCommons.get()
+                pool, self.root.session.settings.excludeCommons.get()
             )
             self.values[pool].set(&#39;{:.2f}&#39;.format(tokens[pool]))
             self.setPoolEmphasis(pool, &#39;normal&#39;)
@@ -403,8 +401,6 @@ class RosterTab(tk.Frame):
     &#34;&#34;&#34;Displays the player&#39;s character collection.
 
     Attributes:
-        filter (RosterFilter): The `RosterFilter` object storing the
-            current filter settings.
         scrollArea (legends.utils.scrollframe.ScrollFrame): The
             `legends.utils.scrollframe.ScrollFrame` used to hold the
             character cards.
@@ -431,7 +427,6 @@ class RosterTab(tk.Frame):
         &#34;&#34;&#34;
         # build frame and initialize variables
         tk.Frame.__init__(self, session, **options)
-        self.filter = RosterFilter()
 
         # build widgets
         self.scrollArea = ScrollFrame(self)
@@ -483,7 +478,7 @@ class RosterTab(tk.Frame):
             bool: `True` if the character passes.
 
         &#34;&#34;&#34;
-        filt = self.filter.dictify()
+        filt = self.master.settings.rosterFilter.dictify()
         return(
             filt[&#39;rarities&#39;][char.rarity]
             and filt[&#39;roles&#39;][char.role]
@@ -617,9 +612,11 @@ class RosterTab(tk.Frame):
         character cards and info bar.
 
         &#34;&#34;&#34;
-        filt = AskRosterFilter(self.root, self.filter).result
+        filt = AskRosterFilter(
+            self.root, self.master.settings.rosterFilter
+        ).result
         if filt is not None:
-            self.filter = filt
+            self.master.settings.rosterFilter = filt
             self.refresh()
 
     def export(self):
@@ -629,16 +626,20 @@ class RosterTab(tk.Frame):
         `legends.ui.charcard.CharCard.dictify` method.
 
         &#34;&#34;&#34;
+        initDir, initFile = os.path.split(
+            self.master.settings.rosterExportFile
+        )
         filename = asksaveasfilename(
             self.root,
             defaultextension=&#39;csv&#39;,
-            initialdir=&#39;/Users/&#39; + getuser() + &#39;/Documents/&#39;,
-            initialfile=&#39;roster.csv&#39;,
+            initialdir=initDir,
+            initialfile=initFile,
             title=&#39;Export Roster&#39;,
             filetypes=[(&#39;Text CSV&#39;, &#39;*.csv&#39;)]
         )
         if not filename:
             return
+        self.master.settings.rosterExportFile = filename
         cardDicts = [card.dictify() for card in self.cards.values()]
         fields = cardDicts[0].keys()
         with open(filename, &#39;w&#39;, newline=&#39;&#39;, encoding=&#39;utf-8&#39;) as f:
@@ -1022,9 +1023,6 @@ scales.</p>
 <div class="desc"><p>A message dialog showing the summon pool rates.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>excludeCommons</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
-<dd><code>True</code> is the summon rate
-calculations should exclude Common characters.</dd>
 <dt><strong><code>values</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>tk.StringVar</code>} A dictionary mapping pool
 names to a formatted string representation of the average
@@ -1044,8 +1042,6 @@ that pool in the body of the message dialog.</dd>
     &#34;&#34;&#34;A message dialog showing the summon pool rates.
 
     Attributes:
-        excludeCommons (tk.BooleanVar): `True` is the summon rate
-            calculations should exclude Common characters.
         values (dict): {`str`:`tk.StringVar`} A dictionary mapping pool
             names to a formatted string representation of the average
             number of tokens per 150 orbs received from the pool.
@@ -1055,7 +1051,6 @@ that pool in the body of the message dialog.</dd>
 
     &#34;&#34;&#34;
     def __init__(self, root, parent=None):
-        self.excludeCommons = tk.BooleanVar(None, True)
         self.values = {}
         self.labels = {}
         for pool in SUMMON_POOL:
@@ -1087,7 +1082,8 @@ that pool in the body of the message dialog.</dd>
         tk.Checkbutton(
             master,
             text=&#39;exclude Common characters&#39;,
-            variable=self.excludeCommons, command=self.refresh
+            variable=self.root.session.settings.excludeCommons,
+            command=self.refresh
         ).pack(pady=(10,0))
         self.refresh()
 
@@ -1103,7 +1099,7 @@ that pool in the body of the message dialog.</dd>
         for pool in SUMMON_POOL:
             roster = self.root.session.saveslot.roster
             tokens[pool] = 150 * roster.tokensPerOrb(
-                pool, self.excludeCommons.get()
+                pool, self.root.session.settings.excludeCommons.get()
             )
             self.values[pool].set(&#39;{:.2f}&#39;.format(tokens[pool]))
             self.setPoolEmphasis(pool, &#39;normal&#39;)
@@ -1168,7 +1164,8 @@ that pool in the body of the message dialog.</dd>
     tk.Checkbutton(
         master,
         text=&#39;exclude Common characters&#39;,
-        variable=self.excludeCommons, command=self.refresh
+        variable=self.root.session.settings.excludeCommons,
+        command=self.refresh
     ).pack(pady=(10,0))
     self.refresh()</code></pre>
 </details>
@@ -1196,7 +1193,7 @@ bold and the others are normal.</p></div>
     for pool in SUMMON_POOL:
         roster = self.root.session.saveslot.roster
         tokens[pool] = 150 * roster.tokensPerOrb(
-            pool, self.excludeCommons.get()
+            pool, self.root.session.settings.excludeCommons.get()
         )
         self.values[pool].set(&#39;{:.2f}&#39;.format(tokens[pool]))
         self.setPoolEmphasis(pool, &#39;normal&#39;)
@@ -1582,9 +1579,6 @@ characters belong.</dd>
 <div class="desc"><p>Displays the player's character collection.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>filter</code></strong> :&ensp;<code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code></dt>
-<dd>The <code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code> object storing the
-current filter settings.</dd>
 <dt><strong><code>scrollArea</code></strong> :&ensp;<code><a title="legends.utils.scrollframe.ScrollFrame" href="../utils/scrollframe.html#legends.utils.scrollframe.ScrollFrame">ScrollFrame</a></code></dt>
 <dd>The
 <code><a title="legends.utils.scrollframe.ScrollFrame" href="../utils/scrollframe.html#legends.utils.scrollframe.ScrollFrame">ScrollFrame</a></code> used to hold the
@@ -1619,8 +1613,6 @@ as the instance's parent.</dd>
     &#34;&#34;&#34;Displays the player&#39;s character collection.
 
     Attributes:
-        filter (RosterFilter): The `RosterFilter` object storing the
-            current filter settings.
         scrollArea (legends.utils.scrollframe.ScrollFrame): The
             `legends.utils.scrollframe.ScrollFrame` used to hold the
             character cards.
@@ -1647,7 +1639,6 @@ as the instance's parent.</dd>
         &#34;&#34;&#34;
         # build frame and initialize variables
         tk.Frame.__init__(self, session, **options)
-        self.filter = RosterFilter()
 
         # build widgets
         self.scrollArea = ScrollFrame(self)
@@ -1699,7 +1690,7 @@ as the instance's parent.</dd>
             bool: `True` if the character passes.
 
         &#34;&#34;&#34;
-        filt = self.filter.dictify()
+        filt = self.master.settings.rosterFilter.dictify()
         return(
             filt[&#39;rarities&#39;][char.rarity]
             and filt[&#39;roles&#39;][char.role]
@@ -1833,9 +1824,11 @@ as the instance's parent.</dd>
         character cards and info bar.
 
         &#34;&#34;&#34;
-        filt = AskRosterFilter(self.root, self.filter).result
+        filt = AskRosterFilter(
+            self.root, self.master.settings.rosterFilter
+        ).result
         if filt is not None:
-            self.filter = filt
+            self.master.settings.rosterFilter = filt
             self.refresh()
 
     def export(self):
@@ -1845,16 +1838,20 @@ as the instance's parent.</dd>
         `legends.ui.charcard.CharCard.dictify` method.
 
         &#34;&#34;&#34;
+        initDir, initFile = os.path.split(
+            self.master.settings.rosterExportFile
+        )
         filename = asksaveasfilename(
             self.root,
             defaultextension=&#39;csv&#39;,
-            initialdir=&#39;/Users/&#39; + getuser() + &#39;/Documents/&#39;,
-            initialfile=&#39;roster.csv&#39;,
+            initialdir=initDir,
+            initialfile=initFile,
             title=&#39;Export Roster&#39;,
             filetypes=[(&#39;Text CSV&#39;, &#39;*.csv&#39;)]
         )
         if not filename:
             return
+        self.master.settings.rosterExportFile = filename
         cardDicts = [card.dictify() for card in self.cards.values()]
         fields = cardDicts[0].keys()
         with open(filename, &#39;w&#39;, newline=&#39;&#39;, encoding=&#39;utf-8&#39;) as f:
@@ -2026,9 +2023,11 @@ character cards and info bar.</p></div>
     character cards and info bar.
 
     &#34;&#34;&#34;
-    filt = AskRosterFilter(self.root, self.filter).result
+    filt = AskRosterFilter(
+        self.root, self.master.settings.rosterFilter
+    ).result
     if filt is not None:
-        self.filter = filt
+        self.master.settings.rosterFilter = filt
         self.refresh()</code></pre>
 </details>
 </dd>
@@ -2065,7 +2064,7 @@ check.</dd>
         bool: `True` if the character passes.
 
     &#34;&#34;&#34;
-    filt = self.filter.dictify()
+    filt = self.master.settings.rosterFilter.dictify()
     return(
         filt[&#39;rarities&#39;][char.rarity]
         and filt[&#39;roles&#39;][char.role]
@@ -2093,16 +2092,20 @@ is the data generated by the card's
     `legends.ui.charcard.CharCard.dictify` method.
 
     &#34;&#34;&#34;
+    initDir, initFile = os.path.split(
+        self.master.settings.rosterExportFile
+    )
     filename = asksaveasfilename(
         self.root,
         defaultextension=&#39;csv&#39;,
-        initialdir=&#39;/Users/&#39; + getuser() + &#39;/Documents/&#39;,
-        initialfile=&#39;roster.csv&#39;,
+        initialdir=initDir,
+        initialfile=initFile,
         title=&#39;Export Roster&#39;,
         filetypes=[(&#39;Text CSV&#39;, &#39;*.csv&#39;)]
     )
     if not filename:
         return
+    self.master.settings.rosterExportFile = filename
     cardDicts = [card.dictify() for card in self.cards.values()]
     fields = cardDicts[0].keys()
     with open(filename, &#39;w&#39;, newline=&#39;&#39;, encoding=&#39;utf-8&#39;) as f:

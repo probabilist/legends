@@ -33,14 +33,15 @@
 
 import tkinter as tk
 from tkinter import ttk
+from getpass import getuser
 from legends.utils.relations import bidict
 from legends.constants import ITEMS
 from legends.functions import cleanTime, levelFromXP, xpFromLevel
 from legends.saveslot import Inventory
 from legends.ui.dialogs import ModalMessage
-from legends.ui.rostertab import RosterTab
+from legends.ui.rostertab import RosterTab, RosterFilter
 
-__all__ = [&#39;InventoryScreen&#39;, &#39;Session&#39;]
+__all__ = [&#39;InventoryScreen&#39;, &#39;Session&#39;, &#39;SessionSettings&#39;]
 
 class InventoryScreen(ModalMessage):
     &#34;&#34;&#34;A message dialog showing the player&#39;s inventory.
@@ -228,6 +229,8 @@ class Session(tk.Frame):
         saveslot (legends.saveslot.SaveSlot): The
             `legends.saveslot.SaveSlot` object associated with the
             session.
+        settings (SessionSettings): The `SessionSettings` instance that
+            stores the settings for the current session.
         timeBar (tk.Frame): The horizontal bar at the top of the session
             frame that displays time stamp info connected with the
             associated save slot.
@@ -248,6 +251,7 @@ class Session(tk.Frame):
         tk.Frame.__init__(self, stlplanner, **options)
         self.saveslot = saveslot
         self.timeBar = None
+        self.settings = SessionSettings()
         self.tab = tk.Frame(self)
         self.tab.pack()
         if saveslot is None:
@@ -339,7 +343,27 @@ class Session(tk.Frame):
         self.tab.destroy()
         self.tab = RosterTab(self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
-        self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
+        self.master.title(&#39;STL Planner - Roster&#39;)
+
+class SessionSettings(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;Stores the settings for a `Session`.
+
+    Attributes:
+        rosterFilter (legends.ui.rostertab.RosterFilter): The
+            `legends.ui.rostertab.RosterFilter` object storing the
+            current filter settings for the roster tab.
+        rosterExportFile (str): The path to use when prompting the user
+            to export their roster to a spreadsheet.
+        excludeCommons (tk.BooleanVar): `True` is the summon rate
+            calculations made by the roster tab should exclude Common
+            characters.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.rosterFilter = RosterFilter()
+        self.rosterExportFile = &#39;/Users/&#39; + getuser() + &#39;/Documents/roster.csv&#39;
+        self.excludeCommons = tk.BooleanVar(None, True)</code></pre>
 </details>
 </section>
 <section>
@@ -815,6 +839,9 @@ according to the value of <code>endLevel</code>.</p></div>
 <dd>The
 <code><a title="legends.saveslot.SaveSlot" href="../saveslot.html#legends.saveslot.SaveSlot">SaveSlot</a></code> object associated with the
 session.</dd>
+<dt><strong><code>settings</code></strong> :&ensp;<code><a title="legends.ui.session.SessionSettings" href="#legends.ui.session.SessionSettings">SessionSettings</a></code></dt>
+<dd>The <code><a title="legends.ui.session.SessionSettings" href="#legends.ui.session.SessionSettings">SessionSettings</a></code> instance that
+stores the settings for the current session.</dd>
 <dt><strong><code>timeBar</code></strong> :&ensp;<code>tk.Frame</code></dt>
 <dd>The horizontal bar at the top of the session
 frame that displays time stamp info connected with the
@@ -843,6 +870,8 @@ assigned as the parent of this session.</dd>
         saveslot (legends.saveslot.SaveSlot): The
             `legends.saveslot.SaveSlot` object associated with the
             session.
+        settings (SessionSettings): The `SessionSettings` instance that
+            stores the settings for the current session.
         timeBar (tk.Frame): The horizontal bar at the top of the session
             frame that displays time stamp info connected with the
             associated save slot.
@@ -863,6 +892,7 @@ assigned as the parent of this session.</dd>
         tk.Frame.__init__(self, stlplanner, **options)
         self.saveslot = saveslot
         self.timeBar = None
+        self.settings = SessionSettings()
         self.tab = tk.Frame(self)
         self.tab.pack()
         if saveslot is None:
@@ -1101,6 +1131,50 @@ the <code>tab</code> attribute.</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="legends.ui.session.SessionSettings"><code class="flex name class">
+<span>class <span class="ident">SessionSettings</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Stores the settings for a <code><a title="legends.ui.session.Session" href="#legends.ui.session.Session">Session</a></code>.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>rosterFilter</code></strong> :&ensp;<code><a title="legends.ui.rostertab.RosterFilter" href="rostertab.html#legends.ui.rostertab.RosterFilter">RosterFilter</a></code></dt>
+<dd>The
+<code><a title="legends.ui.rostertab.RosterFilter" href="rostertab.html#legends.ui.rostertab.RosterFilter">RosterFilter</a></code> object storing the
+current filter settings for the roster tab.</dd>
+<dt><strong><code>rosterExportFile</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to use when prompting the user
+to export their roster to a spreadsheet.</dd>
+<dt><strong><code>excludeCommons</code></strong> :&ensp;<code>tk.BooleanVar</code></dt>
+<dd><code>True</code> is the summon rate
+calculations made by the roster tab should exclude Common
+characters.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SessionSettings(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;Stores the settings for a `Session`.
+
+    Attributes:
+        rosterFilter (legends.ui.rostertab.RosterFilter): The
+            `legends.ui.rostertab.RosterFilter` object storing the
+            current filter settings for the roster tab.
+        rosterExportFile (str): The path to use when prompting the user
+            to export their roster to a spreadsheet.
+        excludeCommons (tk.BooleanVar): `True` is the summon rate
+            calculations made by the roster tab should exclude Common
+            characters.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.rosterFilter = RosterFilter()
+        self.rosterExportFile = &#39;/Users/&#39; + getuser() + &#39;/Documents/roster.csv&#39;
+        self.excludeCommons = tk.BooleanVar(None, True)</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 </article>
@@ -1136,6 +1210,9 @@ the <code>tab</code> attribute.</p></div>
 <li><code><a title="legends.ui.session.Session.rosterTab" href="#legends.ui.session.Session.rosterTab">rosterTab</a></code></li>
 <li><code><a title="legends.ui.session.Session.startFrame" href="#legends.ui.session.Session.startFrame">startFrame</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.session.SessionSettings" href="#legends.ui.session.SessionSettings">SessionSettings</a></code></h4>
 </li>
 </ul>
 </li>

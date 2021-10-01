@@ -5,7 +5,7 @@
 import tkinter as tk
 from tkinter import ttk
 from csv import DictWriter
-from getpass import getuser
+import os
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import (
@@ -155,8 +155,6 @@ class OptimalSummons(ModalMessage):
     """A message dialog showing the summon pool rates.
 
     Attributes:
-        excludeCommons (tk.BooleanVar): `True` is the summon rate
-            calculations should exclude Common characters.
         values (dict): {`str`:`tk.StringVar`} A dictionary mapping pool
             names to a formatted string representation of the average
             number of tokens per 150 orbs received from the pool.
@@ -166,7 +164,6 @@ class OptimalSummons(ModalMessage):
 
     """
     def __init__(self, root, parent=None):
-        self.excludeCommons = tk.BooleanVar(None, True)
         self.values = {}
         self.labels = {}
         for pool in SUMMON_POOL:
@@ -198,7 +195,8 @@ class OptimalSummons(ModalMessage):
         tk.Checkbutton(
             master,
             text='exclude Common characters',
-            variable=self.excludeCommons, command=self.refresh
+            variable=self.root.session.settings.excludeCommons,
+            command=self.refresh
         ).pack(pady=(10,0))
         self.refresh()
 
@@ -214,7 +212,7 @@ class OptimalSummons(ModalMessage):
         for pool in SUMMON_POOL:
             roster = self.root.session.saveslot.roster
             tokens[pool] = 150 * roster.tokensPerOrb(
-                pool, self.excludeCommons.get()
+                pool, self.root.session.settings.excludeCommons.get()
             )
             self.values[pool].set('{:.2f}'.format(tokens[pool]))
             self.setPoolEmphasis(pool, 'normal')
@@ -374,8 +372,6 @@ class RosterTab(tk.Frame):
     """Displays the player's character collection.
 
     Attributes:
-        filter (RosterFilter): The `RosterFilter` object storing the
-            current filter settings.
         scrollArea (legends.utils.scrollframe.ScrollFrame): The
             `legends.utils.scrollframe.ScrollFrame` used to hold the
             character cards.
@@ -402,7 +398,6 @@ class RosterTab(tk.Frame):
         """
         # build frame and initialize variables
         tk.Frame.__init__(self, session, **options)
-        self.filter = RosterFilter()
 
         # build widgets
         self.scrollArea = ScrollFrame(self)
@@ -454,7 +449,7 @@ class RosterTab(tk.Frame):
             bool: `True` if the character passes.
 
         """
-        filt = self.filter.dictify()
+        filt = self.master.settings.rosterFilter.dictify()
         return(
             filt['rarities'][char.rarity]
             and filt['roles'][char.role]
@@ -588,9 +583,11 @@ class RosterTab(tk.Frame):
         character cards and info bar.
 
         """
-        filt = AskRosterFilter(self.root, self.filter).result
+        filt = AskRosterFilter(
+            self.root, self.master.settings.rosterFilter
+        ).result
         if filt is not None:
-            self.filter = filt
+            self.master.settings.rosterFilter = filt
             self.refresh()
 
     def export(self):
@@ -600,16 +597,20 @@ class RosterTab(tk.Frame):
         `legends.ui.charcard.CharCard.dictify` method.
 
         """
+        initDir, initFile = os.path.split(
+            self.master.settings.rosterExportFile
+        )
         filename = asksaveasfilename(
             self.root,
             defaultextension='csv',
-            initialdir='/Users/' + getuser() + '/Documents/',
-            initialfile='roster.csv',
+            initialdir=initDir,
+            initialfile=initFile,
             title='Export Roster',
             filetypes=[('Text CSV', '*.csv')]
         )
         if not filename:
             return
+        self.master.settings.rosterExportFile = filename
         cardDicts = [card.dictify() for card in self.cards.values()]
         fields = cardDicts[0].keys()
         with open(filename, 'w', newline='', encoding='utf-8') as f:
