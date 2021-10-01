@@ -35,6 +35,9 @@ prevent conflict with the <code><a title="legends.constants.Item" href="#legends
 <dt><strong><code>DESCRIPTIONS</code></strong> :&ensp;<code>dict</code></dt>
 <dd>The key-value pairs in <code>lang_en_us['List']</code> put
 into a Python dictionary.</dd>
+<dt><strong><code>DIFFICULTIES</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} A dictionary mapping the in-game
+name of the PVE difficulties to the names used in the game data.</dd>
 <dt><strong><code>ENABLED</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
 <dd>A list of name IDs of characters that appear
 on the Crew screen.</dd>
@@ -137,6 +140,8 @@ prevent conflict with the `Item` class.
 Attributes:
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us[&#39;List&#39;]` put
         into a Python dictionary.
+    DIFFICULTIES (dict): {`str`:`str`} A dictionary mapping the in-game
+        name of the PVE difficulties to the names used in the game data.
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     HELP (str): The contents of the file, `legends/help.txt`.
@@ -262,6 +267,12 @@ for D in lang_en_us[&#39;List&#39;]: # pylint: disable=undefined-variable
     value = D[&#39;value&#39;]
     if key:
         DESCRIPTIONS[key] = value
+
+DIFFICULTIES = {
+    &#39;Normal&#39;: &#39;Easy&#39;,
+    &#39;Advanced&#39;: &#39;Hard&#39;,
+    &#39;Expert&#39;: &#39;Doom&#39;
+}
 
 ENABLED = [
     # pylint: disable-next=undefined-variable

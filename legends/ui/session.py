@@ -6,13 +6,14 @@ import tkinter as tk
 from tkinter import ttk
 from getpass import getuser
 from legends.utils.relations import bidict
+from legends.utils.scrollframe import ScrollFrame
 from legends.constants import ITEMS
 from legends.functions import cleanTime, levelFromXP, xpFromLevel
 from legends.saveslot import Inventory
 from legends.ui.dialogs import ModalMessage
 from legends.ui.rostertab import RosterTab, RosterFilter
 
-__all__ = ['InventoryScreen', 'Session', 'SessionSettings']
+__all__ = ['InventoryScreen', 'MissingMissions', 'Session', 'SessionSettings']
 
 class InventoryScreen(ModalMessage):
     """A message dialog showing the player's inventory.
@@ -192,6 +193,67 @@ class InventoryScreen(ModalMessage):
                 row=row, column=col + 1, sticky=tk.E, padx=(0,20)
             )
             row += 1
+
+class MissingMissions(ModalMessage):
+    """A message showing the player's incomplete missions.
+
+    Also shows the total uncollected gear ranking materials.
+
+    """
+
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, 'Incomplete Missions')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        scrollFrame = ScrollFrame(master)
+        display = tk.Frame(scrollFrame.content)
+        scrollFrame.canvas.config(height=0.5 * self.winfo_screenheight())
+        incompleteMissions = [
+            mission for mission in self.root.session.saveslot.missions
+            if mission.complete < 1
+        ]
+        missingRewards = Inventory()
+        for mission in incompleteMissions:
+            missingRewards = missingRewards + mission.missingNodeRewards
+            missingRewards = missingRewards + mission.rewards
+        tk.Label(
+            display,
+            text='Uncollected Gear Ranking Materials',
+            font=(None, 13, 'bold')
+        ).grid(row=0, column=0, columnspan=3, sticky=tk.W)
+        row = 1
+        for item, qty in missingRewards.itemsByCat('Gear Ranking Materials'):
+            tk.Label(
+                display, text=item.name
+            ).grid(row=row, column=0, columnspan=2, sticky=tk.W)
+            tk.Label(
+                display, text='{:,}'.format(qty)
+            ).grid(row=row, column=2, sticky=tk.E)
+            row += 1
+        tk.Label(
+            display, text='Incomplete Missions', font=(None, 13, 'bold')
+        ).grid(row=row, column=0, columnspan=3, sticky=tk.W, pady=(20,0))
+        row += 1
+        for mission in incompleteMissions:
+            tk.Label(
+                display, text=mission.difficulty
+            ).grid(row=row, column=0, sticky=tk.W)
+            tk.Label(
+                display,
+                text='Episode {} Mission {}'.format(
+                    mission.episode,
+                    mission.orderIndex
+                )
+            ).grid(row=row, column=1, sticky=tk.W)
+            tk.Label(
+                display, text='{:.0%}'.format(mission.complete)
+            ).grid(row=row, column=2, sticky=tk.E)
+            row += 1
+        display.pack(padx=20)
+        scrollFrame.pack(expand=tk.YES, fill=tk.BOTH)
 
 class Session(tk.Frame):
     """A user session in the *STL Planner* app.

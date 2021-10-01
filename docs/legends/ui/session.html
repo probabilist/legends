@@ -35,13 +35,14 @@ import tkinter as tk
 from tkinter import ttk
 from getpass import getuser
 from legends.utils.relations import bidict
+from legends.utils.scrollframe import ScrollFrame
 from legends.constants import ITEMS
 from legends.functions import cleanTime, levelFromXP, xpFromLevel
 from legends.saveslot import Inventory
 from legends.ui.dialogs import ModalMessage
 from legends.ui.rostertab import RosterTab, RosterFilter
 
-__all__ = [&#39;InventoryScreen&#39;, &#39;Session&#39;, &#39;SessionSettings&#39;]
+__all__ = [&#39;InventoryScreen&#39;, &#39;MissingMissions&#39;, &#39;Session&#39;, &#39;SessionSettings&#39;]
 
 class InventoryScreen(ModalMessage):
     &#34;&#34;&#34;A message dialog showing the player&#39;s inventory.
@@ -221,6 +222,67 @@ class InventoryScreen(ModalMessage):
                 row=row, column=col + 1, sticky=tk.E, padx=(0,20)
             )
             row += 1
+
+class MissingMissions(ModalMessage):
+    &#34;&#34;&#34;A message showing the player&#39;s incomplete missions.
+
+    Also shows the total uncollected gear ranking materials.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, &#39;Incomplete Missions&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        scrollFrame = ScrollFrame(master)
+        display = tk.Frame(scrollFrame.content)
+        scrollFrame.canvas.config(height=0.5 * self.winfo_screenheight())
+        incompleteMissions = [
+            mission for mission in self.root.session.saveslot.missions
+            if mission.complete &lt; 1
+        ]
+        missingRewards = Inventory()
+        for mission in incompleteMissions:
+            missingRewards = missingRewards + mission.missingNodeRewards
+            missingRewards = missingRewards + mission.rewards
+        tk.Label(
+            display,
+            text=&#39;Uncollected Gear Ranking Materials&#39;,
+            font=(None, 13, &#39;bold&#39;)
+        ).grid(row=0, column=0, columnspan=3, sticky=tk.W)
+        row = 1
+        for item, qty in missingRewards.itemsByCat(&#39;Gear Ranking Materials&#39;):
+            tk.Label(
+                display, text=item.name
+            ).grid(row=row, column=0, columnspan=2, sticky=tk.W)
+            tk.Label(
+                display, text=&#39;{:,}&#39;.format(qty)
+            ).grid(row=row, column=2, sticky=tk.E)
+            row += 1
+        tk.Label(
+            display, text=&#39;Incomplete Missions&#39;, font=(None, 13, &#39;bold&#39;)
+        ).grid(row=row, column=0, columnspan=3, sticky=tk.W, pady=(20,0))
+        row += 1
+        for mission in incompleteMissions:
+            tk.Label(
+                display, text=mission.difficulty
+            ).grid(row=row, column=0, sticky=tk.W)
+            tk.Label(
+                display,
+                text=&#39;Episode {} Mission {}&#39;.format(
+                    mission.episode,
+                    mission.orderIndex
+                )
+            ).grid(row=row, column=1, sticky=tk.W)
+            tk.Label(
+                display, text=&#39;{:.0%}&#39;.format(mission.complete)
+            ).grid(row=row, column=2, sticky=tk.E)
+            row += 1
+        display.pack(padx=20)
+        scrollFrame.pack(expand=tk.YES, fill=tk.BOTH)
 
 class Session(tk.Frame):
     &#34;&#34;&#34;A user session in the *STL Planner* app.
@@ -827,6 +889,163 @@ according to the value of <code>endLevel</code>.</p></div>
 </li>
 </ul>
 </dd>
+<dt id="legends.ui.session.MissingMissions"><code class="flex name class">
+<span>class <span class="ident">MissingMissions</span></span>
+<span>(</span><span>root, parent=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A message showing the player's incomplete missions.</p>
+<p>Also shows the total uncollected gear ranking materials.</p>
+<p>The constructor disables the root menu before calling the
+<code>tk.simpledialog.Dialog</code> constructor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MissingMissions(ModalMessage):
+    &#34;&#34;&#34;A message showing the player&#39;s incomplete missions.
+
+    Also shows the total uncollected gear ranking materials.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, &#39;Incomplete Missions&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        scrollFrame = ScrollFrame(master)
+        display = tk.Frame(scrollFrame.content)
+        scrollFrame.canvas.config(height=0.5 * self.winfo_screenheight())
+        incompleteMissions = [
+            mission for mission in self.root.session.saveslot.missions
+            if mission.complete &lt; 1
+        ]
+        missingRewards = Inventory()
+        for mission in incompleteMissions:
+            missingRewards = missingRewards + mission.missingNodeRewards
+            missingRewards = missingRewards + mission.rewards
+        tk.Label(
+            display,
+            text=&#39;Uncollected Gear Ranking Materials&#39;,
+            font=(None, 13, &#39;bold&#39;)
+        ).grid(row=0, column=0, columnspan=3, sticky=tk.W)
+        row = 1
+        for item, qty in missingRewards.itemsByCat(&#39;Gear Ranking Materials&#39;):
+            tk.Label(
+                display, text=item.name
+            ).grid(row=row, column=0, columnspan=2, sticky=tk.W)
+            tk.Label(
+                display, text=&#39;{:,}&#39;.format(qty)
+            ).grid(row=row, column=2, sticky=tk.E)
+            row += 1
+        tk.Label(
+            display, text=&#39;Incomplete Missions&#39;, font=(None, 13, &#39;bold&#39;)
+        ).grid(row=row, column=0, columnspan=3, sticky=tk.W, pady=(20,0))
+        row += 1
+        for mission in incompleteMissions:
+            tk.Label(
+                display, text=mission.difficulty
+            ).grid(row=row, column=0, sticky=tk.W)
+            tk.Label(
+                display,
+                text=&#39;Episode {} Mission {}&#39;.format(
+                    mission.episode,
+                    mission.orderIndex
+                )
+            ).grid(row=row, column=1, sticky=tk.W)
+            tk.Label(
+                display, text=&#39;{:.0%}&#39;.format(mission.complete)
+            ).grid(row=row, column=2, sticky=tk.E)
+            row += 1
+        display.pack(padx=20)
+        scrollFrame.pack(expand=tk.YES, fill=tk.BOTH)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.ModalMessage" href="dialogs.html#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
+<li>tkinter.simpledialog.Dialog</li>
+<li>tkinter.Toplevel</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.session.MissingMissions.body"><code class="name flex">
+<span>def <span class="ident">body</span></span>(<span>self, master)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the body of the dialog.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def body(self, master):
+    &#34;&#34;&#34;Create the body of the dialog.
+
+    &#34;&#34;&#34;
+    scrollFrame = ScrollFrame(master)
+    display = tk.Frame(scrollFrame.content)
+    scrollFrame.canvas.config(height=0.5 * self.winfo_screenheight())
+    incompleteMissions = [
+        mission for mission in self.root.session.saveslot.missions
+        if mission.complete &lt; 1
+    ]
+    missingRewards = Inventory()
+    for mission in incompleteMissions:
+        missingRewards = missingRewards + mission.missingNodeRewards
+        missingRewards = missingRewards + mission.rewards
+    tk.Label(
+        display,
+        text=&#39;Uncollected Gear Ranking Materials&#39;,
+        font=(None, 13, &#39;bold&#39;)
+    ).grid(row=0, column=0, columnspan=3, sticky=tk.W)
+    row = 1
+    for item, qty in missingRewards.itemsByCat(&#39;Gear Ranking Materials&#39;):
+        tk.Label(
+            display, text=item.name
+        ).grid(row=row, column=0, columnspan=2, sticky=tk.W)
+        tk.Label(
+            display, text=&#39;{:,}&#39;.format(qty)
+        ).grid(row=row, column=2, sticky=tk.E)
+        row += 1
+    tk.Label(
+        display, text=&#39;Incomplete Missions&#39;, font=(None, 13, &#39;bold&#39;)
+    ).grid(row=row, column=0, columnspan=3, sticky=tk.W, pady=(20,0))
+    row += 1
+    for mission in incompleteMissions:
+        tk.Label(
+            display, text=mission.difficulty
+        ).grid(row=row, column=0, sticky=tk.W)
+        tk.Label(
+            display,
+            text=&#39;Episode {} Mission {}&#39;.format(
+                mission.episode,
+                mission.orderIndex
+            )
+        ).grid(row=row, column=1, sticky=tk.W)
+        tk.Label(
+            display, text=&#39;{:.0%}&#39;.format(mission.complete)
+        ).grid(row=row, column=2, sticky=tk.E)
+        row += 1
+    display.pack(padx=20)
+    scrollFrame.pack(expand=tk.YES, fill=tk.BOTH)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.ui.dialogs.ModalMessage" href="dialogs.html#legends.ui.dialogs.ModalMessage">ModalMessage</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalMessage.buttonbox" href="dialogs.html#legends.ui.dialogs.ModalMessage.buttonbox">buttonbox</a></code></li>
+<li><code><a title="legends.ui.dialogs.ModalMessage.destroy" href="dialogs.html#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="legends.ui.session.Session"><code class="flex name class">
 <span>class <span class="ident">Session</span></span>
 <span>(</span><span>stlplanner, saveslot=None, **options)</span>
@@ -1200,6 +1419,12 @@ characters.</dd>
 <li><code><a title="legends.ui.session.InventoryScreen.roster" href="#legends.ui.session.InventoryScreen.roster">roster</a></code></li>
 <li><code><a title="legends.ui.session.InventoryScreen.setEndLevel" href="#legends.ui.session.InventoryScreen.setEndLevel">setEndLevel</a></code></li>
 <li><code><a title="legends.ui.session.InventoryScreen.setStartLevel" href="#legends.ui.session.InventoryScreen.setStartLevel">setStartLevel</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.session.MissingMissions" href="#legends.ui.session.MissingMissions">MissingMissions</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.session.MissingMissions.body" href="#legends.ui.session.MissingMissions.body">body</a></code></li>
 </ul>
 </li>
 <li>

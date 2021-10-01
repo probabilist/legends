@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.15.0
+
+* Added a `DIFFICULTIES` constant.
+* Corrected `ui.__init__` to import from the `charcard` and `session` modules.
+* Deleted the `inventory` method from the `STLPlanner` class and edited the 'Inventory...' menu item accordingly.
+* Added `Mission` and `MissionNode` classes.
+* Added a `missions` attribute to the `SaveSlot` class and edited the `fromFile` method accordingly.
+* Added a `MissingMissions` class.
+* Added a 'Missions...' menu item.
+
 ## Version 0.14.0
 
 * Added a `SessionSettings` class to store session settings that should be remembered.

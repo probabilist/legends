@@ -17,7 +17,7 @@ from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
     askyesno, ModalDialog, ModalMessage, showerror
 )
-from legends.ui.session import InventoryScreen, Session
+from legends.ui.session import InventoryScreen, MissingMissions, Session
 
 __all__ = ['AskMaxChars', 'AskSlot', 'HelpScreen', 'STLPlanner']
 
@@ -300,10 +300,19 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((sessionMenu, 0))
         sessionMenu.add_command(
-            label='Inventory...', command=self.inventory, state=tk.DISABLED
+            label='Inventory...',
+            command=lambda: InventoryScreen(self),
+            state=tk.DISABLED
         )
         self.disableOnModal.append((sessionMenu, 1))
         self.sessionOnly.append((sessionMenu, 1))
+        sessionMenu.add_command(
+            label='Missions...',
+            command=lambda: MissingMissions(self),
+            state=tk.DISABLED
+        )
+        self.disableOnModal.append((sessionMenu, 2))
+        self.sessionOnly.append((sessionMenu, 2))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -382,17 +391,3 @@ class STLPlanner(tk.Tk):
             self.session.makeTimeBar()
         else:
             self.session.removeTimeBar()
-
-    def inventory(self):
-        """Calls an `legends.ui.session.InventoryScreen` message,
-        showing the player's inventory. Calls an error popup if the
-        inventory is either not found or empty.
-
-        """
-        if (
-            self.session.saveslot is None
-            or not self.session.saveslot.inventory
-        ):
-            showerror(self, 'Inventory Error', 'No inventory found.')
-            return
-        InventoryScreen(self)

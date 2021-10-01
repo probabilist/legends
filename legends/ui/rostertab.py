@@ -31,20 +31,22 @@ class AskRosterFilter(ModalDialog):
     Attributes:
         filt (RosterFilter): The `RosterFilter` object controlled and
             modified by the dialog window.
-        result (RosterFilter or None): Inherited from `ModalDialog`,
-            which inherited it from `tk.simpledialog.Dialog`. Defaults
-            to `None`. Is set by the `AskRosterFilter.apply` method to
-            the value of the `filt` attribute.
+        result (RosterFilter or None): Inherited from
+            `legends.ui.dialogs.ModalDialog`, which inherited it from
+            `tk.simpledialog.Dialog`. Defaults to `None`. Is set by the
+            `AskRosterFilter.apply` method to the value of the `filt`
+            attribute.
 
     """
     def __init__(self, root, rosterFilter, parent=None):
         """The constructor sets the `filt` attribute, then calls the
-        `ModalDialog` constructor.
+        `legends.ui.dialogs.ModalDialog` constructor.
 
         Args:
             root (legends.ui.stlplanner.STLPlanner): The currently
                 running `legends.ui.stlplanner.STLPlanner` instance.
-                Passed to the `ModalDialog` constructor.
+                Passed to the `legends.ui.dialogs.ModalDialog`
+                constructor.
             rosterFilter (RosterFilter): The instance's `filt` attribute
                 is assigned a copy of this argument.
 

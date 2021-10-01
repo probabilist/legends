@@ -34,14 +34,106 @@
 from datetime import datetime, timedelta, timezone
 from legends.utils.functions import ticksToDatetime, ticksToTimedelta
 # pylint: disable-next=no-name-in-module
-from legends.constants import GSCharacter
-from legends.constants import Inventory, ITEMS
+from legends.constants import (
+    GSCharacter, GSMissionNodes, GSMissionRewards, GSMissions, GSNodeRewards
+)
+from legends.constants import DIFFICULTIES, Inventory, ITEMS
 from legends.roster import Roster
 
 __all__ = [
+    &#39;Mission&#39;,
+    &#39;MissionNode&#39;,
     &#39;SaveSlot&#39;,
     &#39;STLTimeStamps&#39;
 ]
+
+class Mission():
+    &#34;&#34;&#34;A mission in STL.
+
+    Attributes:
+        episode (int): The 1-based index of the episode in which the
+            mission resides.
+        orderIndex (int): The 1-based index of where in the episode the
+            mission occurs.
+        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
+        nodes (list of MissionNode): The nodes in the mission.
+        rewards (legends.constants.Inventory): The rewards earned from
+            100% completion of the mission.
+        complete (float): The proportion of the mission that has been
+            completed.
+
+    &#34;&#34;&#34;
+    def __init__(self, episode, orderIndex, difficulty):
+        self.episode = episode
+        self.orderIndex = orderIndex
+        self.difficulty = difficulty
+        self._key = &#39;episode {} mission {}-{}&#39;.format(
+            self.episode,
+            self.orderIndex,
+            DIFFICULTIES[self.difficulty]
+        )
+        self.nodes = []
+        for nodeID in GSMissionNodes[
+            &#39;e{}_m{}&#39;.format(self.episode, self.orderIndex)
+        ][&#39;Nodes&#39;]:
+            self.nodes.append(MissionNode(nodeID, self.difficulty))
+        try:
+            initDict = GSMissionRewards[&#39;e{}_m{}_complete-{}&#39;.format(
+                self.episode, self.orderIndex, DIFFICULTIES[self.difficulty]
+            )][&#39;reward&#39;][&#39;AllItems&#39;]
+        except KeyError:
+            initDict = {}
+        self.rewards = Inventory(initDict)
+        self.complete = 0
+
+    @property
+    def power(self):
+        &#34;&#34;&#34;`int`: The recommended team power for the mission.&#34;&#34;&#34;
+        return GSMissions[self._key][&#39;SuggestedPower&#39;]
+
+    @property
+    def missingNodeRewards(self):
+        &#34;&#34;&#34;Computes and returns the missing node rewards from this
+        mission.
+
+        Returns:
+            legends.constants.Inventory: The total of all uncollected
+                rewards from nodes within the mission.
+
+        &#34;&#34;&#34;
+        return sum(
+            (node.rewards for node in self.nodes if not node.complete),
+            Inventory()
+        )
+
+    def __repr__(self):
+        return &#39;Mission({!r})&#39;.format(self._key)
+
+class MissionNode(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A mission node in STL.
+
+    Attributes:
+        nodeID (str): The node&#39;s ID as it appears in `GSMissionNodes`.
+        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
+        rewards (legends.constants.Inventory): The rewards earned from
+            completing this node.
+        complete (bool): `True` if the node has been completed.
+
+    &#34;&#34;&#34;
+    def __init__(self, nodeID, difficulty):
+        self.nodeID = nodeID
+        self.difficulty = difficulty
+        try:
+            initDict = GSNodeRewards[&#39;{}-{}&#39;.format(
+                self.nodeID, DIFFICULTIES[self.difficulty]
+            )][&#39;reward&#39;][&#39;AllItems&#39;]
+        except KeyError:
+            initDict = {}
+        self.rewards = Inventory(initDict)
+        self.complete = False
+
+    def __repr__(self):
+        return &#39;MissionNode({!r})&#39;.format(self.nodeID)
 
 class SaveSlot():
     &#34;&#34;&#34;Data from one of three save slots in an STL save file.
@@ -58,6 +150,8 @@ class SaveSlot():
             characters the player has marked as &#39;favorite&#39;.
         inventory (legends.constants.Inventory): The inventory
             associated with the save slot.
+        missions (list of Mission): The list of missions associated with
+            the save slot.
 
     &#34;&#34;&#34;
 
@@ -67,6 +161,13 @@ class SaveSlot():
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
         self.inventory = Inventory()
+        self.missions = []
+        for difficulty in [&#39;Normal&#39;, &#39;Advanced&#39;, &#39;Expert&#39;]:
+            for episode in range(1,8):
+                for orderIndex in range(1,7):
+                    self.missions.append(
+                        Mission(episode, orderIndex, difficulty)
+                    )
 
     def fromFile(self, save, slot):
         &#34;&#34;&#34;Uses the given save data to populate the calling instance&#39;s
@@ -93,6 +194,22 @@ class SaveSlot():
             self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
         for itemID, qty in save[key][&#39;items&#39;].items():
             self.inventory[ITEMS[itemID]] = qty
+        for mission in self.missions:
+            missionKey = &#39;episode {} mission {}&#39;.format(
+                mission.episode, mission.orderIndex
+            )
+            try:
+                data = save[key][&#39;missions&#39;][missionKey][
+                    DIFFICULTIES[mission.difficulty]
+                ]
+            except KeyError:
+                continue
+            mission.complete = data[&#39;complete_pct&#39;]/100
+            for node in mission.nodes:
+                try:
+                    node.complete = data[&#39;nodes&#39;][node.nodeID][&#39;complete&#39;]
+                except KeyError:
+                    pass
 
     def sort(self, func, descending=True):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the `roster`
@@ -175,6 +292,193 @@ class STLTimeStamps():
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.saveslot.Mission"><code class="flex name class">
+<span>class <span class="ident">Mission</span></span>
+<span>(</span><span>episode, orderIndex, difficulty)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A mission in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>episode</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 1-based index of the episode in which the
+mission resides.</dd>
+<dt><strong><code>orderIndex</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 1-based index of where in the episode the
+mission occurs.</dd>
+<dt><strong><code>difficulty</code></strong> :&ensp;<code>str</code></dt>
+<dd>One of 'Normal', 'Advanced', or 'Expert'.</dd>
+<dt><strong><code>nodes</code></strong> :&ensp;<code>list</code> of <code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code></dt>
+<dd>The nodes in the mission.</dd>
+<dt><strong><code>rewards</code></strong> :&ensp;<code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The rewards earned from
+100% completion of the mission.</dd>
+<dt><strong><code>complete</code></strong> :&ensp;<code>float</code></dt>
+<dd>The proportion of the mission that has been
+completed.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Mission():
+    &#34;&#34;&#34;A mission in STL.
+
+    Attributes:
+        episode (int): The 1-based index of the episode in which the
+            mission resides.
+        orderIndex (int): The 1-based index of where in the episode the
+            mission occurs.
+        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
+        nodes (list of MissionNode): The nodes in the mission.
+        rewards (legends.constants.Inventory): The rewards earned from
+            100% completion of the mission.
+        complete (float): The proportion of the mission that has been
+            completed.
+
+    &#34;&#34;&#34;
+    def __init__(self, episode, orderIndex, difficulty):
+        self.episode = episode
+        self.orderIndex = orderIndex
+        self.difficulty = difficulty
+        self._key = &#39;episode {} mission {}-{}&#39;.format(
+            self.episode,
+            self.orderIndex,
+            DIFFICULTIES[self.difficulty]
+        )
+        self.nodes = []
+        for nodeID in GSMissionNodes[
+            &#39;e{}_m{}&#39;.format(self.episode, self.orderIndex)
+        ][&#39;Nodes&#39;]:
+            self.nodes.append(MissionNode(nodeID, self.difficulty))
+        try:
+            initDict = GSMissionRewards[&#39;e{}_m{}_complete-{}&#39;.format(
+                self.episode, self.orderIndex, DIFFICULTIES[self.difficulty]
+            )][&#39;reward&#39;][&#39;AllItems&#39;]
+        except KeyError:
+            initDict = {}
+        self.rewards = Inventory(initDict)
+        self.complete = 0
+
+    @property
+    def power(self):
+        &#34;&#34;&#34;`int`: The recommended team power for the mission.&#34;&#34;&#34;
+        return GSMissions[self._key][&#39;SuggestedPower&#39;]
+
+    @property
+    def missingNodeRewards(self):
+        &#34;&#34;&#34;Computes and returns the missing node rewards from this
+        mission.
+
+        Returns:
+            legends.constants.Inventory: The total of all uncollected
+                rewards from nodes within the mission.
+
+        &#34;&#34;&#34;
+        return sum(
+            (node.rewards for node in self.nodes if not node.complete),
+            Inventory()
+        )
+
+    def __repr__(self):
+        return &#39;Mission({!r})&#39;.format(self._key)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.saveslot.Mission.missingNodeRewards"><code class="name">var <span class="ident">missingNodeRewards</span></code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the missing node rewards from this
+mission.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The total of all uncollected
+rewards from nodes within the mission.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def missingNodeRewards(self):
+    &#34;&#34;&#34;Computes and returns the missing node rewards from this
+    mission.
+
+    Returns:
+        legends.constants.Inventory: The total of all uncollected
+            rewards from nodes within the mission.
+
+    &#34;&#34;&#34;
+    return sum(
+        (node.rewards for node in self.nodes if not node.complete),
+        Inventory()
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.saveslot.Mission.power"><code class="name">var <span class="ident">power</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The recommended team power for the mission.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def power(self):
+    &#34;&#34;&#34;`int`: The recommended team power for the mission.&#34;&#34;&#34;
+    return GSMissions[self._key][&#39;SuggestedPower&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.saveslot.MissionNode"><code class="flex name class">
+<span>class <span class="ident">MissionNode</span></span>
+<span>(</span><span>nodeID, difficulty)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A mission node in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>nodeID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The node's ID as it appears in <code>GSMissionNodes</code>.</dd>
+<dt><strong><code>difficulty</code></strong> :&ensp;<code>str</code></dt>
+<dd>One of 'Normal', 'Advanced', or 'Expert'.</dd>
+<dt><strong><code>rewards</code></strong> :&ensp;<code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The rewards earned from
+completing this node.</dd>
+<dt><strong><code>complete</code></strong> :&ensp;<code>bool</code></dt>
+<dd><code>True</code> if the node has been completed.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class MissionNode(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A mission node in STL.
+
+    Attributes:
+        nodeID (str): The node&#39;s ID as it appears in `GSMissionNodes`.
+        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
+        rewards (legends.constants.Inventory): The rewards earned from
+            completing this node.
+        complete (bool): `True` if the node has been completed.
+
+    &#34;&#34;&#34;
+    def __init__(self, nodeID, difficulty):
+        self.nodeID = nodeID
+        self.difficulty = difficulty
+        try:
+            initDict = GSNodeRewards[&#39;{}-{}&#39;.format(
+                self.nodeID, DIFFICULTIES[self.difficulty]
+            )][&#39;reward&#39;][&#39;AllItems&#39;]
+        except KeyError:
+            initDict = {}
+        self.rewards = Inventory(initDict)
+        self.complete = False
+
+    def __repr__(self):
+        return &#39;MissionNode({!r})&#39;.format(self.nodeID)</code></pre>
+</details>
+</dd>
 <dt id="legends.saveslot.STLTimeStamps"><code class="flex name class">
 <span>class <span class="ident">STLTimeStamps</span></span>
 </code></dt>
@@ -345,6 +649,9 @@ characters the player has marked as 'favorite'.</dd>
 <dt><strong><code>inventory</code></strong> :&ensp;<code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
 <dd>The inventory
 associated with the save slot.</dd>
+<dt><strong><code>missions</code></strong> :&ensp;<code>list</code> of <code><a title="legends.saveslot.Mission" href="#legends.saveslot.Mission">Mission</a></code></dt>
+<dd>The list of missions associated with
+the save slot.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -365,6 +672,8 @@ associated with the save slot.</dd>
             characters the player has marked as &#39;favorite&#39;.
         inventory (legends.constants.Inventory): The inventory
             associated with the save slot.
+        missions (list of Mission): The list of missions associated with
+            the save slot.
 
     &#34;&#34;&#34;
 
@@ -374,6 +683,13 @@ associated with the save slot.</dd>
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
         self.inventory = Inventory()
+        self.missions = []
+        for difficulty in [&#39;Normal&#39;, &#39;Advanced&#39;, &#39;Expert&#39;]:
+            for episode in range(1,8):
+                for orderIndex in range(1,7):
+                    self.missions.append(
+                        Mission(episode, orderIndex, difficulty)
+                    )
 
     def fromFile(self, save, slot):
         &#34;&#34;&#34;Uses the given save data to populate the calling instance&#39;s
@@ -400,6 +716,22 @@ associated with the save slot.</dd>
             self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
         for itemID, qty in save[key][&#39;items&#39;].items():
             self.inventory[ITEMS[itemID]] = qty
+        for mission in self.missions:
+            missionKey = &#39;episode {} mission {}&#39;.format(
+                mission.episode, mission.orderIndex
+            )
+            try:
+                data = save[key][&#39;missions&#39;][missionKey][
+                    DIFFICULTIES[mission.difficulty]
+                ]
+            except KeyError:
+                continue
+            mission.complete = data[&#39;complete_pct&#39;]/100
+            for node in mission.nodes:
+                try:
+                    node.complete = data[&#39;nodes&#39;][node.nodeID][&#39;complete&#39;]
+                except KeyError:
+                    pass
 
     def sort(self, func, descending=True):
         &#34;&#34;&#34;Sorts the dictionary of characters stored in the `roster`
@@ -470,7 +802,23 @@ or if the given save slot data is empty.</dd>
     for nameID in self.tokens:
         self.tokens[nameID] = save[key][&#39;items&#39;].get(nameID, 0)
     for itemID, qty in save[key][&#39;items&#39;].items():
-        self.inventory[ITEMS[itemID]] = qty</code></pre>
+        self.inventory[ITEMS[itemID]] = qty
+    for mission in self.missions:
+        missionKey = &#39;episode {} mission {}&#39;.format(
+            mission.episode, mission.orderIndex
+        )
+        try:
+            data = save[key][&#39;missions&#39;][missionKey][
+                DIFFICULTIES[mission.difficulty]
+            ]
+        except KeyError:
+            continue
+        mission.complete = data[&#39;complete_pct&#39;]/100
+        for node in mission.nodes:
+            try:
+                node.complete = data[&#39;nodes&#39;][node.nodeID][&#39;complete&#39;]
+            except KeyError:
+                pass</code></pre>
 </details>
 </dd>
 <dt id="legends.saveslot.SaveSlot.sort"><code class="name flex">
@@ -528,6 +876,16 @@ in descending order.</dd>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="legends.saveslot.Mission" href="#legends.saveslot.Mission">Mission</a></code></h4>
+<ul class="">
+<li><code><a title="legends.saveslot.Mission.missingNodeRewards" href="#legends.saveslot.Mission.missingNodeRewards">missingNodeRewards</a></code></li>
+<li><code><a title="legends.saveslot.Mission.power" href="#legends.saveslot.Mission.power">power</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code></h4>
+</li>
 <li>
 <h4><code><a title="legends.saveslot.STLTimeStamps" href="#legends.saveslot.STLTimeStamps">STLTimeStamps</a></code></h4>
 <ul class="">

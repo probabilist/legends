@@ -12,6 +12,8 @@ prevent conflict with the `Item` class.
 Attributes:
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us['List']` put
         into a Python dictionary.
+    DIFFICULTIES (dict): {`str`:`str`} A dictionary mapping the in-game
+        name of the PVE difficulties to the names used in the game data.
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     HELP (str): The contents of the file, `legends/help.txt`.
@@ -137,6 +139,12 @@ for D in lang_en_us['List']: # pylint: disable=undefined-variable
     value = D['value']
     if key:
         DESCRIPTIONS[key] = value
+
+DIFFICULTIES = {
+    'Normal': 'Easy',
+    'Advanced': 'Hard',
+    'Expert': 'Doom'
+}
 
 ENABLED = [
     # pylint: disable-next=undefined-variable

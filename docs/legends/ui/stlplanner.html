@@ -47,7 +47,7 @@ from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
     askyesno, ModalDialog, ModalMessage, showerror
 )
-from legends.ui.session import InventoryScreen, Session
+from legends.ui.session import InventoryScreen, MissingMissions, Session
 
 __all__ = [&#39;AskMaxChars&#39;, &#39;AskSlot&#39;, &#39;HelpScreen&#39;, &#39;STLPlanner&#39;]
 
@@ -330,10 +330,19 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((sessionMenu, 0))
         sessionMenu.add_command(
-            label=&#39;Inventory...&#39;, command=self.inventory, state=tk.DISABLED
+            label=&#39;Inventory...&#39;,
+            command=lambda: InventoryScreen(self),
+            state=tk.DISABLED
         )
         self.disableOnModal.append((sessionMenu, 1))
         self.sessionOnly.append((sessionMenu, 1))
+        sessionMenu.add_command(
+            label=&#39;Missions...&#39;,
+            command=lambda: MissingMissions(self),
+            state=tk.DISABLED
+        )
+        self.disableOnModal.append((sessionMenu, 2))
+        self.sessionOnly.append((sessionMenu, 2))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -411,21 +420,7 @@ class STLPlanner(tk.Tk):
         if self.showTimestamps.get():
             self.session.makeTimeBar()
         else:
-            self.session.removeTimeBar()
-
-    def inventory(self):
-        &#34;&#34;&#34;Calls an `legends.ui.session.InventoryScreen` message,
-        showing the player&#39;s inventory. Calls an error popup if the
-        inventory is either not found or empty.
-
-        &#34;&#34;&#34;
-        if (
-            self.session.saveslot is None
-            or not self.session.saveslot.inventory
-        ):
-            showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
-            return
-        InventoryScreen(self)</code></pre>
+            self.session.removeTimeBar()</code></pre>
 </details>
 </section>
 <section>
@@ -1063,10 +1058,19 @@ constructor.</p></div>
         )
         self.disableOnModal.append((sessionMenu, 0))
         sessionMenu.add_command(
-            label=&#39;Inventory...&#39;, command=self.inventory, state=tk.DISABLED
+            label=&#39;Inventory...&#39;,
+            command=lambda: InventoryScreen(self),
+            state=tk.DISABLED
         )
         self.disableOnModal.append((sessionMenu, 1))
         self.sessionOnly.append((sessionMenu, 1))
+        sessionMenu.add_command(
+            label=&#39;Missions...&#39;,
+            command=lambda: MissingMissions(self),
+            state=tk.DISABLED
+        )
+        self.disableOnModal.append((sessionMenu, 2))
+        self.sessionOnly.append((sessionMenu, 2))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -1144,21 +1148,7 @@ constructor.</p></div>
         if self.showTimestamps.get():
             self.session.makeTimeBar()
         else:
-            self.session.removeTimeBar()
-
-    def inventory(self):
-        &#34;&#34;&#34;Calls an `legends.ui.session.InventoryScreen` message,
-        showing the player&#39;s inventory. Calls an error popup if the
-        inventory is either not found or empty.
-
-        &#34;&#34;&#34;
-        if (
-            self.session.saveslot is None
-            or not self.session.saveslot.inventory
-        ):
-            showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
-            return
-        InventoryScreen(self)</code></pre>
+            self.session.removeTimeBar()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1286,10 +1276,19 @@ it.</p>
     )
     self.disableOnModal.append((sessionMenu, 0))
     sessionMenu.add_command(
-        label=&#39;Inventory...&#39;, command=self.inventory, state=tk.DISABLED
+        label=&#39;Inventory...&#39;,
+        command=lambda: InventoryScreen(self),
+        state=tk.DISABLED
     )
     self.disableOnModal.append((sessionMenu, 1))
     self.sessionOnly.append((sessionMenu, 1))
+    sessionMenu.add_command(
+        label=&#39;Missions...&#39;,
+        command=lambda: MissingMissions(self),
+        state=tk.DISABLED
+    )
+    self.disableOnModal.append((sessionMenu, 2))
+    self.sessionOnly.append((sessionMenu, 2))
 
     # build and populate the Help menu
     helpMenu = tk.Menu(menuBar)
@@ -1298,32 +1297,6 @@ it.</p>
         label=&#39;STL Planner Help&#39;, command=lambda: HelpScreen(self)
     )
     self.disableOnModal.append((helpMenu, 0))</code></pre>
-</details>
-</dd>
-<dt id="legends.ui.stlplanner.STLPlanner.inventory"><code class="name flex">
-<span>def <span class="ident">inventory</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Calls an <code><a title="legends.ui.session.InventoryScreen" href="session.html#legends.ui.session.InventoryScreen">InventoryScreen</a></code> message,
-showing the player's inventory. Calls an error popup if the
-inventory is either not found or empty.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def inventory(self):
-    &#34;&#34;&#34;Calls an `legends.ui.session.InventoryScreen` message,
-    showing the player&#39;s inventory. Calls an error popup if the
-    inventory is either not found or empty.
-
-    &#34;&#34;&#34;
-    if (
-        self.session.saveslot is None
-        or not self.session.saveslot.inventory
-    ):
-        showerror(self, &#39;Inventory Error&#39;, &#39;No inventory found.&#39;)
-        return
-    InventoryScreen(self)</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.stlplanner.STLPlanner.newFromFile"><code class="name flex">
@@ -1477,7 +1450,6 @@ according to the value of the <code>showTimestamps</code> attribute.</p></div>
 <ul class="two-column">
 <li><code><a title="legends.ui.stlplanner.STLPlanner.askCloseSession" href="#legends.ui.stlplanner.STLPlanner.askCloseSession">askCloseSession</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.buildMenu" href="#legends.ui.stlplanner.STLPlanner.buildMenu">buildMenu</a></code></li>
-<li><code><a title="legends.ui.stlplanner.STLPlanner.inventory" href="#legends.ui.stlplanner.STLPlanner.inventory">inventory</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.menuEnabled" href="#legends.ui.stlplanner.STLPlanner.menuEnabled">menuEnabled</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newFromFile" href="#legends.ui.stlplanner.STLPlanner.newFromFile">newFromFile</a></code></li>
 <li><code><a title="legends.ui.stlplanner.STLPlanner.newMaxChars" href="#legends.ui.stlplanner.STLPlanner.newMaxChars">newMaxChars</a></code></li>

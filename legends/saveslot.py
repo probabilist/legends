@@ -5,14 +5,106 @@
 from datetime import datetime, timedelta, timezone
 from legends.utils.functions import ticksToDatetime, ticksToTimedelta
 # pylint: disable-next=no-name-in-module
-from legends.constants import GSCharacter
-from legends.constants import Inventory, ITEMS
+from legends.constants import (
+    GSCharacter, GSMissionNodes, GSMissionRewards, GSMissions, GSNodeRewards
+)
+from legends.constants import DIFFICULTIES, Inventory, ITEMS
 from legends.roster import Roster
 
 __all__ = [
+    'Mission',
+    'MissionNode',
     'SaveSlot',
     'STLTimeStamps'
 ]
+
+class Mission():
+    """A mission in STL.
+
+    Attributes:
+        episode (int): The 1-based index of the episode in which the
+            mission resides.
+        orderIndex (int): The 1-based index of where in the episode the
+            mission occurs.
+        difficulty (str): One of 'Normal', 'Advanced', or 'Expert'.
+        nodes (list of MissionNode): The nodes in the mission.
+        rewards (legends.constants.Inventory): The rewards earned from
+            100% completion of the mission.
+        complete (float): The proportion of the mission that has been
+            completed.
+
+    """
+    def __init__(self, episode, orderIndex, difficulty):
+        self.episode = episode
+        self.orderIndex = orderIndex
+        self.difficulty = difficulty
+        self._key = 'episode {} mission {}-{}'.format(
+            self.episode,
+            self.orderIndex,
+            DIFFICULTIES[self.difficulty]
+        )
+        self.nodes = []
+        for nodeID in GSMissionNodes[
+            'e{}_m{}'.format(self.episode, self.orderIndex)
+        ]['Nodes']:
+            self.nodes.append(MissionNode(nodeID, self.difficulty))
+        try:
+            initDict = GSMissionRewards['e{}_m{}_complete-{}'.format(
+                self.episode, self.orderIndex, DIFFICULTIES[self.difficulty]
+            )]['reward']['AllItems']
+        except KeyError:
+            initDict = {}
+        self.rewards = Inventory(initDict)
+        self.complete = 0
+
+    @property
+    def power(self):
+        """`int`: The recommended team power for the mission."""
+        return GSMissions[self._key]['SuggestedPower']
+
+    @property
+    def missingNodeRewards(self):
+        """Computes and returns the missing node rewards from this
+        mission.
+
+        Returns:
+            legends.constants.Inventory: The total of all uncollected
+                rewards from nodes within the mission.
+
+        """
+        return sum(
+            (node.rewards for node in self.nodes if not node.complete),
+            Inventory()
+        )
+
+    def __repr__(self):
+        return 'Mission({!r})'.format(self._key)
+
+class MissionNode(): # pylint: disable=too-few-public-methods
+    """A mission node in STL.
+
+    Attributes:
+        nodeID (str): The node's ID as it appears in `GSMissionNodes`.
+        difficulty (str): One of 'Normal', 'Advanced', or 'Expert'.
+        rewards (legends.constants.Inventory): The rewards earned from
+            completing this node.
+        complete (bool): `True` if the node has been completed.
+
+    """
+    def __init__(self, nodeID, difficulty):
+        self.nodeID = nodeID
+        self.difficulty = difficulty
+        try:
+            initDict = GSNodeRewards['{}-{}'.format(
+                self.nodeID, DIFFICULTIES[self.difficulty]
+            )]['reward']['AllItems']
+        except KeyError:
+            initDict = {}
+        self.rewards = Inventory(initDict)
+        self.complete = False
+
+    def __repr__(self):
+        return 'MissionNode({!r})'.format(self.nodeID)
 
 class SaveSlot():
     """Data from one of three save slots in an STL save file.
@@ -29,6 +121,8 @@ class SaveSlot():
             characters the player has marked as 'favorite'.
         inventory (legends.constants.Inventory): The inventory
             associated with the save slot.
+        missions (list of Mission): The list of missions associated with
+            the save slot.
 
     """
 
@@ -38,6 +132,13 @@ class SaveSlot():
         self.tokens = {nameID: 0 for nameID in GSCharacter}
         self.favorites = []
         self.inventory = Inventory()
+        self.missions = []
+        for difficulty in ['Normal', 'Advanced', 'Expert']:
+            for episode in range(1,8):
+                for orderIndex in range(1,7):
+                    self.missions.append(
+                        Mission(episode, orderIndex, difficulty)
+                    )
 
     def fromFile(self, save, slot):
         """Uses the given save data to populate the calling instance's
@@ -64,6 +165,22 @@ class SaveSlot():
             self.tokens[nameID] = save[key]['items'].get(nameID, 0)
         for itemID, qty in save[key]['items'].items():
             self.inventory[ITEMS[itemID]] = qty
+        for mission in self.missions:
+            missionKey = 'episode {} mission {}'.format(
+                mission.episode, mission.orderIndex
+            )
+            try:
+                data = save[key]['missions'][missionKey][
+                    DIFFICULTIES[mission.difficulty]
+                ]
+            except KeyError:
+                continue
+            mission.complete = data['complete_pct']/100
+            for node in mission.nodes:
+                try:
+                    node.complete = data['nodes'][node.nodeID]['complete']
+                except KeyError:
+                    pass
 
     def sort(self, func, descending=True):
         """Sorts the dictionary of characters stored in the `roster`
