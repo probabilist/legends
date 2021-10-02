@@ -13,7 +13,7 @@ The *STL Planner* app is a tool to manage and optimize all of your *Star Trek: L
 
 ### Requirements
 
-The *STL Planner* app must be run on a Mac. To import your game data, the Mac must have *Star Trek: Legends* installed.
+The *STL Planner* app must be run on a Mac. If your Mac has *Star Trek: Legends* installed, you can import your game data with the click of a button. If not, you will have to import your game data using a support email. A detailed explanation of how to do this is provided by the app itself.
 
 > NOTE: On Windows, you can still use the STL Planner, but you must launch it from Python using the `legends` package. Read below for how to do that.
 
