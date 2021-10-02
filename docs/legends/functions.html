@@ -47,7 +47,7 @@ from legends.constants import Inventory, ITEMS, PART_STAT_VALUES, RARITIES
 __all__ = [
     &#39;charGearToMaxCost&#39;,
     &#39;cleanTime&#39;,
-    &#39;decompressSave&#39;,
+    &#39;decompressData&#39;,
     &#39;decryptSaveFile&#39;,
     &#39;gearToMaxCost&#39;,
     &#39;gearUpgradeCost&#39;,
@@ -103,23 +103,39 @@ def cleanTime(delta):
     display += &#39;{} hrs {} min&#39;.format(hours, minutes)
     return display
 
-def decompressSave(text):
-    &#34;&#34;&#34;When sending a support email, the unencrypted data from your save
-    slot is included in the email, but it is compressed. This function
-    decompresses the data, converts it to a dictionary, and returns the
-    dictionary.
+def decompressData(text):
+    &#34;&#34;&#34;STL data is sometimes compressed in the following manner,
+    converting a dictionary-like data object into a text string. First,
+    it is serialized to a json string. Then, it is compressed with zlib
+    deflate to binary data. Finally, it is encoded to base-64 to make
+    the binary data text friendly.
+
+    This function does the reverse. It takes a text string, which is a
+    base-64 encoding of binary data, and converts it back to binary. It
+    then decompresses it, then encodes the resulting decompressed binary
+    data to plain text (typically a json string).
+
+    This kind of compression can be found in support emails in STL.
+    Also, since STL v1.0.13, it is sometimes used in the save file to
+    compress slot data before encrypting (in which case, the slot data
+    must first be decrypted, then decompressed).
+
+    NOTE: Since STL v1.0.13, the data in support emails is compressed
+    twice. First, it is compressed in the manner described above. The
+    resulting compressed string is then prepended with &#34;compr-&#34;. Then
+    the string is compressed once more.
 
     Args:
-        text (str): The compressed, unencrypted save data.
+        text (str): The text data to be decompressed.
 
     Returns:
-        dict: The dictionary of data from the save slot.
+        str: The decompressed data, typically a json string.
 
     &#34;&#34;&#34;
     b64data = text.encode(&#39;utf-16&#39;)
     compressedData = b64decode(b64data)
     data = decompress(compressedData, -15)
-    return loads(data.decode(&#39;ascii&#39;))
+    return data.decode(&#39;ascii&#39;)
 
 def decryptSaveFile():
     &#34;&#34;&#34;Finds the STL save file on the local hard drive, then decrypts
@@ -143,9 +159,8 @@ def decryptSaveFile():
             &#39;LH75Qxpyf0prVvImu4gqxg==&#39;
         )
         if slotData[:6] == &#39;compr-&#39;:
-            saveFile[key] = decompressSave(slotData[6:])
-        else:
-            saveFile[key] = loads(slotData)
+            slotData = decompressData(slotData[6:])
+        saveFile[key] = loads(slotData)
     return saveFile
 
 def gearToMaxCost(gearID, currLvl, finalLvl):
@@ -481,45 +496,74 @@ shows the number of days (if positive), hours, and minutes.</p>
     return display</code></pre>
 </details>
 </dd>
-<dt id="legends.functions.decompressSave"><code class="name flex">
-<span>def <span class="ident">decompressSave</span></span>(<span>text)</span>
+<dt id="legends.functions.decompressData"><code class="name flex">
+<span>def <span class="ident">decompressData</span></span>(<span>text)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>When sending a support email, the unencrypted data from your save
-slot is included in the email, but it is compressed. This function
-decompresses the data, converts it to a dictionary, and returns the
-dictionary.</p>
+<div class="desc"><p>STL data is sometimes compressed in the following manner,
+converting a dictionary-like data object into a text string. First,
+it is serialized to a json string. Then, it is compressed with zlib
+deflate to binary data. Finally, it is encoded to base-64 to make
+the binary data text friendly.</p>
+<p>This function does the reverse. It takes a text string, which is a
+base-64 encoding of binary data, and converts it back to binary. It
+then decompresses it, then encodes the resulting decompressed binary
+data to plain text (typically a json string).</p>
+<p>This kind of compression can be found in support emails in STL.
+Also, since STL v1.0.13, it is sometimes used in the save file to
+compress slot data before encrypting (in which case, the slot data
+must first be decrypted, then decompressed).</p>
+<p>NOTE: Since STL v1.0.13, the data in support emails is compressed
+twice. First, it is compressed in the manner described above. The
+resulting compressed string is then prepended with "compr-". Then
+the string is compressed once more.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
-<dd>The compressed, unencrypted save data.</dd>
+<dd>The text data to be decompressed.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>dict</code></dt>
-<dd>The dictionary of data from the save slot.</dd>
+<dt><code>str</code></dt>
+<dd>The decompressed data, typically a json string.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def decompressSave(text):
-    &#34;&#34;&#34;When sending a support email, the unencrypted data from your save
-    slot is included in the email, but it is compressed. This function
-    decompresses the data, converts it to a dictionary, and returns the
-    dictionary.
+<pre><code class="python">def decompressData(text):
+    &#34;&#34;&#34;STL data is sometimes compressed in the following manner,
+    converting a dictionary-like data object into a text string. First,
+    it is serialized to a json string. Then, it is compressed with zlib
+    deflate to binary data. Finally, it is encoded to base-64 to make
+    the binary data text friendly.
+
+    This function does the reverse. It takes a text string, which is a
+    base-64 encoding of binary data, and converts it back to binary. It
+    then decompresses it, then encodes the resulting decompressed binary
+    data to plain text (typically a json string).
+
+    This kind of compression can be found in support emails in STL.
+    Also, since STL v1.0.13, it is sometimes used in the save file to
+    compress slot data before encrypting (in which case, the slot data
+    must first be decrypted, then decompressed).
+
+    NOTE: Since STL v1.0.13, the data in support emails is compressed
+    twice. First, it is compressed in the manner described above. The
+    resulting compressed string is then prepended with &#34;compr-&#34;. Then
+    the string is compressed once more.
 
     Args:
-        text (str): The compressed, unencrypted save data.
+        text (str): The text data to be decompressed.
 
     Returns:
-        dict: The dictionary of data from the save slot.
+        str: The decompressed data, typically a json string.
 
     &#34;&#34;&#34;
     b64data = text.encode(&#39;utf-16&#39;)
     compressedData = b64decode(b64data)
     data = decompress(compressedData, -15)
-    return loads(data.decode(&#39;ascii&#39;))</code></pre>
+    return data.decode(&#39;ascii&#39;)</code></pre>
 </details>
 </dd>
 <dt id="legends.functions.decryptSaveFile"><code class="name flex">
@@ -559,9 +603,8 @@ and parses it into a dictionary.</p>
             &#39;LH75Qxpyf0prVvImu4gqxg==&#39;
         )
         if slotData[:6] == &#39;compr-&#39;:
-            saveFile[key] = decompressSave(slotData[6:])
-        else:
-            saveFile[key] = loads(slotData)
+            slotData = decompressData(slotData[6:])
+        saveFile[key] = loads(slotData)
     return saveFile</code></pre>
 </details>
 </dd>
@@ -1095,7 +1138,7 @@ advance to the next rank.</dd>
 <ul class="two-column">
 <li><code><a title="legends.functions.charGearToMaxCost" href="#legends.functions.charGearToMaxCost">charGearToMaxCost</a></code></li>
 <li><code><a title="legends.functions.cleanTime" href="#legends.functions.cleanTime">cleanTime</a></code></li>
-<li><code><a title="legends.functions.decompressSave" href="#legends.functions.decompressSave">decompressSave</a></code></li>
+<li><code><a title="legends.functions.decompressData" href="#legends.functions.decompressData">decompressData</a></code></li>
 <li><code><a title="legends.functions.decryptSaveFile" href="#legends.functions.decryptSaveFile">decryptSaveFile</a></code></li>
 <li><code><a title="legends.functions.gearToMaxCost" href="#legends.functions.gearToMaxCost">gearToMaxCost</a></code></li>
 <li><code><a title="legends.functions.gearUpgradeCost" href="#legends.functions.gearUpgradeCost">gearUpgradeCost</a></code></li>

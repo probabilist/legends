@@ -246,9 +246,12 @@ class STLTimeStamps():
         self.startDate = datetime.fromtimestamp(
             save['{} data'.format(slot)]['createts'], tz=timezone.utc
         )
-        self.timeLastPlayed = ticksToDatetime(
-            int(save['{} timeLastPlayed'.format(slot)])
-        )
-        self.playDuration = ticksToTimedelta(
-            int(save['{} playDuration'.format(slot)])
-        )
+        try:
+            self.timeLastPlayed = ticksToDatetime(
+                int(save['{} timeLastPlayed'.format(slot)])
+            )
+            self.playDuration = ticksToTimedelta(
+                int(save['{} playDuration'.format(slot)])
+            )
+        except KeyError:
+            return

@@ -7,19 +7,85 @@ The *STL PLanner* app can be launched with `STLPlanner().mainloop()`.
 import tkinter as tk
 from tkinter import ttk
 from tkinter.scrolledtext import ScrolledText
+from json import loads
 # pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter
 from legends.constants import (
     ENABLED, HELP, SUMMON_POOL, STAT_INITIALS, UPCOMING
 )
-from legends.functions import decryptSaveFile
+from legends.functions import decompressData, decryptSaveFile
 from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
     askyesno, ModalDialog, ModalMessage, showerror
 )
 from legends.ui.session import InventoryScreen, MissingMissions, Session
 
-__all__ = ['AskMaxChars', 'AskSlot', 'HelpScreen', 'STLPlanner']
+__all__ = [
+    'AskClipboard',
+    'AskMaxChars',
+    'AskSlot',
+    'HelpScreen',
+    'STLPlanner'
+]
+
+class AskClipboard(ModalDialog):
+    """A modal dialog for extracting save data from the clipboard.
+
+    Provides instructions for copying the data and prompts the user to
+    confirm after they have done so.
+
+    Attributes:
+        result (legends.saveslot.SaveSlot or None): Inherited from
+            `legends.ui.dialogs.ModalDialog`, which inherited it from
+            `tk.simpledialog.Dialog`. Defaults to `None`. Is set by the
+            `AskClipboard.validate` method to a
+            `legends.saveslot.SaveSlot` instance created from the
+            clipboard contents.
+
+    """
+    def __init__(self, root, parent=None):
+        ModalDialog.__init__(self, root, parent, 'Get Data From Clipboard')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        msg = (
+            'Open Star Trek: Legends on any device and load your save slot. '
+            + 'From the main game screen, tap your profile name in the top '
+            + 'left, then select the "Options" tab. Tap on the "Support" '
+            + 'button. This will open an email. Change the "To:" field to an '
+            + 'address you can access on this computer, and send it.\n\n'
+            + 'Now, on this computer, open that email and copy everything '
+            + 'below the word "data:" to the clipboard. When this is done, '
+            + 'press "OK".'
+        )
+        tk.Label(master, wraplength=250, justify=tk.LEFT, text=msg).pack()
+
+    def validate(self):
+        """Try to create a `legends.saveslot.SaveSlot` instance from the
+        clipboard contents. On success, set the `result` attribute and
+        return `True`. On failure, raise an error message and return
+        `False`.
+
+        """
+        try:
+            text = self.clipboard_get()
+            stringData = decompressData(text)
+            if stringData[:6] == 'compr-':
+                stringData = decompressData(stringData[6:])
+            slotData = loads(stringData)
+            save = {'0 data': slotData}
+            self.result = SaveSlot()
+            self.result.fromFile(save, 0)
+            return True
+        except Exception: # pylint: disable=broad-except
+            showerror(
+                self.root,
+                'Clipboard Error',
+                'Cannot get save data from clipboard.'
+            )
+            return False
 
 class AskMaxChars(ModalDialog):
     """A modal dialog used for creating a maxed roster.
@@ -116,10 +182,11 @@ class AskSlot(ModalDialog):
             `legends.functions.decryptSaveFile` function.
         displaySlot (tk.StringVar): The currently selected slot, as it
             is displayed in the window.
-        result (SaveSlot or None): Inherited from `ModalDialog`, which
-            inherited it from `tk.simpledialog.Dialog`. Defaults to
-            `None`. Is set by the `AskSlot.validate` method to a
-            `SaveSlot` instance created from the chosen slot number.
+        result (legends.saveslot.SaveSlot or None): Inherited from
+            `legends.ui.dialogs.ModalDialog`, which inherited it from
+            `tk.simpledialog.Dialog`. Defaults to `None`. Is set by the
+            `AskSlot.validate` method to a `legends.saveslot.SaveSlot`
+            instance created from the chosen slot number.
 
     """
     def __init__(self, root, save, parent=None):
@@ -287,9 +354,13 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((newSessionSubmenu, 0))
         newSessionSubmenu.add_command(
-            label='Maxed Characters', command=self.newMaxChars
+            label='From Clipboard...', command=self.newFromClipboard
         )
         self.disableOnModal.append((newSessionSubmenu, 1))
+        newSessionSubmenu.add_command(
+            label='Maxed Characters', command=self.newMaxChars
+        )
+        self.disableOnModal.append((newSessionSubmenu, 2))
 
         # build and populate the Session menu
         sessionMenu = tk.Menu(menuBar)
@@ -364,6 +435,18 @@ class STLPlanner(tk.Tk):
                 showerror(self, 'File Not Found', 'Save file not found.')
                 return
             saveslot = AskSlot(self, save).result
+            if saveslot is None:
+                return
+            self.newSession(saveslot)
+
+    def newFromClipboard(self):
+        """Provides instructions on copying save data to the clipboard,
+        then builds a `legends.saveslot.SaveSlot` object and starts a
+        new session.
+
+        """
+        if self.askCloseSession():
+            saveslot = AskClipboard(self).result
             if saveslot is None:
                 return
             self.newSession(saveslot)

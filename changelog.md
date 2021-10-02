@@ -1,5 +1,14 @@
 # Change log
 
+## Version 0.16.0
+
+* `decompressSave` function renamed to `decompressedData`. Functionality altered to return only decompressed string. `decryptSaveFile` function revised accordingly.
+* `STLTimeStamps.fromSaveData()` revised to allow for the possibility of missing time stamps.
+* 'from Clipboard' button added to start screen.
+* Added `AskClipboard` modal dialog class.
+* Added 'From Clipboard...' menu options.
+* Added `STLPlanner.newFromClipboard()`.
+
 ## Version 0.15.2
 
 * Added a `decompressSave` function.

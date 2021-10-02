@@ -18,7 +18,7 @@ from legends.constants import Inventory, ITEMS, PART_STAT_VALUES, RARITIES
 __all__ = [
     'charGearToMaxCost',
     'cleanTime',
-    'decompressSave',
+    'decompressData',
     'decryptSaveFile',
     'gearToMaxCost',
     'gearUpgradeCost',
@@ -74,23 +74,39 @@ def cleanTime(delta):
     display += '{} hrs {} min'.format(hours, minutes)
     return display
 
-def decompressSave(text):
-    """When sending a support email, the unencrypted data from your save
-    slot is included in the email, but it is compressed. This function
-    decompresses the data, converts it to a dictionary, and returns the
-    dictionary.
+def decompressData(text):
+    """STL data is sometimes compressed in the following manner,
+    converting a dictionary-like data object into a text string. First,
+    it is serialized to a json string. Then, it is compressed with zlib
+    deflate to binary data. Finally, it is encoded to base-64 to make
+    the binary data text friendly.
+
+    This function does the reverse. It takes a text string, which is a
+    base-64 encoding of binary data, and converts it back to binary. It
+    then decompresses it, then encodes the resulting decompressed binary
+    data to plain text (typically a json string).
+
+    This kind of compression can be found in support emails in STL.
+    Also, since STL v1.0.13, it is sometimes used in the save file to
+    compress slot data before encrypting (in which case, the slot data
+    must first be decrypted, then decompressed).
+
+    NOTE: Since STL v1.0.13, the data in support emails may be
+    compressed twice. First, it is compressed in the manner described
+    above. The resulting compressed string may then prepended with
+    "compr-" and compressed once more.
 
     Args:
-        text (str): The compressed, unencrypted save data.
+        text (str): The text data to be decompressed.
 
     Returns:
-        dict: The dictionary of data from the save slot.
+        str: The decompressed data, typically a json string.
 
     """
     b64data = text.encode('utf-16')
     compressedData = b64decode(b64data)
     data = decompress(compressedData, -15)
-    return loads(data.decode('ascii'))
+    return data.decode('ascii')
 
 def decryptSaveFile():
     """Finds the STL save file on the local hard drive, then decrypts
@@ -114,9 +130,8 @@ def decryptSaveFile():
             'LH75Qxpyf0prVvImu4gqxg=='
         )
         if slotData[:6] == 'compr-':
-            saveFile[key] = decompressSave(slotData[6:])
-        else:
-            saveFile[key] = loads(slotData)
+            slotData = decompressData(slotData[6:])
+        saveFile[key] = loads(slotData)
     return saveFile
 
 def gearToMaxCost(gearID, currLvl, finalLvl):

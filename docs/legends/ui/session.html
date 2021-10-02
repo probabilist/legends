@@ -331,14 +331,21 @@ class Session(tk.Frame):
             buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
         ).grid(row=0, column=0, sticky=tk.EW)
         tk.Button(
-            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+            buttonbox,
+            text=&#39;from Clipboard&#39;, command=self.master.newFromClipboard
         ).grid(row=1, column=0, sticky=tk.EW)
+        tk.Button(
+            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+        ).grid(row=2, column=0, sticky=tk.EW)
         tk.Label(
             buttonbox, text=&#39;Extract data from your local save file&#39;
         ).grid(row=0, column=1, sticky=tk.W)
         tk.Label(
-            buttonbox, text=&#39;Create a roster of maxed characters&#39;
+            buttonbox, text=&#39;Use a support email to extract your data&#39;
         ).grid(row=1, column=1, sticky=tk.W)
+        tk.Label(
+            buttonbox, text=&#39;Create a roster of maxed characters&#39;
+        ).grid(row=2, column=1, sticky=tk.W)
         buttonbox.pack(padx=50, pady=50)
 
     def makeTimeBar(self):
@@ -1129,14 +1136,21 @@ assigned as the parent of this session.</dd>
             buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
         ).grid(row=0, column=0, sticky=tk.EW)
         tk.Button(
-            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+            buttonbox,
+            text=&#39;from Clipboard&#39;, command=self.master.newFromClipboard
         ).grid(row=1, column=0, sticky=tk.EW)
+        tk.Button(
+            buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+        ).grid(row=2, column=0, sticky=tk.EW)
         tk.Label(
             buttonbox, text=&#39;Extract data from your local save file&#39;
         ).grid(row=0, column=1, sticky=tk.W)
         tk.Label(
-            buttonbox, text=&#39;Create a roster of maxed characters&#39;
+            buttonbox, text=&#39;Use a support email to extract your data&#39;
         ).grid(row=1, column=1, sticky=tk.W)
+        tk.Label(
+            buttonbox, text=&#39;Create a roster of maxed characters&#39;
+        ).grid(row=2, column=1, sticky=tk.W)
         buttonbox.pack(padx=50, pady=50)
 
     def makeTimeBar(self):
@@ -1337,14 +1351,21 @@ the <code>tab</code> attribute.</p></div>
         buttonbox, text=&#39;from HD&#39;, command=self.master.newFromFile
     ).grid(row=0, column=0, sticky=tk.EW)
     tk.Button(
-        buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+        buttonbox,
+        text=&#39;from Clipboard&#39;, command=self.master.newFromClipboard
     ).grid(row=1, column=0, sticky=tk.EW)
+    tk.Button(
+        buttonbox, text=&#39;MAX&#39;, command=self.master.newMaxChars
+    ).grid(row=2, column=0, sticky=tk.EW)
     tk.Label(
         buttonbox, text=&#39;Extract data from your local save file&#39;
     ).grid(row=0, column=1, sticky=tk.W)
     tk.Label(
-        buttonbox, text=&#39;Create a roster of maxed characters&#39;
+        buttonbox, text=&#39;Use a support email to extract your data&#39;
     ).grid(row=1, column=1, sticky=tk.W)
+    tk.Label(
+        buttonbox, text=&#39;Create a roster of maxed characters&#39;
+    ).grid(row=2, column=1, sticky=tk.W)
     buttonbox.pack(padx=50, pady=50)</code></pre>
 </details>
 </dd>

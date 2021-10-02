@@ -302,14 +302,21 @@ class Session(tk.Frame):
             buttonbox, text='from HD', command=self.master.newFromFile
         ).grid(row=0, column=0, sticky=tk.EW)
         tk.Button(
-            buttonbox, text='MAX', command=self.master.newMaxChars
+            buttonbox,
+            text='from Clipboard', command=self.master.newFromClipboard
         ).grid(row=1, column=0, sticky=tk.EW)
+        tk.Button(
+            buttonbox, text='MAX', command=self.master.newMaxChars
+        ).grid(row=2, column=0, sticky=tk.EW)
         tk.Label(
             buttonbox, text='Extract data from your local save file'
         ).grid(row=0, column=1, sticky=tk.W)
         tk.Label(
-            buttonbox, text='Create a roster of maxed characters'
+            buttonbox, text='Use a support email to extract your data'
         ).grid(row=1, column=1, sticky=tk.W)
+        tk.Label(
+            buttonbox, text='Create a roster of maxed characters'
+        ).grid(row=2, column=1, sticky=tk.W)
         buttonbox.pack(padx=50, pady=50)
 
     def makeTimeBar(self):

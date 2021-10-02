@@ -275,12 +275,15 @@ class STLTimeStamps():
         self.startDate = datetime.fromtimestamp(
             save[&#39;{} data&#39;.format(slot)][&#39;createts&#39;], tz=timezone.utc
         )
-        self.timeLastPlayed = ticksToDatetime(
-            int(save[&#39;{} timeLastPlayed&#39;.format(slot)])
-        )
-        self.playDuration = ticksToTimedelta(
-            int(save[&#39;{} playDuration&#39;.format(slot)])
-        )</code></pre>
+        try:
+            self.timeLastPlayed = ticksToDatetime(
+                int(save[&#39;{} timeLastPlayed&#39;.format(slot)])
+            )
+            self.playDuration = ticksToTimedelta(
+                int(save[&#39;{} playDuration&#39;.format(slot)])
+            )
+        except KeyError:
+            return</code></pre>
 </details>
 </section>
 <section>
@@ -551,12 +554,15 @@ playing the associated save slot. Defaults to 0.</dd>
         self.startDate = datetime.fromtimestamp(
             save[&#39;{} data&#39;.format(slot)][&#39;createts&#39;], tz=timezone.utc
         )
-        self.timeLastPlayed = ticksToDatetime(
-            int(save[&#39;{} timeLastPlayed&#39;.format(slot)])
-        )
-        self.playDuration = ticksToTimedelta(
-            int(save[&#39;{} playDuration&#39;.format(slot)])
-        )</code></pre>
+        try:
+            self.timeLastPlayed = ticksToDatetime(
+                int(save[&#39;{} timeLastPlayed&#39;.format(slot)])
+            )
+            self.playDuration = ticksToTimedelta(
+                int(save[&#39;{} playDuration&#39;.format(slot)])
+            )
+        except KeyError:
+            return</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
@@ -616,12 +622,15 @@ read the time stamps.</dd>
     self.startDate = datetime.fromtimestamp(
         save[&#39;{} data&#39;.format(slot)][&#39;createts&#39;], tz=timezone.utc
     )
-    self.timeLastPlayed = ticksToDatetime(
-        int(save[&#39;{} timeLastPlayed&#39;.format(slot)])
-    )
-    self.playDuration = ticksToTimedelta(
-        int(save[&#39;{} playDuration&#39;.format(slot)])
-    )</code></pre>
+    try:
+        self.timeLastPlayed = ticksToDatetime(
+            int(save[&#39;{} timeLastPlayed&#39;.format(slot)])
+        )
+        self.playDuration = ticksToTimedelta(
+            int(save[&#39;{} playDuration&#39;.format(slot)])
+        )
+    except KeyError:
+        return</code></pre>
 </details>
 </dd>
 </dl>
