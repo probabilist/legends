@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.17.0
+
+* Moved the `Skill`, `SkillEffect`, and `EffectChain` classes to their own module.
+
 ## Version 0.16.1
 
 * Added `collapse` function to `utils`.
