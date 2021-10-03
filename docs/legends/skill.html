@@ -40,7 +40,7 @@ from legends.functions import skillToMaxCost
 __all__ = [&#39;EffectChain&#39;, &#39;Skill&#39;, &#39;SkillEffect&#39;]
 
 class EffectChain(list):
-    &#34;&#34;&#34;A list of linked of `SkillEffect` objects.
+    &#34;&#34;&#34;A list of linked `SkillEffect` objects.
 
     Each object in the list, except the last, triggers the effect that
     appears after it on the list. The last effect on the list does not
@@ -242,7 +242,7 @@ class SkillEffect():
 <span>(</span><span>*args, **kargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>A list of linked of <code><a title="legends.skill.SkillEffect" href="#legends.skill.SkillEffect">SkillEffect</a></code> objects.</p>
+<div class="desc"><p>A list of linked <code><a title="legends.skill.SkillEffect" href="#legends.skill.SkillEffect">SkillEffect</a></code> objects.</p>
 <p>Each object in the list, except the last, triggers the effect that
 appears after it on the list. The last effect on the list does not
 trigger any other effect.</p></div>
@@ -251,7 +251,7 @@ trigger any other effect.</p></div>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class EffectChain(list):
-    &#34;&#34;&#34;A list of linked of `SkillEffect` objects.
+    &#34;&#34;&#34;A list of linked `SkillEffect` objects.
 
     Each object in the list, except the last, triggers the effect that
     appears after it on the list. The last effect on the list does not

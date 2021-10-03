@@ -11,7 +11,7 @@ from legends.functions import skillToMaxCost
 __all__ = ['EffectChain', 'Skill', 'SkillEffect']
 
 class EffectChain(list):
-    """A list of linked of `SkillEffect` objects.
+    """A list of linked `SkillEffect` objects.
 
     Each object in the list, except the last, triggers the effect that
     appears after it on the list. The last effect on the list does not
