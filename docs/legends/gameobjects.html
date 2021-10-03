@@ -32,9 +32,12 @@
 &#34;&#34;&#34;
 
 from re import findall
+from legends.utils.functions import collapse
 from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
-from legends.constants import GSCharacter, GSGear, GSSkill, GSSkillUpgrade
+from legends.constants import (
+    GSCharacter, GSEffect, GSEffectType, GSGear, GSSkill, GSSkillUpgrade
+)
 from legends.constants import (
     DESCRIPTIONS, PART_STAT_UNLOCKED, RARITIES
 )
@@ -50,7 +53,9 @@ __all__ = [
     &#39;GearSlot&#39;,
     &#39;Particle&#39;,
     &#39;PartSlot&#39;,
-    &#39;Skill&#39;
+    &#39;EffectChain&#39;,
+    &#39;Skill&#39;,
+    &#39;SkillEffect&#39;
 ]
 
 class Character():
@@ -210,6 +215,33 @@ class Character():
 
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def aiSkillOrder(self):
+        &#34;&#34;&#34;Returns an infinite generator that yields the skills used by
+        the AI, in order of use.
+
+        The order returned will not exactly match that used in an actual
+        battle. The simple algorithm used by this method is to simply
+        use the rightmost skill available at any given time.
+
+        Yields:
+            Skill: The skill used by the AI.
+
+        &#34;&#34;&#34;
+        skillIDs = sorted(self.skills.keys(), reverse=True)
+        activeCooldowns = {
+            skillID: self.skills[skillID].startingCooldown + 1
+            for skillID in skillIDs
+        }
+        while True:
+            for skillID in skillIDs:
+                activeCooldowns[skillID] -= 1
+            for skillID in skillIDs:
+                if activeCooldowns[skillID] &lt;= 0:
+                    skill = self.skills[skillID]
+                    yield skill
+                    activeCooldowns[skillID] = skill.cooldown + 1
+                    break
 
     def __repr__(self):
         return (
@@ -438,6 +470,8 @@ class Skill():
         unlocked (bool): True if the character has unlocked this skill.
             Cannot be set False for skills that come with a newly
             summoned character.
+        effects (list of SkillEffect): The effects that are applied when
+            this skill is used.
 
     &#34;&#34;&#34;
     def __init__(self, skillID, level=1, unlocked=False):
@@ -449,6 +483,10 @@ class Skill():
         )
         if self._key not in GSSkillUpgrade:
             self.unlocked = True
+        self.effects = [
+            SkillEffect(effectDict[&#39;effect&#39;], effectDict[&#39;fraction&#39;])
+            for effectDict in self.data[&#39;effects&#39;]
+        ]
 
     @property
     def name(self):
@@ -459,6 +497,24 @@ class Skill():
     def data(self):
         &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
         return GSSkill[self._key]
+
+    @property
+    def cooldown(self):
+        &#34;&#34;&#34;`int`: The skill&#39;s cooldown. Specifically, the number of
+        turns for which the skill will be unavailable before next use.
+        For example, a skill with cooldown 1 can be used every other
+        turn.
+        &#34;&#34;&#34;
+        return self.data[&#39;cooldown&#39;]
+
+    @property
+    def startingCooldown(self):
+        &#34;&#34;&#34;`int`: The skill&#39;s starting cooldown. Specifically, the
+        number of initial turns for which the skill will be unavailable.
+        For example, a skill with starting cooldown 2 can be used for
+        the first time on the third turn.
+        &#34;&#34;&#34;
+        return self.data[&#39;startingCooldown&#39;]
 
     @property
     def itemsToMax(self):
@@ -472,7 +528,126 @@ class Skill():
         return (
             &#39;&lt;Skill: &#39; + self.name + &#39;, Level &#39; + str(self.level) + &#39;, &#39;
             + (&#39;unlocked&#39; if self.unlocked else &#39;locked&#39;) + &#39;&gt;&#39;
-        )</code></pre>
+        )
+
+class SkillEffect():
+    &#34;&#34;&#34;A skill effect in STL.
+
+    A skill effect consists of a raw effect and a fraction. Data on the
+    raw effects can be found in `GSEffect`. The fraction is used to
+    modify the intensity of the raw effect.
+
+    Attributes:
+        effectID (str): The effect ID, as found in `GSEffect`.
+        fraction (float): The fraction of the effect applied.
+        triggersEffect (SkillEffect): The skill effect which is
+            immediately triggered after this effect has been applied.
+            Can be `None`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, effectID, fraction):
+        if effectID not in GSEffect:
+            raise KeyError(&#39;{} not recognized&#39;.format(effectID))
+        self.effectID = effectID
+        self.fraction = fraction
+        try:
+            newEffectID = self.data[&#39;sequenceID&#39;]
+            self.triggersEffect = SkillEffect(newEffectID, self.fraction)
+        except KeyError:
+            self.triggersEffect = None
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: The effect data from `GSEffect`.&#34;&#34;&#34;
+        return GSEffect[self.effectID]
+
+    @property
+    def statSource(self):
+        &#34;&#34;&#34;`str`: The name of the statistic that serves as the source of
+        the effect.
+        &#34;&#34;&#34;
+        return self.data[&#39;statSource&#39;]
+
+    @property
+    def statSourceFrac(self):
+        &#34;&#34;&#34;`float`: The proportion of the source statistic that is used
+        for the effect.
+        &#34;&#34;&#34;
+        return self.data[&#39;statSourceFraction&#39;]
+
+    @property
+    def effectType(self):
+        &#34;&#34;&#34;`type`: The effect&#39;s type, as found in the &#39;type&#39; field in
+        `GSEffectType`.
+        &#34;&#34;&#34;
+        return GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]
+
+    @property
+    def doesDamage(self):
+        &#34;&#34;&#34;`bool`: True if the effect type is one that deals damage.&#34;&#34;&#34;
+        return self.effectType[:6] == &#39;Damage&#39;
+
+    @property
+    def chain(self):
+        &#34;&#34;&#34;`EffectChain`: The chain of effects triggered by this effect.
+        Includes this effect.
+        &#34;&#34;&#34;
+        effectChain = EffectChain([self])
+        while True:
+            nextEffect = effectChain[-1].triggersEffect
+            if nextEffect is None:
+                break
+            effectChain.append(nextEffect)
+        return effectChain
+
+    def __repr__(self):
+        return &#39;&lt;SkillEffect: {!r}&gt;&#39;.format(self.effectID)
+
+class EffectChain(list):
+    &#34;&#34;&#34;A list of linked of `SkillEffect` objects.
+
+    Each object in the list, except the last, triggers the effect that
+    appears after it on the list. The last effect on the list does not
+    trigger any other effect.
+
+    &#34;&#34;&#34;
+    def __init__(self, *args, **kargs):
+        list.__init__(self, *args, **kargs)
+
+    @property
+    def damageEffects(self):
+        &#34;&#34;&#34;`list`: The sublist of effects that deal damage.&#34;&#34;&#34;
+        return [effect for effect in self if effect.doesDamage]
+
+    @property
+    def numHits(self):
+        &#34;&#34;&#34;`int`: The number of effects in the chain that deal damage.
+        &#34;&#34;&#34;
+        return len(self.damageEffects)
+
+    @property
+    def damageType(self):
+        &#34;&#34;&#34;`str`: Either a stat name, &#39;Mixed&#39;, or `None`. If no effect
+        in the chain deals damage, damage type is `None`. Otherwise,
+        damage type is the common stat source of all damage-dealing
+        effects in the chain. If there are multiple stat sources, damage
+        type is &#39;Mixed&#39;.
+        &#34;&#34;&#34;
+        return collapse(effect.statSource for effect in self.damageEffects)
+
+    @property
+    def damageFrac(self):
+        &#34;&#34;&#34;`str`: Either a number between 0 and 1, &#39;Mixed&#39;, or `None`.
+        If no effect in the chain deals damage, damage frac is `None`.
+        Otherwise, damage frac is the common stat source fraction of all
+        damage-dealing effects in the chain. If there are multiple stat
+        source fractions, damage frac is &#39;Mixed&#39;.
+        &#34;&#34;&#34;
+        return collapse(effect.statSourceFrac for effect in self.damageEffects)
+
+    def __repr__(self):
+        return &#39;EffectChain({})&#39;.format(list.__repr__(self))</code></pre>
 </details>
 </section>
 <section>
@@ -679,6 +854,33 @@ properties.</p>
 
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def aiSkillOrder(self):
+        &#34;&#34;&#34;Returns an infinite generator that yields the skills used by
+        the AI, in order of use.
+
+        The order returned will not exactly match that used in an actual
+        battle. The simple algorithm used by this method is to simply
+        use the rightmost skill available at any given time.
+
+        Yields:
+            Skill: The skill used by the AI.
+
+        &#34;&#34;&#34;
+        skillIDs = sorted(self.skills.keys(), reverse=True)
+        activeCooldowns = {
+            skillID: self.skills[skillID].startingCooldown + 1
+            for skillID in skillIDs
+        }
+        while True:
+            for skillID in skillIDs:
+                activeCooldowns[skillID] -= 1
+            for skillID in skillIDs:
+                if activeCooldowns[skillID] &lt;= 0:
+                    skill = self.skills[skillID]
+                    yield skill
+                    activeCooldowns[skillID] = skill.cooldown + 1
+                    break
 
     def __repr__(self):
         return (
@@ -887,6 +1089,52 @@ def xp(self):
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="legends.gameobjects.Character.aiSkillOrder"><code class="name flex">
+<span>def <span class="ident">aiSkillOrder</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an infinite generator that yields the skills used by
+the AI, in order of use.</p>
+<p>The order returned will not exactly match that used in an actual
+battle. The simple algorithm used by this method is to simply
+use the rightmost skill available at any given time.</p>
+<h2 id="yields">Yields</h2>
+<dl>
+<dt><code><a title="legends.gameobjects.Skill" href="#legends.gameobjects.Skill">Skill</a></code></dt>
+<dd>The skill used by the AI.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def aiSkillOrder(self):
+    &#34;&#34;&#34;Returns an infinite generator that yields the skills used by
+    the AI, in order of use.
+
+    The order returned will not exactly match that used in an actual
+    battle. The simple algorithm used by this method is to simply
+    use the rightmost skill available at any given time.
+
+    Yields:
+        Skill: The skill used by the AI.
+
+    &#34;&#34;&#34;
+    skillIDs = sorted(self.skills.keys(), reverse=True)
+    activeCooldowns = {
+        skillID: self.skills[skillID].startingCooldown + 1
+        for skillID in skillIDs
+    }
+    while True:
+        for skillID in skillIDs:
+            activeCooldowns[skillID] -= 1
+        for skillID in skillIDs:
+            if activeCooldowns[skillID] &lt;= 0:
+                skill = self.skills[skillID]
+                yield skill
+                activeCooldowns[skillID] = skill.cooldown + 1
+                break</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Character.updateStats"><code class="name flex">
 <span>def <span class="ident">updateStats</span></span>(<span>self)</span>
 </code></dt>
@@ -901,6 +1149,143 @@ def xp(self):
 
     &#34;&#34;&#34;
     self.stats.update(getCharStats(self.nameID, self.rank, self.level))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.gameobjects.EffectChain"><code class="flex name class">
+<span>class <span class="ident">EffectChain</span></span>
+<span>(</span><span>*args, **kargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A list of linked of <code><a title="legends.gameobjects.SkillEffect" href="#legends.gameobjects.SkillEffect">SkillEffect</a></code> objects.</p>
+<p>Each object in the list, except the last, triggers the effect that
+appears after it on the list. The last effect on the list does not
+trigger any other effect.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EffectChain(list):
+    &#34;&#34;&#34;A list of linked of `SkillEffect` objects.
+
+    Each object in the list, except the last, triggers the effect that
+    appears after it on the list. The last effect on the list does not
+    trigger any other effect.
+
+    &#34;&#34;&#34;
+    def __init__(self, *args, **kargs):
+        list.__init__(self, *args, **kargs)
+
+    @property
+    def damageEffects(self):
+        &#34;&#34;&#34;`list`: The sublist of effects that deal damage.&#34;&#34;&#34;
+        return [effect for effect in self if effect.doesDamage]
+
+    @property
+    def numHits(self):
+        &#34;&#34;&#34;`int`: The number of effects in the chain that deal damage.
+        &#34;&#34;&#34;
+        return len(self.damageEffects)
+
+    @property
+    def damageType(self):
+        &#34;&#34;&#34;`str`: Either a stat name, &#39;Mixed&#39;, or `None`. If no effect
+        in the chain deals damage, damage type is `None`. Otherwise,
+        damage type is the common stat source of all damage-dealing
+        effects in the chain. If there are multiple stat sources, damage
+        type is &#39;Mixed&#39;.
+        &#34;&#34;&#34;
+        return collapse(effect.statSource for effect in self.damageEffects)
+
+    @property
+    def damageFrac(self):
+        &#34;&#34;&#34;`str`: Either a number between 0 and 1, &#39;Mixed&#39;, or `None`.
+        If no effect in the chain deals damage, damage frac is `None`.
+        Otherwise, damage frac is the common stat source fraction of all
+        damage-dealing effects in the chain. If there are multiple stat
+        source fractions, damage frac is &#39;Mixed&#39;.
+        &#34;&#34;&#34;
+        return collapse(effect.statSourceFrac for effect in self.damageEffects)
+
+    def __repr__(self):
+        return &#39;EffectChain({})&#39;.format(list.__repr__(self))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.list</li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.gameobjects.EffectChain.damageEffects"><code class="name">var <span class="ident">damageEffects</span></code></dt>
+<dd>
+<div class="desc"><p><code>list</code>: The sublist of effects that deal damage.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def damageEffects(self):
+    &#34;&#34;&#34;`list`: The sublist of effects that deal damage.&#34;&#34;&#34;
+    return [effect for effect in self if effect.doesDamage]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.EffectChain.damageFrac"><code class="name">var <span class="ident">damageFrac</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: Either a number between 0 and 1, 'Mixed', or <code>None</code>.
+If no effect in the chain deals damage, damage frac is <code>None</code>.
+Otherwise, damage frac is the common stat source fraction of all
+damage-dealing effects in the chain. If there are multiple stat
+source fractions, damage frac is 'Mixed'.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def damageFrac(self):
+    &#34;&#34;&#34;`str`: Either a number between 0 and 1, &#39;Mixed&#39;, or `None`.
+    If no effect in the chain deals damage, damage frac is `None`.
+    Otherwise, damage frac is the common stat source fraction of all
+    damage-dealing effects in the chain. If there are multiple stat
+    source fractions, damage frac is &#39;Mixed&#39;.
+    &#34;&#34;&#34;
+    return collapse(effect.statSourceFrac for effect in self.damageEffects)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.EffectChain.damageType"><code class="name">var <span class="ident">damageType</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: Either a stat name, 'Mixed', or <code>None</code>. If no effect
+in the chain deals damage, damage type is <code>None</code>. Otherwise,
+damage type is the common stat source of all damage-dealing
+effects in the chain. If there are multiple stat sources, damage
+type is 'Mixed'.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def damageType(self):
+    &#34;&#34;&#34;`str`: Either a stat name, &#39;Mixed&#39;, or `None`. If no effect
+    in the chain deals damage, damage type is `None`. Otherwise,
+    damage type is the common stat source of all damage-dealing
+    effects in the chain. If there are multiple stat sources, damage
+    type is &#39;Mixed&#39;.
+    &#34;&#34;&#34;
+    return collapse(effect.statSource for effect in self.damageEffects)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.EffectChain.numHits"><code class="name">var <span class="ident">numHits</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The number of effects in the chain that deal damage.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def numHits(self):
+    &#34;&#34;&#34;`int`: The number of effects in the chain that deal damage.
+    &#34;&#34;&#34;
+    return len(self.damageEffects)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1497,6 +1882,9 @@ given index to the given stat name.</p>
 <dd>True if the character has unlocked this skill.
 Cannot be set False for skills that come with a newly
 summoned character.</dd>
+<dt><strong><code>effects</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.SkillEffect" href="#legends.gameobjects.SkillEffect">SkillEffect</a></code></dt>
+<dd>The effects that are applied when
+this skill is used.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -1511,6 +1899,8 @@ summoned character.</dd>
         unlocked (bool): True if the character has unlocked this skill.
             Cannot be set False for skills that come with a newly
             summoned character.
+        effects (list of SkillEffect): The effects that are applied when
+            this skill is used.
 
     &#34;&#34;&#34;
     def __init__(self, skillID, level=1, unlocked=False):
@@ -1522,6 +1912,10 @@ summoned character.</dd>
         )
         if self._key not in GSSkillUpgrade:
             self.unlocked = True
+        self.effects = [
+            SkillEffect(effectDict[&#39;effect&#39;], effectDict[&#39;fraction&#39;])
+            for effectDict in self.data[&#39;effects&#39;]
+        ]
 
     @property
     def name(self):
@@ -1532,6 +1926,24 @@ summoned character.</dd>
     def data(self):
         &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
         return GSSkill[self._key]
+
+    @property
+    def cooldown(self):
+        &#34;&#34;&#34;`int`: The skill&#39;s cooldown. Specifically, the number of
+        turns for which the skill will be unavailable before next use.
+        For example, a skill with cooldown 1 can be used every other
+        turn.
+        &#34;&#34;&#34;
+        return self.data[&#39;cooldown&#39;]
+
+    @property
+    def startingCooldown(self):
+        &#34;&#34;&#34;`int`: The skill&#39;s starting cooldown. Specifically, the
+        number of initial turns for which the skill will be unavailable.
+        For example, a skill with starting cooldown 2 can be used for
+        the first time on the third turn.
+        &#34;&#34;&#34;
+        return self.data[&#39;startingCooldown&#39;]
 
     @property
     def itemsToMax(self):
@@ -1549,6 +1961,26 @@ summoned character.</dd>
 </details>
 <h3>Instance variables</h3>
 <dl>
+<dt id="legends.gameobjects.Skill.cooldown"><code class="name">var <span class="ident">cooldown</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The skill's cooldown. Specifically, the number of
+turns for which the skill will be unavailable before next use.
+For example, a skill with cooldown 1 can be used every other
+turn.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cooldown(self):
+    &#34;&#34;&#34;`int`: The skill&#39;s cooldown. Specifically, the number of
+    turns for which the skill will be unavailable before next use.
+    For example, a skill with cooldown 1 can be used every other
+    turn.
+    &#34;&#34;&#34;
+    return self.data[&#39;cooldown&#39;]</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Skill.data"><code class="name">var <span class="ident">data</span></code></dt>
 <dd>
 <div class="desc"><p><code>dict</code>: The skill data from <code>GSSkill</code>.</p></div>
@@ -1592,6 +2024,224 @@ def name(self):
     return DESCRIPTIONS[self.data[&#39;name&#39;]]</code></pre>
 </details>
 </dd>
+<dt id="legends.gameobjects.Skill.startingCooldown"><code class="name">var <span class="ident">startingCooldown</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The skill's starting cooldown. Specifically, the
+number of initial turns for which the skill will be unavailable.
+For example, a skill with starting cooldown 2 can be used for
+the first time on the third turn.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def startingCooldown(self):
+    &#34;&#34;&#34;`int`: The skill&#39;s starting cooldown. Specifically, the
+    number of initial turns for which the skill will be unavailable.
+    For example, a skill with starting cooldown 2 can be used for
+    the first time on the third turn.
+    &#34;&#34;&#34;
+    return self.data[&#39;startingCooldown&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.gameobjects.SkillEffect"><code class="flex name class">
+<span>class <span class="ident">SkillEffect</span></span>
+<span>(</span><span>effectID, fraction)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A skill effect in STL.</p>
+<p>A skill effect consists of a raw effect and a fraction. Data on the
+raw effects can be found in <code>GSEffect</code>. The fraction is used to
+modify the intensity of the raw effect.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>effectID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The effect ID, as found in <code>GSEffect</code>.</dd>
+<dt><strong><code>fraction</code></strong> :&ensp;<code>float</code></dt>
+<dd>The fraction of the effect applied.</dd>
+<dt><strong><code>triggersEffect</code></strong> :&ensp;<code><a title="legends.gameobjects.SkillEffect" href="#legends.gameobjects.SkillEffect">SkillEffect</a></code></dt>
+<dd>The skill effect which is
+immediately triggered after this effect has been applied.
+Can be <code>None</code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class SkillEffect():
+    &#34;&#34;&#34;A skill effect in STL.
+
+    A skill effect consists of a raw effect and a fraction. Data on the
+    raw effects can be found in `GSEffect`. The fraction is used to
+    modify the intensity of the raw effect.
+
+    Attributes:
+        effectID (str): The effect ID, as found in `GSEffect`.
+        fraction (float): The fraction of the effect applied.
+        triggersEffect (SkillEffect): The skill effect which is
+            immediately triggered after this effect has been applied.
+            Can be `None`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, effectID, fraction):
+        if effectID not in GSEffect:
+            raise KeyError(&#39;{} not recognized&#39;.format(effectID))
+        self.effectID = effectID
+        self.fraction = fraction
+        try:
+            newEffectID = self.data[&#39;sequenceID&#39;]
+            self.triggersEffect = SkillEffect(newEffectID, self.fraction)
+        except KeyError:
+            self.triggersEffect = None
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: The effect data from `GSEffect`.&#34;&#34;&#34;
+        return GSEffect[self.effectID]
+
+    @property
+    def statSource(self):
+        &#34;&#34;&#34;`str`: The name of the statistic that serves as the source of
+        the effect.
+        &#34;&#34;&#34;
+        return self.data[&#39;statSource&#39;]
+
+    @property
+    def statSourceFrac(self):
+        &#34;&#34;&#34;`float`: The proportion of the source statistic that is used
+        for the effect.
+        &#34;&#34;&#34;
+        return self.data[&#39;statSourceFraction&#39;]
+
+    @property
+    def effectType(self):
+        &#34;&#34;&#34;`type`: The effect&#39;s type, as found in the &#39;type&#39; field in
+        `GSEffectType`.
+        &#34;&#34;&#34;
+        return GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]
+
+    @property
+    def doesDamage(self):
+        &#34;&#34;&#34;`bool`: True if the effect type is one that deals damage.&#34;&#34;&#34;
+        return self.effectType[:6] == &#39;Damage&#39;
+
+    @property
+    def chain(self):
+        &#34;&#34;&#34;`EffectChain`: The chain of effects triggered by this effect.
+        Includes this effect.
+        &#34;&#34;&#34;
+        effectChain = EffectChain([self])
+        while True:
+            nextEffect = effectChain[-1].triggersEffect
+            if nextEffect is None:
+                break
+            effectChain.append(nextEffect)
+        return effectChain
+
+    def __repr__(self):
+        return &#39;&lt;SkillEffect: {!r}&gt;&#39;.format(self.effectID)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.gameobjects.SkillEffect.chain"><code class="name">var <span class="ident">chain</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.gameobjects.EffectChain" href="#legends.gameobjects.EffectChain">EffectChain</a></code>: The chain of effects triggered by this effect.
+Includes this effect.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def chain(self):
+    &#34;&#34;&#34;`EffectChain`: The chain of effects triggered by this effect.
+    Includes this effect.
+    &#34;&#34;&#34;
+    effectChain = EffectChain([self])
+    while True:
+        nextEffect = effectChain[-1].triggersEffect
+        if nextEffect is None:
+            break
+        effectChain.append(nextEffect)
+    return effectChain</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.SkillEffect.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dd>
+<div class="desc"><p><code>dict</code>: The effect data from <code>GSEffect</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def data(self):
+    &#34;&#34;&#34;`dict`: The effect data from `GSEffect`.&#34;&#34;&#34;
+    return GSEffect[self.effectID]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.SkillEffect.doesDamage"><code class="name">var <span class="ident">doesDamage</span></code></dt>
+<dd>
+<div class="desc"><p><code>bool</code>: True if the effect type is one that deals damage.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def doesDamage(self):
+    &#34;&#34;&#34;`bool`: True if the effect type is one that deals damage.&#34;&#34;&#34;
+    return self.effectType[:6] == &#39;Damage&#39;</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.SkillEffect.effectType"><code class="name">var <span class="ident">effectType</span></code></dt>
+<dd>
+<div class="desc"><p><code>type</code>: The effect's type, as found in the 'type' field in
+<code>GSEffectType</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def effectType(self):
+    &#34;&#34;&#34;`type`: The effect&#39;s type, as found in the &#39;type&#39; field in
+    `GSEffectType`.
+    &#34;&#34;&#34;
+    return GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.SkillEffect.statSource"><code class="name">var <span class="ident">statSource</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The name of the statistic that serves as the source of
+the effect.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def statSource(self):
+    &#34;&#34;&#34;`str`: The name of the statistic that serves as the source of
+    the effect.
+    &#34;&#34;&#34;
+    return self.data[&#39;statSource&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.SkillEffect.statSourceFrac"><code class="name">var <span class="ident">statSourceFrac</span></code></dt>
+<dd>
+<div class="desc"><p><code>float</code>: The proportion of the source statistic that is used
+for the effect.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def statSourceFrac(self):
+    &#34;&#34;&#34;`float`: The proportion of the source statistic that is used
+    for the effect.
+    &#34;&#34;&#34;
+    return self.data[&#39;statSourceFraction&#39;]</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -1613,6 +2263,7 @@ def name(self):
 <li>
 <h4><code><a title="legends.gameobjects.Character" href="#legends.gameobjects.Character">Character</a></code></h4>
 <ul class="two-column">
+<li><code><a title="legends.gameobjects.Character.aiSkillOrder" href="#legends.gameobjects.Character.aiSkillOrder">aiSkillOrder</a></code></li>
 <li><code><a title="legends.gameobjects.Character.level" href="#legends.gameobjects.Character.level">level</a></code></li>
 <li><code><a title="legends.gameobjects.Character.maxGearLevel" href="#legends.gameobjects.Character.maxGearLevel">maxGearLevel</a></code></li>
 <li><code><a title="legends.gameobjects.Character.missingSkillLevels" href="#legends.gameobjects.Character.missingSkillLevels">missingSkillLevels</a></code></li>
@@ -1626,6 +2277,15 @@ def name(self):
 <li><code><a title="legends.gameobjects.Character.tokensNeeded" href="#legends.gameobjects.Character.tokensNeeded">tokensNeeded</a></code></li>
 <li><code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">updateStats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.xp" href="#legends.gameobjects.Character.xp">xp</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.gameobjects.EffectChain" href="#legends.gameobjects.EffectChain">EffectChain</a></code></h4>
+<ul class="">
+<li><code><a title="legends.gameobjects.EffectChain.damageEffects" href="#legends.gameobjects.EffectChain.damageEffects">damageEffects</a></code></li>
+<li><code><a title="legends.gameobjects.EffectChain.damageFrac" href="#legends.gameobjects.EffectChain.damageFrac">damageFrac</a></code></li>
+<li><code><a title="legends.gameobjects.EffectChain.damageType" href="#legends.gameobjects.EffectChain.damageType">damageType</a></code></li>
+<li><code><a title="legends.gameobjects.EffectChain.numHits" href="#legends.gameobjects.EffectChain.numHits">numHits</a></code></li>
 </ul>
 </li>
 <li>
@@ -1658,9 +2318,22 @@ def name(self):
 <li>
 <h4><code><a title="legends.gameobjects.Skill" href="#legends.gameobjects.Skill">Skill</a></code></h4>
 <ul class="">
+<li><code><a title="legends.gameobjects.Skill.cooldown" href="#legends.gameobjects.Skill.cooldown">cooldown</a></code></li>
 <li><code><a title="legends.gameobjects.Skill.data" href="#legends.gameobjects.Skill.data">data</a></code></li>
 <li><code><a title="legends.gameobjects.Skill.itemsToMax" href="#legends.gameobjects.Skill.itemsToMax">itemsToMax</a></code></li>
 <li><code><a title="legends.gameobjects.Skill.name" href="#legends.gameobjects.Skill.name">name</a></code></li>
+<li><code><a title="legends.gameobjects.Skill.startingCooldown" href="#legends.gameobjects.Skill.startingCooldown">startingCooldown</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.gameobjects.SkillEffect" href="#legends.gameobjects.SkillEffect">SkillEffect</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.gameobjects.SkillEffect.chain" href="#legends.gameobjects.SkillEffect.chain">chain</a></code></li>
+<li><code><a title="legends.gameobjects.SkillEffect.data" href="#legends.gameobjects.SkillEffect.data">data</a></code></li>
+<li><code><a title="legends.gameobjects.SkillEffect.doesDamage" href="#legends.gameobjects.SkillEffect.doesDamage">doesDamage</a></code></li>
+<li><code><a title="legends.gameobjects.SkillEffect.effectType" href="#legends.gameobjects.SkillEffect.effectType">effectType</a></code></li>
+<li><code><a title="legends.gameobjects.SkillEffect.statSource" href="#legends.gameobjects.SkillEffect.statSource">statSource</a></code></li>
+<li><code><a title="legends.gameobjects.SkillEffect.statSourceFrac" href="#legends.gameobjects.SkillEffect.statSourceFrac">statSourceFrac</a></code></li>
 </ul>
 </li>
 </ul>

@@ -9,6 +9,7 @@ from Crypto.Util.Padding import unpad
 
 __all__ = [
     'AESdecrypt',
+    'collapse',
     'formatDict',
     'ticksToTimedelta',
     'ticksToDatetime'
@@ -33,6 +34,20 @@ def AESdecrypt(cipherText, key, iv):
     cipher = AES.new(keyB, AES.MODE_CBC, ivB)
 
     return unpad(cipher.decrypt(cipherTextB), AES.block_size).decode('UTF-8')
+
+def collapse(iterable):
+    """Collapses an iterable of immutable objects to a single object. If
+    there are no objects in the iterable, returns `None`. If all objects
+    in the iterable are the same, returns that common object. Otherwise,
+    returns the string, 'Mixed'.
+
+    """
+    objSet = set(iterable)
+    if len(objSet) == 0:
+        return None
+    if len(objSet) > 1:
+        return 'Mixed'
+    return objSet.pop()
 
 def formatDict(D):
     """Formats the given dictionary for display, putting each key-value

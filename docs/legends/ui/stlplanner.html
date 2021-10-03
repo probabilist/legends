@@ -101,9 +101,10 @@ class AskClipboard(ModalDialog):
         &#34;&#34;&#34;
         try:
             text = self.clipboard_get()
-            firstPass = decompressData(text)
-            secondPass = decompressData(firstPass[6:])
-            slotData = loads(secondPass)
+            stringData = decompressData(text)
+            if stringData[:6] == &#39;compr-&#39;:
+                stringData = decompressData(stringData[6:])
+            slotData = loads(stringData)
             save = {&#39;0 data&#39;: slotData}
             self.result = SaveSlot()
             self.result.fromFile(save, 0)
@@ -581,9 +582,10 @@ clipboard contents.</dd>
         &#34;&#34;&#34;
         try:
             text = self.clipboard_get()
-            firstPass = decompressData(text)
-            secondPass = decompressData(firstPass[6:])
-            slotData = loads(secondPass)
+            stringData = decompressData(text)
+            if stringData[:6] == &#39;compr-&#39;:
+                stringData = decompressData(stringData[6:])
+            slotData = loads(stringData)
             save = {&#39;0 data&#39;: slotData}
             self.result = SaveSlot()
             self.result.fromFile(save, 0)
@@ -655,9 +657,10 @@ return <code>True</code>. On failure, raise an error message and return
     &#34;&#34;&#34;
     try:
         text = self.clipboard_get()
-        firstPass = decompressData(text)
-        secondPass = decompressData(firstPass[6:])
-        slotData = loads(secondPass)
+        stringData = decompressData(text)
+        if stringData[:6] == &#39;compr-&#39;:
+            stringData = decompressData(stringData[6:])
+        slotData = loads(stringData)
         save = {&#39;0 data&#39;: slotData}
         self.result = SaveSlot()
         self.result.fromFile(save, 0)

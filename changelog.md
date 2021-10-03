@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.16.1
+
+* Added `collapse` function to `utils`.
+* Added `SkillEffect` and `EffectChain` classes.
+* To `Skill` class, added `effects` attribute and `cooldown` and `startingCooldown` properties.
+* Added `aiSkillOrder` method to `Character` class.
+
 ## Version 0.16.0
 
 * `decompressSave` function renamed to `decompressedData`. Functionality altered to return only decompressed string. `decryptSaveFile` function revised accordingly.
