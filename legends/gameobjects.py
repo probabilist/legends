@@ -7,7 +7,7 @@ from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter, GSGear
 from legends.constants import (
-    DESCRIPTIONS, PART_STAT_UNLOCKED, RARITIES
+    DESCRIPTIONS, ENABLED, PART_STAT_UNLOCKED, RARITIES, UPCOMING
 )
 from legends.functions import (
     getCharStats, getGearStats, getPartStats, levelFromXP, tokensNeeded,
@@ -17,12 +17,27 @@ from legends.stats import Stats
 from legends.skill import Skill
 
 __all__ = [
+    'allSkillEffectTypes',
     'Character',
     'Gear',
     'GearSlot',
     'Particle',
     'PartSlot'
 ]
+
+def allSkillEffectTypes():
+    """Returns a list of all skill effect types produced by all skills
+    of all levels of all playable characters, including both current and
+    upcoming.
+
+    Returns:
+        list of str: A list of all skill effect types.
+
+    """
+    effTypes = []
+    for nameID in ENABLED + UPCOMING:
+        effTypes.extend(Character(nameID).skillEffectTypes(True))
+    return list(set(effTypes))
 
 class Character():
     """A character in STL.
@@ -39,6 +54,7 @@ class Character():
             particle slots.
 
     """
+
     def __init__(self, nameID, rank=1, xp=0):
         """The constructor stores the passed arguments in a private
         dictionary, whose values are accessed and managed by class
@@ -181,6 +197,26 @@ class Character():
 
         """
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def skillEffectTypes(self, showLocked=False):
+        """Returns a list of all skill effect types produced by all
+        skills of this character.
+
+        Args:
+            showLocked (bool): If `True`, includes all effect types of
+                all skill levels; otherwise, shows only effects of
+                currently unlocked skill levels.
+
+        Returns:
+            list of str: The list of skill effect types.
+
+        """
+        effTypes = []
+        for skillID, skill in self.skills.items():
+            for level in (1,2):
+                if showLocked or (skill.level == level and skill.unlocked):
+                    effTypes.extend(Skill(skillID, level).effectTypes)
+        return list(set(effTypes))
 
     def aiSkillOrder(self):
         """Returns an infinite generator that yields the skills used by

@@ -47,6 +47,7 @@ class EffectChain(list):
     trigger any other effect.
 
     &#34;&#34;&#34;
+
     def __init__(self, *args, **kargs):
         list.__init__(self, *args, **kargs)
 
@@ -97,6 +98,7 @@ class Skill():
             this skill is used.
 
     &#34;&#34;&#34;
+
     def __init__(self, skillID, level=1, unlocked=False):
         self.skillID = skillID
         self.level = level
@@ -138,6 +140,17 @@ class Skill():
         the first time on the third turn.
         &#34;&#34;&#34;
         return self.data[&#39;startingCooldown&#39;]
+
+    @property
+    def effectTypes(self):
+        &#34;&#34;&#34;`list` of `str`: A list of all skill effect types produced by
+        this skill.
+        &#34;&#34;&#34;
+        effTypes = set()
+        for effect in self.effects:
+            for subeffect in effect.chain:
+                effTypes.add(subeffect.effectType)
+        return list(effTypes)
 
     @property
     def itemsToMax(self):
@@ -258,6 +271,7 @@ trigger any other effect.</p></div>
     trigger any other effect.
 
     &#34;&#34;&#34;
+
     def __init__(self, *args, **kargs):
         list.__init__(self, *args, **kargs)
 
@@ -411,6 +425,7 @@ this skill is used.</dd>
             this skill is used.
 
     &#34;&#34;&#34;
+
     def __init__(self, skillID, level=1, unlocked=False):
         self.skillID = skillID
         self.level = level
@@ -452,6 +467,17 @@ this skill is used.</dd>
         the first time on the third turn.
         &#34;&#34;&#34;
         return self.data[&#39;startingCooldown&#39;]
+
+    @property
+    def effectTypes(self):
+        &#34;&#34;&#34;`list` of `str`: A list of all skill effect types produced by
+        this skill.
+        &#34;&#34;&#34;
+        effTypes = set()
+        for effect in self.effects:
+            for subeffect in effect.chain:
+                effTypes.add(subeffect.effectType)
+        return list(effTypes)
 
     @property
     def itemsToMax(self):
@@ -500,6 +526,26 @@ def cooldown(self):
 def data(self):
     &#34;&#34;&#34;`dict`: The skill data from `GSSkill`.&#34;&#34;&#34;
     return GSSkill[self._key]</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.Skill.effectTypes"><code class="name">var <span class="ident">effectTypes</span></code></dt>
+<dd>
+<div class="desc"><p><code>list</code> of <code>str</code>: A list of all skill effect types produced by
+this skill.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def effectTypes(self):
+    &#34;&#34;&#34;`list` of `str`: A list of all skill effect types produced by
+    this skill.
+    &#34;&#34;&#34;
+    effTypes = set()
+    for effect in self.effects:
+        for subeffect in effect.chain:
+            effTypes.add(subeffect.effectType)
+    return list(effTypes)</code></pre>
 </details>
 </dd>
 <dt id="legends.skill.Skill.itemsToMax"><code class="name">var <span class="ident">itemsToMax</span></code></dt>
@@ -779,9 +825,10 @@ def statSourceFrac(self):
 </li>
 <li>
 <h4><code><a title="legends.skill.Skill" href="#legends.skill.Skill">Skill</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="legends.skill.Skill.cooldown" href="#legends.skill.Skill.cooldown">cooldown</a></code></li>
 <li><code><a title="legends.skill.Skill.data" href="#legends.skill.Skill.data">data</a></code></li>
+<li><code><a title="legends.skill.Skill.effectTypes" href="#legends.skill.Skill.effectTypes">effectTypes</a></code></li>
 <li><code><a title="legends.skill.Skill.itemsToMax" href="#legends.skill.Skill.itemsToMax">itemsToMax</a></code></li>
 <li><code><a title="legends.skill.Skill.name" href="#legends.skill.Skill.name">name</a></code></li>
 <li><code><a title="legends.skill.Skill.startingCooldown" href="#legends.skill.Skill.startingCooldown">startingCooldown</a></code></li>

@@ -437,7 +437,7 @@ class STLPlanner(tk.Tk):
         self.session.destroy()
         self._session = Session(self, saveslot)
         self.menuEnabled = True
-        self.session.pack()
+        self.session.pack(expand=tk.YES, fill=tk.Y)
 
     def askCloseSession(self):
         &#34;&#34;&#34;Returns `True` if there is no active session. (An active
@@ -1353,7 +1353,7 @@ constructor.</p></div>
         self.session.destroy()
         self._session = Session(self, saveslot)
         self.menuEnabled = True
-        self.session.pack()
+        self.session.pack(expand=tk.YES, fill=tk.Y)
 
     def askCloseSession(self):
         &#34;&#34;&#34;Returns `True` if there is no active session. (An active
@@ -1682,7 +1682,7 @@ the new session.</dd>
     self.session.destroy()
     self._session = Session(self, saveslot)
     self.menuEnabled = True
-    self.session.pack()</code></pre>
+    self.session.pack(expand=tk.YES, fill=tk.Y)</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.stlplanner.STLPlanner.setTimestamps"><code class="name flex">

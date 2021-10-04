@@ -112,6 +112,9 @@ class ModalMessage(Dialog):
         `tk.simpledialog.Dialog` class.
 
         """
+        body = self.winfo_children()[0]
+        body.pack_forget()
+        body.pack(padx=5, pady=5, expand=tk.YES, fill=tk.Y)
         self.box = tk.Frame(self)
 
         tk.Button(

@@ -407,7 +407,7 @@ class RosterTab(tk.Frame):
         self.infoBar = RosterInfoBar(self)
 
         # pack frame content
-        self.actionBar().pack(expand=tk.YES, fill=tk.X)
+        self.actionBar().pack(fill=tk.X)
         self.scrollArea.pack(expand=tk.YES, fill=tk.BOTH)
         self.infoBar.pack()
 

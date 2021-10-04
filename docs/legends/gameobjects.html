@@ -36,7 +36,7 @@ from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSCharacter, GSGear
 from legends.constants import (
-    DESCRIPTIONS, PART_STAT_UNLOCKED, RARITIES
+    DESCRIPTIONS, ENABLED, PART_STAT_UNLOCKED, RARITIES, UPCOMING
 )
 from legends.functions import (
     getCharStats, getGearStats, getPartStats, levelFromXP, tokensNeeded,
@@ -46,12 +46,27 @@ from legends.stats import Stats
 from legends.skill import Skill
 
 __all__ = [
+    &#39;allSkillEffectTypes&#39;,
     &#39;Character&#39;,
     &#39;Gear&#39;,
     &#39;GearSlot&#39;,
     &#39;Particle&#39;,
     &#39;PartSlot&#39;
 ]
+
+def allSkillEffectTypes():
+    &#34;&#34;&#34;Returns a list of all skill effect types produced by all skills
+    of all levels of all playable characters, including both current and
+    upcoming.
+
+    Returns:
+        list of str: A list of all skill effect types.
+
+    &#34;&#34;&#34;
+    effTypes = []
+    for nameID in ENABLED + UPCOMING:
+        effTypes.extend(Character(nameID).skillEffectTypes(True))
+    return list(set(effTypes))
 
 class Character():
     &#34;&#34;&#34;A character in STL.
@@ -68,6 +83,7 @@ class Character():
             particle slots.
 
     &#34;&#34;&#34;
+
     def __init__(self, nameID, rank=1, xp=0):
         &#34;&#34;&#34;The constructor stores the passed arguments in a private
         dictionary, whose values are accessed and managed by class
@@ -210,6 +226,26 @@ class Character():
 
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def skillEffectTypes(self, showLocked=False):
+        &#34;&#34;&#34;Returns a list of all skill effect types produced by all
+        skills of this character.
+
+        Args:
+            showLocked (bool): If `True`, includes all effect types of
+                all skill levels; otherwise, shows only effects of
+                currently unlocked skill levels.
+
+        Returns:
+            list of str: The list of skill effect types.
+
+        &#34;&#34;&#34;
+        effTypes = []
+        for skillID, skill in self.skills.items():
+            for level in (1,2):
+                if showLocked or (skill.level == level and skill.unlocked):
+                    effTypes.extend(Skill(skillID, level).effectTypes)
+        return list(set(effTypes))
 
     def aiSkillOrder(self):
         &#34;&#34;&#34;Returns an infinite generator that yields the skills used by
@@ -462,6 +498,40 @@ class PartSlot(Managed): # pylint: disable=too-few-public-methods
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.gameobjects.allSkillEffectTypes"><code class="name flex">
+<span>def <span class="ident">allSkillEffectTypes</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of all skill effect types produced by all skills
+of all levels of all playable characters, including both current and
+upcoming.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code> of <code>str</code></dt>
+<dd>A list of all skill effect types.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def allSkillEffectTypes():
+    &#34;&#34;&#34;Returns a list of all skill effect types produced by all skills
+    of all levels of all playable characters, including both current and
+    upcoming.
+
+    Returns:
+        list of str: A list of all skill effect types.
+
+    &#34;&#34;&#34;
+    effTypes = []
+    for nameID in ENABLED + UPCOMING:
+        effTypes.extend(Character(nameID).skillEffectTypes(True))
+    return list(set(effTypes))</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -519,6 +589,7 @@ properties.</p>
             particle slots.
 
     &#34;&#34;&#34;
+
     def __init__(self, nameID, rank=1, xp=0):
         &#34;&#34;&#34;The constructor stores the passed arguments in a private
         dictionary, whose values are accessed and managed by class
@@ -661,6 +732,26 @@ properties.</p>
 
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def skillEffectTypes(self, showLocked=False):
+        &#34;&#34;&#34;Returns a list of all skill effect types produced by all
+        skills of this character.
+
+        Args:
+            showLocked (bool): If `True`, includes all effect types of
+                all skill levels; otherwise, shows only effects of
+                currently unlocked skill levels.
+
+        Returns:
+            list of str: The list of skill effect types.
+
+        &#34;&#34;&#34;
+        effTypes = []
+        for skillID, skill in self.skills.items():
+            for level in (1,2):
+                if showLocked or (skill.level == level and skill.unlocked):
+                    effTypes.extend(Skill(skillID, level).effectTypes)
+        return list(set(effTypes))
 
     def aiSkillOrder(self):
         &#34;&#34;&#34;Returns an infinite generator that yields the skills used by
@@ -940,6 +1031,49 @@ use the rightmost skill available at any given time.</p>
                 yield skill
                 activeCooldowns[skillID] = skill.cooldown + 1
                 break</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.skillEffectTypes"><code class="name flex">
+<span>def <span class="ident">skillEffectTypes</span></span>(<span>self, showLocked=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns a list of all skill effect types produced by all
+skills of this character.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>showLocked</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If <code>True</code>, includes all effect types of
+all skill levels; otherwise, shows only effects of
+currently unlocked skill levels.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code> of <code>str</code></dt>
+<dd>The list of skill effect types.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def skillEffectTypes(self, showLocked=False):
+    &#34;&#34;&#34;Returns a list of all skill effect types produced by all
+    skills of this character.
+
+    Args:
+        showLocked (bool): If `True`, includes all effect types of
+            all skill levels; otherwise, shows only effects of
+            currently unlocked skill levels.
+
+    Returns:
+        list of str: The list of skill effect types.
+
+    &#34;&#34;&#34;
+    effTypes = []
+    for skillID, skill in self.skills.items():
+        for level in (1,2):
+            if showLocked or (skill.level == level and skill.unlocked):
+                effTypes.extend(Skill(skillID, level).effectTypes)
+    return list(set(effTypes))</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Character.updateStats"><code class="name flex">
@@ -1550,6 +1684,11 @@ given index to the given stat name.</p>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.gameobjects.allSkillEffectTypes" href="#legends.gameobjects.allSkillEffectTypes">allSkillEffectTypes</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
@@ -1566,6 +1705,7 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Character.rarityIndex" href="#legends.gameobjects.Character.rarityIndex">rarityIndex</a></code></li>
 <li><code><a title="legends.gameobjects.Character.role" href="#legends.gameobjects.Character.role">role</a></code></li>
 <li><code><a title="legends.gameobjects.Character.shortName" href="#legends.gameobjects.Character.shortName">shortName</a></code></li>
+<li><code><a title="legends.gameobjects.Character.skillEffectTypes" href="#legends.gameobjects.Character.skillEffectTypes">skillEffectTypes</a></code></li>
 <li><code><a title="legends.gameobjects.Character.tokensNeeded" href="#legends.gameobjects.Character.tokensNeeded">tokensNeeded</a></code></li>
 <li><code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">updateStats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.xp" href="#legends.gameobjects.Character.xp">xp</a></code></li>

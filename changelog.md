@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.17.1
+
+* Added an `effectTypes` property to the `Skill` class.
+* Added a `skillEffectTypes` method to the `Character` class.
+* Added an `allSkillEffectTypes` function to the `gameobjects` module.
+* Fixed packing issues so that the scrolling areas of character cards and missing missions would expand properly under window resizing.
+
 ## Version 0.17.0
 
 * Moved the `Skill`, `SkillEffect`, and `EffectChain` classes to their own module.

@@ -407,7 +407,7 @@ class STLPlanner(tk.Tk):
         self.session.destroy()
         self._session = Session(self, saveslot)
         self.menuEnabled = True
-        self.session.pack()
+        self.session.pack(expand=tk.YES, fill=tk.Y)
 
     def askCloseSession(self):
         """Returns `True` if there is no active session. (An active

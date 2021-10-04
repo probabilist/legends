@@ -18,6 +18,7 @@ class EffectChain(list):
     trigger any other effect.
 
     """
+
     def __init__(self, *args, **kargs):
         list.__init__(self, *args, **kargs)
 
@@ -68,6 +69,7 @@ class Skill():
             this skill is used.
 
     """
+
     def __init__(self, skillID, level=1, unlocked=False):
         self.skillID = skillID
         self.level = level
@@ -109,6 +111,17 @@ class Skill():
         the first time on the third turn.
         """
         return self.data['startingCooldown']
+
+    @property
+    def effectTypes(self):
+        """`list` of `str`: A list of all skill effect types produced by
+        this skill.
+        """
+        effTypes = set()
+        for effect in self.effects:
+            for subeffect in effect.chain:
+                effTypes.add(subeffect.effectType)
+        return list(effTypes)
 
     @property
     def itemsToMax(self):
