@@ -56,16 +56,21 @@ class CharCard(tk.Frame):
         return self.char in self.saveslot.favorites
 
     @property
-    def saveslot(self):
-        """`legends.saveslot.SaveSlot`: The save slot in which the
-        character is located.
+    def session(self):
+        """`legends.ui.session.Session`: The currently running session.
         """
         content = self.master
         canvas = content.master
         scrollArea = canvas.master
         rostertab = scrollArea.master
-        session = rostertab.master
-        return session.saveslot
+        return rostertab.master
+
+    @property
+    def saveslot(self):
+        """`legends.saveslot.SaveSlot`: The save slot in which the
+        character is located.
+        """
+        return self.session.saveslot
 
     def namePlate(self, bgColor):
         """Builds and returns the character name plate with the given
@@ -129,7 +134,6 @@ class CharCard(tk.Frame):
         """
         plate = tk.Frame(self, bg=bgColor)
         data = self.dictify()
-        # statObj = self.saveslot.roster.charStats(self.char.nameID)
         font = (None, 9)
 
         # cycle through the 10 basic stats
@@ -163,18 +167,32 @@ class CharCard(tk.Frame):
             text, statVal = item
             tk.Label(
                 plate, text=text, bg=bgColor, font=font
-            ).grid(row=row, column=5, sticky=tk.W)
+            ).grid(row=row, column=4, sticky=tk.W)
             tk.Label(
                 plate, text=str(statVal), bg=bgColor, font=font,
                 width=5, anchor=tk.W
-            ).grid(row=row, column=6, sticky=tk.W)
+            ).grid(row=row, column=5, sticky=tk.W)
 
         # grid the power stat and return the plate
         tk.Label(
             plate,
             text='POWER: {:.0f}'.format(data['power']),
-            bg=bgColor, font=(None, 11) + ('bold',)
+            bg=bgColor, font=(None, 11, 'bold')
         ).grid(row=5, column=0, columnspan=4)
+
+        # TODO: comment/uncomment this block while developing char tab
+        # openLabel = tk.Label(
+        #     plate,
+        #     text='OPEN',
+        #     font=font + ('italic',),
+        #     relief=tk.GROOVE
+        # )
+        # openLabel.grid(row=6, column=0, columnspan=6, sticky=tk.NSEW)
+        # openLabel.bind(
+        #     '<Button-1>',
+        #     lambda event: self.session.charTab(self.char)
+        # )
+
         return plate
 
     def toggleFav(self, event): # pylint: disable=unused-argument

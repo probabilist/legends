@@ -17,7 +17,7 @@ from legends.stats import Stats
 from legends.skill import Skill
 
 __all__ = [
-    'allSkillEffectTypes',
+    'allSkillEffectTags',
     'Character',
     'Gear',
     'GearSlot',
@@ -25,19 +25,19 @@ __all__ = [
     'PartSlot'
 ]
 
-def allSkillEffectTypes():
-    """Returns a list of all skill effect types produced by all skills
-    of all levels of all playable characters, including both current and
-    upcoming.
+def allSkillEffectTags():
+    """Returns the list of tags on all skill effects produced by all
+    skills of all levels of all playable characters, including both
+    current and upcoming.
 
     Returns:
-        list of str: A list of all skill effect types.
+        list of str: The list of tags.
 
     """
-    effTypes = []
+    effTags = []
     for nameID in ENABLED + UPCOMING:
-        effTypes.extend(Character(nameID).skillEffectTypes(True))
-    return list(set(effTypes))
+        effTags.extend(Character(nameID).skillEffectTags(True))
+    return sorted(list(set(effTags)))
 
 class Character():
     """A character in STL.
@@ -73,10 +73,12 @@ class Character():
         }
         self.stats = Stats()
         self.updateStats()
-        self.skills = {
-            skillID: Skill(skillID)
-            for skillID in GSCharacter[self.nameID]['SkillIDs']
-        }
+        self.skills = {}
+        for skillID in GSCharacter[self.nameID]['SkillIDs']:
+            skill = Skill(skillID)
+            if skill.startWith:
+                skill.unlocked = True
+            self.skills[skillID] = skill
         self.gearSlots = []
         for slot in range(4):
             self.gearSlots.append(GearSlot(self, slot))
@@ -198,8 +200,8 @@ class Character():
         """
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
 
-    def skillEffectTypes(self, showLocked=False):
-        """Returns a list of all skill effect types produced by all
+    def skillEffectTags(self, showLocked=False):
+        """Returns the list of tags on all skill effects produced by all
         skills of this character.
 
         Args:
@@ -208,15 +210,15 @@ class Character():
                 currently unlocked skill levels.
 
         Returns:
-            list of str: The list of skill effect types.
+            list of str: The list of tags.
 
         """
-        effTypes = []
+        effTags = []
         for skillID, skill in self.skills.items():
             for level in (1,2):
                 if showLocked or (skill.level == level and skill.unlocked):
-                    effTypes.extend(Skill(skillID, level).effectTypes)
-        return list(set(effTypes))
+                    effTags.extend(Skill(skillID, level).effectTags)
+        return list(set(effTags))
 
     def aiSkillOrder(self):
         """Returns an infinite generator that yields the skills used by

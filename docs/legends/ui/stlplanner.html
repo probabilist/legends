@@ -384,11 +384,11 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((newSessionSubmenu, 0))
         newSessionSubmenu.add_command(
-            label=&#39;From Clipboard...&#39;, command=self.newFromClipboard
+            label=&#39;From Clipboard&#39;, command=self.newFromClipboard
         )
         self.disableOnModal.append((newSessionSubmenu, 1))
         newSessionSubmenu.add_command(
-            label=&#39;Maxed Characters&#39;, command=self.newMaxChars
+            label=&#39;Maxed Characters...&#39;, command=self.newMaxChars
         )
         self.disableOnModal.append((newSessionSubmenu, 2))
 
@@ -401,14 +401,14 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((sessionMenu, 0))
         sessionMenu.add_command(
-            label=&#39;Inventory...&#39;,
+            label=&#39;Inventory&#39;,
             command=lambda: InventoryScreen(self),
             state=tk.DISABLED
         )
         self.disableOnModal.append((sessionMenu, 1))
         self.sessionOnly.append((sessionMenu, 1))
         sessionMenu.add_command(
-            label=&#39;Missions...&#39;,
+            label=&#39;Missions&#39;,
             command=lambda: MissingMissions(self),
             state=tk.DISABLED
         )
@@ -1300,11 +1300,11 @@ constructor.</p></div>
         )
         self.disableOnModal.append((newSessionSubmenu, 0))
         newSessionSubmenu.add_command(
-            label=&#39;From Clipboard...&#39;, command=self.newFromClipboard
+            label=&#39;From Clipboard&#39;, command=self.newFromClipboard
         )
         self.disableOnModal.append((newSessionSubmenu, 1))
         newSessionSubmenu.add_command(
-            label=&#39;Maxed Characters&#39;, command=self.newMaxChars
+            label=&#39;Maxed Characters...&#39;, command=self.newMaxChars
         )
         self.disableOnModal.append((newSessionSubmenu, 2))
 
@@ -1317,14 +1317,14 @@ constructor.</p></div>
         )
         self.disableOnModal.append((sessionMenu, 0))
         sessionMenu.add_command(
-            label=&#39;Inventory...&#39;,
+            label=&#39;Inventory&#39;,
             command=lambda: InventoryScreen(self),
             state=tk.DISABLED
         )
         self.disableOnModal.append((sessionMenu, 1))
         self.sessionOnly.append((sessionMenu, 1))
         sessionMenu.add_command(
-            label=&#39;Missions...&#39;,
+            label=&#39;Missions&#39;,
             command=lambda: MissingMissions(self),
             state=tk.DISABLED
         )
@@ -1534,11 +1534,11 @@ it.</p>
     )
     self.disableOnModal.append((newSessionSubmenu, 0))
     newSessionSubmenu.add_command(
-        label=&#39;From Clipboard...&#39;, command=self.newFromClipboard
+        label=&#39;From Clipboard&#39;, command=self.newFromClipboard
     )
     self.disableOnModal.append((newSessionSubmenu, 1))
     newSessionSubmenu.add_command(
-        label=&#39;Maxed Characters&#39;, command=self.newMaxChars
+        label=&#39;Maxed Characters...&#39;, command=self.newMaxChars
     )
     self.disableOnModal.append((newSessionSubmenu, 2))
 
@@ -1551,14 +1551,14 @@ it.</p>
     )
     self.disableOnModal.append((sessionMenu, 0))
     sessionMenu.add_command(
-        label=&#39;Inventory...&#39;,
+        label=&#39;Inventory&#39;,
         command=lambda: InventoryScreen(self),
         state=tk.DISABLED
     )
     self.disableOnModal.append((sessionMenu, 1))
     self.sessionOnly.append((sessionMenu, 1))
     sessionMenu.add_command(
-        label=&#39;Missions...&#39;,
+        label=&#39;Missions&#39;,
         command=lambda: MissingMissions(self),
         state=tk.DISABLED
     )

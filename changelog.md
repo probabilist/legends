@@ -1,5 +1,20 @@
 # Change log
 
+## Version 0.18.0
+
+* Added an `effectTags` property to the `SkillEffect` class.
+* Added a `casterEffect` attribute to `Skill`.
+* In `Skill`, changes the `effectTypes` property to `effectTags`; added the `casterEffect` chain to this property.
+* Changed `Character.skillEffectTypes()` to `Character.skillEffectTags()`.
+* Changes `allSkillEffectTypes` function to `allSkillEffectTags`.
+* Modified `Skill` constructor to allow for starting skills to be locked upon creation; added a `startWith` property, and modified the `Character` constructor accordingly.
+* Added a `chartab` module and edited to `ui.__init__` to import from it.
+* Added a `session` property to `CharCard`.
+* Added a clickable 'OPEN' label to `CharCard`.
+* Added `Session.charTab()`.
+* Added `camelToSpace` function.
+* Fixed typo in column numbering in `CharCard`'s stat plate.
+
 ## Version 0.17.1
 
 * Added an `effectTypes` property to the `Skill` class.

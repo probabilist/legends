@@ -41,6 +41,7 @@ from legends.functions import cleanTime, levelFromXP, xpFromLevel
 from legends.saveslot import Inventory
 from legends.ui.dialogs import ModalMessage
 from legends.ui.rostertab import RosterTab, RosterFilter
+from legends.ui.chartab import CharTab
 
 __all__ = [&#39;InventoryScreen&#39;, &#39;MissingMissions&#39;, &#39;Session&#39;, &#39;SessionSettings&#39;]
 
@@ -413,6 +414,16 @@ class Session(tk.Frame):
         self.tab = RosterTab(self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
         self.master.title(&#39;STL Planner - Roster&#39;)
+
+    def charTab(self, char):
+        &#34;&#34;&#34;Loads a new `legends.ui.chartab.CharTab` instance into the
+        `tab` attribute.
+
+        &#34;&#34;&#34;
+        self.tab.destroy()
+        self.tab = CharTab(self)
+        self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
+        self.master.title(&#39;STL Planner - {}&#39;.format(char.shortName))
 
 class SessionSettings(): # pylint: disable=too-few-public-methods
     &#34;&#34;&#34;Stores the settings for a `Session`.
@@ -1217,7 +1228,17 @@ assigned as the parent of this session.</dd>
         self.tab.destroy()
         self.tab = RosterTab(self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
-        self.master.title(&#39;STL Planner - Roster&#39;)</code></pre>
+        self.master.title(&#39;STL Planner - Roster&#39;)
+
+    def charTab(self, char):
+        &#34;&#34;&#34;Loads a new `legends.ui.chartab.CharTab` instance into the
+        `tab` attribute.
+
+        &#34;&#34;&#34;
+        self.tab.destroy()
+        self.tab = CharTab(self)
+        self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
+        self.master.title(&#39;STL Planner - {}&#39;.format(char.shortName))</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1231,6 +1252,27 @@ assigned as the parent of this session.</dd>
 </ul>
 <h3>Methods</h3>
 <dl>
+<dt id="legends.ui.session.Session.charTab"><code class="name flex">
+<span>def <span class="ident">charTab</span></span>(<span>self, char)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loads a new <code><a title="legends.ui.chartab.CharTab" href="chartab.html#legends.ui.chartab.CharTab">CharTab</a></code> instance into the
+<code>tab</code> attribute.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def charTab(self, char):
+    &#34;&#34;&#34;Loads a new `legends.ui.chartab.CharTab` instance into the
+    `tab` attribute.
+
+    &#34;&#34;&#34;
+    self.tab.destroy()
+    self.tab = CharTab(self)
+    self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
+    self.master.title(&#39;STL Planner - {}&#39;.format(char.shortName))</code></pre>
+</details>
+</dd>
 <dt id="legends.ui.session.Session.makeTimeBar"><code class="name flex">
 <span>def <span class="ident">makeTimeBar</span></span>(<span>self)</span>
 </code></dt>
@@ -1451,6 +1493,7 @@ characters.</dd>
 <li>
 <h4><code><a title="legends.ui.session.Session" href="#legends.ui.session.Session">Session</a></code></h4>
 <ul class="">
+<li><code><a title="legends.ui.session.Session.charTab" href="#legends.ui.session.Session.charTab">charTab</a></code></li>
 <li><code><a title="legends.ui.session.Session.makeTimeBar" href="#legends.ui.session.Session.makeTimeBar">makeTimeBar</a></code></li>
 <li><code><a title="legends.ui.session.Session.removeTimeBar" href="#legends.ui.session.Session.removeTimeBar">removeTimeBar</a></code></li>
 <li><code><a title="legends.ui.session.Session.rosterTab" href="#legends.ui.session.Session.rosterTab">rosterTab</a></code></li>

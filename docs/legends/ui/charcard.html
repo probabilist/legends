@@ -85,16 +85,21 @@ class CharCard(tk.Frame):
         return self.char in self.saveslot.favorites
 
     @property
-    def saveslot(self):
-        &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
-        character is located.
+    def session(self):
+        &#34;&#34;&#34;`legends.ui.session.Session`: The currently running session.
         &#34;&#34;&#34;
         content = self.master
         canvas = content.master
         scrollArea = canvas.master
         rostertab = scrollArea.master
-        session = rostertab.master
-        return session.saveslot
+        return rostertab.master
+
+    @property
+    def saveslot(self):
+        &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
+        character is located.
+        &#34;&#34;&#34;
+        return self.session.saveslot
 
     def namePlate(self, bgColor):
         &#34;&#34;&#34;Builds and returns the character name plate with the given
@@ -158,7 +163,6 @@ class CharCard(tk.Frame):
         &#34;&#34;&#34;
         plate = tk.Frame(self, bg=bgColor)
         data = self.dictify()
-        # statObj = self.saveslot.roster.charStats(self.char.nameID)
         font = (None, 9)
 
         # cycle through the 10 basic stats
@@ -192,18 +196,32 @@ class CharCard(tk.Frame):
             text, statVal = item
             tk.Label(
                 plate, text=text, bg=bgColor, font=font
-            ).grid(row=row, column=5, sticky=tk.W)
+            ).grid(row=row, column=4, sticky=tk.W)
             tk.Label(
                 plate, text=str(statVal), bg=bgColor, font=font,
                 width=5, anchor=tk.W
-            ).grid(row=row, column=6, sticky=tk.W)
+            ).grid(row=row, column=5, sticky=tk.W)
 
         # grid the power stat and return the plate
         tk.Label(
             plate,
             text=&#39;POWER: {:.0f}&#39;.format(data[&#39;power&#39;]),
-            bg=bgColor, font=(None, 11) + (&#39;bold&#39;,)
+            bg=bgColor, font=(None, 11, &#39;bold&#39;)
         ).grid(row=5, column=0, columnspan=4)
+
+        # TODO: comment/uncomment this block while developing char tab
+        openLabel = tk.Label(
+            plate,
+            text=&#39;OPEN&#39;,
+            font=font + (&#39;italic&#39;,),
+            relief=tk.GROOVE
+        )
+        openLabel.grid(row=6, column=0, columnspan=6, sticky=tk.NSEW)
+        openLabel.bind(
+            &#39;&lt;Button-1&gt;&#39;,
+            lambda event: self.session.charTab(self.char)
+        )
+
         return plate
 
     def toggleFav(self, event): # pylint: disable=unused-argument
@@ -345,16 +363,21 @@ card belongs.</dd>
         return self.char in self.saveslot.favorites
 
     @property
-    def saveslot(self):
-        &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
-        character is located.
+    def session(self):
+        &#34;&#34;&#34;`legends.ui.session.Session`: The currently running session.
         &#34;&#34;&#34;
         content = self.master
         canvas = content.master
         scrollArea = canvas.master
         rostertab = scrollArea.master
-        session = rostertab.master
-        return session.saveslot
+        return rostertab.master
+
+    @property
+    def saveslot(self):
+        &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
+        character is located.
+        &#34;&#34;&#34;
+        return self.session.saveslot
 
     def namePlate(self, bgColor):
         &#34;&#34;&#34;Builds and returns the character name plate with the given
@@ -418,7 +441,6 @@ card belongs.</dd>
         &#34;&#34;&#34;
         plate = tk.Frame(self, bg=bgColor)
         data = self.dictify()
-        # statObj = self.saveslot.roster.charStats(self.char.nameID)
         font = (None, 9)
 
         # cycle through the 10 basic stats
@@ -452,18 +474,32 @@ card belongs.</dd>
             text, statVal = item
             tk.Label(
                 plate, text=text, bg=bgColor, font=font
-            ).grid(row=row, column=5, sticky=tk.W)
+            ).grid(row=row, column=4, sticky=tk.W)
             tk.Label(
                 plate, text=str(statVal), bg=bgColor, font=font,
                 width=5, anchor=tk.W
-            ).grid(row=row, column=6, sticky=tk.W)
+            ).grid(row=row, column=5, sticky=tk.W)
 
         # grid the power stat and return the plate
         tk.Label(
             plate,
             text=&#39;POWER: {:.0f}&#39;.format(data[&#39;power&#39;]),
-            bg=bgColor, font=(None, 11) + (&#39;bold&#39;,)
+            bg=bgColor, font=(None, 11, &#39;bold&#39;)
         ).grid(row=5, column=0, columnspan=4)
+
+        # TODO: comment/uncomment this block while developing char tab
+        openLabel = tk.Label(
+            plate,
+            text=&#39;OPEN&#39;,
+            font=font + (&#39;italic&#39;,),
+            relief=tk.GROOVE
+        )
+        openLabel.grid(row=6, column=0, columnspan=6, sticky=tk.NSEW)
+        openLabel.bind(
+            &#39;&lt;Button-1&gt;&#39;,
+            lambda event: self.session.charTab(self.char)
+        )
+
         return plate
 
     def toggleFav(self, event): # pylint: disable=unused-argument
@@ -557,12 +593,25 @@ def saveslot(self):
     &#34;&#34;&#34;`legends.saveslot.SaveSlot`: The save slot in which the
     character is located.
     &#34;&#34;&#34;
+    return self.session.saveslot</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.charcard.CharCard.session"><code class="name">var <span class="ident">session</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code>: The currently running session.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def session(self):
+    &#34;&#34;&#34;`legends.ui.session.Session`: The currently running session.
+    &#34;&#34;&#34;
     content = self.master
     canvas = content.master
     scrollArea = canvas.master
     rostertab = scrollArea.master
-    session = rostertab.master
-    return session.saveslot</code></pre>
+    return rostertab.master</code></pre>
 </details>
 </dd>
 </dl>
@@ -740,7 +789,6 @@ color.</dd>
     &#34;&#34;&#34;
     plate = tk.Frame(self, bg=bgColor)
     data = self.dictify()
-    # statObj = self.saveslot.roster.charStats(self.char.nameID)
     font = (None, 9)
 
     # cycle through the 10 basic stats
@@ -774,18 +822,32 @@ color.</dd>
         text, statVal = item
         tk.Label(
             plate, text=text, bg=bgColor, font=font
-        ).grid(row=row, column=5, sticky=tk.W)
+        ).grid(row=row, column=4, sticky=tk.W)
         tk.Label(
             plate, text=str(statVal), bg=bgColor, font=font,
             width=5, anchor=tk.W
-        ).grid(row=row, column=6, sticky=tk.W)
+        ).grid(row=row, column=5, sticky=tk.W)
 
     # grid the power stat and return the plate
     tk.Label(
         plate,
         text=&#39;POWER: {:.0f}&#39;.format(data[&#39;power&#39;]),
-        bg=bgColor, font=(None, 11) + (&#39;bold&#39;,)
+        bg=bgColor, font=(None, 11, &#39;bold&#39;)
     ).grid(row=5, column=0, columnspan=4)
+
+    # TODO: comment/uncomment this block while developing char tab
+    openLabel = tk.Label(
+        plate,
+        text=&#39;OPEN&#39;,
+        font=font + (&#39;italic&#39;,),
+        relief=tk.GROOVE
+    )
+    openLabel.grid(row=6, column=0, columnspan=6, sticky=tk.NSEW)
+    openLabel.bind(
+        &#39;&lt;Button-1&gt;&#39;,
+        lambda event: self.session.charTab(self.char)
+    )
+
     return plate</code></pre>
 </details>
 </dd>
@@ -836,6 +898,7 @@ card.</p></div>
 <li><code><a title="legends.ui.charcard.CharCard.favorite" href="#legends.ui.charcard.CharCard.favorite">favorite</a></code></li>
 <li><code><a title="legends.ui.charcard.CharCard.namePlate" href="#legends.ui.charcard.CharCard.namePlate">namePlate</a></code></li>
 <li><code><a title="legends.ui.charcard.CharCard.saveslot" href="#legends.ui.charcard.CharCard.saveslot">saveslot</a></code></li>
+<li><code><a title="legends.ui.charcard.CharCard.session" href="#legends.ui.charcard.CharCard.session">session</a></code></li>
 <li><code><a title="legends.ui.charcard.CharCard.statPlate" href="#legends.ui.charcard.CharCard.statPlate">statPlate</a></code></li>
 <li><code><a title="legends.ui.charcard.CharCard.toggleFav" href="#legends.ui.charcard.CharCard.toggleFav">toggleFav</a></code></li>
 </ul>

@@ -38,6 +38,7 @@ from Crypto.Util.Padding import unpad
 
 __all__ = [
     &#39;AESdecrypt&#39;,
+    &#39;camelToSpace&#39;,
     &#39;collapse&#39;,
     &#39;formatDict&#39;,
     &#39;ticksToTimedelta&#39;,
@@ -63,6 +64,23 @@ def AESdecrypt(cipherText, key, iv):
     cipher = AES.new(keyB, AES.MODE_CBC, ivB)
 
     return unpad(cipher.decrypt(cipherTextB), AES.block_size).decode(&#39;UTF-8&#39;)
+
+def camelToSpace(camel):
+    &#34;&#34;&#34;Modifies a camel case string to add spaces.
+
+    Args:
+        camel (str): The string in camel case.
+
+    Returns:
+        str: The string with spaces added.
+
+    &#34;&#34;&#34;
+    space = camel[0]
+    for char in camel[1:]:
+        if char.isupper():
+            space += &#39; &#39;
+        space += char
+    return space
 
 def collapse(iterable):
     &#34;&#34;&#34;Collapses an iterable of immutable objects to a single object. If
@@ -178,6 +196,43 @@ def ticksToTimedelta(ticks):
     cipher = AES.new(keyB, AES.MODE_CBC, ivB)
 
     return unpad(cipher.decrypt(cipherTextB), AES.block_size).decode(&#39;UTF-8&#39;)</code></pre>
+</details>
+</dd>
+<dt id="legends.utils.functions.camelToSpace"><code class="name flex">
+<span>def <span class="ident">camelToSpace</span></span>(<span>camel)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Modifies a camel case string to add spaces.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>camel</code></strong> :&ensp;<code>str</code></dt>
+<dd>The string in camel case.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The string with spaces added.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def camelToSpace(camel):
+    &#34;&#34;&#34;Modifies a camel case string to add spaces.
+
+    Args:
+        camel (str): The string in camel case.
+
+    Returns:
+        str: The string with spaces added.
+
+    &#34;&#34;&#34;
+    space = camel[0]
+    for char in camel[1:]:
+        if char.isupper():
+            space += &#39; &#39;
+        space += char
+    return space</code></pre>
 </details>
 </dd>
 <dt id="legends.utils.functions.collapse"><code class="name flex">
@@ -340,8 +395,9 @@ uses ticks to mark time.</p>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="legends.utils.functions.AESdecrypt" href="#legends.utils.functions.AESdecrypt">AESdecrypt</a></code></li>
+<li><code><a title="legends.utils.functions.camelToSpace" href="#legends.utils.functions.camelToSpace">camelToSpace</a></code></li>
 <li><code><a title="legends.utils.functions.collapse" href="#legends.utils.functions.collapse">collapse</a></code></li>
 <li><code><a title="legends.utils.functions.formatDict" href="#legends.utils.functions.formatDict">formatDict</a></code></li>
 <li><code><a title="legends.utils.functions.ticksToDatetime" href="#legends.utils.functions.ticksToDatetime">ticksToDatetime</a></code></li>

@@ -354,11 +354,11 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((newSessionSubmenu, 0))
         newSessionSubmenu.add_command(
-            label='From Clipboard...', command=self.newFromClipboard
+            label='From Clipboard', command=self.newFromClipboard
         )
         self.disableOnModal.append((newSessionSubmenu, 1))
         newSessionSubmenu.add_command(
-            label='Maxed Characters', command=self.newMaxChars
+            label='Maxed Characters...', command=self.newMaxChars
         )
         self.disableOnModal.append((newSessionSubmenu, 2))
 
@@ -371,14 +371,14 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((sessionMenu, 0))
         sessionMenu.add_command(
-            label='Inventory...',
+            label='Inventory',
             command=lambda: InventoryScreen(self),
             state=tk.DISABLED
         )
         self.disableOnModal.append((sessionMenu, 1))
         self.sessionOnly.append((sessionMenu, 1))
         sessionMenu.add_command(
-            label='Missions...',
+            label='Missions',
             command=lambda: MissingMissions(self),
             state=tk.DISABLED
         )

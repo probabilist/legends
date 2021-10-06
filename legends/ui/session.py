@@ -12,6 +12,7 @@ from legends.functions import cleanTime, levelFromXP, xpFromLevel
 from legends.saveslot import Inventory
 from legends.ui.dialogs import ModalMessage
 from legends.ui.rostertab import RosterTab, RosterFilter
+from legends.ui.chartab import CharTab
 
 __all__ = ['InventoryScreen', 'MissingMissions', 'Session', 'SessionSettings']
 
@@ -384,6 +385,16 @@ class Session(tk.Frame):
         self.tab = RosterTab(self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
         self.master.title('STL Planner - Roster')
+
+    def charTab(self, char):
+        """Loads a new `legends.ui.chartab.CharTab` instance into the
+        `tab` attribute.
+
+        """
+        self.tab.destroy()
+        self.tab = CharTab(self)
+        self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
+        self.master.title('STL Planner - {}'.format(char.shortName))
 
 class SessionSettings(): # pylint: disable=too-few-public-methods
     """Stores the settings for a `Session`.

@@ -13,5 +13,6 @@ Example:
 from legends.ui.charcard import *
 from legends.ui.dialogs import *
 from legends.ui.rostertab import *
+from legends.ui.chartab import *
 from legends.ui.session import *
 from legends.ui.stlplanner import *

@@ -2,7 +2,7 @@
 
 """
 
-from legends.utils.functions import collapse
+from legends.utils.functions import camelToSpace, collapse
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSEffect, GSEffectType, GSSkill, GSSkillUpgrade
 from legends.constants import DESCRIPTIONS
@@ -63,10 +63,10 @@ class Skill():
         skillID (str): The skill's ID, as it appears in `GSSkill`.
         level (int): The level of the skill.
         unlocked (bool): True if the character has unlocked this skill.
-            Cannot be set False for skills that come with a newly
-            summoned character.
+        casterEffect (SkillEffect): The caster effect that is applied
+            when this skill is used.
         effects (list of SkillEffect): The effects that are applied when
-            this skill is used.
+            this skill is used. Does not include the caster effect.
 
     """
 
@@ -77,12 +77,16 @@ class Skill():
         self._key = 'GSSkillKey(id = "{}", level = "{}")'.format(
             self.skillID, self.level
         )
-        if self._key not in GSSkillUpgrade:
-            self.unlocked = True
         self.effects = [
             SkillEffect(effectDict['effect'], effectDict['fraction'])
             for effectDict in self.data['effects']
         ]
+        self.casterEffect = None
+        casterEffect = self.data['casterEffect']
+        if 'effect' in casterEffect:
+            self.casterEffect = SkillEffect(
+                casterEffect['effect'], casterEffect['fraction']
+            )
 
     @property
     def name(self):
@@ -93,6 +97,11 @@ class Skill():
     def data(self):
         """`dict`: The skill data from `GSSkill`."""
         return GSSkill[self._key]
+
+    @property
+    def startWith(self):
+        """`bool`: `True` if the character starts with this skill."""
+        return self._key not in GSSkillUpgrade
 
     @property
     def cooldown(self):
@@ -113,15 +122,18 @@ class Skill():
         return self.data['startingCooldown']
 
     @property
-    def effectTypes(self):
-        """`list` of `str`: A list of all skill effect types produced by
-        this skill.
+    def effectTags(self):
+        """`list` of `str`: A list of all tags on skill effects produced
+        by this skill, including the caster effect.
         """
-        effTypes = set()
+        effTags = []
         for effect in self.effects:
             for subeffect in effect.chain:
-                effTypes.add(subeffect.effectType)
-        return list(effTypes)
+                effTags.extend(subeffect.effectTags)
+        if self.casterEffect is not None:
+            for subeffect in self.casterEffect.chain:
+                effTags.extend(subeffect.effectTags)
+        return list(set(effTags))
 
     @property
     def itemsToMax(self):
@@ -185,10 +197,25 @@ class SkillEffect():
 
     @property
     def effectType(self):
-        """`type`: The effect's type, as found in the 'type' field in
+        """`str`: The effect's type, as found in the 'type' field in
         `GSEffectType`.
         """
         return GSEffectType[self.data['typeID']]['type']
+
+    @property
+    def effectTags(self):
+        """`list` of `str`: The effect type is modified from camel case
+        to have spaces inserted, then added as a tag. If the skill does
+        damage, it also gets the 'Damage' tag, if it doesn't already
+        have it, as well as either a 'Damage (Attack)' or 'Damage
+        (Tech)' tag.
+        """
+        tags = [camelToSpace(self.effectType)]
+        if self.doesDamage:
+            tags.append('Damage ({})'.format(self.statSource))
+            if 'Damage' not in tags:
+                tags.append('Damage')
+        return tags
 
     @property
     def doesDamage(self):

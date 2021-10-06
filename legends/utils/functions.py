@@ -9,6 +9,7 @@ from Crypto.Util.Padding import unpad
 
 __all__ = [
     'AESdecrypt',
+    'camelToSpace',
     'collapse',
     'formatDict',
     'ticksToTimedelta',
@@ -34,6 +35,23 @@ def AESdecrypt(cipherText, key, iv):
     cipher = AES.new(keyB, AES.MODE_CBC, ivB)
 
     return unpad(cipher.decrypt(cipherTextB), AES.block_size).decode('UTF-8')
+
+def camelToSpace(camel):
+    """Modifies a camel case string to add spaces.
+
+    Args:
+        camel (str): The string in camel case.
+
+    Returns:
+        str: The string with spaces added.
+
+    """
+    space = camel[0]
+    for char in camel[1:]:
+        if char.isupper():
+            space += ' '
+        space += char
+    return space
 
 def collapse(iterable):
     """Collapses an iterable of immutable objects to a single object. If

@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>legends.ui API documentation</title>
-<meta name="description" content="UI objects used with the `legends` package …" />
+<title>legends.ui.chartab API documentation</title>
+<meta name="description" content="The `legends.ui.chartab.CharTab` class and related objects." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -19,75 +19,147 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>legends.ui</code></h1>
+<h1 class="title">Module <code>legends.ui.chartab</code></h1>
 </header>
 <section id="section-intro">
-<p>UI objects used with the <code><a title="legends" href="../index.html">legends</a></code> package.</p>
-<p>All objects that reside in one of the direct submodules of <code><a title="legends.ui" href="#legends.ui">legends.ui</a></code>
-can be accessed from the <code><a title="legends.ui" href="#legends.ui">legends.ui</a></code> namespace.</p>
-<h2 id="example">Example</h2>
-<pre><code class="language-python-repl">&gt;&gt;&gt; import legends
-&gt;&gt;&gt; legends.ui.HelpScreen is legends.ui.stlplanner.HelpScreen
-True
-</code></pre>
+<p>The <code><a title="legends.ui.chartab.CharTab" href="#legends.ui.chartab.CharTab">CharTab</a></code> class and related objects.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">&#34;&#34;&#34;UI objects used with the `legends` package.
-
-All objects that reside in one of the direct submodules of `legends.ui`
-can be accessed from the `legends.ui` namespace.
-
-Example:
-    &gt;&gt;&gt; import legends
-    &gt;&gt;&gt; legends.ui.HelpScreen is legends.ui.stlplanner.HelpScreen
-    True
+<pre><code class="python">&#34;&#34;&#34;The `legends.ui.chartab.CharTab` class and related objects.
 
 &#34;&#34;&#34;
 
-from legends.ui.charcard import *
-from legends.ui.dialogs import *
-from legends.ui.rostertab import *
-from legends.ui.chartab import *
-from legends.ui.session import *
-from legends.ui.stlplanner import *</code></pre>
+import tkinter as tk
+
+__all__ = [&#39;CharTab&#39;]
+
+class CharTab(tk.Frame):
+    &#34;&#34;&#34;Displays details about a character.
+
+    &#34;&#34;&#34;
+    def __init__(self, session, **options):
+        &#34;&#34;&#34;The constructor creates an instance as a child of the given
+        session.
+
+        Args:
+            session (legends.ui.session.Session): The session to assign
+                as the instance&#39;s parent.
+
+        &#34;&#34;&#34;
+        tk.Frame.__init__(self, session, **options)
+        self.actionBar().pack(fill=tk.X)
+
+    def actionBar(self):
+        &#34;&#34;&#34;Builds and returns an action bar that allows the user to
+        interact with the `CharTab`.
+
+        &#34;&#34;&#34;
+        bar = tk.Frame(self)
+        tk.Button(
+            bar,
+            text=&#39;back to roster&#39;,
+            command=self.master.rosterTab
+        ).pack(side=tk.LEFT)
+        return bar</code></pre>
 </details>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt><code class="name"><a title="legends.ui.charcard" href="charcard.html">legends.ui.charcard</a></code></dt>
+<dt id="legends.ui.chartab.CharTab"><code class="flex name class">
+<span>class <span class="ident">CharTab</span></span>
+<span>(</span><span>session, **options)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>The module contains the <code>CharCard</code> class.</p></div>
-</dd>
-<dt><code class="name"><a title="legends.ui.chartab" href="chartab.html">legends.ui.chartab</a></code></dt>
+<div class="desc"><p>Displays details about a character.</p>
+<p>The constructor creates an instance as a child of the given
+session.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>session</code></strong> :&ensp;<code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code></dt>
+<dd>The session to assign
+as the instance's parent.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CharTab(tk.Frame):
+    &#34;&#34;&#34;Displays details about a character.
+
+    &#34;&#34;&#34;
+    def __init__(self, session, **options):
+        &#34;&#34;&#34;The constructor creates an instance as a child of the given
+        session.
+
+        Args:
+            session (legends.ui.session.Session): The session to assign
+                as the instance&#39;s parent.
+
+        &#34;&#34;&#34;
+        tk.Frame.__init__(self, session, **options)
+        self.actionBar().pack(fill=tk.X)
+
+    def actionBar(self):
+        &#34;&#34;&#34;Builds and returns an action bar that allows the user to
+        interact with the `CharTab`.
+
+        &#34;&#34;&#34;
+        bar = tk.Frame(self)
+        tk.Button(
+            bar,
+            text=&#39;back to roster&#39;,
+            command=self.master.rosterTab
+        ).pack(side=tk.LEFT)
+        return bar</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Frame</li>
+<li>tkinter.Widget</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Pack</li>
+<li>tkinter.Place</li>
+<li>tkinter.Grid</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.chartab.CharTab.actionBar"><code class="name flex">
+<span>def <span class="ident">actionBar</span></span>(<span>self)</span>
+</code></dt>
 <dd>
-<div class="desc"><p>The <code><a title="legends.ui.chartab.CharTab" href="chartab.html#legends.ui.chartab.CharTab">CharTab</a></code> class and related objects.</p></div>
-</dd>
-<dt><code class="name"><a title="legends.ui.dialogs" href="dialogs.html">legends.ui.dialogs</a></code></dt>
-<dd>
-<div class="desc"><p>Dialog windows for use with the <code><a title="legends" href="../index.html">legends</a></code> package.</p></div>
-</dd>
-<dt><code class="name"><a title="legends.ui.rostertab" href="rostertab.html">legends.ui.rostertab</a></code></dt>
-<dd>
-<div class="desc"><p>The <code><a title="legends.ui.rostertab.RosterTab" href="rostertab.html#legends.ui.rostertab.RosterTab">RosterTab</a></code> class and related objects.</p></div>
-</dd>
-<dt><code class="name"><a title="legends.ui.session" href="session.html">legends.ui.session</a></code></dt>
-<dd>
-<div class="desc"><p>The <code><a title="legends.ui.session.Session" href="session.html#legends.ui.session.Session">Session</a></code> class and related objects.</p></div>
-</dd>
-<dt><code class="name"><a title="legends.ui.stlplanner" href="stlplanner.html">legends.ui.stlplanner</a></code></dt>
-<dd>
-<div class="desc"><p>The <code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> class and related objects …</p></div>
+<div class="desc"><p>Builds and returns an action bar that allows the user to
+interact with the <code><a title="legends.ui.chartab.CharTab" href="#legends.ui.chartab.CharTab">CharTab</a></code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def actionBar(self):
+    &#34;&#34;&#34;Builds and returns an action bar that allows the user to
+    interact with the `CharTab`.
+
+    &#34;&#34;&#34;
+    bar = tk.Frame(self)
+    tk.Button(
+        bar,
+        text=&#39;back to roster&#39;,
+        command=self.master.rosterTab
+    ).pack(side=tk.LEFT)
+    return bar</code></pre>
+</details>
 </dd>
 </dl>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -98,17 +170,17 @@ from legends.ui.stlplanner import *</code></pre>
 <ul id="index">
 <li><h3>Super-module</h3>
 <ul>
-<li><code><a title="legends" href="../index.html">legends</a></code></li>
+<li><code><a title="legends.ui" href="index.html">legends.ui</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li><code><a title="legends.ui.charcard" href="charcard.html">legends.ui.charcard</a></code></li>
-<li><code><a title="legends.ui.chartab" href="chartab.html">legends.ui.chartab</a></code></li>
-<li><code><a title="legends.ui.dialogs" href="dialogs.html">legends.ui.dialogs</a></code></li>
-<li><code><a title="legends.ui.rostertab" href="rostertab.html">legends.ui.rostertab</a></code></li>
-<li><code><a title="legends.ui.session" href="session.html">legends.ui.session</a></code></li>
-<li><code><a title="legends.ui.stlplanner" href="stlplanner.html">legends.ui.stlplanner</a></code></li>
+<li>
+<h4><code><a title="legends.ui.chartab.CharTab" href="#legends.ui.chartab.CharTab">CharTab</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.chartab.CharTab.actionBar" href="#legends.ui.chartab.CharTab.actionBar">actionBar</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
