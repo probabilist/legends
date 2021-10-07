@@ -45,6 +45,7 @@ class ScrollFrame(tk.Frame):
         self.canvas.bind('<Leave>', lambda event: (
             self.canvas.unbind_all('<MouseWheel>')
         ))
+        self.bind('<Destroy>', self.onDestroy)
         self.scrollbar.pack(side=RIGHT, fill=Y)
         self.canvas.pack(side=LEFT, expand=YES, fill=BOTH)
         self.content = tk.Frame(self.canvas)
@@ -57,7 +58,7 @@ class ScrollFrame(tk.Frame):
 
         Args:
             event (tk.Event): The `tk.Event` passed by the
-                '<Mousewheel>' event.
+                `Mousewheel` event.
 
         """
         self.canvas.yview_scroll(-1 * event.delta, 'units')
@@ -71,3 +72,13 @@ class ScrollFrame(tk.Frame):
             scrollregion=self.canvas.bbox("all"),
             width=self.canvas.bbox('all')[2] - self.canvas.bbox('all')[0]
         )
+
+    def onDestroy(self, event):
+        """Unbinds the mousewheel when the scroll frame is destroyed.
+
+        Args:
+            event (tk.Event): The event passed by the `Destroy` event.
+
+        """
+        if event.widget == self:
+            self.canvas.unbind_all('<MouseWheel>')

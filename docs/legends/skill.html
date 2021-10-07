@@ -32,6 +32,7 @@
 &#34;&#34;&#34;
 
 from legends.utils.functions import camelToSpace, collapse
+from legends.utils.htmltagstripper import HTMLTagStripper
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSEffect, GSEffectType, GSSkill, GSSkillUpgrade
 from legends.constants import DESCRIPTIONS
@@ -133,6 +134,11 @@ class Skill():
         return self._key not in GSSkillUpgrade
 
     @property
+    def description(self):
+        &#34;&#34;&#34;The in-game description of the skill.&#34;&#34;&#34;
+        return HTMLTagStripper(DESCRIPTIONS[self.data[&#39;description&#39;]]).text
+
+    @property
     def cooldown(self):
         &#34;&#34;&#34;`int`: The skill&#39;s cooldown. Specifically, the number of
         turns for which the skill will be unavailable before next use.
@@ -151,6 +157,21 @@ class Skill():
         return self.data[&#39;startingCooldown&#39;]
 
     @property
+    def isAOE(self):
+        &#34;&#34;&#34;`bool`: `True` if the skill is AOE.&#34;&#34;&#34;
+        return self.data[&#39;isAOE&#39;]
+
+    @property
+    def isMultiRandom(self):
+        &#34;&#34;&#34;`bool`: `True` if the skill has multiple random targets.&#34;&#34;&#34;
+        return self.data[&#39;isMultiRandom&#39;]
+
+    @property
+    def numTargets(self):
+        &#34;&#34;&#34;`int`: The number of targets for this skill.&#34;&#34;&#34;
+        return self.data[&#39;numTargets&#39;]
+
+    @property
     def effectTags(self):
         &#34;&#34;&#34;`list` of `str`: A list of all tags on skill effects produced
         by this skill, including the caster effect.
@@ -162,7 +183,7 @@ class Skill():
         if self.casterEffect is not None:
             for subeffect in self.casterEffect.chain:
                 effTags.extend(subeffect.effectTags)
-        return list(set(effTags))
+        return sorted(list(set(effTags)))
 
     @property
     def itemsToMax(self):
@@ -209,6 +230,11 @@ class SkillEffect():
     def data(self):
         &#34;&#34;&#34;`dict`: The effect data from `GSEffect`.&#34;&#34;&#34;
         return GSEffect[self.effectID]
+
+    @property
+    def description(self):
+        &#34;&#34;&#34;`str`: A plain text description of the effect.&#34;&#34;&#34;
+        return &#39;{} ({:g}x)&#39;.format(self.effectID, self.fraction)
 
     @property
     def statSource(self):
@@ -488,6 +514,11 @@ this skill is used. Does not include the caster effect.</dd>
         return self._key not in GSSkillUpgrade
 
     @property
+    def description(self):
+        &#34;&#34;&#34;The in-game description of the skill.&#34;&#34;&#34;
+        return HTMLTagStripper(DESCRIPTIONS[self.data[&#39;description&#39;]]).text
+
+    @property
     def cooldown(self):
         &#34;&#34;&#34;`int`: The skill&#39;s cooldown. Specifically, the number of
         turns for which the skill will be unavailable before next use.
@@ -506,6 +537,21 @@ this skill is used. Does not include the caster effect.</dd>
         return self.data[&#39;startingCooldown&#39;]
 
     @property
+    def isAOE(self):
+        &#34;&#34;&#34;`bool`: `True` if the skill is AOE.&#34;&#34;&#34;
+        return self.data[&#39;isAOE&#39;]
+
+    @property
+    def isMultiRandom(self):
+        &#34;&#34;&#34;`bool`: `True` if the skill has multiple random targets.&#34;&#34;&#34;
+        return self.data[&#39;isMultiRandom&#39;]
+
+    @property
+    def numTargets(self):
+        &#34;&#34;&#34;`int`: The number of targets for this skill.&#34;&#34;&#34;
+        return self.data[&#39;numTargets&#39;]
+
+    @property
     def effectTags(self):
         &#34;&#34;&#34;`list` of `str`: A list of all tags on skill effects produced
         by this skill, including the caster effect.
@@ -517,7 +563,7 @@ this skill is used. Does not include the caster effect.</dd>
         if self.casterEffect is not None:
             for subeffect in self.casterEffect.chain:
                 effTags.extend(subeffect.effectTags)
-        return list(set(effTags))
+        return sorted(list(set(effTags)))
 
     @property
     def itemsToMax(self):
@@ -568,6 +614,19 @@ def data(self):
     return GSSkill[self._key]</code></pre>
 </details>
 </dd>
+<dt id="legends.skill.Skill.description"><code class="name">var <span class="ident">description</span></code></dt>
+<dd>
+<div class="desc"><p>The in-game description of the skill.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def description(self):
+    &#34;&#34;&#34;The in-game description of the skill.&#34;&#34;&#34;
+    return HTMLTagStripper(DESCRIPTIONS[self.data[&#39;description&#39;]]).text</code></pre>
+</details>
+</dd>
 <dt id="legends.skill.Skill.effectTags"><code class="name">var <span class="ident">effectTags</span></code></dt>
 <dd>
 <div class="desc"><p><code>list</code> of <code>str</code>: A list of all tags on skill effects produced
@@ -588,7 +647,33 @@ def effectTags(self):
     if self.casterEffect is not None:
         for subeffect in self.casterEffect.chain:
             effTags.extend(subeffect.effectTags)
-    return list(set(effTags))</code></pre>
+    return sorted(list(set(effTags)))</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.Skill.isAOE"><code class="name">var <span class="ident">isAOE</span></code></dt>
+<dd>
+<div class="desc"><p><code>bool</code>: <code>True</code> if the skill is AOE.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def isAOE(self):
+    &#34;&#34;&#34;`bool`: `True` if the skill is AOE.&#34;&#34;&#34;
+    return self.data[&#39;isAOE&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.Skill.isMultiRandom"><code class="name">var <span class="ident">isMultiRandom</span></code></dt>
+<dd>
+<div class="desc"><p><code>bool</code>: <code>True</code> if the skill has multiple random targets.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def isMultiRandom(self):
+    &#34;&#34;&#34;`bool`: `True` if the skill has multiple random targets.&#34;&#34;&#34;
+    return self.data[&#39;isMultiRandom&#39;]</code></pre>
 </details>
 </dd>
 <dt id="legends.skill.Skill.itemsToMax"><code class="name">var <span class="ident">itemsToMax</span></code></dt>
@@ -619,6 +704,19 @@ def itemsToMax(self):
 def name(self):
     &#34;&#34;&#34;The in-game display name of the skill.&#34;&#34;&#34;
     return DESCRIPTIONS[self.data[&#39;name&#39;]]</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.Skill.numTargets"><code class="name">var <span class="ident">numTargets</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The number of targets for this skill.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def numTargets(self):
+    &#34;&#34;&#34;`int`: The number of targets for this skill.&#34;&#34;&#34;
+    return self.data[&#39;numTargets&#39;]</code></pre>
 </details>
 </dd>
 <dt id="legends.skill.Skill.startWith"><code class="name">var <span class="ident">startWith</span></code></dt>
@@ -713,6 +811,11 @@ Can be <code>None</code>.</dd>
         return GSEffect[self.effectID]
 
     @property
+    def description(self):
+        &#34;&#34;&#34;`str`: A plain text description of the effect.&#34;&#34;&#34;
+        return &#39;{} ({:g}x)&#39;.format(self.effectID, self.fraction)
+
+    @property
     def statSource(self):
         &#34;&#34;&#34;`str`: The name of the statistic that serves as the source of
         the effect.
@@ -804,6 +907,19 @@ def chain(self):
 def data(self):
     &#34;&#34;&#34;`dict`: The effect data from `GSEffect`.&#34;&#34;&#34;
     return GSEffect[self.effectID]</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.SkillEffect.description"><code class="name">var <span class="ident">description</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: A plain text description of the effect.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def description(self):
+    &#34;&#34;&#34;`str`: A plain text description of the effect.&#34;&#34;&#34;
+    return &#39;{} ({:g}x)&#39;.format(self.effectID, self.fraction)</code></pre>
 </details>
 </dd>
 <dt id="legends.skill.SkillEffect.doesDamage"><code class="name">var <span class="ident">doesDamage</span></code></dt>
@@ -926,9 +1042,13 @@ def statSourceFrac(self):
 <ul class="two-column">
 <li><code><a title="legends.skill.Skill.cooldown" href="#legends.skill.Skill.cooldown">cooldown</a></code></li>
 <li><code><a title="legends.skill.Skill.data" href="#legends.skill.Skill.data">data</a></code></li>
+<li><code><a title="legends.skill.Skill.description" href="#legends.skill.Skill.description">description</a></code></li>
 <li><code><a title="legends.skill.Skill.effectTags" href="#legends.skill.Skill.effectTags">effectTags</a></code></li>
+<li><code><a title="legends.skill.Skill.isAOE" href="#legends.skill.Skill.isAOE">isAOE</a></code></li>
+<li><code><a title="legends.skill.Skill.isMultiRandom" href="#legends.skill.Skill.isMultiRandom">isMultiRandom</a></code></li>
 <li><code><a title="legends.skill.Skill.itemsToMax" href="#legends.skill.Skill.itemsToMax">itemsToMax</a></code></li>
 <li><code><a title="legends.skill.Skill.name" href="#legends.skill.Skill.name">name</a></code></li>
+<li><code><a title="legends.skill.Skill.numTargets" href="#legends.skill.Skill.numTargets">numTargets</a></code></li>
 <li><code><a title="legends.skill.Skill.startWith" href="#legends.skill.Skill.startWith">startWith</a></code></li>
 <li><code><a title="legends.skill.Skill.startingCooldown" href="#legends.skill.Skill.startingCooldown">startingCooldown</a></code></li>
 </ul>
@@ -938,6 +1058,7 @@ def statSourceFrac(self):
 <ul class="two-column">
 <li><code><a title="legends.skill.SkillEffect.chain" href="#legends.skill.SkillEffect.chain">chain</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.data" href="#legends.skill.SkillEffect.data">data</a></code></li>
+<li><code><a title="legends.skill.SkillEffect.description" href="#legends.skill.SkillEffect.description">description</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.doesDamage" href="#legends.skill.SkillEffect.doesDamage">doesDamage</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.effectTags" href="#legends.skill.SkillEffect.effectTags">effectTags</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.effectType" href="#legends.skill.SkillEffect.effectType">effectType</a></code></li>

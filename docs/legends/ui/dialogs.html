@@ -35,6 +35,7 @@ import tkinter as tk
 from tkinter.messagebox import askyesno as _askyesno
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
+from tkinter.messagebox import showwarning as _showwarning
 from tkinter.filedialog import asksaveasfilename as _asksaveasfilename
 from tkinter.simpledialog import Dialog
 
@@ -45,7 +46,8 @@ __all__ = [
     &#39;ModalMessage&#39;,
     &#39;ModalDialog&#39;,
     &#39;showerror&#39;,
-    &#39;showinfo&#39;
+    &#39;showinfo&#39;,
+    &#39;showwarning&#39;
 ]
 
 def addroot(func):
@@ -110,6 +112,17 @@ def showinfo(root, *args, **kargs):
 
     &#34;&#34;&#34;
     return addroot(_showinfo)(root, *args, **kargs)
+
+def showwarning(root, *args, **kargs):
+    &#34;&#34;&#34;A wrapper around `tk.messagebox.showwarning` that disables the
+    root menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+
+    &#34;&#34;&#34;
+    return addroot(_showwarning)(root, *args, **kargs)
 
 class ModalMessage(Dialog):
     &#34;&#34;&#34;A subclass of `tk.simpledialog.Dialog` that disables menus. Has
@@ -344,6 +357,34 @@ menu while the dialog is open.</p>
 
     &#34;&#34;&#34;
     return addroot(_showinfo)(root, *args, **kargs)</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.dialogs.showwarning"><code class="name flex">
+<span>def <span class="ident">showwarning</span></span>(<span>root, *args, **kargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A wrapper around <code>tk.messagebox.showwarning</code> that disables the
+root menu while the dialog is open.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>root</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></dt>
+<dd>The currently running
+<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> instance.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def showwarning(root, *args, **kargs):
+    &#34;&#34;&#34;A wrapper around `tk.messagebox.showwarning` that disables the
+    root menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+
+    &#34;&#34;&#34;
+    return addroot(_showwarning)(root, *args, **kargs)</code></pre>
 </details>
 </dd>
 </dl>
@@ -617,12 +658,13 @@ destroys the window.</p></div>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="legends.ui.dialogs.addroot" href="#legends.ui.dialogs.addroot">addroot</a></code></li>
 <li><code><a title="legends.ui.dialogs.asksaveasfilename" href="#legends.ui.dialogs.asksaveasfilename">asksaveasfilename</a></code></li>
 <li><code><a title="legends.ui.dialogs.askyesno" href="#legends.ui.dialogs.askyesno">askyesno</a></code></li>
 <li><code><a title="legends.ui.dialogs.showerror" href="#legends.ui.dialogs.showerror">showerror</a></code></li>
 <li><code><a title="legends.ui.dialogs.showinfo" href="#legends.ui.dialogs.showinfo">showinfo</a></code></li>
+<li><code><a title="legends.ui.dialogs.showwarning" href="#legends.ui.dialogs.showwarning">showwarning</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

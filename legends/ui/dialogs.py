@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter.messagebox import askyesno as _askyesno
 from tkinter.messagebox import showerror as _showerror
 from tkinter.messagebox import showinfo as _showinfo
+from tkinter.messagebox import showwarning as _showwarning
 from tkinter.filedialog import asksaveasfilename as _asksaveasfilename
 from tkinter.simpledialog import Dialog
 
@@ -16,7 +17,8 @@ __all__ = [
     'ModalMessage',
     'ModalDialog',
     'showerror',
-    'showinfo'
+    'showinfo',
+    'showwarning'
 ]
 
 def addroot(func):
@@ -81,6 +83,17 @@ def showinfo(root, *args, **kargs):
 
     """
     return addroot(_showinfo)(root, *args, **kargs)
+
+def showwarning(root, *args, **kargs):
+    """A wrapper around `tk.messagebox.showwarning` that disables the
+    root menu while the dialog is open.
+
+    Args:
+        root (legends.ui.stlplanner.STLPlanner): The currently running
+            `legends.ui.stlplanner.STLPlanner` instance.
+
+    """
+    return addroot(_showwarning)(root, *args, **kargs)
 
 class ModalMessage(Dialog):
     """A subclass of `tk.simpledialog.Dialog` that disables menus. Has

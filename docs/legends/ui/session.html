@@ -421,7 +421,7 @@ class Session(tk.Frame):
 
         &#34;&#34;&#34;
         self.tab.destroy()
-        self.tab = CharTab(self)
+        self.tab = CharTab(char, self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
         self.master.title(&#39;STL Planner - {}&#39;.format(char.shortName))
 
@@ -1236,7 +1236,7 @@ assigned as the parent of this session.</dd>
 
         &#34;&#34;&#34;
         self.tab.destroy()
-        self.tab = CharTab(self)
+        self.tab = CharTab(char, self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
         self.master.title(&#39;STL Planner - {}&#39;.format(char.shortName))</code></pre>
 </details>
@@ -1268,7 +1268,7 @@ assigned as the parent of this session.</dd>
 
     &#34;&#34;&#34;
     self.tab.destroy()
-    self.tab = CharTab(self)
+    self.tab = CharTab(char, self)
     self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
     self.master.title(&#39;STL Planner - {}&#39;.format(char.shortName))</code></pre>
 </details>

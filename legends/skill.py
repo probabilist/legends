@@ -3,6 +3,7 @@
 """
 
 from legends.utils.functions import camelToSpace, collapse
+from legends.utils.htmltagstripper import HTMLTagStripper
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSEffect, GSEffectType, GSSkill, GSSkillUpgrade
 from legends.constants import DESCRIPTIONS
@@ -104,6 +105,11 @@ class Skill():
         return self._key not in GSSkillUpgrade
 
     @property
+    def description(self):
+        """The in-game description of the skill."""
+        return HTMLTagStripper(DESCRIPTIONS[self.data['description']]).text
+
+    @property
     def cooldown(self):
         """`int`: The skill's cooldown. Specifically, the number of
         turns for which the skill will be unavailable before next use.
@@ -122,6 +128,21 @@ class Skill():
         return self.data['startingCooldown']
 
     @property
+    def isAOE(self):
+        """`bool`: `True` if the skill is AOE."""
+        return self.data['isAOE']
+
+    @property
+    def isMultiRandom(self):
+        """`bool`: `True` if the skill has multiple random targets."""
+        return self.data['isMultiRandom']
+
+    @property
+    def numTargets(self):
+        """`int`: The number of targets for this skill."""
+        return self.data['numTargets']
+
+    @property
     def effectTags(self):
         """`list` of `str`: A list of all tags on skill effects produced
         by this skill, including the caster effect.
@@ -133,7 +154,7 @@ class Skill():
         if self.casterEffect is not None:
             for subeffect in self.casterEffect.chain:
                 effTags.extend(subeffect.effectTags)
-        return list(set(effTags))
+        return sorted(list(set(effTags)))
 
     @property
     def itemsToMax(self):
@@ -180,6 +201,11 @@ class SkillEffect():
     def data(self):
         """`dict`: The effect data from `GSEffect`."""
         return GSEffect[self.effectID]
+
+    @property
+    def description(self):
+        """`str`: A plain text description of the effect."""
+        return '{} ({:g}x)'.format(self.effectID, self.fraction)
 
     @property
     def statSource(self):

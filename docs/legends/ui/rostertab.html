@@ -41,7 +41,9 @@ from legends.constants import (
     ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS, SUMMON_POOL
 )
 from legends.ui.charcard import CharCard
-from legends.ui.dialogs import asksaveasfilename, ModalDialog, ModalMessage
+from legends.ui.dialogs import (
+    asksaveasfilename, ModalDialog, ModalMessage, showwarning
+)
 
 __all__ = [
     &#39;AskRosterFilter&#39;,
@@ -581,9 +583,23 @@ class RosterTab(tk.Frame):
 
     def optimalSummons(self):
         &#34;&#34;&#34;Raises an `OptimalSummons` message window showing the summon
-        rates for the various summon pools.
+        rates for the various summon pools. Warns the user if not all
+        summonable characters have been unlocked.
 
         &#34;&#34;&#34;
+        e7m6 = [mission for mission in self.master.saveslot.missions if (
+            mission.episode == 7
+            and mission.orderIndex == 6
+            and mission.difficulty == &#39;Normal&#39;
+        )]
+        if e7m6[0].complete &lt; 1:
+            showwarning(
+                self.root,
+                &#39;Missing Characters&#39;,
+                &#39;You have not yet completed Episode 7 Mission 6 on Normal &#39;
+                + &#39;Difficulty. Complete this mission to unlock all summonable &#39;
+                + &#39;characters. Until then, this tool may be inaccurate.&#39;
+            )
         OptimalSummons(self.root)
 
     def sort(self):
@@ -1797,9 +1813,23 @@ as the instance's parent.</dd>
 
     def optimalSummons(self):
         &#34;&#34;&#34;Raises an `OptimalSummons` message window showing the summon
-        rates for the various summon pools.
+        rates for the various summon pools. Warns the user if not all
+        summonable characters have been unlocked.
 
         &#34;&#34;&#34;
+        e7m6 = [mission for mission in self.master.saveslot.missions if (
+            mission.episode == 7
+            and mission.orderIndex == 6
+            and mission.difficulty == &#39;Normal&#39;
+        )]
+        if e7m6[0].complete &lt; 1:
+            showwarning(
+                self.root,
+                &#39;Missing Characters&#39;,
+                &#39;You have not yet completed Episode 7 Mission 6 on Normal &#39;
+                + &#39;Difficulty. Complete this mission to unlock all summonable &#39;
+                + &#39;characters. Until then, this tool may be inaccurate.&#39;
+            )
         OptimalSummons(self.root)
 
     def sort(self):
@@ -2158,16 +2188,31 @@ and places it in the scroll area's content frame.</p></div>
 </code></dt>
 <dd>
 <div class="desc"><p>Raises an <code><a title="legends.ui.rostertab.OptimalSummons" href="#legends.ui.rostertab.OptimalSummons">OptimalSummons</a></code> message window showing the summon
-rates for the various summon pools.</p></div>
+rates for the various summon pools. Warns the user if not all
+summonable characters have been unlocked.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def optimalSummons(self):
     &#34;&#34;&#34;Raises an `OptimalSummons` message window showing the summon
-    rates for the various summon pools.
+    rates for the various summon pools. Warns the user if not all
+    summonable characters have been unlocked.
 
     &#34;&#34;&#34;
+    e7m6 = [mission for mission in self.master.saveslot.missions if (
+        mission.episode == 7
+        and mission.orderIndex == 6
+        and mission.difficulty == &#39;Normal&#39;
+    )]
+    if e7m6[0].complete &lt; 1:
+        showwarning(
+            self.root,
+            &#39;Missing Characters&#39;,
+            &#39;You have not yet completed Episode 7 Mission 6 on Normal &#39;
+            + &#39;Difficulty. Complete this mission to unlock all summonable &#39;
+            + &#39;characters. Until then, this tool may be inaccurate.&#39;
+        )
     OptimalSummons(self.root)</code></pre>
 </details>
 </dd>

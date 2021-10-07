@@ -392,7 +392,7 @@ class Session(tk.Frame):
 
         """
         self.tab.destroy()
-        self.tab = CharTab(self)
+        self.tab = CharTab(char, self)
         self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
         self.master.title('STL Planner - {}'.format(char.shortName))
 

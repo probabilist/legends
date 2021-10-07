@@ -12,7 +12,9 @@ from legends.constants import (
     ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS, SUMMON_POOL
 )
 from legends.ui.charcard import CharCard
-from legends.ui.dialogs import asksaveasfilename, ModalDialog, ModalMessage
+from legends.ui.dialogs import (
+    asksaveasfilename, ModalDialog, ModalMessage, showwarning
+)
 
 __all__ = [
     'AskRosterFilter',
@@ -552,9 +554,23 @@ class RosterTab(tk.Frame):
 
     def optimalSummons(self):
         """Raises an `OptimalSummons` message window showing the summon
-        rates for the various summon pools.
+        rates for the various summon pools. Warns the user if not all
+        summonable characters have been unlocked.
 
         """
+        e7m6 = [mission for mission in self.master.saveslot.missions if (
+            mission.episode == 7
+            and mission.orderIndex == 6
+            and mission.difficulty == 'Normal'
+        )]
+        if e7m6[0].complete < 1:
+            showwarning(
+                self.root,
+                'Missing Characters',
+                'You have not yet completed Episode 7 Mission 6 on Normal '
+                + 'Difficulty. Complete this mission to unlock all summonable '
+                + 'characters. Until then, this tool may be inaccurate.'
+            )
         OptimalSummons(self.root)
 
     def sort(self):

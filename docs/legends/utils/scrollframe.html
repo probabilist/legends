@@ -74,6 +74,7 @@ class ScrollFrame(tk.Frame):
         self.canvas.bind(&#39;&lt;Leave&gt;&#39;, lambda event: (
             self.canvas.unbind_all(&#39;&lt;MouseWheel&gt;&#39;)
         ))
+        self.bind(&#39;&lt;Destroy&gt;&#39;, self.onDestroy)
         self.scrollbar.pack(side=RIGHT, fill=Y)
         self.canvas.pack(side=LEFT, expand=YES, fill=BOTH)
         self.content = tk.Frame(self.canvas)
@@ -86,7 +87,7 @@ class ScrollFrame(tk.Frame):
 
         Args:
             event (tk.Event): The `tk.Event` passed by the
-                &#39;&lt;Mousewheel&gt;&#39; event.
+                `Mousewheel` event.
 
         &#34;&#34;&#34;
         self.canvas.yview_scroll(-1 * event.delta, &#39;units&#39;)
@@ -99,7 +100,17 @@ class ScrollFrame(tk.Frame):
         self.canvas.config(
             scrollregion=self.canvas.bbox(&#34;all&#34;),
             width=self.canvas.bbox(&#39;all&#39;)[2] - self.canvas.bbox(&#39;all&#39;)[0]
-        )</code></pre>
+        )
+
+    def onDestroy(self, event):
+        &#34;&#34;&#34;Unbinds the mousewheel when the scroll frame is destroyed.
+
+        Args:
+            event (tk.Event): The event passed by the `Destroy` event.
+
+        &#34;&#34;&#34;
+        if event.widget == self:
+            self.canvas.unbind_all(&#39;&lt;MouseWheel&gt;&#39;)</code></pre>
 </details>
 </section>
 <section>
@@ -181,6 +192,7 @@ superclass.</p></div>
         self.canvas.bind(&#39;&lt;Leave&gt;&#39;, lambda event: (
             self.canvas.unbind_all(&#39;&lt;MouseWheel&gt;&#39;)
         ))
+        self.bind(&#39;&lt;Destroy&gt;&#39;, self.onDestroy)
         self.scrollbar.pack(side=RIGHT, fill=Y)
         self.canvas.pack(side=LEFT, expand=YES, fill=BOTH)
         self.content = tk.Frame(self.canvas)
@@ -193,7 +205,7 @@ superclass.</p></div>
 
         Args:
             event (tk.Event): The `tk.Event` passed by the
-                &#39;&lt;Mousewheel&gt;&#39; event.
+                `Mousewheel` event.
 
         &#34;&#34;&#34;
         self.canvas.yview_scroll(-1 * event.delta, &#39;units&#39;)
@@ -206,7 +218,17 @@ superclass.</p></div>
         self.canvas.config(
             scrollregion=self.canvas.bbox(&#34;all&#34;),
             width=self.canvas.bbox(&#39;all&#39;)[2] - self.canvas.bbox(&#39;all&#39;)[0]
-        )</code></pre>
+        )
+
+    def onDestroy(self, event):
+        &#34;&#34;&#34;Unbinds the mousewheel when the scroll frame is destroyed.
+
+        Args:
+            event (tk.Event): The event passed by the `Destroy` event.
+
+        &#34;&#34;&#34;
+        if event.widget == self:
+            self.canvas.unbind_all(&#39;&lt;MouseWheel&gt;&#39;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -241,6 +263,31 @@ and scrollable region to match it.</p></div>
     )</code></pre>
 </details>
 </dd>
+<dt id="legends.utils.scrollframe.ScrollFrame.onDestroy"><code class="name flex">
+<span>def <span class="ident">onDestroy</span></span>(<span>self, event)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Unbinds the mousewheel when the scroll frame is destroyed.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>event</code></strong> :&ensp;<code>tk.Event</code></dt>
+<dd>The event passed by the <code>Destroy</code> event.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onDestroy(self, event):
+    &#34;&#34;&#34;Unbinds the mousewheel when the scroll frame is destroyed.
+
+    Args:
+        event (tk.Event): The event passed by the `Destroy` event.
+
+    &#34;&#34;&#34;
+    if event.widget == self:
+        self.canvas.unbind_all(&#39;&lt;MouseWheel&gt;&#39;)</code></pre>
+</details>
+</dd>
 <dt id="legends.utils.scrollframe.ScrollFrame.onMouseWheel"><code class="name flex">
 <span>def <span class="ident">onMouseWheel</span></span>(<span>self, event)</span>
 </code></dt>
@@ -251,7 +298,7 @@ canvas.</p>
 <dl>
 <dt><strong><code>event</code></strong> :&ensp;<code>tk.Event</code></dt>
 <dd>The <code>tk.Event</code> passed by the
-'<Mousewheel>' event.</dd>
+<code>Mousewheel</code> event.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -263,7 +310,7 @@ canvas.</p>
 
     Args:
         event (tk.Event): The `tk.Event` passed by the
-            &#39;&lt;Mousewheel&gt;&#39; event.
+            `Mousewheel` event.
 
     &#34;&#34;&#34;
     self.canvas.yview_scroll(-1 * event.delta, &#39;units&#39;)</code></pre>
@@ -291,6 +338,7 @@ canvas.</p>
 <h4><code><a title="legends.utils.scrollframe.ScrollFrame" href="#legends.utils.scrollframe.ScrollFrame">ScrollFrame</a></code></h4>
 <ul class="">
 <li><code><a title="legends.utils.scrollframe.ScrollFrame.onContentConfig" href="#legends.utils.scrollframe.ScrollFrame.onContentConfig">onContentConfig</a></code></li>
+<li><code><a title="legends.utils.scrollframe.ScrollFrame.onDestroy" href="#legends.utils.scrollframe.ScrollFrame.onDestroy">onDestroy</a></code></li>
 <li><code><a title="legends.utils.scrollframe.ScrollFrame.onMouseWheel" href="#legends.utils.scrollframe.ScrollFrame.onMouseWheel">onMouseWheel</a></code></li>
 </ul>
 </li>

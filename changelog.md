@@ -1,5 +1,16 @@
 # Change log
 
+## Version 0.18.1
+
+* Added `description`, `isAOE`, `isMultiRandom`, and `numTargets` properties to the `Skill` class.
+* Added a `description` property to the `SkillEffect` class.
+* Edited the `effectTags` property of the `Skill` class to return the tags in alphabetical order.
+* Expanded the `CharTab` class to display skill information.
+* Added a `showwarning` function to the `dialogs` module.
+* Modified `RosterTab.optimalSummons()` to pop up a warning about inaccuracies if normal missions are not completed (and therefore not all characters in the summon pool have been unlocked).
+* Added an `HTMLTagStripper` class to the `utils` subpackage. It is used to parse skill descriptions.
+* Added `ScrollFrame.onDestroy()` to unbind the mouse wheel when the scroll frame is destroyed.
+
 ## Version 0.18.0
 
 * Added an `effectTags` property to the `SkillEffect` class.

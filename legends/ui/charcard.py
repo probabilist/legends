@@ -181,17 +181,17 @@ class CharCard(tk.Frame):
         ).grid(row=5, column=0, columnspan=4)
 
         # TODO: comment/uncomment this block while developing char tab
-        # openLabel = tk.Label(
-        #     plate,
-        #     text='OPEN',
-        #     font=font + ('italic',),
-        #     relief=tk.GROOVE
-        # )
-        # openLabel.grid(row=6, column=0, columnspan=6, sticky=tk.NSEW)
-        # openLabel.bind(
-        #     '<Button-1>',
-        #     lambda event: self.session.charTab(self.char)
-        # )
+        openLabel = tk.Label(
+            plate,
+            text='OPEN',
+            font=font + ('italic',),
+            relief=tk.GROOVE
+        )
+        openLabel.grid(row=6, column=0, columnspan=6, sticky=tk.NSEW)
+        openLabel.bind(
+            '<Button-1>',
+            lambda event: self.session.charTab(self.char)
+        )
 
         return plate
 
