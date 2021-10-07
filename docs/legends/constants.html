@@ -32,6 +32,9 @@ points to a Python dictionary built from the file's contents.</p>
 prevent conflict with the <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> class.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
+<dt><strong><code>CHARACTER_TAGS</code></strong> :&ensp;<code>list</code></dt>
+<dd>[<code>str</code>] A list of all in-game characters tags
+for all playable characters, both enabled and upcoming.</dd>
 <dt><strong><code>DESCRIPTIONS</code></strong> :&ensp;<code>dict</code></dt>
 <dd>The key-value pairs in <code>lang_en_us['List']</code> put
 into a Python dictionary.</dd>
@@ -138,6 +141,8 @@ NOTE: (1) The constant `GSBaseStat` differs from the data file
 prevent conflict with the `Item` class.
 
 Attributes:
+    CHARACTER_TAGS (list): [`str`] A list of all in-game characters tags
+        for all playable characters, both enabled and upcoming.
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us[&#39;List&#39;]` put
         into a Python dictionary.
     DIFFICULTIES (dict): {`str`:`str`} A dictionary mapping the in-game
@@ -220,6 +225,7 @@ from os.path import abspath, dirname
 from legends.utils.relations import bidict
 
 __all__ = [
+    &#39;CHARACTER_TAGS&#39;,
     &#39;DESCRIPTIONS&#39;,
     &#39;ENABLED&#39;,
     &#39;HELP&#39;,
@@ -494,6 +500,13 @@ for pool, data in SUMMON_POOL.items():
                 data[&#39;nameIDs&#39;][nameID] = prob
 
 UPCOMING = [&#39;Tuvok&#39;, &#39;Gowron&#39;, &#39;JadziaDax&#39;, &#39;PicardOld&#39;, &#39;JudgeQ&#39;]
+
+CHARACTER_TAGS = []
+for nameID in UPCOMING + ENABLED:
+    # pylint: disable-next=undefined-variable
+    CHARACTER_TAGS.extend(GSCharacter[nameID][&#39;Tags&#39;])
+CHARACTER_TAGS = sorted(list(set(CHARACTER_TAGS)))
+
 
 class Inventory(MutableMapping):
     &#34;&#34;&#34;A collection of items in STL.

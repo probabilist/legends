@@ -200,6 +200,12 @@ class Character():
         return GSCharacter[self.nameID][&#39;Role&#39;]
 
     @property
+    def tags(self):
+        &#34;&#34;&#34;`list`: [`str`] A list of the character&#39;s in-game tags.
+        &#34;&#34;&#34;
+        return GSCharacter[self.nameID][&#39;Tags&#39;]
+
+    @property
     def maxGearLevel(self):
         &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
         return 5 + 5 * self.rarityIndex
@@ -708,6 +714,12 @@ properties.</p>
         return GSCharacter[self.nameID][&#39;Role&#39;]
 
     @property
+    def tags(self):
+        &#34;&#34;&#34;`list`: [`str`] A list of the character&#39;s in-game tags.
+        &#34;&#34;&#34;
+        return GSCharacter[self.nameID][&#39;Tags&#39;]
+
+    @property
     def maxGearLevel(self):
         &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
         return 5 + 5 * self.rarityIndex
@@ -954,6 +966,20 @@ def shortName(self):
         &#39;JudgeQ&#39;: &#39;Q&#39;
     }
     return betterNames.get(self.nameID, self.nameID)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.tags"><code class="name">var <span class="ident">tags</span></code></dt>
+<dd>
+<div class="desc"><p><code>list</code>: [<code>str</code>] A list of the character's in-game tags.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def tags(self):
+    &#34;&#34;&#34;`list`: [`str`] A list of the character&#39;s in-game tags.
+    &#34;&#34;&#34;
+    return GSCharacter[self.nameID][&#39;Tags&#39;]</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Character.tokensNeeded"><code class="name">var <span class="ident">tokensNeeded</span></code></dt>
@@ -1710,6 +1736,7 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Character.role" href="#legends.gameobjects.Character.role">role</a></code></li>
 <li><code><a title="legends.gameobjects.Character.shortName" href="#legends.gameobjects.Character.shortName">shortName</a></code></li>
 <li><code><a title="legends.gameobjects.Character.skillEffectTags" href="#legends.gameobjects.Character.skillEffectTags">skillEffectTags</a></code></li>
+<li><code><a title="legends.gameobjects.Character.tags" href="#legends.gameobjects.Character.tags">tags</a></code></li>
 <li><code><a title="legends.gameobjects.Character.tokensNeeded" href="#legends.gameobjects.Character.tokensNeeded">tokensNeeded</a></code></li>
 <li><code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">updateStats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.xp" href="#legends.gameobjects.Character.xp">xp</a></code></li>

@@ -6,8 +6,10 @@ from datetime import datetime, timedelta, timezone
 from legends.utils.functions import ticksToDatetime, ticksToTimedelta
 # pylint: disable-next=no-name-in-module
 from legends.constants import (
-    GSCharacter, GSMissionNodes, GSMissionRewards, GSMissions, GSNodeRewards
+    GSBattleModifier, GSCharacter, GSMissionEffects, GSMissionNodes,
+    GSMissionRewards, GSMissions, GSNodeRewards, GSTooltip
 )
+from legends.constants import DESCRIPTIONS
 from legends.constants import DIFFICULTIES, Inventory, ITEMS
 from legends.roster import Roster
 
@@ -123,6 +125,9 @@ class SaveSlot():
             associated with the save slot.
         missions (list of Mission): The list of missions associated with
             the save slot.
+        survivalEffects (dict): {`str`:`int`} A dictionary mapping names
+            of active battle modifiers in survival mode to the number of
+            battles remaining for that effect.
 
     """
 
@@ -139,6 +144,7 @@ class SaveSlot():
                     self.missions.append(
                         Mission(episode, orderIndex, difficulty)
                     )
+        self.survivalEffects = {}
 
     def fromFile(self, save, slot):
         """Uses the given save data to populate the calling instance's
@@ -181,6 +187,18 @@ class SaveSlot():
                     node.complete = data['nodes'][node.nodeID]['complete']
                 except KeyError:
                     pass
+        try:
+            for effectID, duration in (
+                save[key]['dungeon']['mission_effects'].items()
+            ):
+                duration = duration[0]
+                modID = GSMissionEffects[effectID]['battleModifierID']
+                nameKey = (
+                    GSTooltip[GSBattleModifier[modID]['TooltipID']]['headerText']
+                )
+                self.survivalEffects[DESCRIPTIONS[nameKey].title()] = duration
+        except KeyError:
+            pass
 
     def sort(self, func, descending=True):
         """Sorts the dictionary of characters stored in the `roster`

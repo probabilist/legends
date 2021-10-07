@@ -48,7 +48,9 @@ from legends.saveslot import SaveSlot
 from legends.ui.dialogs import (
     askyesno, ModalDialog, ModalMessage, showerror
 )
-from legends.ui.session import InventoryScreen, MissingMissions, Session
+from legends.ui.session import (
+    InventoryScreen, MissingMissions, Session, SurvivalEffects
+)
 
 __all__ = [
     &#39;AskClipboard&#39;,
@@ -414,6 +416,13 @@ class STLPlanner(tk.Tk):
         )
         self.disableOnModal.append((sessionMenu, 2))
         self.sessionOnly.append((sessionMenu, 2))
+        sessionMenu.add_command(
+            label=&#39;Survival Effects&#39;,
+            command=lambda: SurvivalEffects(self),
+            state=tk.DISABLED
+        )
+        self.disableOnModal.append((sessionMenu, 3))
+        self.sessionOnly.append((sessionMenu, 3))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -1330,6 +1339,13 @@ constructor.</p></div>
         )
         self.disableOnModal.append((sessionMenu, 2))
         self.sessionOnly.append((sessionMenu, 2))
+        sessionMenu.add_command(
+            label=&#39;Survival Effects&#39;,
+            command=lambda: SurvivalEffects(self),
+            state=tk.DISABLED
+        )
+        self.disableOnModal.append((sessionMenu, 3))
+        self.sessionOnly.append((sessionMenu, 3))
 
         # build and populate the Help menu
         helpMenu = tk.Menu(menuBar)
@@ -1564,6 +1580,13 @@ it.</p>
     )
     self.disableOnModal.append((sessionMenu, 2))
     self.sessionOnly.append((sessionMenu, 2))
+    sessionMenu.add_command(
+        label=&#39;Survival Effects&#39;,
+        command=lambda: SurvivalEffects(self),
+        state=tk.DISABLED
+    )
+    self.disableOnModal.append((sessionMenu, 3))
+    self.sessionOnly.append((sessionMenu, 3))
 
     # build and populate the Help menu
     helpMenu = tk.Menu(menuBar)

@@ -7,7 +7,8 @@ This repository contains the `legends` Python package, which offers tools for ma
 
 ## The *STL Planner* app
 
-![STL Planner](https://github.com/probabilist/legends/blob/main/screenshot.png)
+![STL Planner screenshot 1](https://github.com/probabilist/legends/blob/main/screenshot.png)
+![STL Planner screenshot 2](https://github.com/probabilist/legends/blob/main/screenshot2.png)
 
 The *STL Planner* app is a tool to manage and optimize all of your *Star Trek: Legends* data.
 
@@ -19,7 +20,7 @@ The *STL Planner* app must be run on a Mac. If your Mac has *Star Trek: Legends*
 
 ### Download
 
-Version 0.16.0: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1hW8kxvpPqK5m2eLYPItmHf0eHSyYJpuo/view?usp=sharing)
+Version 0.18.2: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1W3cEXaxfrX5nCSImy__GwpEQVRBQHXV1/view?usp=sharing)
 
 ### Install
 

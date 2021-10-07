@@ -4,7 +4,9 @@
 
 import tkinter as tk
 from tkinter import ttk
+from legends.utils.functions import camelToSpace
 from legends.utils.scrollframe import ScrollFrame
+from legends.functions import xpFromLevel
 from legends.skill import Skill
 
 __all__ = ['CharTab']
@@ -33,12 +35,77 @@ class CharTab(tk.Frame):
         """
         tk.Frame.__init__(self, session, **options)
         self.char = char
+        bgColor = None
         self.scrollArea = ScrollFrame(self)
         self.scrollArea.canvas.config(height=0.7 * self.winfo_screenheight())
+        self.scrollArea.content.config(bg=bgColor)
         self.actionBar().pack(fill=tk.X)
         self.scrollArea.pack(expand=tk.YES, fill=tk.BOTH)
-        self.skillFrame = self.buildSkillFrame()
-        for index, item in enumerate(char.skills.items()):
+        tk.Label(
+            self.scrollArea.content,
+            text=self.char.name,
+            bg=bgColor,
+            font=(None, 36, 'bold italic')
+        ).pack()
+        tk.Label(
+            self.scrollArea.content,
+            text='({})'.format(', '.join(self.char.tags)),
+            bg=bgColor,
+            font=(None, 16, 'bold')
+        ).pack()
+        tk.Label(
+            self.scrollArea.content,
+            text='{}, Rank {}, Level {}'.format(
+                camelToSpace(self.char.rarity),
+                self.char.rank,
+                self.char.level
+            ),
+            bg=bgColor,
+            font=(None, 20, 'bold italic')
+        ).pack()
+        tk.Label(
+            self.scrollArea.content,
+            text=(
+                'Tokens: {} ({} needed for next rank), '
+                + 'XP: {:,} ({:.1%} toward maximum level)'
+            ).format(
+                self.master.saveslot.tokens[self.char.nameID],
+                self.char.tokensNeeded,
+                self.char.xp,
+                self.char.xp/xpFromLevel(99)
+            ),
+            bg=bgColor,
+            font=(None, 13, 'bold')
+        ).pack()
+        tk.Label(
+            self.scrollArea.content,
+            text='SKILLS:',
+            bg=bgColor,
+            font=(None, 21, 'bold italic')
+        ).pack(anchor=tk.W)
+        self.buildSkillFrame()
+
+    def buildSkillFrame(self):
+        """Builds and packs the frame that will hold the skill
+        information, and stores it in the `skillFrame` attribute.
+        Horizontal and vertical separators are placed, leaving room for
+        a 7 x 2 grid for each skill-level combination. Then the skill
+        descriptions are individually placed in each open grid area.
+
+        """
+        self.skillFrame = tk.Frame(self.scrollArea.content)
+        numSkills = len(self.char.skills)
+        for index in range(numSkills + 1):
+            ttk.Separator(self.skillFrame, orient='horizontal').grid(
+                row=8 * index, column=0,
+                columnspan=7, sticky=tk.EW
+            )
+        for index in range(3):
+            ttk.Separator(self.skillFrame, orient='vertical').grid(
+                row=0, column=3 * index,
+                rowspan=8 * numSkills + 1, sticky=tk.NS
+            )
+        for index, item in enumerate(self.char.skills.items()):
             skillID, skill = item
             for level in (1,2):
                 tempSkill = Skill(
@@ -46,31 +113,12 @@ class CharTab(tk.Frame):
                     level,
                     skill.level == level and skill.unlocked
                 )
-                self.displaySkill(tempSkill, 8 * index + 1, 3 * level + 1)
+                self.displaySkill(
+                    tempSkill,
+                    8 * index + 1,
+                    3 * (level - 1) + 1
+                )
         self.skillFrame.pack()
-
-    def buildSkillFrame(self):
-        """Builds and returns the frame that will hold the skill
-        information. Horizontal and vertical separators are placed,
-        leaving room for a 7 x 2 grid for each skill-level combination.
-
-        Returns:
-            tk.Frame: The skill frame.
-
-        """
-        skillFrame = tk.Frame(self.scrollArea.content)
-        numSkills = len(self.char.skills)
-        for index in range(numSkills + 1):
-            ttk.Separator(skillFrame, orient='horizontal').grid(
-                row=8 * index, column=0,
-                columnspan=7, sticky=tk.EW
-            )
-        for index in range(3):
-            ttk.Separator(skillFrame, orient='vertical').grid(
-                row=0, column=3 * index,
-                rowspan=8 * numSkills + 1, sticky=tk.NS
-            )
-        return skillFrame
 
     def displaySkill(self, skill, row, column):
         """Constructs information about the given skill and grids it

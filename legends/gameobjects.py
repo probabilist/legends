@@ -171,6 +171,12 @@ class Character():
         return GSCharacter[self.nameID]['Role']
 
     @property
+    def tags(self):
+        """`list`: [`str`] A list of the character's in-game tags.
+        """
+        return GSCharacter[self.nameID]['Tags']
+
+    @property
     def maxGearLevel(self):
         """`int`: The maximum level of gear this character can equip."""
         return 5 + 5 * self.rarityIndex

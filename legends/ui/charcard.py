@@ -180,7 +180,6 @@ class CharCard(tk.Frame):
             bg=bgColor, font=(None, 11, 'bold')
         ).grid(row=5, column=0, columnspan=4)
 
-        # TODO: comment/uncomment this block while developing char tab
         openLabel = tk.Label(
             plate,
             text='OPEN',

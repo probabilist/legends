@@ -10,6 +10,8 @@ NOTE: (1) The constant `GSBaseStat` differs from the data file
 prevent conflict with the `Item` class.
 
 Attributes:
+    CHARACTER_TAGS (list): [`str`] A list of all in-game characters tags
+        for all playable characters, both enabled and upcoming.
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us['List']` put
         into a Python dictionary.
     DIFFICULTIES (dict): {`str`:`str`} A dictionary mapping the in-game
@@ -92,6 +94,7 @@ from os.path import abspath, dirname
 from legends.utils.relations import bidict
 
 __all__ = [
+    'CHARACTER_TAGS',
     'DESCRIPTIONS',
     'ENABLED',
     'HELP',
@@ -366,6 +369,13 @@ for pool, data in SUMMON_POOL.items():
                 data['nameIDs'][nameID] = prob
 
 UPCOMING = ['Tuvok', 'Gowron', 'JadziaDax', 'PicardOld', 'JudgeQ']
+
+CHARACTER_TAGS = []
+for nameID in UPCOMING + ENABLED:
+    # pylint: disable-next=undefined-variable
+    CHARACTER_TAGS.extend(GSCharacter[nameID]['Tags'])
+CHARACTER_TAGS = sorted(list(set(CHARACTER_TAGS)))
+
 
 class Inventory(MutableMapping):
     """A collection of items in STL.

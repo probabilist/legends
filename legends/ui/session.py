@@ -14,7 +14,13 @@ from legends.ui.dialogs import ModalMessage
 from legends.ui.rostertab import RosterTab, RosterFilter
 from legends.ui.chartab import CharTab
 
-__all__ = ['InventoryScreen', 'MissingMissions', 'Session', 'SessionSettings']
+__all__ = [
+    'InventoryScreen',
+    'MissingMissions',
+    'Session',
+    'SessionSettings',
+    'SurvivalEffects'
+]
 
 class InventoryScreen(ModalMessage):
     """A message dialog showing the player's inventory.
@@ -415,3 +421,26 @@ class SessionSettings(): # pylint: disable=too-few-public-methods
         self.rosterFilter = RosterFilter()
         self.rosterExportFile = '/Users/' + getuser() + '/Documents/roster.csv'
         self.excludeCommons = tk.BooleanVar(None, True)
+
+class SurvivalEffects(ModalMessage):
+    """A message showing the active battle modifiers in survival mode.
+
+    """
+
+    def __init__(self, root, parent=None):
+        ModalMessage.__init__(self, root, parent, 'Active Survival Effects')
+
+    def body(self, master):
+        """Create the body of the dialog.
+
+        """
+        saveslot = self.root.session.saveslot
+        count = 0
+        for effect, duration in saveslot.survivalEffects.items():
+            tk.Label(
+                master, text=effect
+            ).grid(row=count, column=0, sticky=tk.W, padx=(20,0))
+            tk.Label(
+                master, text='({} battles remaining)'.format(duration)
+            ).grid(row=count, column=1, sticky=tk.E, padx=(0,20))
+            count += 1

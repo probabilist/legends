@@ -9,8 +9,10 @@ import os
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import (
-    ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS, SUMMON_POOL
+    CHARACTER_TAGS, ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS,
+    SUMMON_POOL
 )
+from legends.gameobjects import allSkillEffectTags
 from legends.ui.charcard import CharCard
 from legends.ui.dialogs import (
     asksaveasfilename, ModalDialog, ModalMessage, showwarning
@@ -84,16 +86,75 @@ class AskRosterFilter(ModalDialog):
             self.makeLinkedScales(master, 'levels', 99)
         )
 
+        # create the character tag checkboxes
+        widgets['charTagCheckboxes'] = tk.Frame(
+            master,
+            highlightthickness=1,
+            highlightbackground='black',
+            highlightcolor='black'
+        )
+        rows = 3
+        count = 0
+        for charTag in CHARACTER_TAGS:
+            tk.Checkbutton(
+                widgets['charTagCheckboxes'], text=charTag,
+                variable=self.filt.charTags[charTag]
+            ).grid(row=count % rows, column=int(count/rows), sticky=tk.W)
+            count += 1
+        tk.Button(
+            widgets['charTagCheckboxes'],
+            text='All',
+            command = lambda: self.filt.setCharTags(True)
+        ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
+        count += 1
+        tk.Button(
+            widgets['charTagCheckboxes'],
+            text='None',
+            command = lambda: self.filt.setCharTags(False)
+        ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
+
+        # create the skill effect checkboxes
+        widgets['effectTagCheckboxes'] = tk.Frame(
+            master,
+            highlightthickness=1,
+            highlightbackground='black',
+            highlightcolor='black'
+        )
+        rows = 13
+        count = 0
+        for effectTag in allSkillEffectTags():
+            tk.Checkbutton(
+                widgets['effectTagCheckboxes'], text=effectTag,
+                variable=self.filt.effectTags[effectTag]
+            ).grid(row=count % rows, column=int(count/rows), sticky=tk.W)
+            count += 1
+        tk.Button(
+            widgets['effectTagCheckboxes'],
+            text='All',
+            command = lambda: self.filt.setEffectTags(True)
+        ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
+        count += 1
+        tk.Button(
+            widgets['effectTagCheckboxes'],
+            text='None',
+            command = lambda: self.filt.setEffectTags(False)
+        ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
+
         # grid the body content
         labels = [
             'Rarity:', 'Role:',
-            'Min rank:', 'Max rank:', 'Min level:', 'Max level:'
+            'Min Rank:', 'Max Rank:', 'Min Level:', 'Max Level:',
+            'Character Tags:', 'Skill Effects:'
         ]
-        for row, label, widget in zip(range(6), labels, widgets.values()):
+        for row, label, widget in zip(range(8), labels, widgets.values()):
             tk.Label(master, text=label, font=(None, 13, 'bold')).grid(
-                row=row, column=0, sticky=tk.E
+                row=row, column=0, sticky=tk.NE
             )
-            widget.grid(row=row, column=1, sticky=tk.W)
+            widget.grid(row=row, column=1)
+            if row < 6:
+                widget.grid_configure(sticky=tk.NW)
+            else:
+                widget.grid_configure(sticky=tk.NSEW)
 
     def makeLinkedScales(self, master, attrName, maxVal):
         """Creates and returns a pair of linked Scale widgets. Each
@@ -125,7 +186,7 @@ class AskRosterFilter(ModalDialog):
             k = 1 - j
             scales[j] = tk.Scale(
                 master, variable=varTuple[j], from_=1, to=maxVal,
-                length=400, orient=tk.HORIZONTAL
+                length=650, orient=tk.HORIZONTAL
             )
             scales[j].config(command=lambda val, k=k: varTuple[k].set(
                 funcs[k](int(val), varTuple[k].get()))
@@ -254,6 +315,14 @@ class RosterFilter():
         levels (tuple): (`tk.IntVar`, `tk.IntVar`) The first value is
             the minimum level to include in the
             `legends.ui.rostertab.RosterTab`. The second is the maximum.
+        effectTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
+            skill effect tags to `tkinter` boolean variables indicating
+            whether characters with skills matching the tag should be
+            included in the `legends.ui.rostertab.RosterTab`.
+        charTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
+            character tags to `tkinter` boolean variables indicating
+            whether characters that match the tag should be included in
+            the `legends.ui.rostertab.RosterTab`.
 
     """
 
@@ -275,6 +344,14 @@ class RosterFilter():
         }
         self.ranks = (tk.IntVar(None, 1), tk.IntVar(None, 9))
         self.levels = (tk.IntVar(None, 1), tk.IntVar(None, 99))
+        self.charTags = {
+            charTag: tk.BooleanVar(None, True)
+            for charTag in CHARACTER_TAGS
+        }
+        self.effectTags = {
+            effectTag: tk.BooleanVar(None, True)
+            for effectTag in allSkillEffectTags()
+        }
         if filt is not None:
             self.set(filt)
 
@@ -294,6 +371,30 @@ class RosterFilter():
             self.ranks[j].set(filt.ranks[j].get())
         for j in (0, 1):
             self.levels[j].set(filt.levels[j].get())
+        for charTag, var in self.charTags.items():
+            var.set(filt.charTags[charTag].get())
+        for effectTag, var in self.effectTags.items():
+            var.set(filt.effectTags[effectTag].get())
+
+    def setCharTags(self, val):
+        """Sets all character tag variables to the given value.
+
+        Args:
+            val (bool): The value to assign to the tag variables.
+
+        """
+        for var in self.charTags.values():
+            var.set(val)
+
+    def setEffectTags(self, val):
+        """Sets all skill effect variables to the given value.
+
+        Args:
+            val (bool): The value to assign to the tag variables.
+
+        """
+        for var in self.effectTags.values():
+            var.set(val)
 
     def dictify(self):
         """Creates and returns a dictionary mapping the calling
@@ -313,6 +414,12 @@ class RosterFilter():
         }
         D['ranks'] = (self.ranks[0].get(), self.ranks[1].get())
         D['levels'] = (self.levels[0].get(), self.levels[1].get())
+        D['charTags'] = {
+            charTag: var.get() for charTag, var in self.charTags.items()
+        }
+        D['effectTags'] = {
+            effectTag: var.get() for effectTag, var in self.effectTags.items()
+        }
         return D
 
     def __eq__(self, other):
@@ -459,6 +566,11 @@ class RosterTab(tk.Frame):
             and filt['roles'][char.role]
             and filt['ranks'][0] <= char.rank <= filt['ranks'][1]
             and filt['levels'][0] <= char.level <= filt['levels'][1]
+            and any(filt['charTags'][charTag] for charTag in char.tags)
+            and any(
+                filt['effectTags'][effectTag]
+                for effectTag in char.skillEffectTags()
+            )
         )
 
     def fillCards(self):

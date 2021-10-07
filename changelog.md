@@ -1,5 +1,15 @@
 # Change log
 
+## Version 0.18.2
+
+* Added the constant, `CHARACTER_TAGS`.
+* Added the `tags` property to the  `Character` class.
+* Added the `survivalEffects` attribute to the `SaveSlot` class and modified `SaveSlot.fromFile()` accordingly.
+* Added more information to the `CharTab` class.
+* Added character tags and skill tags to the `RosterFilter` class; added options to adjust them in the `AskRosterFilter` class; and revised `RosterTab.checkFilter()` accordingly.
+* Added the `SurvivalEffects` class.
+* Added a 'Survival Effects' option to the menu.
+
 ## Version 0.18.1
 
 * Added `description`, `isAOE`, `isMultiRandom`, and `numTargets` properties to the `Skill` class.
