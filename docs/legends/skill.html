@@ -253,9 +253,14 @@ class SkillEffect():
     @property
     def effectType(self):
         &#34;&#34;&#34;`str`: The effect&#39;s type, as found in the &#39;type&#39; field in
-        `GSEffectType`.
+        `GSEffectType`, with one exception. The value,
+        &#39;DamegeCoverBreakBonusEffect&#39;, which is found in `GSEffectType`,
+        is changed to &#39;DamageCoverBreakBonusEffect&#39;.
         &#34;&#34;&#34;
-        return GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]
+        effectType =  GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]
+        if effectType == &#39;DamegeCoverBreakBonusEffect&#39;:
+            effectType = &#39;DamageCoverBreakBonusEffect&#39;
+        return effectType
 
     @property
     def effectTags(self):
@@ -832,9 +837,14 @@ Can be <code>None</code>.</dd>
     @property
     def effectType(self):
         &#34;&#34;&#34;`str`: The effect&#39;s type, as found in the &#39;type&#39; field in
-        `GSEffectType`.
+        `GSEffectType`, with one exception. The value,
+        &#39;DamegeCoverBreakBonusEffect&#39;, which is found in `GSEffectType`,
+        is changed to &#39;DamageCoverBreakBonusEffect&#39;.
         &#34;&#34;&#34;
-        return GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]
+        effectType =  GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]
+        if effectType == &#39;DamegeCoverBreakBonusEffect&#39;:
+            effectType = &#39;DamageCoverBreakBonusEffect&#39;
+        return effectType
 
     @property
     def effectTags(self):
@@ -965,7 +975,9 @@ def effectTags(self):
 <dt id="legends.skill.SkillEffect.effectType"><code class="name">var <span class="ident">effectType</span></code></dt>
 <dd>
 <div class="desc"><p><code>str</code>: The effect's type, as found in the 'type' field in
-<code>GSEffectType</code>.</p></div>
+<code>GSEffectType</code>, with one exception. The value,
+'DamegeCoverBreakBonusEffect', which is found in <code>GSEffectType</code>,
+is changed to 'DamageCoverBreakBonusEffect'.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -973,9 +985,14 @@ def effectTags(self):
 <pre><code class="python">@property
 def effectType(self):
     &#34;&#34;&#34;`str`: The effect&#39;s type, as found in the &#39;type&#39; field in
-    `GSEffectType`.
+    `GSEffectType`, with one exception. The value,
+    &#39;DamegeCoverBreakBonusEffect&#39;, which is found in `GSEffectType`,
+    is changed to &#39;DamageCoverBreakBonusEffect&#39;.
     &#34;&#34;&#34;
-    return GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]</code></pre>
+    effectType =  GSEffectType[self.data[&#39;typeID&#39;]][&#39;type&#39;]
+    if effectType == &#39;DamegeCoverBreakBonusEffect&#39;:
+        effectType = &#39;DamageCoverBreakBonusEffect&#39;
+    return effectType</code></pre>
 </details>
 </dd>
 <dt id="legends.skill.SkillEffect.statSource"><code class="name">var <span class="ident">statSource</span></code></dt>

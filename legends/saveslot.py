@@ -125,9 +125,12 @@ class SaveSlot():
             associated with the save slot.
         missions (list of Mission): The list of missions associated with
             the save slot.
-        survivalEffects (dict): {`str`:`int`} A dictionary mapping names
-            of active battle modifiers in survival mode to the number of
-            battles remaining for that effect.
+        survivalEffects (dict): {`str`:[`int`]} A dictionary mapping
+            names of active battle modifiers in survival mode to a list.
+            Each item in the list represent one instance of the
+            modifier. (Since modifiers can stack, multiple instances can
+            be active at a time.) For a given instance, the value in the
+            list is the number of battles remaining for that effect.
 
     """
 
@@ -188,15 +191,14 @@ class SaveSlot():
                 except KeyError:
                     pass
         try:
-            for effectID, duration in (
+            for effectID, durations in (
                 save[key]['dungeon']['mission_effects'].items()
             ):
-                duration = duration[0]
                 modID = GSMissionEffects[effectID]['battleModifierID']
                 nameKey = (
                     GSTooltip[GSBattleModifier[modID]['TooltipID']]['headerText']
                 )
-                self.survivalEffects[DESCRIPTIONS[nameKey].title()] = duration
+                self.survivalEffects[DESCRIPTIONS[nameKey].title()] = durations
         except KeyError:
             pass
 

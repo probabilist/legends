@@ -224,9 +224,14 @@ class SkillEffect():
     @property
     def effectType(self):
         """`str`: The effect's type, as found in the 'type' field in
-        `GSEffectType`.
+        `GSEffectType`, with one exception. The value,
+        'DamegeCoverBreakBonusEffect', which is found in `GSEffectType`,
+        is changed to 'DamageCoverBreakBonusEffect'.
         """
-        return GSEffectType[self.data['typeID']]['type']
+        effectType =  GSEffectType[self.data['typeID']]['type']
+        if effectType == 'DamegeCoverBreakBonusEffect':
+            effectType = 'DamageCoverBreakBonusEffect'
+        return effectType
 
     @property
     def effectTags(self):

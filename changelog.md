@@ -1,5 +1,10 @@
 # Change log
 
+## Version 0.18.3
+
+* Changed the `survivalEffects` attribute of `SaveSlot` to have lists as values, to account for stacked survival effects. Edited the `SurvivalEffects` class in the `session` module accordingly.
+* Edited the `effectType` property of the `SkillEffect` class to account for a misspelling in the game data.
+
 ## Version 0.18.2
 
 * Added the constant, `CHARACTER_TAGS`.
