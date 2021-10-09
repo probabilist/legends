@@ -1,5 +1,20 @@
 # Change log
 
+## Version 0.19.0
+
+* Bug fix: added `DIFFICULTIES` to the `__all__` attribute of the `constants` module.
+* Added `MISSION_NODE_TYPES` to `constants`.
+* Changes to `saveslot` module:
+    - Added an `OptionError` class.
+    - Added `NodeOption` and `NodeConnection` classes.
+    - Changes to `Mission` class:
+        + Changed `nodes` attribute from a list to a dict; edited `missingNodeRewards()` and `SaveSlot.fromFile()` accordingly.
+        + Added `nodeConnections` attribute.
+        + Changed `_key` from a private attribute to a private property.
+    - Changes to `MissionNode` class:
+        + Added `data`, `_key`, and `options` attribute.
+        + Added `type` and `coverSlots` attributes.
+
 ## Version 0.18.3
 
 * Changed the `survivalEffects` attribute of `SaveSlot` to have lists as values, to account for stacked survival effects. Edited the `SurvivalEffects` class in the `session` module accordingly.

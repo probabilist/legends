@@ -32,19 +32,24 @@
 &#34;&#34;&#34;
 
 from datetime import datetime, timedelta, timezone
+from warnings import warn
 from legends.utils.functions import ticksToDatetime, ticksToTimedelta
 # pylint: disable-next=no-name-in-module
 from legends.constants import (
-    GSBattleModifier, GSCharacter, GSMissionEffects, GSMissionNodes,
-    GSMissionRewards, GSMissions, GSNodeRewards, GSTooltip
+    GSBattle, GSBattleModifier, GSCharacter, GSMissionEffects, GSMissionNodes,
+    GSMissionRewards, GSMissions, GSNodeExploration, GSNodeRewards, GSTooltip
 )
-from legends.constants import DESCRIPTIONS
-from legends.constants import DIFFICULTIES, Inventory, ITEMS
+from legends.constants import (
+    DESCRIPTIONS, DIFFICULTIES, Inventory, ITEMS, MISSION_NODE_TYPES
+)
 from legends.roster import Roster
 
 __all__ = [
     &#39;Mission&#39;,
     &#39;MissionNode&#39;,
+    &#39;NodeConnection&#39;,
+    &#39;NodeOption&#39;,
+    &#39;OptionError&#39;,
     &#39;SaveSlot&#39;,
     &#39;STLTimeStamps&#39;
 ]
@@ -58,7 +63,11 @@ class Mission():
         orderIndex (int): The 1-based index of where in the episode the
             mission occurs.
         difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
-        nodes (list of MissionNode): The nodes in the mission.
+        nodes (dict): {`str`:`MissionNode`} A dictionary mapping the
+            node IDs of the nodes in the mission to their corresponding
+            `MissionNode` instances.
+        nodeConnections (list of NodeConnection): A list of the node
+            connections in this mission.
         rewards (legends.constants.Inventory): The rewards earned from
             100% completion of the mission.
         complete (float): The proportion of the mission that has been
@@ -69,16 +78,29 @@ class Mission():
         self.episode = episode
         self.orderIndex = orderIndex
         self.difficulty = difficulty
-        self._key = &#39;episode {} mission {}-{}&#39;.format(
-            self.episode,
-            self.orderIndex,
-            DIFFICULTIES[self.difficulty]
-        )
-        self.nodes = []
+
+        self.nodes = {}
         for nodeID in GSMissionNodes[
             &#39;e{}_m{}&#39;.format(self.episode, self.orderIndex)
         ][&#39;Nodes&#39;]:
-            self.nodes.append(MissionNode(nodeID, self.difficulty))
+            self.nodes[nodeID] = MissionNode(nodeID, self.difficulty)
+
+        self.nodeConnections = []
+        for node in self.nodes.values():
+            nextNodeIDs = node.data[&#39;NextNodeIds&#39;]
+            if node.type != &#39;Explore&#39; and len(nextNodeIDs) &gt; 0:
+                nextNodeID = nextNodeIDs[0]
+                self.nodeConnections.append(
+                    NodeConnection(node, self.nodes[nextNodeID])
+                )
+            elif node.type == &#39;Explore&#39;:
+                for nodeOption in node.options[1:]:
+                    self.nodeConnections.append(NodeConnection(
+                        node,
+                        self.nodes[nodeOption.nextNodeID],
+                        nodeOption.optionNum
+                    ))
+
         try:
             initDict = GSMissionRewards[&#39;e{}_m{}_complete-{}&#39;.format(
                 self.episode, self.orderIndex, DIFFICULTIES[self.difficulty]
@@ -86,7 +108,16 @@ class Mission():
         except KeyError:
             initDict = {}
         self.rewards = Inventory(initDict)
+
         self.complete = 0
+
+    @property
+    def _key(self):
+        return &#39;episode {} mission {}-{}&#39;.format(
+            self.episode,
+            self.orderIndex,
+            DIFFICULTIES[self.difficulty]
+        )
 
     @property
     def power(self):
@@ -104,38 +135,200 @@ class Mission():
 
         &#34;&#34;&#34;
         return sum(
-            (node.rewards for node in self.nodes if not node.complete),
+            (
+                node.rewards for node in self.nodes.values()
+                if not node.complete
+            ),
             Inventory()
         )
 
     def __repr__(self):
         return &#39;Mission({!r})&#39;.format(self._key)
 
-class MissionNode(): # pylint: disable=too-few-public-methods
+class MissionNode():
     &#34;&#34;&#34;A mission node in STL.
 
     Attributes:
         nodeID (str): The node&#39;s ID as it appears in `GSMissionNodes`.
-        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
+        data (dict): The node&#39;s data as found in `GSMissionNodes`.
+        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39; (the
+            keys of `DIFFICULTIES`).
         rewards (legends.constants.Inventory): The rewards earned from
             completing this node.
+        options (list of NodeOption): The first item in this list is
+            always `None`. If the node is &#39;Explore&#39; type, there will be
+            additional items representing the options available to the
+            player from this node.
         complete (bool): `True` if the node has been completed.
 
     &#34;&#34;&#34;
     def __init__(self, nodeID, difficulty):
         self.nodeID = nodeID
+
+        nodeAssetsIDs = []
+        for nodeAssetID, data in GSMissionNodes.items():
+            if self.nodeID in data[&#39;Nodes&#39;]:
+                nodeAssetsIDs.append(nodeAssetID)
+        if len(nodeAssetsIDs) &gt; 1:
+            warn(&#39;Node ID found in multiple node assets.&#39;)
+        self.data = GSMissionNodes[nodeAssetsIDs[0]][&#39;Nodes&#39;][self.nodeID]
+
         self.difficulty = difficulty
+
+        self._key = &#39;{}-{}&#39;.format(self.nodeID, DIFFICULTIES[self.difficulty])
         try:
-            initDict = GSNodeRewards[&#39;{}-{}&#39;.format(
-                self.nodeID, DIFFICULTIES[self.difficulty]
-            )][&#39;reward&#39;][&#39;AllItems&#39;]
+            initDict = GSNodeRewards[self._key][&#39;reward&#39;][&#39;AllItems&#39;]
         except KeyError:
             initDict = {}
         self.rewards = Inventory(initDict)
+
+        self.options = [None]
+        if self.type == &#39;Explore&#39;:
+            optionNum = 1
+            while True:
+                try:
+                    self.options.append(NodeOption(self, optionNum))
+                except OptionError:
+                    break
+                optionNum += 1
+
         self.complete = False
+
+    @property
+    def type(self):
+        &#34;&#34;&#34;`str`: The type of node it is, as displayed in the game. Will
+        match one of the four values in `MISSION_NODE_TYPES`.
+        &#34;&#34;&#34;
+        return MISSION_NODE_TYPES[self.data[&#39;Type&#39;]]
+
+    @property
+    def coverSlots(self):
+        &#34;&#34;&#34;`list` of `int`: The list of 0-based indices of the cover
+        slots in this node, if the node type is &#39;Combat&#39;; otherwise,
+        `None`.
+        &#34;&#34;&#34;
+        if self.type != &#39;Combat&#39;:
+            return None
+        return GSBattle[self._key][&#39;CoverSlotIndices&#39;]
 
     def __repr__(self):
         return &#39;MissionNode({!r})&#39;.format(self.nodeID)
+
+class NodeConnection(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A connection from one node in a mission to another.
+
+    Attributes:
+        startNode (MissionNode): The starting node of the connection.
+        endNode (MissionNode): The ending node of the connection.
+        nodeOption (NodeOption): The node option from the start node&#39;s
+            `options` attribute that corresponds to this connection.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, startNode, endNode, optionNum=0):
+        &#34;&#34;&#34;The constructor builds a `NodeConnection` instance from the
+        given start node, end node, and option number.
+
+        Args:
+            optionNum (int): The index of the option in the start node&#39;s
+                `options` attribute.
+
+        Raises:
+            ValueError: If (1) start node does not lead to end node,
+                (2) start node is &#39;Explore&#39; type and option number is 0,
+                (3) start node has no option with the given option
+                number, or (4) the given option does not lead to end
+                node.
+
+        &#34;&#34;&#34;
+        if endNode.nodeID not in startNode.data[&#39;NextNodeIds&#39;]:
+            raise ValueError(
+                &#39;{} does not lead to {}.&#39;.format(startNode, endNode)
+            )
+        if startNode.type == &#39;Explore&#39;:
+            if optionNum == 0:
+                raise ValueError(
+                    &#39;Must specify an option value for {}&#39;.format(startNode)
+                )
+            try:
+                nextNodeID = startNode.options[optionNum].nextNodeID
+                if nextNodeID != endNode.nodeID:
+                    raise ValueError(
+                        &#39;option {} of {} does not lead to {}&#39;.format(
+                            optionNum, startNode, endNode
+                        )
+                    )
+            except IndexError as ex:
+                raise ValueError(&#39;{} has no option number {}&#39;.format(
+                    startNode, optionNum
+                )) from ex
+
+        self.startNode = startNode
+        self.endNode = endNode
+        self.nodeOption = startNode.options[optionNum]
+
+    def __repr__(self):
+        return &#39;NodeConnection({}-{}, option {})&#39;.format(
+            self.startNode, self.endNode, self.nodeOption.optionNum
+        )
+
+class NodeOption(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;An option in an exploration node.
+
+    Attributes:
+        node (MissionNode): The node in which the option is given.
+        optionNum (int): The 1-based index of the option.
+        name (str): The text that appears in the game for the
+            corresponding option.
+        role (str): The proficiency role needed for this option. Can be
+            `None`.
+        power (int): The proficiency power required for this option. Can
+            be `None`.
+        nextNodeID (str): The node ID of the node to which this option
+            leads.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, node, optionNum):
+        &#34;&#34;&#34;The constructor builds a `NodeOption` instance from the given
+        node and option number.
+
+        Raises:
+            OptionError: If the given node does not have an option
+                corresponding to the given option number.
+
+        &#34;&#34;&#34;
+        self.node = node
+        self.optionNum = optionNum
+        key = &#39;{}_option{:02d}-{}&#39;.format(
+                self.node.nodeID,
+                self.optionNum,
+                DIFFICULTIES[self.node.difficulty]
+            )
+        try:
+            data = GSNodeExploration[key]
+        except KeyError as ex:
+            raise OptionError(&#39;Option {} not found for {}&#39;.format(
+                self.optionNum, self.node
+            )) from ex
+        self.name = DESCRIPTIONS[data[&#39;HeaderLoc&#39;]]
+        self.role = data[&#39;RequiredProficiency&#39;]
+        if self.role == &#39;None&#39;:
+            self.role = None
+        self.power = data[&#39;RequiredProficiencyValue&#39;]
+        self.nextNodeID = data[&#39;BranchingNodeId&#39;]
+
+    def __repr__(self):
+        return &#39;{!r}, option {!r}, {!r}&#39;.format(
+            self.node, self.optionNum, self.name
+        )
+
+class OptionError(Exception):
+    &#34;&#34;&#34;Raised when a given option cannot be found in a mission node.
+
+    &#34;&#34;&#34;
+
+    pass # pylint: disable=unnecessary-pass
 
 class SaveSlot():
     &#34;&#34;&#34;Data from one of three save slots in an STL save file.
@@ -214,7 +407,7 @@ class SaveSlot():
             except KeyError:
                 continue
             mission.complete = data[&#39;complete_pct&#39;]/100
-            for node in mission.nodes:
+            for node in mission.nodes.values():
                 try:
                     node.complete = data[&#39;nodes&#39;][node.nodeID][&#39;complete&#39;]
                 except KeyError:
@@ -331,8 +524,13 @@ mission resides.</dd>
 mission occurs.</dd>
 <dt><strong><code>difficulty</code></strong> :&ensp;<code>str</code></dt>
 <dd>One of 'Normal', 'Advanced', or 'Expert'.</dd>
-<dt><strong><code>nodes</code></strong> :&ensp;<code>list</code> of <code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code></dt>
-<dd>The nodes in the mission.</dd>
+<dt><strong><code>nodes</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code>} A dictionary mapping the
+node IDs of the nodes in the mission to their corresponding
+<code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code> instances.</dd>
+<dt><strong><code>nodeConnections</code></strong> :&ensp;<code>list</code> of <code><a title="legends.saveslot.NodeConnection" href="#legends.saveslot.NodeConnection">NodeConnection</a></code></dt>
+<dd>A list of the node
+connections in this mission.</dd>
 <dt><strong><code>rewards</code></strong> :&ensp;<code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
 <dd>The rewards earned from
 100% completion of the mission.</dd>
@@ -353,7 +551,11 @@ completed.</dd>
         orderIndex (int): The 1-based index of where in the episode the
             mission occurs.
         difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
-        nodes (list of MissionNode): The nodes in the mission.
+        nodes (dict): {`str`:`MissionNode`} A dictionary mapping the
+            node IDs of the nodes in the mission to their corresponding
+            `MissionNode` instances.
+        nodeConnections (list of NodeConnection): A list of the node
+            connections in this mission.
         rewards (legends.constants.Inventory): The rewards earned from
             100% completion of the mission.
         complete (float): The proportion of the mission that has been
@@ -364,16 +566,29 @@ completed.</dd>
         self.episode = episode
         self.orderIndex = orderIndex
         self.difficulty = difficulty
-        self._key = &#39;episode {} mission {}-{}&#39;.format(
-            self.episode,
-            self.orderIndex,
-            DIFFICULTIES[self.difficulty]
-        )
-        self.nodes = []
+
+        self.nodes = {}
         for nodeID in GSMissionNodes[
             &#39;e{}_m{}&#39;.format(self.episode, self.orderIndex)
         ][&#39;Nodes&#39;]:
-            self.nodes.append(MissionNode(nodeID, self.difficulty))
+            self.nodes[nodeID] = MissionNode(nodeID, self.difficulty)
+
+        self.nodeConnections = []
+        for node in self.nodes.values():
+            nextNodeIDs = node.data[&#39;NextNodeIds&#39;]
+            if node.type != &#39;Explore&#39; and len(nextNodeIDs) &gt; 0:
+                nextNodeID = nextNodeIDs[0]
+                self.nodeConnections.append(
+                    NodeConnection(node, self.nodes[nextNodeID])
+                )
+            elif node.type == &#39;Explore&#39;:
+                for nodeOption in node.options[1:]:
+                    self.nodeConnections.append(NodeConnection(
+                        node,
+                        self.nodes[nodeOption.nextNodeID],
+                        nodeOption.optionNum
+                    ))
+
         try:
             initDict = GSMissionRewards[&#39;e{}_m{}_complete-{}&#39;.format(
                 self.episode, self.orderIndex, DIFFICULTIES[self.difficulty]
@@ -381,7 +596,16 @@ completed.</dd>
         except KeyError:
             initDict = {}
         self.rewards = Inventory(initDict)
+
         self.complete = 0
+
+    @property
+    def _key(self):
+        return &#39;episode {} mission {}-{}&#39;.format(
+            self.episode,
+            self.orderIndex,
+            DIFFICULTIES[self.difficulty]
+        )
 
     @property
     def power(self):
@@ -399,7 +623,10 @@ completed.</dd>
 
         &#34;&#34;&#34;
         return sum(
-            (node.rewards for node in self.nodes if not node.complete),
+            (
+                node.rewards for node in self.nodes.values()
+                if not node.complete
+            ),
             Inventory()
         )
 
@@ -433,7 +660,10 @@ def missingNodeRewards(self):
 
     &#34;&#34;&#34;
     return sum(
-        (node.rewards for node in self.nodes if not node.complete),
+        (
+            node.rewards for node in self.nodes.values()
+            if not node.complete
+        ),
         Inventory()
     )</code></pre>
 </details>
@@ -463,11 +693,19 @@ def power(self):
 <dl>
 <dt><strong><code>nodeID</code></strong> :&ensp;<code>str</code></dt>
 <dd>The node's ID as it appears in <code>GSMissionNodes</code>.</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>dict</code></dt>
+<dd>The node's data as found in <code>GSMissionNodes</code>.</dd>
 <dt><strong><code>difficulty</code></strong> :&ensp;<code>str</code></dt>
-<dd>One of 'Normal', 'Advanced', or 'Expert'.</dd>
+<dd>One of 'Normal', 'Advanced', or 'Expert' (the
+keys of <code>DIFFICULTIES</code>).</dd>
 <dt><strong><code>rewards</code></strong> :&ensp;<code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
 <dd>The rewards earned from
 completing this node.</dd>
+<dt><strong><code>options</code></strong> :&ensp;<code>list</code> of <code><a title="legends.saveslot.NodeOption" href="#legends.saveslot.NodeOption">NodeOption</a></code></dt>
+<dd>The first item in this list is
+always <code>None</code>. If the node is 'Explore' type, there will be
+additional items representing the options available to the
+player from this node.</dd>
 <dt><strong><code>complete</code></strong> :&ensp;<code>bool</code></dt>
 <dd><code>True</code> if the node has been completed.</dd>
 </dl></div>
@@ -475,32 +713,322 @@ completing this node.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class MissionNode(): # pylint: disable=too-few-public-methods
+<pre><code class="python">class MissionNode():
     &#34;&#34;&#34;A mission node in STL.
 
     Attributes:
         nodeID (str): The node&#39;s ID as it appears in `GSMissionNodes`.
-        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39;.
+        data (dict): The node&#39;s data as found in `GSMissionNodes`.
+        difficulty (str): One of &#39;Normal&#39;, &#39;Advanced&#39;, or &#39;Expert&#39; (the
+            keys of `DIFFICULTIES`).
         rewards (legends.constants.Inventory): The rewards earned from
             completing this node.
+        options (list of NodeOption): The first item in this list is
+            always `None`. If the node is &#39;Explore&#39; type, there will be
+            additional items representing the options available to the
+            player from this node.
         complete (bool): `True` if the node has been completed.
 
     &#34;&#34;&#34;
     def __init__(self, nodeID, difficulty):
         self.nodeID = nodeID
+
+        nodeAssetsIDs = []
+        for nodeAssetID, data in GSMissionNodes.items():
+            if self.nodeID in data[&#39;Nodes&#39;]:
+                nodeAssetsIDs.append(nodeAssetID)
+        if len(nodeAssetsIDs) &gt; 1:
+            warn(&#39;Node ID found in multiple node assets.&#39;)
+        self.data = GSMissionNodes[nodeAssetsIDs[0]][&#39;Nodes&#39;][self.nodeID]
+
         self.difficulty = difficulty
+
+        self._key = &#39;{}-{}&#39;.format(self.nodeID, DIFFICULTIES[self.difficulty])
         try:
-            initDict = GSNodeRewards[&#39;{}-{}&#39;.format(
-                self.nodeID, DIFFICULTIES[self.difficulty]
-            )][&#39;reward&#39;][&#39;AllItems&#39;]
+            initDict = GSNodeRewards[self._key][&#39;reward&#39;][&#39;AllItems&#39;]
         except KeyError:
             initDict = {}
         self.rewards = Inventory(initDict)
+
+        self.options = [None]
+        if self.type == &#39;Explore&#39;:
+            optionNum = 1
+            while True:
+                try:
+                    self.options.append(NodeOption(self, optionNum))
+                except OptionError:
+                    break
+                optionNum += 1
+
         self.complete = False
+
+    @property
+    def type(self):
+        &#34;&#34;&#34;`str`: The type of node it is, as displayed in the game. Will
+        match one of the four values in `MISSION_NODE_TYPES`.
+        &#34;&#34;&#34;
+        return MISSION_NODE_TYPES[self.data[&#39;Type&#39;]]
+
+    @property
+    def coverSlots(self):
+        &#34;&#34;&#34;`list` of `int`: The list of 0-based indices of the cover
+        slots in this node, if the node type is &#39;Combat&#39;; otherwise,
+        `None`.
+        &#34;&#34;&#34;
+        if self.type != &#39;Combat&#39;:
+            return None
+        return GSBattle[self._key][&#39;CoverSlotIndices&#39;]
 
     def __repr__(self):
         return &#39;MissionNode({!r})&#39;.format(self.nodeID)</code></pre>
 </details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.saveslot.MissionNode.coverSlots"><code class="name">var <span class="ident">coverSlots</span></code></dt>
+<dd>
+<div class="desc"><p><code>list</code> of <code>int</code>: The list of 0-based indices of the cover
+slots in this node, if the node type is 'Combat'; otherwise,
+<code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def coverSlots(self):
+    &#34;&#34;&#34;`list` of `int`: The list of 0-based indices of the cover
+    slots in this node, if the node type is &#39;Combat&#39;; otherwise,
+    `None`.
+    &#34;&#34;&#34;
+    if self.type != &#39;Combat&#39;:
+        return None
+    return GSBattle[self._key][&#39;CoverSlotIndices&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.saveslot.MissionNode.type"><code class="name">var <span class="ident">type</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The type of node it is, as displayed in the game. Will
+match one of the four values in <code>MISSION_NODE_TYPES</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def type(self):
+    &#34;&#34;&#34;`str`: The type of node it is, as displayed in the game. Will
+    match one of the four values in `MISSION_NODE_TYPES`.
+    &#34;&#34;&#34;
+    return MISSION_NODE_TYPES[self.data[&#39;Type&#39;]]</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.saveslot.NodeConnection"><code class="flex name class">
+<span>class <span class="ident">NodeConnection</span></span>
+<span>(</span><span>startNode, endNode, optionNum=0)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A connection from one node in a mission to another.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>startNode</code></strong> :&ensp;<code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code></dt>
+<dd>The starting node of the connection.</dd>
+<dt><strong><code>endNode</code></strong> :&ensp;<code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code></dt>
+<dd>The ending node of the connection.</dd>
+<dt><strong><code>nodeOption</code></strong> :&ensp;<code><a title="legends.saveslot.NodeOption" href="#legends.saveslot.NodeOption">NodeOption</a></code></dt>
+<dd>The node option from the start node's
+<code>options</code> attribute that corresponds to this connection.</dd>
+</dl>
+<p>The constructor builds a <code><a title="legends.saveslot.NodeConnection" href="#legends.saveslot.NodeConnection">NodeConnection</a></code> instance from the
+given start node, end node, and option number.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>optionNum</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of the option in the start node's
+<code>options</code> attribute.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If (1) start node does not lead to end node,
+(2) start node is 'Explore' type and option number is 0,
+(3) start node has no option with the given option
+number, or (4) the given option does not lead to end
+node.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NodeConnection(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A connection from one node in a mission to another.
+
+    Attributes:
+        startNode (MissionNode): The starting node of the connection.
+        endNode (MissionNode): The ending node of the connection.
+        nodeOption (NodeOption): The node option from the start node&#39;s
+            `options` attribute that corresponds to this connection.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, startNode, endNode, optionNum=0):
+        &#34;&#34;&#34;The constructor builds a `NodeConnection` instance from the
+        given start node, end node, and option number.
+
+        Args:
+            optionNum (int): The index of the option in the start node&#39;s
+                `options` attribute.
+
+        Raises:
+            ValueError: If (1) start node does not lead to end node,
+                (2) start node is &#39;Explore&#39; type and option number is 0,
+                (3) start node has no option with the given option
+                number, or (4) the given option does not lead to end
+                node.
+
+        &#34;&#34;&#34;
+        if endNode.nodeID not in startNode.data[&#39;NextNodeIds&#39;]:
+            raise ValueError(
+                &#39;{} does not lead to {}.&#39;.format(startNode, endNode)
+            )
+        if startNode.type == &#39;Explore&#39;:
+            if optionNum == 0:
+                raise ValueError(
+                    &#39;Must specify an option value for {}&#39;.format(startNode)
+                )
+            try:
+                nextNodeID = startNode.options[optionNum].nextNodeID
+                if nextNodeID != endNode.nodeID:
+                    raise ValueError(
+                        &#39;option {} of {} does not lead to {}&#39;.format(
+                            optionNum, startNode, endNode
+                        )
+                    )
+            except IndexError as ex:
+                raise ValueError(&#39;{} has no option number {}&#39;.format(
+                    startNode, optionNum
+                )) from ex
+
+        self.startNode = startNode
+        self.endNode = endNode
+        self.nodeOption = startNode.options[optionNum]
+
+    def __repr__(self):
+        return &#39;NodeConnection({}-{}, option {})&#39;.format(
+            self.startNode, self.endNode, self.nodeOption.optionNum
+        )</code></pre>
+</details>
+</dd>
+<dt id="legends.saveslot.NodeOption"><code class="flex name class">
+<span>class <span class="ident">NodeOption</span></span>
+<span>(</span><span>node, optionNum)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An option in an exploration node.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>node</code></strong> :&ensp;<code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code></dt>
+<dd>The node in which the option is given.</dd>
+<dt><strong><code>optionNum</code></strong> :&ensp;<code>int</code></dt>
+<dd>The 1-based index of the option.</dd>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The text that appears in the game for the
+corresponding option.</dd>
+<dt><strong><code>role</code></strong> :&ensp;<code>str</code></dt>
+<dd>The proficiency role needed for this option. Can be
+<code>None</code>.</dd>
+<dt><strong><code>power</code></strong> :&ensp;<code>int</code></dt>
+<dd>The proficiency power required for this option. Can
+be <code>None</code>.</dd>
+<dt><strong><code>nextNodeID</code></strong> :&ensp;<code>str</code></dt>
+<dd>The node ID of the node to which this option
+leads.</dd>
+</dl>
+<p>The constructor builds a <code><a title="legends.saveslot.NodeOption" href="#legends.saveslot.NodeOption">NodeOption</a></code> instance from the given
+node and option number.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="legends.saveslot.OptionError" href="#legends.saveslot.OptionError">OptionError</a></code></dt>
+<dd>If the given node does not have an option
+corresponding to the given option number.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class NodeOption(): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;An option in an exploration node.
+
+    Attributes:
+        node (MissionNode): The node in which the option is given.
+        optionNum (int): The 1-based index of the option.
+        name (str): The text that appears in the game for the
+            corresponding option.
+        role (str): The proficiency role needed for this option. Can be
+            `None`.
+        power (int): The proficiency power required for this option. Can
+            be `None`.
+        nextNodeID (str): The node ID of the node to which this option
+            leads.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, node, optionNum):
+        &#34;&#34;&#34;The constructor builds a `NodeOption` instance from the given
+        node and option number.
+
+        Raises:
+            OptionError: If the given node does not have an option
+                corresponding to the given option number.
+
+        &#34;&#34;&#34;
+        self.node = node
+        self.optionNum = optionNum
+        key = &#39;{}_option{:02d}-{}&#39;.format(
+                self.node.nodeID,
+                self.optionNum,
+                DIFFICULTIES[self.node.difficulty]
+            )
+        try:
+            data = GSNodeExploration[key]
+        except KeyError as ex:
+            raise OptionError(&#39;Option {} not found for {}&#39;.format(
+                self.optionNum, self.node
+            )) from ex
+        self.name = DESCRIPTIONS[data[&#39;HeaderLoc&#39;]]
+        self.role = data[&#39;RequiredProficiency&#39;]
+        if self.role == &#39;None&#39;:
+            self.role = None
+        self.power = data[&#39;RequiredProficiencyValue&#39;]
+        self.nextNodeID = data[&#39;BranchingNodeId&#39;]
+
+    def __repr__(self):
+        return &#39;{!r}, option {!r}, {!r}&#39;.format(
+            self.node, self.optionNum, self.name
+        )</code></pre>
+</details>
+</dd>
+<dt id="legends.saveslot.OptionError"><code class="flex name class">
+<span>class <span class="ident">OptionError</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raised when a given option cannot be found in a mission node.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class OptionError(Exception):
+    &#34;&#34;&#34;Raised when a given option cannot be found in a mission node.
+
+    &#34;&#34;&#34;
+
+    pass # pylint: disable=unnecessary-pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>builtins.Exception</li>
+<li>builtins.BaseException</li>
+</ul>
 </dd>
 <dt id="legends.saveslot.STLTimeStamps"><code class="flex name class">
 <span>class <span class="ident">STLTimeStamps</span></span>
@@ -770,7 +1298,7 @@ list is the number of battles remaining for that effect.</dd>
             except KeyError:
                 continue
             mission.complete = data[&#39;complete_pct&#39;]/100
-            for node in mission.nodes:
+            for node in mission.nodes.values():
                 try:
                     node.complete = data[&#39;nodes&#39;][node.nodeID][&#39;complete&#39;]
                 except KeyError:
@@ -868,7 +1396,7 @@ or if the given save slot data is empty.</dd>
         except KeyError:
             continue
         mission.complete = data[&#39;complete_pct&#39;]/100
-        for node in mission.nodes:
+        for node in mission.nodes.values():
             try:
                 node.complete = data[&#39;nodes&#39;][node.nodeID][&#39;complete&#39;]
             except KeyError:
@@ -950,6 +1478,19 @@ in descending order.</dd>
 </li>
 <li>
 <h4><code><a title="legends.saveslot.MissionNode" href="#legends.saveslot.MissionNode">MissionNode</a></code></h4>
+<ul class="">
+<li><code><a title="legends.saveslot.MissionNode.coverSlots" href="#legends.saveslot.MissionNode.coverSlots">coverSlots</a></code></li>
+<li><code><a title="legends.saveslot.MissionNode.type" href="#legends.saveslot.MissionNode.type">type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.saveslot.NodeConnection" href="#legends.saveslot.NodeConnection">NodeConnection</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.saveslot.NodeOption" href="#legends.saveslot.NodeOption">NodeOption</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.saveslot.OptionError" href="#legends.saveslot.OptionError">OptionError</a></code></h4>
 </li>
 <li>
 <h4><code><a title="legends.saveslot.STLTimeStamps" href="#legends.saveslot.STLTimeStamps">STLTimeStamps</a></code></h4>

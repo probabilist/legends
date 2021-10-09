@@ -21,6 +21,9 @@ Attributes:
     HELP (str): The contents of the file, `legends/help.txt`.
     ITEMS (dict): {`str`:`Item`} A dictionary mapping each item ID in
         `GSItem` to an `Item` instance built from that item ID.
+    MISSION_NODE_TYPES (dict): {`str`:`str`} A dictionary mapping the
+        names of mission node types as they appear in `GSMissionNodes`
+        to the names as they appear in the game.
     POWER_GRADIENT (dict): {`str`:`float`} A dictionary mapping stat
         names to the amount that a character's power would increase if
         that stat were to increase by 1.
@@ -96,10 +99,12 @@ from legends.utils.relations import bidict
 __all__ = [
     'CHARACTER_TAGS',
     'DESCRIPTIONS',
+    'DIFFICULTIES',
     'ENABLED',
     'HELP',
     'Item',
     'ITEMS',
+    'MISSION_NODE_TYPES',
     'POWER_GRADIENT',
     'POWER_AT_ORIGIN',
     'PART_STAT_UNLOCKED',
@@ -244,6 +249,13 @@ class Item():
 
 # pylint: disable-next=undefined-variable
 ITEMS = {itemID: Item(itemID) for itemID in GSItem}
+
+MISSION_NODE_TYPES = {
+    'Encounter': 'Combat',
+    'Opportunity': 'Explore',
+    'Story': 'Intel',
+    'Resource': 'Resource'
+}
 
 POWER_GRADIENT = {}
 POWER_AT_ORIGIN = 0

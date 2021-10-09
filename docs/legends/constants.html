@@ -49,6 +49,10 @@ on the Crew screen.</dd>
 <dt><strong><code>ITEMS</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code>} A dictionary mapping each item ID in
 <code>GSItem</code> to an <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> instance built from that item ID.</dd>
+<dt><strong><code>MISSION_NODE_TYPES</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} A dictionary mapping the
+names of mission node types as they appear in <code>GSMissionNodes</code>
+to the names as they appear in the game.</dd>
 <dt><strong><code>POWER_GRADIENT</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>float</code>} A dictionary mapping stat
 names to the amount that a character's power would increase if
@@ -152,6 +156,9 @@ Attributes:
     HELP (str): The contents of the file, `legends/help.txt`.
     ITEMS (dict): {`str`:`Item`} A dictionary mapping each item ID in
         `GSItem` to an `Item` instance built from that item ID.
+    MISSION_NODE_TYPES (dict): {`str`:`str`} A dictionary mapping the
+        names of mission node types as they appear in `GSMissionNodes`
+        to the names as they appear in the game.
     POWER_GRADIENT (dict): {`str`:`float`} A dictionary mapping stat
         names to the amount that a character&#39;s power would increase if
         that stat were to increase by 1.
@@ -227,10 +234,12 @@ from legends.utils.relations import bidict
 __all__ = [
     &#39;CHARACTER_TAGS&#39;,
     &#39;DESCRIPTIONS&#39;,
+    &#39;DIFFICULTIES&#39;,
     &#39;ENABLED&#39;,
     &#39;HELP&#39;,
     &#39;Item&#39;,
     &#39;ITEMS&#39;,
+    &#39;MISSION_NODE_TYPES&#39;,
     &#39;POWER_GRADIENT&#39;,
     &#39;POWER_AT_ORIGIN&#39;,
     &#39;PART_STAT_UNLOCKED&#39;,
@@ -375,6 +384,13 @@ class Item():
 
 # pylint: disable-next=undefined-variable
 ITEMS = {itemID: Item(itemID) for itemID in GSItem}
+
+MISSION_NODE_TYPES = {
+    &#39;Encounter&#39;: &#39;Combat&#39;,
+    &#39;Opportunity&#39;: &#39;Explore&#39;,
+    &#39;Story&#39;: &#39;Intel&#39;,
+    &#39;Resource&#39;: &#39;Resource&#39;
+}
 
 POWER_GRADIENT = {}
 POWER_AT_ORIGIN = 0
