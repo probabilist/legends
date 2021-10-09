@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.19.1
+
+* Data updated for hotfix 8147.
+
 ## Version 0.19.0
 
 * Bug fix: added `DIFFICULTIES` to the `__all__` attribute of the `constants` module.
