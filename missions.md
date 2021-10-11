@@ -4,7 +4,7 @@ TO BOLDLY GO
 
 After a successful leap into the Nexus, the <i>U.S.S. Artemis</i> comes under fire from an unknown enemy.
 
-Suggest Power: 53
+Suggested Power: 53
 
 1. Combat
     * Cover Slots: None
@@ -15,7 +15,7 @@ DISABLING THE CORE
 
 Before Commander Burnham can leave the unknown vessel, its warp core must be disabled.
 
-Suggest Power: 106
+Suggested Power: 106
 
 1. Combat (to 2)
     * Cover Slots: None
@@ -30,7 +30,7 @@ BREACHING THE DEFENSES
 
 The <i>U.S.S. Artemis</i> responds to a distress signal from an unknown Federation base.
 
-Suggest Power: 142
+Suggested Power: 142
 
 1. Intel (to 2)
 2. Resource (to 3)
@@ -48,7 +48,7 @@ OLD GHOSTS
 
 With no reply from survivors within Federation Base, the away team must investigate the facility with caution.
 
-Suggest Power: 230
+Suggested Power: 230
 
 1. Explore
     * PHASER (to 2)
@@ -73,7 +73,7 @@ THE INNER CHAMBERS
 
 Project TALOS' defenses have run amok, complicating the search for survivors within the base.
 
-Suggest Power: 342
+Suggested Power: 342
 
 1. Combat (to 2)
     * Cover Slots: None
@@ -99,7 +99,7 @@ TEARS OF A MACHINE
 
 The computer core of Talos must be disabled at all costs, to prevent further loss of life.
 
-Suggest Power: 396
+Suggested Power: 396
 
 1. Combat (to 2)
     * Cover Slots: 2
@@ -127,7 +127,7 @@ FIRST STAR ON THE RIGHT
 
 The <i>U.S.S Artemis</i> recieves a message from Starfleet - Captain Kirk has vanished.
 
-Suggest Power: 528
+Suggested Power: 528
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -149,7 +149,7 @@ THE BAD SEED
 
 The hunt for Kirk brings the away team into conflict with Romulan mercenaries.
 
-Suggest Power: 620
+Suggested Power: 620
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -179,7 +179,7 @@ THE HUNTING GROUNDS
 
 The team uncover evidence of a far reaching plot to create an alliance between the Romulans and the Gorn.
 
-Suggest Power: 704
+Suggested Power: 704
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -215,7 +215,7 @@ THE GREAT CAPTAIN’S CAPTAIN
 
 On the Gorn homeworld, the away team finds clues that point them to where Kirk is being held.
 
-Suggest Power: 788
+Suggested Power: 788
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -250,7 +250,7 @@ THE GORN
 
 The away team and Kirk come face to face with one of his oldest foes, the Gorn Commander.
 
-Suggest Power: 864
+Suggested Power: 864
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -290,7 +290,7 @@ OLD FOES, NEW FRIENDS
 
 Enraged, Tomalak and the Romulans attack. Only by working togther can Kirk and the Gorn prevail.
 
-Suggest Power: 952
+Suggested Power: 952
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -333,7 +333,7 @@ THE WRECK OF THE ARGO
 
 A mysterious signal reaches the <i>U.S.S Artemis</i> from the surface of a desert planet.
 
-Suggest Power: 1120
+Suggested Power: 1120
 
 1. Explore
     * ADVANCE (to 2)
@@ -371,7 +371,7 @@ THE HUNT FOR DUKAT
 
 In the ruins of a prison transport, the away team find that Gul Dukat has escaped capitivity.
 
-Suggest Power: 1292
+Suggested Power: 1292
 
 1. Explore
     * INSPECT (to 3)
@@ -413,7 +413,7 @@ INTO THE HILLS
 
 Prisoner secure, the away team hunt for the shuttle's pilot - Odo.
 
-Suggest Power: 1456
+Suggested Power: 1456
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -453,7 +453,7 @@ THE METAL CAVES
 
 Odo's trail leads into a ruined Borg outpost, buried deep beneath the shifting sands.
 
-Suggest Power: 1628
+Suggested Power: 1628
 
 1. Combat (to 2)
     * Cover Slots: None
@@ -492,7 +492,7 @@ POOLS
 
 In the heart of the Borg outpost the team encounters a mimetic pool, capable of imitating any lifeform.
 
-Suggest Power: 1788
+Suggested Power: 1788
 
 1. Explore
     * EXPLORE (to 2)
@@ -533,7 +533,7 @@ STRANGE TIDES
 
 Alarms sound as the Borg awaken. It's up to the away team to destroy the outpost's power and escape.
 
-Suggest Power: 1988
+Suggested Power: 1988
 
 1. Combat (to 2)
     * Cover Slots: 3
@@ -572,7 +572,7 @@ ARRIVALS
 
 A call for help leads to a colony suffering from a mysterious disease.
 
-Suggest Power: 2184
+Suggested Power: 2184
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -619,7 +619,7 @@ THE GOOD DOCTOR
 
 Battling against maddened inhabitants, the away team makes its way to Dr Beverly Crusher's clinic.
 
-Suggest Power: 2368
+Suggested Power: 2368
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -668,7 +668,7 @@ SPIRALS
 
 The infection has claimed Dr. Crusher as a victim. The away team must neutralize her and restore order.
 
-Suggest Power: 2568
+Suggested Power: 2568
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -715,7 +715,7 @@ FIGHTING FOR A CURE
 
 Clues to the disease point towards a Klingon research facility; this outbreak might not be natural.
 
-Suggest Power: 2764
+Suggested Power: 2764
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -772,7 +772,7 @@ MARCHING TO A DEADLY DRUM
 
 Cure in hand, the away team return to the colony and attempt to distribute it.
 
-Suggest Power: 2972
+Suggested Power: 2972
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -821,7 +821,7 @@ THE MAN BEHIND THE CURTAIN
 
 The neural parasites have been dealt with - now only the mastermind behind the attack remains: Khan.
 
-Suggest Power: 3156
+Suggested Power: 3156
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -868,7 +868,7 @@ Suggest Power: 3156
 
 Tensions are risng between the Federation and the Klingon Empire in the Neutral Zone.
 
-Suggest Power: 3448
+Suggested Power: 3448
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -915,7 +915,7 @@ THE NATURE OF THE CATASTROPHE
 
 A Klingon Bird-of-Prey has been shot down by a mysterious attacker.
 
-Suggest Power: 3648
+Suggested Power: 3648
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -970,7 +970,7 @@ THE HARVEST
 
 Borg drones are attacking the planet and plan to re-assimilate Seven of Nine.
 
-Suggest Power: 3864
+Suggested Power: 3864
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1019,7 +1019,7 @@ BROKEN RELAYS
 
 The away team needs to prevent the Cube from contacting the Collective for more reinforcements.
 
-Suggest Power: 4088
+Suggested Power: 4088
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1075,7 +1075,7 @@ INTO THE NETWORK
 
 The Borg are retreating back into a Transwarp conduit and attempting to physically contact the Collective.
 
-Suggest Power: 4320
+Suggested Power: 4320
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1130,7 +1130,7 @@ ATOM HEART MOTHER
 
 Something or someone is still controling the Borg and needs to be stopped.
 
-Suggest Power: 4548
+Suggested Power: 4548
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1186,7 +1186,7 @@ THE GHOST IN THE DARK
 
 The <i>U.S.S. Artemis</i> finds a lone Starfleet vessel, the <i>U.S.S. Pioneer</i>, adrift and unresponsive.
 
-Suggest Power: 4888
+Suggested Power: 4888
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1241,7 +1241,7 @@ THE LOG OF THE U.S.S. PIONEER
 
 The <i>U.S.S. Pioneer's</i> crew have succumbed to a form of madness that renders them confused and highly aggressive.
 
-Suggest Power: 5112
+Suggested Power: 5112
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -1294,7 +1294,7 @@ STRANGE ALLIANCES
 
 Long-ranged scans have revealed a badly damaged Warbird tumbling through space: the <i>I.K.S. Ning'Tao</i>.
 
-Suggest Power: 5336
+Suggested Power: 5336
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1349,7 +1349,7 @@ THE RUINS OF OUR AMBITION
 
 Above the planet floats the Cardassian ship Martok warned you about. The <i>Kornaire</i>.
 
-Suggest Power: 5568
+Suggested Power: 5568
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1402,7 +1402,7 @@ THE HOLLOW LANDS
 
 Beaming down to the surface of the planet to find the source of this madness.
 
-Suggest Power: 5796
+Suggested Power: 5796
 
 1. Combat (to 2)
     * Cover Slots: 1, 2
@@ -1453,7 +1453,7 @@ NOT WITH A BANG BUT A WHIMPER
 
 To boldly go where no one has gone before.
 
-Suggest Power: 6020
+Suggested Power: 6020
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1518,7 +1518,7 @@ HALF A FOOL'S PARADISE
 
 The <i>U.S.S. Artemis</i> is floating outside the enormous Reality Engine built around a captured star.
 
-Suggest Power: 6168
+Suggested Power: 6168
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1572,7 +1572,7 @@ SOMEWHITHER STRANGE
 
 To earn the Caretaker's help, the away team much complete four tests, the first being the Test of Faith.
 
-Suggest Power: 6300
+Suggested Power: 6300
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1626,7 +1626,7 @@ THROUGH A LONG TRACK
 
 The second test is the Test of Will, pitting the away team against the Borg once more.
 
-Suggest Power: 6424
+Suggested Power: 6424
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1684,7 +1684,7 @@ OF WINE AND ROSES
 
 Faith and Will may not always be enough, the away team faces the Test of Cunning.
 
-Suggest Power: 6556
+Suggested Power: 6556
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1732,7 +1732,7 @@ SUCH STAR-CROWNED SOLITUDE
 
 The final test is the Test of Reason, to prove that some conflicts can be settled through dialogue and tact.
 
-Suggest Power: 6704
+Suggested Power: 6704
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1778,7 +1778,7 @@ A LAST WORD
 
 Earning the mantle of Engineers, the away team must stop the Dreamless and repair the Reality Engine.
 
-Suggest Power: 6828
+Suggested Power: 6828
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1830,7 +1830,7 @@ TO BOLDLY GO
 
 After a successful leap into the Nexus, the <i>U.S.S. Artemis</i> comes under fire from an unknown enemy.
 
-Suggest Power: 6168
+Suggested Power: 6168
 
 1. Combat
     * Cover Slots: 1, 2
@@ -1841,7 +1841,7 @@ DISABLING THE CORE
 
 Before Commander Burnham can leave the unknown vessel, its warp core must be disabled.
 
-Suggest Power: 6168
+Suggested Power: 6168
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -1856,7 +1856,7 @@ BREACHING THE DEFENSES
 
 The <i>U.S.S. Artemis</i> responds to a distress signal from an unknown Federation base.
 
-Suggest Power: 6168
+Suggested Power: 6168
 
 1. Intel (to 2)
 2. Resource (to 3)
@@ -1875,7 +1875,7 @@ OLD GHOSTS
 
 With no reply from survivors within Federation Base, the away team must investigate the facility with caution.
 
-Suggest Power: 6300
+Suggested Power: 6300
 
 1. Explore
     * PHASER (to 2)
@@ -1902,7 +1902,7 @@ THE INNER CHAMBERS
 
 Project TALOS' defenses have run amok, complicating the search for survivors within the base.
 
-Suggest Power: 6300
+Suggested Power: 6300
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -1930,7 +1930,7 @@ TEARS OF A MACHINE
 
 The computer core of Talos must be disabled at all costs, to prevent further loss of life.
 
-Suggest Power: 6424
+Suggested Power: 6424
 
 1. Combat (to 2)
     * Cover Slots: 1, 2
@@ -1960,7 +1960,7 @@ FIRST STAR ON THE RIGHT
 
 The <i>U.S.S Artemis</i> recieves a message from Starfleet - Captain Kirk has vanished.
 
-Suggest Power: 6556
+Suggested Power: 6556
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1983,7 +1983,7 @@ THE BAD SEED
 
 The hunt for Kirk brings the away team into conflict with Romulan mercenaries.
 
-Suggest Power: 6704
+Suggested Power: 6704
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -2015,7 +2015,7 @@ THE HUNTING GROUNDS
 
 The team uncover evidence of a far reaching plot to create an alliance between the Romulans and the Gorn.
 
-Suggest Power: 6828
+Suggested Power: 6828
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -2051,7 +2051,7 @@ THE GREAT CAPTAIN’S CAPTAIN
 
 On the Gorn homeworld, the away team finds clues that point them to where Kirk is being held.
 
-Suggest Power: 6960
+Suggested Power: 6960
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2086,7 +2086,7 @@ THE GORN
 
 The away team and Kirk come face to face with one of his oldest foes, the Gorn Commander.
 
-Suggest Power: 7092
+Suggested Power: 7092
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2126,7 +2126,7 @@ OLD FOES, NEW FRIENDS
 
 Enraged, Tomalak and the Romulans attack. Only by working togther can Kirk and the Gorn prevail.
 
-Suggest Power: 7228
+Suggested Power: 7228
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2169,7 +2169,7 @@ THE WRECK OF THE ARGO
 
 A mysterious signal reaches the <i>U.S.S Artemis</i> from the surface of a desert planet.
 
-Suggest Power: 7364
+Suggested Power: 7364
 
 1. Explore
     * ADVANCE (to 2)
@@ -2207,7 +2207,7 @@ THE HUNT FOR DUKAT
 
 In the ruins of a prison transport, the away team find that Gul Dukat has escaped capitivity.
 
-Suggest Power: 7496
+Suggested Power: 7496
 
 1. Explore
     * INSPECT (to 3)
@@ -2249,7 +2249,7 @@ INTO THE HILLS
 
 Prisoner secure, the away team hunt for the shuttle's pilot - Odo.
 
-Suggest Power: 7628
+Suggested Power: 7628
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -2289,7 +2289,7 @@ THE METAL CAVES
 
 Odo's trail leads into a ruined Borg outpost, buried deep beneath the shifting sands.
 
-Suggest Power: 7756
+Suggested Power: 7756
 
 1. Combat (to 2)
     * Cover Slots: None
@@ -2328,7 +2328,7 @@ POOLS
 
 In the heart of the Borg outpost the team encounters a mimetic pool, capable of imitating any lifeform.
 
-Suggest Power: 7900
+Suggested Power: 7900
 
 1. Explore
     * EXPLORE (to 2)
@@ -2369,7 +2369,7 @@ STRANGE TIDES
 
 Alarms sound as the Borg awaken. It's up to the away team to destroy the outpost's power and escape.
 
-Suggest Power: 8032
+Suggested Power: 8032
 
 1. Combat (to 2)
     * Cover Slots: 3
@@ -2408,7 +2408,7 @@ ARRIVALS
 
 A call for help leads to a colony suffering from a mysterious disease.
 
-Suggest Power: 8164
+Suggested Power: 8164
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2455,7 +2455,7 @@ THE GOOD DOCTOR
 
 Battling against maddened inhabitants, the away team makes its way to Dr Beverly Crusher's clinic.
 
-Suggest Power: 8292
+Suggested Power: 8292
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2504,7 +2504,7 @@ SPIRALS
 
 The infection has claimed Dr. Crusher as a victim. The away team must neutralize her and restore order.
 
-Suggest Power: 8436
+Suggested Power: 8436
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -2551,7 +2551,7 @@ FIGHTING FOR A CURE
 
 Clues to the disease point towards a Klingon research facility; this outbreak might not be natural.
 
-Suggest Power: 8568
+Suggested Power: 8568
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -2608,7 +2608,7 @@ MARCHING TO A DEADLY DRUM
 
 Cure in hand, the away team return to the colony and attempt to distribute it.
 
-Suggest Power: 8696
+Suggested Power: 8696
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2657,7 +2657,7 @@ THE MAN BEHIND THE CURTAIN
 
 The neural parasites have been dealt with - now only the mastermind behind the attack remains: Khan.
 
-Suggest Power: 8864
+Suggested Power: 8864
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2704,7 +2704,7 @@ Suggest Power: 8864
 
 Tensions are risng between the Federation and the Klingon Empire in the Neutral Zone.
 
-Suggest Power: 9012
+Suggested Power: 9012
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2751,7 +2751,7 @@ THE NATURE OF THE CATASTROPHE
 
 A Klingon Bird-of-Prey has been shot down by a mysterious attacker.
 
-Suggest Power: 9176
+Suggested Power: 9176
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2806,7 +2806,7 @@ THE HARVEST
 
 Borg drones are attacking the planet and plan to re-assimilate Seven of Nine.
 
-Suggest Power: 9328
+Suggested Power: 9328
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2855,7 +2855,7 @@ BROKEN RELAYS
 
 The away team needs to prevent the Cube from contacting the Collective for more reinforcements.
 
-Suggest Power: 9488
+Suggested Power: 9488
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2911,7 +2911,7 @@ INTO THE NETWORK
 
 The Borg are retreating back into a Transwarp conduit and attempting to physically contact the Collective.
 
-Suggest Power: 9644
+Suggested Power: 9644
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2966,7 +2966,7 @@ ATOM HEART MOTHER
 
 Something or someone is still controling the Borg and needs to be stopped.
 
-Suggest Power: 9804
+Suggested Power: 9804
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3022,7 +3022,7 @@ THE GHOST IN THE DARK
 
 The <i>U.S.S. Artemis</i> finds a lone Starfleet vessel, the <i>U.S.S. Pioneer</i>, adrift and unresponsive.
 
-Suggest Power: 9956
+Suggested Power: 9956
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3077,7 +3077,7 @@ THE LOG OF THE U.S.S. PIONEER
 
 The <i>U.S.S. Pioneer's</i> crew have succumbed to a form of madness that renders them confused and highly aggressive.
 
-Suggest Power: 10120
+Suggested Power: 10120
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -3130,7 +3130,7 @@ STRANGE ALLIANCES
 
 Long-ranged scans have revealed a badly damaged Warbird tumbling through space: the <i>I.K.S. Ning'Tao</i>.
 
-Suggest Power: 10268
+Suggested Power: 10268
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3185,7 +3185,7 @@ THE RUINS OF OUR AMBITION
 
 Above the planet floats the Cardassian ship Martok warned you about. The <i>Kornaire</i>.
 
-Suggest Power: 10436
+Suggested Power: 10436
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3238,7 +3238,7 @@ THE HOLLOW LANDS
 
 Beaming down to the surface of the planet to find the source of this madness.
 
-Suggest Power: 10580
+Suggested Power: 10580
 
 1. Combat (to 2)
     * Cover Slots: 1, 2
@@ -3289,7 +3289,7 @@ NOT WITH A BANG BUT A WHIMPER
 
 To boldly go where no one has gone before.
 
-Suggest Power: 10752
+Suggested Power: 10752
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3354,7 +3354,7 @@ HALF A FOOL'S PARADISE
 
 The <i>U.S.S. Artemis</i> is floating outside the enormous Reality Engine built around a captured star.
 
-Suggest Power: 10900
+Suggested Power: 10900
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3408,7 +3408,7 @@ SOMEWHITHER STRANGE
 
 To earn the Caretaker's help, the away team much complete four tests, the first being the Test of Faith.
 
-Suggest Power: 11060
+Suggested Power: 11060
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3462,7 +3462,7 @@ THROUGH A LONG TRACK
 
 The second test is the Test of Will, pitting the away team against the Borg once more.
 
-Suggest Power: 11216
+Suggested Power: 11216
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3520,7 +3520,7 @@ OF WINE AND ROSES
 
 Faith and Will may not always be enough, the away team faces the Test of Cunning.
 
-Suggest Power: 11376
+Suggested Power: 11376
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3568,7 +3568,7 @@ SUCH STAR-CROWNED SOLITUDE
 
 The final test is the Test of Reason, to prove that some conflicts can be settled through dialogue and tact.
 
-Suggest Power: 11532
+Suggested Power: 11532
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3614,7 +3614,7 @@ A LAST WORD
 
 Earning the mantle of Engineers, the away team must stop the Dreamless and repair the Reality Engine.
 
-Suggest Power: 11692
+Suggested Power: 11692
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3666,7 +3666,7 @@ TO BOLDLY GO
 
 After a successful leap into the Nexus, the <i>U.S.S. Artemis</i> comes under fire from an unknown enemy.
 
-Suggest Power: 10900
+Suggested Power: 10900
 
 1. Combat
     * Cover Slots: 1, 2
@@ -3677,7 +3677,7 @@ DISABLING THE CORE
 
 Before Commander Burnham can leave the unknown vessel, its warp core must be disabled.
 
-Suggest Power: 10900
+Suggested Power: 10900
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -3692,7 +3692,7 @@ BREACHING THE DEFENSES
 
 The <i>U.S.S. Artemis</i> responds to a distress signal from an unknown Federation base.
 
-Suggest Power: 10900
+Suggested Power: 10900
 
 1. Intel (to 2)
 2. Resource (to 3)
@@ -3711,7 +3711,7 @@ OLD GHOSTS
 
 With no reply from survivors within Federation Base, the away team must investigate the facility with caution.
 
-Suggest Power: 11060
+Suggested Power: 11060
 
 1. Explore
     * PHASER (to 2)
@@ -3738,7 +3738,7 @@ THE INNER CHAMBERS
 
 Project TALOS' defenses have run amok, complicating the search for survivors within the base.
 
-Suggest Power: 11060
+Suggested Power: 11060
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -3766,7 +3766,7 @@ TEARS OF A MACHINE
 
 The computer core of Talos must be disabled at all costs, to prevent further loss of life.
 
-Suggest Power: 11216
+Suggested Power: 11216
 
 1. Combat (to 2)
     * Cover Slots: 1, 2
@@ -3796,7 +3796,7 @@ FIRST STAR ON THE RIGHT
 
 The <i>U.S.S Artemis</i> recieves a message from Starfleet - Captain Kirk has vanished.
 
-Suggest Power: 11376
+Suggested Power: 11376
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3819,7 +3819,7 @@ THE BAD SEED
 
 The hunt for Kirk brings the away team into conflict with Romulan mercenaries.
 
-Suggest Power: 11532
+Suggested Power: 11532
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -3851,7 +3851,7 @@ THE HUNTING GROUNDS
 
 The team uncover evidence of a far reaching plot to create an alliance between the Romulans and the Gorn.
 
-Suggest Power: 11692
+Suggested Power: 11692
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -3887,7 +3887,7 @@ THE GREAT CAPTAIN’S CAPTAIN
 
 On the Gorn homeworld, the away team finds clues that point them to where Kirk is being held.
 
-Suggest Power: 11840
+Suggested Power: 11840
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3922,7 +3922,7 @@ THE GORN
 
 The away team and Kirk come face to face with one of his oldest foes, the Gorn Commander.
 
-Suggest Power: 12008
+Suggested Power: 12008
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3962,7 +3962,7 @@ OLD FOES, NEW FRIENDS
 
 Enraged, Tomalak and the Romulans attack. Only by working togther can Kirk and the Gorn prevail.
 
-Suggest Power: 12156
+Suggested Power: 12156
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4005,7 +4005,7 @@ THE WRECK OF THE ARGO
 
 A mysterious signal reaches the <i>U.S.S Artemis</i> from the surface of a desert planet.
 
-Suggest Power: 12316
+Suggested Power: 12316
 
 1. Explore
     * ADVANCE (to 2)
@@ -4043,7 +4043,7 @@ THE HUNT FOR DUKAT
 
 In the ruins of a prison transport, the away team find that Gul Dukat has escaped capitivity.
 
-Suggest Power: 12464
+Suggested Power: 12464
 
 1. Explore
     * INSPECT (to 3)
@@ -4085,7 +4085,7 @@ INTO THE HILLS
 
 Prisoner secure, the away team hunt for the shuttle's pilot - Odo.
 
-Suggest Power: 12628
+Suggested Power: 12628
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -4125,7 +4125,7 @@ THE METAL CAVES
 
 Odo's trail leads into a ruined Borg outpost, buried deep beneath the shifting sands.
 
-Suggest Power: 12780
+Suggested Power: 12780
 
 1. Combat (to 2)
     * Cover Slots: None
@@ -4164,7 +4164,7 @@ POOLS
 
 In the heart of the Borg outpost the team encounters a mimetic pool, capable of imitating any lifeform.
 
-Suggest Power: 12944
+Suggested Power: 12944
 
 1. Explore
     * EXPLORE (to 2)
@@ -4205,7 +4205,7 @@ STRANGE TIDES
 
 Alarms sound as the Borg awaken. It's up to the away team to destroy the outpost's power and escape.
 
-Suggest Power: 13088
+Suggested Power: 13088
 
 1. Combat (to 2)
     * Cover Slots: 3
@@ -4244,7 +4244,7 @@ ARRIVALS
 
 A call for help leads to a colony suffering from a mysterious disease.
 
-Suggest Power: 13236
+Suggested Power: 13236
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4291,7 +4291,7 @@ THE GOOD DOCTOR
 
 Battling against maddened inhabitants, the away team makes its way to Dr Beverly Crusher's clinic.
 
-Suggest Power: 13388
+Suggested Power: 13388
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4340,7 +4340,7 @@ SPIRALS
 
 The infection has claimed Dr. Crusher as a victim. The away team must neutralize her and restore order.
 
-Suggest Power: 13536
+Suggested Power: 13536
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -4387,7 +4387,7 @@ FIGHTING FOR A CURE
 
 Clues to the disease point towards a Klingon research facility; this outbreak might not be natural.
 
-Suggest Power: 13692
+Suggested Power: 13692
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -4444,7 +4444,7 @@ MARCHING TO A DEADLY DRUM
 
 Cure in hand, the away team return to the colony and attempt to distribute it.
 
-Suggest Power: 13840
+Suggested Power: 13840
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4493,7 +4493,7 @@ THE MAN BEHIND THE CURTAIN
 
 The neural parasites have been dealt with - now only the mastermind behind the attack remains: Khan.
 
-Suggest Power: 13996
+Suggested Power: 13996
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4540,7 +4540,7 @@ Suggest Power: 13996
 
 Tensions are risng between the Federation and the Klingon Empire in the Neutral Zone.
 
-Suggest Power: 14148
+Suggested Power: 14148
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4587,7 +4587,7 @@ THE NATURE OF THE CATASTROPHE
 
 A Klingon Bird-of-Prey has been shot down by a mysterious attacker.
 
-Suggest Power: 14308
+Suggested Power: 14308
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4642,7 +4642,7 @@ THE HARVEST
 
 Borg drones are attacking the planet and plan to re-assimilate Seven of Nine.
 
-Suggest Power: 14452
+Suggested Power: 14452
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4691,7 +4691,7 @@ BROKEN RELAYS
 
 The away team needs to prevent the Cube from contacting the Collective for more reinforcements.
 
-Suggest Power: 14600
+Suggested Power: 14600
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4747,7 +4747,7 @@ INTO THE NETWORK
 
 The Borg are retreating back into a Transwarp conduit and attempting to physically contact the Collective.
 
-Suggest Power: 14752
+Suggested Power: 14752
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4802,7 +4802,7 @@ ATOM HEART MOTHER
 
 Something or someone is still controling the Borg and needs to be stopped.
 
-Suggest Power: 14904
+Suggested Power: 14904
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4858,7 +4858,7 @@ THE GHOST IN THE DARK
 
 The <i>U.S.S. Artemis</i> finds a lone Starfleet vessel, the <i>U.S.S. Pioneer</i>, adrift and unresponsive.
 
-Suggest Power: 15044
+Suggested Power: 15044
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4913,7 +4913,7 @@ THE LOG OF THE U.S.S. PIONEER
 
 The <i>U.S.S. Pioneer's</i> crew have succumbed to a form of madness that renders them confused and highly aggressive.
 
-Suggest Power: 15204
+Suggested Power: 15204
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -4966,7 +4966,7 @@ STRANGE ALLIANCES
 
 Long-ranged scans have revealed a badly damaged Warbird tumbling through space: the <i>I.K.S. Ning'Tao</i>.
 
-Suggest Power: 15352
+Suggested Power: 15352
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5021,7 +5021,7 @@ THE RUINS OF OUR AMBITION
 
 Above the planet floats the Cardassian ship Martok warned you about. The <i>Kornaire</i>.
 
-Suggest Power: 15512
+Suggested Power: 15512
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5074,7 +5074,7 @@ THE HOLLOW LANDS
 
 Beaming down to the surface of the planet to find the source of this madness.
 
-Suggest Power: 15660
+Suggested Power: 15660
 
 1. Combat (to 2)
     * Cover Slots: 1, 2
@@ -5125,7 +5125,7 @@ NOT WITH A BANG BUT A WHIMPER
 
 To boldly go where no one has gone before.
 
-Suggest Power: 15808
+Suggested Power: 15808
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5190,7 +5190,7 @@ HALF A FOOL'S PARADISE
 
 The <i>U.S.S. Artemis</i> is floating outside the enormous Reality Engine built around a captured star.
 
-Suggest Power: 15972
+Suggested Power: 15972
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5244,7 +5244,7 @@ SOMEWHITHER STRANGE
 
 To earn the Caretaker's help, the away team much complete four tests, the first being the Test of Faith.
 
-Suggest Power: 16132
+Suggested Power: 16132
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5298,7 +5298,7 @@ THROUGH A LONG TRACK
 
 The second test is the Test of Will, pitting the away team against the Borg once more.
 
-Suggest Power: 16296
+Suggested Power: 16296
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5356,7 +5356,7 @@ OF WINE AND ROSES
 
 Faith and Will may not always be enough, the away team faces the Test of Cunning.
 
-Suggest Power: 16452
+Suggested Power: 16452
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5404,7 +5404,7 @@ SUCH STAR-CROWNED SOLITUDE
 
 The final test is the Test of Reason, to prove that some conflicts can be settled through dialogue and tact.
 
-Suggest Power: 16624
+Suggested Power: 16624
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5450,7 +5450,7 @@ A LAST WORD
 
 Earning the mantle of Engineers, the away team must stop the Dreamless and repair the Reality Engine.
 
-Suggest Power: 16780
+Suggested Power: 16780
 
 1. Intel (to 2)
 2. Combat (to 3)

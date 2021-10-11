@@ -34,7 +34,7 @@ def missionToMarkdown(episode, orderIndex, difficulty):
 
     """
     mission = Mission(episode, orderIndex, difficulty)
-    mdown = '{}\n\n{}\n\nSuggest Power: {}\n\n'.format(
+    mdown = '{}\n\n{}\n\nSuggested Power: {}\n\n'.format(
         mission.name, mission.description, mission.power
     )
     nodes = list(mission.nodes.values())
