@@ -45,7 +45,10 @@ def missionToMarkdown(episode, orderIndex, difficulty):
         mdown += '{}. {}{}\n'.format(
             nodes.index(node) + 1,
             node.type,
-            '' if len(edges) != 1 else getToText(nodes, edges[0])
+            (
+                '' if node.type == 'Explore' or len(edges) != 1
+                else getToText(nodes, edges[0])
+            )
         )
         if node.type == 'Combat':
             slots = (

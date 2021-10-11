@@ -19,7 +19,7 @@ Suggest Power: 106
 
 1. Combat (to 2)
     * Cover Slots: None
-2. Explore (to 3)
+2. Explore
     * DISABLE (to 3)
 3. Combat
     * Cover Slots: None
@@ -1442,7 +1442,7 @@ Suggest Power: 5796
     * Duranium: 11
 15. Combat (to 16)
     * Cover Slots: 1, 3
-16. Explore (to 17)
+16. Explore
     * (1640 Command) INSPIRE (to 17)
 17. Combat
     * Cover Slots: 2, 4
@@ -1845,7 +1845,7 @@ Suggest Power: 6168
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
-2. Explore (to 3)
+2. Explore
     * DISABLE (to 3)
 3. Combat
     * Cover Slots: 2, 4
@@ -3278,7 +3278,7 @@ Suggest Power: 10580
     * Duranium: 26
 15. Combat (to 16)
     * Cover Slots: 1, 3
-16. Explore (to 17)
+16. Explore
     * (2845 Command) INSPIRE (to 17)
 17. Combat
     * Cover Slots: 2, 4
@@ -3681,7 +3681,7 @@ Suggest Power: 10900
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
-2. Explore (to 3)
+2. Explore
     * DISABLE (to 3)
 3. Combat
     * Cover Slots: 2, 4
@@ -5114,7 +5114,7 @@ Suggest Power: 15660
     * Duranium: 47
 15. Combat (to 16)
     * Cover Slots: 1, 3
-16. Explore (to 17)
+16. Explore
     * (3915 Command) INSPIRE (to 17)
 17. Combat
     * Cover Slots: 2, 4
