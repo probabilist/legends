@@ -120,6 +120,16 @@ class Mission():
         )
 
     @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game name of the mission.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSMissions[self._key][&#39;Name&#39;]]
+
+    @property
+    def description(self):
+        &#34;&#34;&#34;`str`:The in-game description of the mission.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSMissions[self._key][&#39;Description&#39;]]
+
+    @property
     def power(self):
         &#34;&#34;&#34;`int`: The recommended team power for the mission.&#34;&#34;&#34;
         return GSMissions[self._key][&#39;SuggestedPower&#39;]
@@ -608,6 +618,16 @@ completed.</dd>
         )
 
     @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game name of the mission.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSMissions[self._key][&#39;Name&#39;]]
+
+    @property
+    def description(self):
+        &#34;&#34;&#34;`str`:The in-game description of the mission.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSMissions[self._key][&#39;Description&#39;]]
+
+    @property
     def power(self):
         &#34;&#34;&#34;`int`: The recommended team power for the mission.&#34;&#34;&#34;
         return GSMissions[self._key][&#39;SuggestedPower&#39;]
@@ -635,6 +655,19 @@ completed.</dd>
 </details>
 <h3>Instance variables</h3>
 <dl>
+<dt id="legends.saveslot.Mission.description"><code class="name">var <span class="ident">description</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>:The in-game description of the mission.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def description(self):
+    &#34;&#34;&#34;`str`:The in-game description of the mission.&#34;&#34;&#34;
+    return DESCRIPTIONS[GSMissions[self._key][&#39;Description&#39;]]</code></pre>
+</details>
+</dd>
 <dt id="legends.saveslot.Mission.missingNodeRewards"><code class="name">var <span class="ident">missingNodeRewards</span></code></dt>
 <dd>
 <div class="desc"><p>Computes and returns the missing node rewards from this
@@ -666,6 +699,19 @@ def missingNodeRewards(self):
         ),
         Inventory()
     )</code></pre>
+</details>
+</dd>
+<dt id="legends.saveslot.Mission.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The in-game name of the mission.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self):
+    &#34;&#34;&#34;`str`: The in-game name of the mission.&#34;&#34;&#34;
+    return DESCRIPTIONS[GSMissions[self._key][&#39;Name&#39;]]</code></pre>
 </details>
 </dd>
 <dt id="legends.saveslot.Mission.power"><code class="name">var <span class="ident">power</span></code></dt>
@@ -1472,7 +1518,9 @@ in descending order.</dd>
 <li>
 <h4><code><a title="legends.saveslot.Mission" href="#legends.saveslot.Mission">Mission</a></code></h4>
 <ul class="">
+<li><code><a title="legends.saveslot.Mission.description" href="#legends.saveslot.Mission.description">description</a></code></li>
 <li><code><a title="legends.saveslot.Mission.missingNodeRewards" href="#legends.saveslot.Mission.missingNodeRewards">missingNodeRewards</a></code></li>
+<li><code><a title="legends.saveslot.Mission.name" href="#legends.saveslot.Mission.name">name</a></code></li>
 <li><code><a title="legends.saveslot.Mission.power" href="#legends.saveslot.Mission.power">power</a></code></li>
 </ul>
 </li>

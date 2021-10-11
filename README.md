@@ -48,7 +48,7 @@ This package uses text assets from Star Trek: Legends. For extracting/updating t
 * [Documentation](#documentation)
 * [Running *STL Planner* from a command line](#running-stl-planner-from-a-command-line)
 * [Building the *STL Planner* app](#building-the-stl-planner-app)
-* [An example using the package](#an-example-using-the-package)
+* [Examples using the package](#examples-using-the-package)
 * [Comparison to the `legendscli` package](#comparison-to-the-legendscli-package)
 
 ### Installing the package
@@ -97,9 +97,11 @@ Now, copy the files, "stlplannerapp.py" and "stlplannerapp.spec" to your current
 ```
 When the process is finished, you will find the app inside the newly created "dist" folder.
 
-### An example using the package
+### Examples using the package
 
-For an example that uses the package, see 'skillstomd.py', which creates a markdown-formatted file listing all skills in the game, for both current and upcoming characters. You can see the output of this script, after conversion to HTML, at https://probabilist.github.io/legends/skills.html.
+For an example that uses the package, see "skillstomd.py", which creates a markdown-formatted file listing all skills in the game, for both current and upcoming characters. You can see the output of this script, after conversion to HTML, at https://probabilist.github.io/legends/skills.html.
+
+Another example is "missionstoms.py". This script outputs (in markdown format) detailed information about all the missions in the game. You can see its output, after conversion to HTML, at https://probabilist.github.io/legends/missions.html.
 
 ### Comparison to the legendscli package
 

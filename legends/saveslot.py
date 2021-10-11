@@ -91,6 +91,16 @@ class Mission():
         )
 
     @property
+    def name(self):
+        """`str`: The in-game name of the mission."""
+        return DESCRIPTIONS[GSMissions[self._key]['Name']]
+
+    @property
+    def description(self):
+        """`str`:The in-game description of the mission."""
+        return DESCRIPTIONS[GSMissions[self._key]['Description']]
+
+    @property
     def power(self):
         """`int`: The recommended team power for the mission."""
         return GSMissions[self._key]['SuggestedPower']

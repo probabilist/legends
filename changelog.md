@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.19.2
+
+* Added `name` and `description` properties to the `Mission` class.
+
 ## Version 0.19.1
 
 * Data updated for hotfix 8147.
