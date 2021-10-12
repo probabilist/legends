@@ -6,6 +6,8 @@ After a successful leap into the Nexus, the <i>U.S.S. Artemis</i> comes under fi
 
 Suggested Power: 53
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-1-Normal.jpg)
+
 1. Combat
     * Cover Slots: None
 
@@ -16,6 +18,8 @@ DISABLING THE CORE
 Before Commander Burnham can leave the unknown vessel, its warp core must be disabled.
 
 Suggested Power: 106
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-2-Normal.jpg)
 
 1. Combat (to 2)
     * Cover Slots: None
@@ -31,6 +35,8 @@ BREACHING THE DEFENSES
 The <i>U.S.S. Artemis</i> responds to a distress signal from an unknown Federation base.
 
 Suggested Power: 142
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-3-Normal.jpg)
 
 1. Intel (to 2)
 2. Resource (to 3)
@@ -49,6 +55,8 @@ OLD GHOSTS
 With no reply from survivors within Federation Base, the away team must investigate the facility with caution.
 
 Suggested Power: 230
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-4-Normal.jpg)
 
 1. Explore
     * PHASER (to 2)
@@ -75,6 +83,8 @@ Project TALOS' defenses have run amok, complicating the search for survivors wit
 
 Suggested Power: 342
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-5-Normal.jpg)
+
 1. Combat (to 2)
     * Cover Slots: None
 2. Intel (to 3)
@@ -100,6 +110,8 @@ TEARS OF A MACHINE
 The computer core of Talos must be disabled at all costs, to prevent further loss of life.
 
 Suggested Power: 396
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-6-Normal.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 2
@@ -129,6 +141,8 @@ The <i>U.S.S Artemis</i> recieves a message from Starfleet - Captain Kirk has va
 
 Suggested Power: 528
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-1-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -150,6 +164,8 @@ THE BAD SEED
 The hunt for Kirk brings the away team into conflict with Romulan mercenaries.
 
 Suggested Power: 620
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-2-Normal.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -180,6 +196,8 @@ THE HUNTING GROUNDS
 The team uncover evidence of a far reaching plot to create an alliance between the Romulans and the Gorn.
 
 Suggested Power: 704
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-3-Normal.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -217,6 +235,8 @@ On the Gorn homeworld, the away team finds clues that point them to where Kirk i
 
 Suggested Power: 788
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-4-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -251,6 +271,8 @@ THE GORN
 The away team and Kirk come face to face with one of his oldest foes, the Gorn Commander.
 
 Suggested Power: 864
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-5-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -291,6 +313,8 @@ OLD FOES, NEW FRIENDS
 Enraged, Tomalak and the Romulans attack. Only by working togther can Kirk and the Gorn prevail.
 
 Suggested Power: 952
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-6-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -335,6 +359,8 @@ A mysterious signal reaches the <i>U.S.S Artemis</i> from the surface of a deser
 
 Suggested Power: 1120
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-1-Normal.jpg)
+
 1. Explore
     * ADVANCE (to 2)
     * (280 Engineering) HACK (to 3)
@@ -372,6 +398,8 @@ THE HUNT FOR DUKAT
 In the ruins of a prison transport, the away team find that Gul Dukat has escaped capitivity.
 
 Suggested Power: 1292
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-2-Normal.jpg)
 
 1. Explore
     * INSPECT (to 3)
@@ -415,6 +443,8 @@ Prisoner secure, the away team hunt for the shuttle's pilot - Odo.
 
 Suggested Power: 1456
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-3-Normal.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Explore
@@ -455,6 +485,8 @@ Odo's trail leads into a ruined Borg outpost, buried deep beneath the shifting s
 
 Suggested Power: 1628
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-4-Normal.jpg)
+
 1. Combat (to 2)
     * Cover Slots: None
 2. Explore
@@ -493,6 +525,8 @@ POOLS
 In the heart of the Borg outpost the team encounters a mimetic pool, capable of imitating any lifeform.
 
 Suggested Power: 1788
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-5-Normal.jpg)
 
 1. Explore
     * EXPLORE (to 2)
@@ -535,6 +569,8 @@ Alarms sound as the Borg awaken. It's up to the away team to destroy the outpost
 
 Suggested Power: 1988
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-6-Normal.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 3
 2. Explore
@@ -573,6 +609,8 @@ ARRIVALS
 A call for help leads to a colony suffering from a mysterious disease.
 
 Suggested Power: 2184
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-1-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -620,6 +658,8 @@ THE GOOD DOCTOR
 Battling against maddened inhabitants, the away team makes its way to Dr Beverly Crusher's clinic.
 
 Suggested Power: 2368
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-2-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -670,6 +710,8 @@ The infection has claimed Dr. Crusher as a victim. The away team must neutralize
 
 Suggested Power: 2568
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-3-Normal.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Explore
@@ -716,6 +758,8 @@ FIGHTING FOR A CURE
 Clues to the disease point towards a Klingon research facility; this outbreak might not be natural.
 
 Suggested Power: 2764
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-4-Normal.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -774,6 +818,8 @@ Cure in hand, the away team return to the colony and attempt to distribute it.
 
 Suggested Power: 2972
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-5-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 4
@@ -823,6 +869,8 @@ The neural parasites have been dealt with - now only the mastermind behind the a
 
 Suggested Power: 3156
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-6-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 3, 4
@@ -870,6 +918,8 @@ Tensions are risng between the Federation and the Klingon Empire in the Neutral 
 
 Suggested Power: 3448
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-1-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -916,6 +966,8 @@ THE NATURE OF THE CATASTROPHE
 A Klingon Bird-of-Prey has been shot down by a mysterious attacker.
 
 Suggested Power: 3648
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-2-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -972,6 +1024,8 @@ Borg drones are attacking the planet and plan to re-assimilate Seven of Nine.
 
 Suggested Power: 3864
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-3-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1
@@ -1020,6 +1074,8 @@ BROKEN RELAYS
 The away team needs to prevent the Cube from contacting the Collective for more reinforcements.
 
 Suggested Power: 4088
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-4-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1077,6 +1133,8 @@ The Borg are retreating back into a Transwarp conduit and attempting to physical
 
 Suggested Power: 4320
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-5-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 3
@@ -1131,6 +1189,8 @@ ATOM HEART MOTHER
 Something or someone is still controling the Borg and needs to be stopped.
 
 Suggested Power: 4548
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-6-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1188,6 +1248,8 @@ The <i>U.S.S. Artemis</i> finds a lone Starfleet vessel, the <i>U.S.S. Pioneer</
 
 Suggested Power: 4888
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-1-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 4
@@ -1243,6 +1305,8 @@ The <i>U.S.S. Pioneer's</i> crew have succumbed to a form of madness that render
 
 Suggested Power: 5112
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-2-Normal.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 1, 3
 2. Explore
@@ -1295,6 +1359,8 @@ STRANGE ALLIANCES
 Long-ranged scans have revealed a badly damaged Warbird tumbling through space: the <i>I.K.S. Ning'Tao</i>.
 
 Suggested Power: 5336
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-3-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1351,6 +1417,8 @@ Above the planet floats the Cardassian ship Martok warned you about. The <i>Korn
 
 Suggested Power: 5568
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-4-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 3
@@ -1404,6 +1472,8 @@ Beaming down to the surface of the planet to find the source of this madness.
 
 Suggested Power: 5796
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-5-Normal.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 1, 2
 2. Explore
@@ -1454,6 +1524,8 @@ NOT WITH A BANG BUT A WHIMPER
 To boldly go where no one has gone before.
 
 Suggested Power: 6020
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-6-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1520,6 +1592,8 @@ The <i>U.S.S. Artemis</i> is floating outside the enormous Reality Engine built 
 
 Suggested Power: 6168
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-1-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 4
@@ -1574,6 +1648,8 @@ To earn the Caretaker's help, the away team much complete four tests, the first 
 
 Suggested Power: 6300
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-2-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 3
@@ -1627,6 +1703,8 @@ THROUGH A LONG TRACK
 The second test is the Test of Will, pitting the away team against the Borg once more.
 
 Suggested Power: 6424
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-3-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1686,6 +1764,8 @@ Faith and Will may not always be enough, the away team faces the Test of Cunning
 
 Suggested Power: 6556
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-4-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -1734,6 +1814,8 @@ The final test is the Test of Reason, to prove that some conflicts can be settle
 
 Suggested Power: 6704
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-5-Normal.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 3
@@ -1779,6 +1861,8 @@ A LAST WORD
 Earning the mantle of Engineers, the away team must stop the Dreamless and repair the Reality Engine.
 
 Suggested Power: 6828
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-6-Normal.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -1832,6 +1916,8 @@ After a successful leap into the Nexus, the <i>U.S.S. Artemis</i> comes under fi
 
 Suggested Power: 6168
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-1-Advanced.jpg)
+
 1. Combat
     * Cover Slots: 1, 2
 
@@ -1842,6 +1928,8 @@ DISABLING THE CORE
 Before Commander Burnham can leave the unknown vessel, its warp core must be disabled.
 
 Suggested Power: 6168
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-2-Advanced.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -1857,6 +1945,8 @@ BREACHING THE DEFENSES
 The <i>U.S.S. Artemis</i> responds to a distress signal from an unknown Federation base.
 
 Suggested Power: 6168
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-3-Advanced.jpg)
 
 1. Intel (to 2)
 2. Resource (to 3)
@@ -1876,6 +1966,8 @@ OLD GHOSTS
 With no reply from survivors within Federation Base, the away team must investigate the facility with caution.
 
 Suggested Power: 6300
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-4-Advanced.jpg)
 
 1. Explore
     * PHASER (to 2)
@@ -1904,6 +1996,8 @@ Project TALOS' defenses have run amok, complicating the search for survivors wit
 
 Suggested Power: 6300
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-5-Advanced.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Intel (to 3)
@@ -1931,6 +2025,8 @@ TEARS OF A MACHINE
 The computer core of Talos must be disabled at all costs, to prevent further loss of life.
 
 Suggested Power: 6424
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-6-Advanced.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 2
@@ -1962,6 +2058,8 @@ The <i>U.S.S Artemis</i> recieves a message from Starfleet - Captain Kirk has va
 
 Suggested Power: 6556
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-1-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -1984,6 +2082,8 @@ THE BAD SEED
 The hunt for Kirk brings the away team into conflict with Romulan mercenaries.
 
 Suggested Power: 6704
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-2-Advanced.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -2016,6 +2116,8 @@ THE HUNTING GROUNDS
 The team uncover evidence of a far reaching plot to create an alliance between the Romulans and the Gorn.
 
 Suggested Power: 6828
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-3-Advanced.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -2053,6 +2155,8 @@ On the Gorn homeworld, the away team finds clues that point them to where Kirk i
 
 Suggested Power: 6960
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-4-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -2087,6 +2191,8 @@ THE GORN
 The away team and Kirk come face to face with one of his oldest foes, the Gorn Commander.
 
 Suggested Power: 7092
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-5-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2127,6 +2233,8 @@ OLD FOES, NEW FRIENDS
 Enraged, Tomalak and the Romulans attack. Only by working togther can Kirk and the Gorn prevail.
 
 Suggested Power: 7228
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-6-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2171,6 +2279,8 @@ A mysterious signal reaches the <i>U.S.S Artemis</i> from the surface of a deser
 
 Suggested Power: 7364
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-1-Advanced.jpg)
+
 1. Explore
     * ADVANCE (to 2)
     * (2010 Engineering) HACK (to 3)
@@ -2208,6 +2318,8 @@ THE HUNT FOR DUKAT
 In the ruins of a prison transport, the away team find that Gul Dukat has escaped capitivity.
 
 Suggested Power: 7496
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-2-Advanced.jpg)
 
 1. Explore
     * INSPECT (to 3)
@@ -2251,6 +2363,8 @@ Prisoner secure, the away team hunt for the shuttle's pilot - Odo.
 
 Suggested Power: 7628
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-3-Advanced.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Explore
@@ -2291,6 +2405,8 @@ Odo's trail leads into a ruined Borg outpost, buried deep beneath the shifting s
 
 Suggested Power: 7756
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-4-Advanced.jpg)
+
 1. Combat (to 2)
     * Cover Slots: None
 2. Explore
@@ -2329,6 +2445,8 @@ POOLS
 In the heart of the Borg outpost the team encounters a mimetic pool, capable of imitating any lifeform.
 
 Suggested Power: 7900
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-5-Advanced.jpg)
 
 1. Explore
     * EXPLORE (to 2)
@@ -2371,6 +2489,8 @@ Alarms sound as the Borg awaken. It's up to the away team to destroy the outpost
 
 Suggested Power: 8032
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-6-Advanced.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 3
 2. Explore
@@ -2409,6 +2529,8 @@ ARRIVALS
 A call for help leads to a colony suffering from a mysterious disease.
 
 Suggested Power: 8164
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-1-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2456,6 +2578,8 @@ THE GOOD DOCTOR
 Battling against maddened inhabitants, the away team makes its way to Dr Beverly Crusher's clinic.
 
 Suggested Power: 8292
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-2-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2506,6 +2630,8 @@ The infection has claimed Dr. Crusher as a victim. The away team must neutralize
 
 Suggested Power: 8436
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-3-Advanced.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Explore
@@ -2552,6 +2678,8 @@ FIGHTING FOR A CURE
 Clues to the disease point towards a Klingon research facility; this outbreak might not be natural.
 
 Suggested Power: 8568
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-4-Advanced.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -2610,6 +2738,8 @@ Cure in hand, the away team return to the colony and attempt to distribute it.
 
 Suggested Power: 8696
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-5-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 4
@@ -2659,6 +2789,8 @@ The neural parasites have been dealt with - now only the mastermind behind the a
 
 Suggested Power: 8864
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-6-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 3, 4
@@ -2706,6 +2838,8 @@ Tensions are risng between the Federation and the Klingon Empire in the Neutral 
 
 Suggested Power: 9012
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-1-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -2752,6 +2886,8 @@ THE NATURE OF THE CATASTROPHE
 A Klingon Bird-of-Prey has been shot down by a mysterious attacker.
 
 Suggested Power: 9176
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-2-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2808,6 +2944,8 @@ Borg drones are attacking the planet and plan to re-assimilate Seven of Nine.
 
 Suggested Power: 9328
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-3-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1
@@ -2856,6 +2994,8 @@ BROKEN RELAYS
 The away team needs to prevent the Cube from contacting the Collective for more reinforcements.
 
 Suggested Power: 9488
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-4-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -2913,6 +3053,8 @@ The Borg are retreating back into a Transwarp conduit and attempting to physical
 
 Suggested Power: 9644
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-5-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 3
@@ -2967,6 +3109,8 @@ ATOM HEART MOTHER
 Something or someone is still controling the Borg and needs to be stopped.
 
 Suggested Power: 9804
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-6-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3024,6 +3168,8 @@ The <i>U.S.S. Artemis</i> finds a lone Starfleet vessel, the <i>U.S.S. Pioneer</
 
 Suggested Power: 9956
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-1-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 4
@@ -3079,6 +3225,8 @@ The <i>U.S.S. Pioneer's</i> crew have succumbed to a form of madness that render
 
 Suggested Power: 10120
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-2-Advanced.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 1, 3
 2. Explore
@@ -3131,6 +3279,8 @@ STRANGE ALLIANCES
 Long-ranged scans have revealed a badly damaged Warbird tumbling through space: the <i>I.K.S. Ning'Tao</i>.
 
 Suggested Power: 10268
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-3-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3187,6 +3337,8 @@ Above the planet floats the Cardassian ship Martok warned you about. The <i>Korn
 
 Suggested Power: 10436
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-4-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 3
@@ -3240,6 +3392,8 @@ Beaming down to the surface of the planet to find the source of this madness.
 
 Suggested Power: 10580
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-5-Advanced.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 1, 2
 2. Explore
@@ -3290,6 +3444,8 @@ NOT WITH A BANG BUT A WHIMPER
 To boldly go where no one has gone before.
 
 Suggested Power: 10752
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-6-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3356,6 +3512,8 @@ The <i>U.S.S. Artemis</i> is floating outside the enormous Reality Engine built 
 
 Suggested Power: 10900
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-1-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 4
@@ -3410,6 +3568,8 @@ To earn the Caretaker's help, the away team much complete four tests, the first 
 
 Suggested Power: 11060
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-2-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 3
@@ -3463,6 +3623,8 @@ THROUGH A LONG TRACK
 The second test is the Test of Will, pitting the away team against the Borg once more.
 
 Suggested Power: 11216
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-3-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3522,6 +3684,8 @@ Faith and Will may not always be enough, the away team faces the Test of Cunning
 
 Suggested Power: 11376
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-4-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -3570,6 +3734,8 @@ The final test is the Test of Reason, to prove that some conflicts can be settle
 
 Suggested Power: 11532
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-5-Advanced.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 3
@@ -3615,6 +3781,8 @@ A LAST WORD
 Earning the mantle of Engineers, the away team must stop the Dreamless and repair the Reality Engine.
 
 Suggested Power: 11692
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-6-Advanced.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3668,6 +3836,8 @@ After a successful leap into the Nexus, the <i>U.S.S. Artemis</i> comes under fi
 
 Suggested Power: 10900
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-1-Expert.jpg)
+
 1. Combat
     * Cover Slots: 1, 2
 
@@ -3678,6 +3848,8 @@ DISABLING THE CORE
 Before Commander Burnham can leave the unknown vessel, its warp core must be disabled.
 
 Suggested Power: 10900
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-2-Expert.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 2, 3
@@ -3693,6 +3865,8 @@ BREACHING THE DEFENSES
 The <i>U.S.S. Artemis</i> responds to a distress signal from an unknown Federation base.
 
 Suggested Power: 10900
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-3-Expert.jpg)
 
 1. Intel (to 2)
 2. Resource (to 3)
@@ -3712,6 +3886,8 @@ OLD GHOSTS
 With no reply from survivors within Federation Base, the away team must investigate the facility with caution.
 
 Suggested Power: 11060
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-4-Expert.jpg)
 
 1. Explore
     * PHASER (to 2)
@@ -3740,6 +3916,8 @@ Project TALOS' defenses have run amok, complicating the search for survivors wit
 
 Suggested Power: 11060
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-5-Expert.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Intel (to 3)
@@ -3767,6 +3945,8 @@ TEARS OF A MACHINE
 The computer core of Talos must be disabled at all costs, to prevent further loss of life.
 
 Suggested Power: 11216
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission1-6-Expert.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 2
@@ -3798,6 +3978,8 @@ The <i>U.S.S Artemis</i> recieves a message from Starfleet - Captain Kirk has va
 
 Suggested Power: 11376
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-1-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -3820,6 +4002,8 @@ THE BAD SEED
 The hunt for Kirk brings the away team into conflict with Romulan mercenaries.
 
 Suggested Power: 11532
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-2-Expert.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -3852,6 +4036,8 @@ THE HUNTING GROUNDS
 The team uncover evidence of a far reaching plot to create an alliance between the Romulans and the Gorn.
 
 Suggested Power: 11692
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-3-Expert.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -3889,6 +4075,8 @@ On the Gorn homeworld, the away team finds clues that point them to where Kirk i
 
 Suggested Power: 11840
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-4-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -3923,6 +4111,8 @@ THE GORN
 The away team and Kirk come face to face with one of his oldest foes, the Gorn Commander.
 
 Suggested Power: 12008
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-5-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -3963,6 +4153,8 @@ OLD FOES, NEW FRIENDS
 Enraged, Tomalak and the Romulans attack. Only by working togther can Kirk and the Gorn prevail.
 
 Suggested Power: 12156
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission2-6-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4007,6 +4199,8 @@ A mysterious signal reaches the <i>U.S.S Artemis</i> from the surface of a deser
 
 Suggested Power: 12316
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-1-Expert.jpg)
+
 1. Explore
     * ADVANCE (to 2)
     * (3195 Engineering) HACK (to 3)
@@ -4044,6 +4238,8 @@ THE HUNT FOR DUKAT
 In the ruins of a prison transport, the away team find that Gul Dukat has escaped capitivity.
 
 Suggested Power: 12464
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-2-Expert.jpg)
 
 1. Explore
     * INSPECT (to 3)
@@ -4087,6 +4283,8 @@ Prisoner secure, the away team hunt for the shuttle's pilot - Odo.
 
 Suggested Power: 12628
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-3-Expert.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Explore
@@ -4127,6 +4325,8 @@ Odo's trail leads into a ruined Borg outpost, buried deep beneath the shifting s
 
 Suggested Power: 12780
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-4-Expert.jpg)
+
 1. Combat (to 2)
     * Cover Slots: None
 2. Explore
@@ -4165,6 +4365,8 @@ POOLS
 In the heart of the Borg outpost the team encounters a mimetic pool, capable of imitating any lifeform.
 
 Suggested Power: 12944
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-5-Expert.jpg)
 
 1. Explore
     * EXPLORE (to 2)
@@ -4207,6 +4409,8 @@ Alarms sound as the Borg awaken. It's up to the away team to destroy the outpost
 
 Suggested Power: 13088
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission3-6-Expert.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 3
 2. Explore
@@ -4245,6 +4449,8 @@ ARRIVALS
 A call for help leads to a colony suffering from a mysterious disease.
 
 Suggested Power: 13236
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-1-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4292,6 +4498,8 @@ THE GOOD DOCTOR
 Battling against maddened inhabitants, the away team makes its way to Dr Beverly Crusher's clinic.
 
 Suggested Power: 13388
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-2-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4342,6 +4550,8 @@ The infection has claimed Dr. Crusher as a victim. The away team must neutralize
 
 Suggested Power: 13536
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-3-Expert.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 2, 3
 2. Explore
@@ -4388,6 +4598,8 @@ FIGHTING FOR A CURE
 Clues to the disease point towards a Klingon research facility; this outbreak might not be natural.
 
 Suggested Power: 13692
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-4-Expert.jpg)
 
 1. Combat (to 2)
     * Cover Slots: 1, 3
@@ -4446,6 +4658,8 @@ Cure in hand, the away team return to the colony and attempt to distribute it.
 
 Suggested Power: 13840
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-5-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 4
@@ -4495,6 +4709,8 @@ The neural parasites have been dealt with - now only the mastermind behind the a
 
 Suggested Power: 13996
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission4-6-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 3, 4
@@ -4542,6 +4758,8 @@ Tensions are risng between the Federation and the Klingon Empire in the Neutral 
 
 Suggested Power: 14148
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-1-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -4588,6 +4806,8 @@ THE NATURE OF THE CATASTROPHE
 A Klingon Bird-of-Prey has been shot down by a mysterious attacker.
 
 Suggested Power: 14308
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-2-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4644,6 +4864,8 @@ Borg drones are attacking the planet and plan to re-assimilate Seven of Nine.
 
 Suggested Power: 14452
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-3-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1
@@ -4692,6 +4914,8 @@ BROKEN RELAYS
 The away team needs to prevent the Cube from contacting the Collective for more reinforcements.
 
 Suggested Power: 14600
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-4-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4749,6 +4973,8 @@ The Borg are retreating back into a Transwarp conduit and attempting to physical
 
 Suggested Power: 14752
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-5-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 3
@@ -4803,6 +5029,8 @@ ATOM HEART MOTHER
 Something or someone is still controling the Borg and needs to be stopped.
 
 Suggested Power: 14904
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission5-6-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -4860,6 +5088,8 @@ The <i>U.S.S. Artemis</i> finds a lone Starfleet vessel, the <i>U.S.S. Pioneer</
 
 Suggested Power: 15044
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-1-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 4
@@ -4915,6 +5145,8 @@ The <i>U.S.S. Pioneer's</i> crew have succumbed to a form of madness that render
 
 Suggested Power: 15204
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-2-Expert.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 1, 3
 2. Explore
@@ -4967,6 +5199,8 @@ STRANGE ALLIANCES
 Long-ranged scans have revealed a badly damaged Warbird tumbling through space: the <i>I.K.S. Ning'Tao</i>.
 
 Suggested Power: 15352
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-3-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5023,6 +5257,8 @@ Above the planet floats the Cardassian ship Martok warned you about. The <i>Korn
 
 Suggested Power: 15512
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-4-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 3
@@ -5076,6 +5312,8 @@ Beaming down to the surface of the planet to find the source of this madness.
 
 Suggested Power: 15660
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-5-Expert.jpg)
+
 1. Combat (to 2)
     * Cover Slots: 1, 2
 2. Explore
@@ -5126,6 +5364,8 @@ NOT WITH A BANG BUT A WHIMPER
 To boldly go where no one has gone before.
 
 Suggested Power: 15808
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission6-6-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5192,6 +5432,8 @@ The <i>U.S.S. Artemis</i> is floating outside the enormous Reality Engine built 
 
 Suggested Power: 15972
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-1-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 4
@@ -5246,6 +5488,8 @@ To earn the Caretaker's help, the away team much complete four tests, the first 
 
 Suggested Power: 16132
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-2-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 3
@@ -5299,6 +5543,8 @@ THROUGH A LONG TRACK
 The second test is the Test of Will, pitting the away team against the Borg once more.
 
 Suggested Power: 16296
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-3-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
@@ -5358,6 +5604,8 @@ Faith and Will may not always be enough, the away team faces the Test of Cunning
 
 Suggested Power: 16452
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-4-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 1, 2
@@ -5406,6 +5654,8 @@ The final test is the Test of Reason, to prove that some conflicts can be settle
 
 Suggested Power: 16624
 
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-5-Expert.jpg)
+
 1. Intel (to 2)
 2. Combat (to 3)
     * Cover Slots: 2, 3
@@ -5451,6 +5701,8 @@ A LAST WORD
 Earning the mantle of Engineers, the away team must stop the Dreamless and repair the Reality Engine.
 
 Suggested Power: 16780
+
+[Mission Map](https://probabilist.github.io/legends/maps/mission7-6-Expert.jpg)
 
 1. Intel (to 2)
 2. Combat (to 3)
