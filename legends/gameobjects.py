@@ -14,7 +14,7 @@ from legends.functions import (
     xpFromLevel
 )
 from legends.stats import Stats
-from legends.skill import Skill
+from legends.skill import BridgeSkill, Skill
 
 __all__ = [
     'allSkillEffectTags',
@@ -46,8 +46,9 @@ class Character():
         stats (legends.stats.Stats): The Stats object that stores the
             character's naked stats (i.e. the stats they would have
             without any gear or particles).
-        skills (dict): {`str`:`Skill`} A dictionary mapping skill IDs
-            (found in `GSSkill`) to Skill objects.
+        skills (dict): {`str`:`legends.skill.Skill`} A dictionary
+            mapping skill IDs (found in `GSSkill`) to Skill objects.
+        bridgeSkill (legends.skill.Skill): The character's bridge skill.
         gearSlots (list of GearSlot): The list of the character's gear
             slots.
         partSlots (list of PartSlot): The list of the character's
@@ -79,6 +80,12 @@ class Character():
             if skill.startWith:
                 skill.unlocked = True
             self.skills[skillID] = skill
+        try:
+            self.bridgeSkill = BridgeSkill(
+                GSCharacter[self.nameID]['BridgeSkill']
+            )
+        except KeyError:
+            self.bridgeSkill = None
         self.gearSlots = []
         for slot in range(4):
             self.gearSlots.append(GearSlot(self, slot))
@@ -153,7 +160,8 @@ class Character():
     @level.setter
     def level(self, value):
         if self.level != value:
-            self.xp = xpFromLevel(value, self.rarity)
+            self._data['xp'] = xpFromLevel(value, self.rarity)
+            self.updateStats()
 
     @property
     def rarity(self):
@@ -175,6 +183,16 @@ class Character():
         """`list`: [`str`] A list of the character's in-game tags.
         """
         return GSCharacter[self.nameID]['Tags']
+
+    @property
+    def bridgeStations(self):
+        """`list` of `str`: The list of bridge stations this character
+        is eligible to occupy.
+        """
+        return [
+            station for station in GSCharacter[self.nameID]['BridgeStations']
+            if station != 'None'
+        ]
 
     @property
     def maxGearLevel(self):

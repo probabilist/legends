@@ -1,5 +1,19 @@
 # Change log
 
+## Version 0.19.3
+
+* Added a `BRIDGE_STATIONS` constant.
+* Added a `bridgeSkill` attribute to the `Character` class.
+* Added a `bridgeStations` property to the `Character` class.
+* Added a console warning when a skill is created without effects.
+* Added an `effectTags` property to the `EffectChain` class.
+* Modified the `triggersEffect` attribute in the `SkillEffect` class to look at the 'effectID' key in the game data if the 'sequenceID' key is not present.
+* Added a `statAffected` property to the `SkillEffect` class.
+* Modified the `statSource` property of `SkillEffect` to be `None` instead of 'None' when not present.
+* Added `tagAffected`, `resistanceType`, and `chanceToResist` properties to `SkillEffect`.
+* Modified the `effectTags` property of `SkillEffect` to the ignore the 'Placeholder' tag.
+* Added a `BridgeSkill` class.
+
 ## Version 0.19.2
 
 * Added `name` and `description` properties to the `Mission` class.

@@ -43,7 +43,7 @@ from legends.functions import (
     xpFromLevel
 )
 from legends.stats import Stats
-from legends.skill import Skill
+from legends.skill import BridgeSkill, Skill
 
 __all__ = [
     &#39;allSkillEffectTags&#39;,
@@ -75,8 +75,9 @@ class Character():
         stats (legends.stats.Stats): The Stats object that stores the
             character&#39;s naked stats (i.e. the stats they would have
             without any gear or particles).
-        skills (dict): {`str`:`Skill`} A dictionary mapping skill IDs
-            (found in `GSSkill`) to Skill objects.
+        skills (dict): {`str`:`legends.skill.Skill`} A dictionary
+            mapping skill IDs (found in `GSSkill`) to Skill objects.
+        bridgeSkill (legends.skill.Skill): The character&#39;s bridge skill.
         gearSlots (list of GearSlot): The list of the character&#39;s gear
             slots.
         partSlots (list of PartSlot): The list of the character&#39;s
@@ -108,6 +109,12 @@ class Character():
             if skill.startWith:
                 skill.unlocked = True
             self.skills[skillID] = skill
+        try:
+            self.bridgeSkill = BridgeSkill(
+                GSCharacter[self.nameID][&#39;BridgeSkill&#39;]
+            )
+        except KeyError:
+            self.bridgeSkill = None
         self.gearSlots = []
         for slot in range(4):
             self.gearSlots.append(GearSlot(self, slot))
@@ -182,7 +189,8 @@ class Character():
     @level.setter
     def level(self, value):
         if self.level != value:
-            self.xp = xpFromLevel(value, self.rarity)
+            self._data[&#39;xp&#39;] = xpFromLevel(value, self.rarity)
+            self.updateStats()
 
     @property
     def rarity(self):
@@ -204,6 +212,16 @@ class Character():
         &#34;&#34;&#34;`list`: [`str`] A list of the character&#39;s in-game tags.
         &#34;&#34;&#34;
         return GSCharacter[self.nameID][&#39;Tags&#39;]
+
+    @property
+    def bridgeStations(self):
+        &#34;&#34;&#34;`list` of `str`: The list of bridge stations this character
+        is eligible to occupy.
+        &#34;&#34;&#34;
+        return [
+            station for station in GSCharacter[self.nameID][&#39;BridgeStations&#39;]
+            if station != &#39;None&#39;
+        ]
 
     @property
     def maxGearLevel(self):
@@ -557,8 +575,10 @@ current and upcoming.</p>
 character's naked stats (i.e. the stats they would have
 without any gear or particles).</dd>
 <dt><strong><code>skills</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>Skill</code>} A dictionary mapping skill IDs
-(found in <code>GSSkill</code>) to Skill objects.</dd>
+<dd>{<code>str</code>:<code><a title="legends.skill.Skill" href="skill.html#legends.skill.Skill">Skill</a></code>} A dictionary
+mapping skill IDs (found in <code>GSSkill</code>) to Skill objects.</dd>
+<dt><strong><code>bridgeSkill</code></strong> :&ensp;<code><a title="legends.skill.Skill" href="skill.html#legends.skill.Skill">Skill</a></code></dt>
+<dd>The character's bridge skill.</dd>
 <dt><strong><code>gearSlots</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.GearSlot" href="#legends.gameobjects.GearSlot">GearSlot</a></code></dt>
 <dd>The list of the character's gear
 slots.</dd>
@@ -589,8 +609,9 @@ properties.</p>
         stats (legends.stats.Stats): The Stats object that stores the
             character&#39;s naked stats (i.e. the stats they would have
             without any gear or particles).
-        skills (dict): {`str`:`Skill`} A dictionary mapping skill IDs
-            (found in `GSSkill`) to Skill objects.
+        skills (dict): {`str`:`legends.skill.Skill`} A dictionary
+            mapping skill IDs (found in `GSSkill`) to Skill objects.
+        bridgeSkill (legends.skill.Skill): The character&#39;s bridge skill.
         gearSlots (list of GearSlot): The list of the character&#39;s gear
             slots.
         partSlots (list of PartSlot): The list of the character&#39;s
@@ -622,6 +643,12 @@ properties.</p>
             if skill.startWith:
                 skill.unlocked = True
             self.skills[skillID] = skill
+        try:
+            self.bridgeSkill = BridgeSkill(
+                GSCharacter[self.nameID][&#39;BridgeSkill&#39;]
+            )
+        except KeyError:
+            self.bridgeSkill = None
         self.gearSlots = []
         for slot in range(4):
             self.gearSlots.append(GearSlot(self, slot))
@@ -696,7 +723,8 @@ properties.</p>
     @level.setter
     def level(self, value):
         if self.level != value:
-            self.xp = xpFromLevel(value, self.rarity)
+            self._data[&#39;xp&#39;] = xpFromLevel(value, self.rarity)
+            self.updateStats()
 
     @property
     def rarity(self):
@@ -718,6 +746,16 @@ properties.</p>
         &#34;&#34;&#34;`list`: [`str`] A list of the character&#39;s in-game tags.
         &#34;&#34;&#34;
         return GSCharacter[self.nameID][&#39;Tags&#39;]
+
+    @property
+    def bridgeStations(self):
+        &#34;&#34;&#34;`list` of `str`: The list of bridge stations this character
+        is eligible to occupy.
+        &#34;&#34;&#34;
+        return [
+            station for station in GSCharacter[self.nameID][&#39;BridgeStations&#39;]
+            if station != &#39;None&#39;
+        ]
 
     @property
     def maxGearLevel(self):
@@ -804,6 +842,25 @@ properties.</p>
 </details>
 <h3>Instance variables</h3>
 <dl>
+<dt id="legends.gameobjects.Character.bridgeStations"><code class="name">var <span class="ident">bridgeStations</span></code></dt>
+<dd>
+<div class="desc"><p><code>list</code> of <code>str</code>: The list of bridge stations this character
+is eligible to occupy.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def bridgeStations(self):
+    &#34;&#34;&#34;`list` of `str`: The list of bridge stations this character
+    is eligible to occupy.
+    &#34;&#34;&#34;
+    return [
+        station for station in GSCharacter[self.nameID][&#39;BridgeStations&#39;]
+        if station != &#39;None&#39;
+    ]</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Character.level"><code class="name">var <span class="ident">level</span></code></dt>
 <dd>
 <div class="desc"><p><code>int</code>: The level of the character. Setting this to a value
@@ -1725,6 +1782,7 @@ given index to the given stat name.</p>
 <h4><code><a title="legends.gameobjects.Character" href="#legends.gameobjects.Character">Character</a></code></h4>
 <ul class="two-column">
 <li><code><a title="legends.gameobjects.Character.aiSkillOrder" href="#legends.gameobjects.Character.aiSkillOrder">aiSkillOrder</a></code></li>
+<li><code><a title="legends.gameobjects.Character.bridgeStations" href="#legends.gameobjects.Character.bridgeStations">bridgeStations</a></code></li>
 <li><code><a title="legends.gameobjects.Character.level" href="#legends.gameobjects.Character.level">level</a></code></li>
 <li><code><a title="legends.gameobjects.Character.maxGearLevel" href="#legends.gameobjects.Character.maxGearLevel">maxGearLevel</a></code></li>
 <li><code><a title="legends.gameobjects.Character.missingSkillLevels" href="#legends.gameobjects.Character.missingSkillLevels">missingSkillLevels</a></code></li>

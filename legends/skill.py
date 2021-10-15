@@ -2,6 +2,7 @@
 
 """
 
+from warnings import warn
 from legends.utils.functions import camelToSpace, collapse
 from legends.utils.htmltagstripper import HTMLTagStripper
 #pylint: disable-next=no-name-in-module
@@ -9,7 +10,7 @@ from legends.constants import GSEffect, GSEffectType, GSSkill, GSSkillUpgrade
 from legends.constants import DESCRIPTIONS
 from legends.functions import skillToMaxCost
 
-__all__ = ['EffectChain', 'Skill', 'SkillEffect']
+__all__ = ['BridgeSkill', 'EffectChain', 'Skill', 'SkillEffect']
 
 class EffectChain(list):
     """A list of linked `SkillEffect` objects.
@@ -54,6 +55,16 @@ class EffectChain(list):
         """
         return collapse(effect.statSourceFrac for effect in self.damageEffects)
 
+    @property
+    def effectTags(self):
+        """`list` of `str`: A list of all tags on skill effects in this
+        chain.
+        """
+        tags = []
+        for effect in self:
+            tags.extend(effect.effectTags)
+        return tags
+
     def __repr__(self):
         return 'EffectChain({})'.format(list.__repr__(self))
 
@@ -88,6 +99,8 @@ class Skill():
             self.casterEffect = SkillEffect(
                 casterEffect['effect'], casterEffect['fraction']
             )
+        if len(self.effects) == 0 and self.casterEffect is None:
+            warn('Skill ID {} has no effects'.format(self.skillID))
 
     @property
     def name(self):
@@ -149,11 +162,9 @@ class Skill():
         """
         effTags = []
         for effect in self.effects:
-            for subeffect in effect.chain:
-                effTags.extend(subeffect.effectTags)
+            effTags.extend(effect.chain.effectTags)
         if self.casterEffect is not None:
-            for subeffect in self.casterEffect.chain:
-                effTags.extend(subeffect.effectTags)
+            effTags.extend(self.casterEffect.chain.effectTags)
         return sorted(list(set(effTags)))
 
     @property
@@ -195,7 +206,11 @@ class SkillEffect():
             newEffectID = self.data['sequenceID']
             self.triggersEffect = SkillEffect(newEffectID, self.fraction)
         except KeyError:
-            self.triggersEffect = None
+            try:
+                newEffectID = self.data['effectID']
+                self.triggersEffect = SkillEffect(newEffectID, self.fraction)
+            except KeyError:
+                self.triggersEffect = None
 
     @property
     def data(self):
@@ -208,11 +223,20 @@ class SkillEffect():
         return '{} ({:g}x)'.format(self.effectID, self.fraction)
 
     @property
+    def statAffected(self):
+        """`str`: The name of the statistic that is affected by this
+        effect.
+        """
+        stat = self.data['statAffected']
+        return None if stat == 'None' else stat
+
+    @property
     def statSource(self):
         """`str`: The name of the statistic that serves as the source of
         the effect.
         """
-        return self.data['statSource']
+        stat = self.data['statSource']
+        return None if stat == 'None' else stat
 
     @property
     def statSourceFrac(self):
@@ -220,6 +244,29 @@ class SkillEffect():
         for the effect.
         """
         return self.data['statSourceFraction']
+
+    @property
+    def tagAffected(self):
+        """`str`: The character tag affected by this skill, if the skill
+        is restricted to a particular character tag. Otherwise, `None`.
+        """
+        tag = self.data['property']
+        return None if tag == '' else tag
+
+    @property
+    def resistanceType(self):
+        """`str`: If the skill offers a chance to resist a detrimental
+        effect, this is the effect. Otherwise, `None`.
+        """
+        typ = self.data['resistanceType']
+        return None if typ == 'None' else typ
+
+    @property
+    def chanceToResist(self):
+        """`str`: If the skill offers a chance to resist a detrimental
+        effect, this is the probability. Otherwise, 0.
+        """
+        return self.data['chanceToResist']
 
     @property
     def effectType(self):
@@ -239,9 +286,13 @@ class SkillEffect():
         to have spaces inserted, then added as a tag. If the skill does
         damage, it also gets the 'Damage' tag, if it doesn't already
         have it, as well as either a 'Damage (Attack)' or 'Damage
-        (Tech)' tag.
+        (Tech)' tag. If the effect type is 'Placeholder', it is ignored
+        and not added as a tag.
         """
-        tags = [camelToSpace(self.effectType)]
+        tags = (
+            [camelToSpace(self.effectType)]
+            if self.effectType != 'Placeholder' else []
+        )
         if self.doesDamage:
             tags.append('Damage ({})'.format(self.statSource))
             if 'Damage' not in tags:
@@ -268,3 +319,38 @@ class SkillEffect():
 
     def __repr__(self):
         return '<SkillEffect: {!r}>'.format(self.effectID)
+
+class BridgeSkill(Skill):
+    """A bridge skill in STL.
+
+    Bridge skills are passive skills that offer increased stats,
+    sometimes only to particular factions, or increased chance to resist
+    detrimental effects.
+
+    """
+
+    def __init__(self, skillID):
+        """Bridge skills are created unlocked.
+
+        """
+        Skill.__init__(self, skillID, unlocked=True)
+
+    @property
+    def tagAffected(self):
+        """`str`: If the skill only applies to a certain character tag,
+        this is that tag, otherwise `None`.
+        """
+        return self.effects[0].tagAffected
+
+    @property
+    def effect(self):
+        """`SkillEffect`: The primary effect of the skill. (In the game
+        assets, the primary effect is not always the first effect in the
+        effect's chain. For a bridge skill that applies only to a
+        certain faction, the first effect is to check the faction. The
+        second effect is the primary effect.)
+        """
+        return (
+            self.effects[0] if self.tagAffected is None
+            else self.effects[0].chain[1]
+        )

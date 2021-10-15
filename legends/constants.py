@@ -10,6 +10,8 @@ NOTE: (1) The constant `GSBaseStat` differs from the data file
 prevent conflict with the `Item` class.
 
 Attributes:
+    BRIDGE_STATIONS (list of str): A list of all possible bridge
+        stations that characters can occupy.
     CHARACTER_TAGS (list): [`str`] A list of all in-game characters tags
         for all playable characters, both enabled and upcoming.
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us['List']` put
@@ -97,6 +99,7 @@ from os.path import abspath, dirname
 from legends.utils.relations import bidict
 
 __all__ = [
+    'BRIDGE_STATIONS',
     'CHARACTER_TAGS',
     'DESCRIPTIONS',
     'DIFFICULTIES',
@@ -140,6 +143,12 @@ _ = {'Health': GSBaseStat['MaxHealth']}
 _.update(GSBaseStat)
 del _['MaxHealth']
 GSBaseStat = _
+
+BRIDGE_STATIONS = []
+for data in GSCharacter.values(): # pylint: disable=undefined-variable
+    if data['BridgeStations'] != ['None']:
+        BRIDGE_STATIONS.extend(data['BridgeStations'])
+BRIDGE_STATIONS = list(set(BRIDGE_STATIONS))
 
 DESCRIPTIONS = {}
 for D in lang_en_us['List']: # pylint: disable=undefined-variable

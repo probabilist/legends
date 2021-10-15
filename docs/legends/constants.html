@@ -32,6 +32,9 @@ points to a Python dictionary built from the file's contents.</p>
 prevent conflict with the <code><a title="legends.constants.Item" href="#legends.constants.Item">Item</a></code> class.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
+<dt><strong><code>BRIDGE_STATIONS</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
+<dd>A list of all possible bridge
+stations that characters can occupy.</dd>
 <dt><strong><code>CHARACTER_TAGS</code></strong> :&ensp;<code>list</code></dt>
 <dd>[<code>str</code>] A list of all in-game characters tags
 for all playable characters, both enabled and upcoming.</dd>
@@ -145,6 +148,8 @@ NOTE: (1) The constant `GSBaseStat` differs from the data file
 prevent conflict with the `Item` class.
 
 Attributes:
+    BRIDGE_STATIONS (list of str): A list of all possible bridge
+        stations that characters can occupy.
     CHARACTER_TAGS (list): [`str`] A list of all in-game characters tags
         for all playable characters, both enabled and upcoming.
     DESCRIPTIONS (dict): The key-value pairs in `lang_en_us[&#39;List&#39;]` put
@@ -232,6 +237,7 @@ from os.path import abspath, dirname
 from legends.utils.relations import bidict
 
 __all__ = [
+    &#39;BRIDGE_STATIONS&#39;,
     &#39;CHARACTER_TAGS&#39;,
     &#39;DESCRIPTIONS&#39;,
     &#39;DIFFICULTIES&#39;,
@@ -275,6 +281,12 @@ _ = {&#39;Health&#39;: GSBaseStat[&#39;MaxHealth&#39;]}
 _.update(GSBaseStat)
 del _[&#39;MaxHealth&#39;]
 GSBaseStat = _
+
+BRIDGE_STATIONS = []
+for data in GSCharacter.values(): # pylint: disable=undefined-variable
+    if data[&#39;BridgeStations&#39;] != [&#39;None&#39;]:
+        BRIDGE_STATIONS.extend(data[&#39;BridgeStations&#39;])
+BRIDGE_STATIONS = list(set(BRIDGE_STATIONS))
 
 DESCRIPTIONS = {}
 for D in lang_en_us[&#39;List&#39;]: # pylint: disable=undefined-variable

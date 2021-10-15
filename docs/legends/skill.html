@@ -31,6 +31,7 @@
 
 &#34;&#34;&#34;
 
+from warnings import warn
 from legends.utils.functions import camelToSpace, collapse
 from legends.utils.htmltagstripper import HTMLTagStripper
 #pylint: disable-next=no-name-in-module
@@ -38,7 +39,7 @@ from legends.constants import GSEffect, GSEffectType, GSSkill, GSSkillUpgrade
 from legends.constants import DESCRIPTIONS
 from legends.functions import skillToMaxCost
 
-__all__ = [&#39;EffectChain&#39;, &#39;Skill&#39;, &#39;SkillEffect&#39;]
+__all__ = [&#39;BridgeSkill&#39;, &#39;EffectChain&#39;, &#39;Skill&#39;, &#39;SkillEffect&#39;]
 
 class EffectChain(list):
     &#34;&#34;&#34;A list of linked `SkillEffect` objects.
@@ -83,6 +84,16 @@ class EffectChain(list):
         &#34;&#34;&#34;
         return collapse(effect.statSourceFrac for effect in self.damageEffects)
 
+    @property
+    def effectTags(self):
+        &#34;&#34;&#34;`list` of `str`: A list of all tags on skill effects in this
+        chain.
+        &#34;&#34;&#34;
+        tags = []
+        for effect in self:
+            tags.extend(effect.effectTags)
+        return tags
+
     def __repr__(self):
         return &#39;EffectChain({})&#39;.format(list.__repr__(self))
 
@@ -117,6 +128,8 @@ class Skill():
             self.casterEffect = SkillEffect(
                 casterEffect[&#39;effect&#39;], casterEffect[&#39;fraction&#39;]
             )
+        if len(self.effects) == 0 and self.casterEffect is None:
+            warn(&#39;Skill ID {} has no effects&#39;.format(self.skillID))
 
     @property
     def name(self):
@@ -178,11 +191,9 @@ class Skill():
         &#34;&#34;&#34;
         effTags = []
         for effect in self.effects:
-            for subeffect in effect.chain:
-                effTags.extend(subeffect.effectTags)
+            effTags.extend(effect.chain.effectTags)
         if self.casterEffect is not None:
-            for subeffect in self.casterEffect.chain:
-                effTags.extend(subeffect.effectTags)
+            effTags.extend(self.casterEffect.chain.effectTags)
         return sorted(list(set(effTags)))
 
     @property
@@ -224,7 +235,11 @@ class SkillEffect():
             newEffectID = self.data[&#39;sequenceID&#39;]
             self.triggersEffect = SkillEffect(newEffectID, self.fraction)
         except KeyError:
-            self.triggersEffect = None
+            try:
+                newEffectID = self.data[&#39;effectID&#39;]
+                self.triggersEffect = SkillEffect(newEffectID, self.fraction)
+            except KeyError:
+                self.triggersEffect = None
 
     @property
     def data(self):
@@ -237,11 +252,20 @@ class SkillEffect():
         return &#39;{} ({:g}x)&#39;.format(self.effectID, self.fraction)
 
     @property
+    def statAffected(self):
+        &#34;&#34;&#34;`str`: The name of the statistic that is affected by this
+        effect.
+        &#34;&#34;&#34;
+        stat = self.data[&#39;statAffected&#39;]
+        return None if stat == &#39;None&#39; else stat
+
+    @property
     def statSource(self):
         &#34;&#34;&#34;`str`: The name of the statistic that serves as the source of
         the effect.
         &#34;&#34;&#34;
-        return self.data[&#39;statSource&#39;]
+        stat = self.data[&#39;statSource&#39;]
+        return None if stat == &#39;None&#39; else stat
 
     @property
     def statSourceFrac(self):
@@ -249,6 +273,29 @@ class SkillEffect():
         for the effect.
         &#34;&#34;&#34;
         return self.data[&#39;statSourceFraction&#39;]
+
+    @property
+    def tagAffected(self):
+        &#34;&#34;&#34;`str`: The character tag affected by this skill, if the skill
+        is restricted to a particular character tag. Otherwise, `None`.
+        &#34;&#34;&#34;
+        tag = self.data[&#39;property&#39;]
+        return None if tag == &#39;&#39; else tag
+
+    @property
+    def resistanceType(self):
+        &#34;&#34;&#34;`str`: If the skill offers a chance to resist a detrimental
+        effect, this is the effect. Otherwise, `None`.
+        &#34;&#34;&#34;
+        typ = self.data[&#39;resistanceType&#39;]
+        return None if typ == &#39;None&#39; else typ
+
+    @property
+    def chanceToResist(self):
+        &#34;&#34;&#34;`str`: If the skill offers a chance to resist a detrimental
+        effect, this is the probability. Otherwise, 0.
+        &#34;&#34;&#34;
+        return self.data[&#39;chanceToResist&#39;]
 
     @property
     def effectType(self):
@@ -268,9 +315,13 @@ class SkillEffect():
         to have spaces inserted, then added as a tag. If the skill does
         damage, it also gets the &#39;Damage&#39; tag, if it doesn&#39;t already
         have it, as well as either a &#39;Damage (Attack)&#39; or &#39;Damage
-        (Tech)&#39; tag.
+        (Tech)&#39; tag. If the effect type is &#39;Placeholder&#39;, it is ignored
+        and not added as a tag.
         &#34;&#34;&#34;
-        tags = [camelToSpace(self.effectType)]
+        tags = (
+            [camelToSpace(self.effectType)]
+            if self.effectType != &#39;Placeholder&#39; else []
+        )
         if self.doesDamage:
             tags.append(&#39;Damage ({})&#39;.format(self.statSource))
             if &#39;Damage&#39; not in tags:
@@ -296,7 +347,42 @@ class SkillEffect():
         return effectChain
 
     def __repr__(self):
-        return &#39;&lt;SkillEffect: {!r}&gt;&#39;.format(self.effectID)</code></pre>
+        return &#39;&lt;SkillEffect: {!r}&gt;&#39;.format(self.effectID)
+
+class BridgeSkill(Skill):
+    &#34;&#34;&#34;A bridge skill in STL.
+
+    Bridge skills are passive skills that offer increased stats,
+    sometimes only to particular factions, or increased chance to resist
+    detrimental effects.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, skillID):
+        &#34;&#34;&#34;Bridge skills are created unlocked.
+
+        &#34;&#34;&#34;
+        Skill.__init__(self, skillID, unlocked=True)
+
+    @property
+    def tagAffected(self):
+        &#34;&#34;&#34;`str`: If the skill only applies to a certain character tag,
+        this is that tag, otherwise `None`.
+        &#34;&#34;&#34;
+        return self.effects[0].tagAffected
+
+    @property
+    def effect(self):
+        &#34;&#34;&#34;`SkillEffect`: The primary effect of the skill. (In the game
+        assets, the primary effect is not always the first effect in the
+        effect&#39;s chain. For a bridge skill that applies only to a
+        certain faction, the first effect is to check the faction. The
+        second effect is the primary effect.)
+        &#34;&#34;&#34;
+        return (
+            self.effects[0] if self.tagAffected is None
+            else self.effects[0].chain[1]
+        )</code></pre>
 </details>
 </section>
 <section>
@@ -308,6 +394,122 @@ class SkillEffect():
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.skill.BridgeSkill"><code class="flex name class">
+<span>class <span class="ident">BridgeSkill</span></span>
+<span>(</span><span>skillID)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A bridge skill in STL.</p>
+<p>Bridge skills are passive skills that offer increased stats,
+sometimes only to particular factions, or increased chance to resist
+detrimental effects.</p>
+<p>Bridge skills are created unlocked.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BridgeSkill(Skill):
+    &#34;&#34;&#34;A bridge skill in STL.
+
+    Bridge skills are passive skills that offer increased stats,
+    sometimes only to particular factions, or increased chance to resist
+    detrimental effects.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, skillID):
+        &#34;&#34;&#34;Bridge skills are created unlocked.
+
+        &#34;&#34;&#34;
+        Skill.__init__(self, skillID, unlocked=True)
+
+    @property
+    def tagAffected(self):
+        &#34;&#34;&#34;`str`: If the skill only applies to a certain character tag,
+        this is that tag, otherwise `None`.
+        &#34;&#34;&#34;
+        return self.effects[0].tagAffected
+
+    @property
+    def effect(self):
+        &#34;&#34;&#34;`SkillEffect`: The primary effect of the skill. (In the game
+        assets, the primary effect is not always the first effect in the
+        effect&#39;s chain. For a bridge skill that applies only to a
+        certain faction, the first effect is to check the faction. The
+        second effect is the primary effect.)
+        &#34;&#34;&#34;
+        return (
+            self.effects[0] if self.tagAffected is None
+            else self.effects[0].chain[1]
+        )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.skill.Skill" href="#legends.skill.Skill">Skill</a></li>
+</ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.skill.BridgeSkill.effect"><code class="name">var <span class="ident">effect</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.skill.SkillEffect" href="#legends.skill.SkillEffect">SkillEffect</a></code>: The primary effect of the skill. (In the game
+assets, the primary effect is not always the first effect in the
+effect's chain. For a bridge skill that applies only to a
+certain faction, the first effect is to check the faction. The
+second effect is the primary effect.)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def effect(self):
+    &#34;&#34;&#34;`SkillEffect`: The primary effect of the skill. (In the game
+    assets, the primary effect is not always the first effect in the
+    effect&#39;s chain. For a bridge skill that applies only to a
+    certain faction, the first effect is to check the faction. The
+    second effect is the primary effect.)
+    &#34;&#34;&#34;
+    return (
+        self.effects[0] if self.tagAffected is None
+        else self.effects[0].chain[1]
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.BridgeSkill.tagAffected"><code class="name">var <span class="ident">tagAffected</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: If the skill only applies to a certain character tag,
+this is that tag, otherwise <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def tagAffected(self):
+    &#34;&#34;&#34;`str`: If the skill only applies to a certain character tag,
+    this is that tag, otherwise `None`.
+    &#34;&#34;&#34;
+    return self.effects[0].tagAffected</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.skill.Skill" href="#legends.skill.Skill">Skill</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.skill.Skill.cooldown" href="#legends.skill.Skill.cooldown">cooldown</a></code></li>
+<li><code><a title="legends.skill.Skill.data" href="#legends.skill.Skill.data">data</a></code></li>
+<li><code><a title="legends.skill.Skill.description" href="#legends.skill.Skill.description">description</a></code></li>
+<li><code><a title="legends.skill.Skill.effectTags" href="#legends.skill.Skill.effectTags">effectTags</a></code></li>
+<li><code><a title="legends.skill.Skill.isAOE" href="#legends.skill.Skill.isAOE">isAOE</a></code></li>
+<li><code><a title="legends.skill.Skill.isMultiRandom" href="#legends.skill.Skill.isMultiRandom">isMultiRandom</a></code></li>
+<li><code><a title="legends.skill.Skill.itemsToMax" href="#legends.skill.Skill.itemsToMax">itemsToMax</a></code></li>
+<li><code><a title="legends.skill.Skill.name" href="#legends.skill.Skill.name">name</a></code></li>
+<li><code><a title="legends.skill.Skill.numTargets" href="#legends.skill.Skill.numTargets">numTargets</a></code></li>
+<li><code><a title="legends.skill.Skill.startWith" href="#legends.skill.Skill.startWith">startWith</a></code></li>
+<li><code><a title="legends.skill.Skill.startingCooldown" href="#legends.skill.Skill.startingCooldown">startingCooldown</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="legends.skill.EffectChain"><code class="flex name class">
 <span>class <span class="ident">EffectChain</span></span>
 <span>(</span><span>*args, **kargs)</span>
@@ -363,6 +565,16 @@ trigger any other effect.</p></div>
         source fractions, damage frac is &#39;Mixed&#39;.
         &#34;&#34;&#34;
         return collapse(effect.statSourceFrac for effect in self.damageEffects)
+
+    @property
+    def effectTags(self):
+        &#34;&#34;&#34;`list` of `str`: A list of all tags on skill effects in this
+        chain.
+        &#34;&#34;&#34;
+        tags = []
+        for effect in self:
+            tags.extend(effect.effectTags)
+        return tags
 
     def __repr__(self):
         return &#39;EffectChain({})&#39;.format(list.__repr__(self))</code></pre>
@@ -428,6 +640,25 @@ def damageType(self):
     type is &#39;Mixed&#39;.
     &#34;&#34;&#34;
     return collapse(effect.statSource for effect in self.damageEffects)</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.EffectChain.effectTags"><code class="name">var <span class="ident">effectTags</span></code></dt>
+<dd>
+<div class="desc"><p><code>list</code> of <code>str</code>: A list of all tags on skill effects in this
+chain.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def effectTags(self):
+    &#34;&#34;&#34;`list` of `str`: A list of all tags on skill effects in this
+    chain.
+    &#34;&#34;&#34;
+    tags = []
+    for effect in self:
+        tags.extend(effect.effectTags)
+    return tags</code></pre>
 </details>
 </dd>
 <dt id="legends.skill.EffectChain.numHits"><code class="name">var <span class="ident">numHits</span></code></dt>
@@ -502,6 +733,8 @@ this skill is used. Does not include the caster effect.</dd>
             self.casterEffect = SkillEffect(
                 casterEffect[&#39;effect&#39;], casterEffect[&#39;fraction&#39;]
             )
+        if len(self.effects) == 0 and self.casterEffect is None:
+            warn(&#39;Skill ID {} has no effects&#39;.format(self.skillID))
 
     @property
     def name(self):
@@ -563,11 +796,9 @@ this skill is used. Does not include the caster effect.</dd>
         &#34;&#34;&#34;
         effTags = []
         for effect in self.effects:
-            for subeffect in effect.chain:
-                effTags.extend(subeffect.effectTags)
+            effTags.extend(effect.chain.effectTags)
         if self.casterEffect is not None:
-            for subeffect in self.casterEffect.chain:
-                effTags.extend(subeffect.effectTags)
+            effTags.extend(self.casterEffect.chain.effectTags)
         return sorted(list(set(effTags)))
 
     @property
@@ -584,6 +815,10 @@ this skill is used. Does not include the caster effect.</dd>
             + (&#39;unlocked&#39; if self.unlocked else &#39;locked&#39;) + &#39;&gt;&#39;
         )</code></pre>
 </details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.skill.BridgeSkill" href="#legends.skill.BridgeSkill">BridgeSkill</a></li>
+</ul>
 <h3>Instance variables</h3>
 <dl>
 <dt id="legends.skill.Skill.cooldown"><code class="name">var <span class="ident">cooldown</span></code></dt>
@@ -647,11 +882,9 @@ def effectTags(self):
     &#34;&#34;&#34;
     effTags = []
     for effect in self.effects:
-        for subeffect in effect.chain:
-            effTags.extend(subeffect.effectTags)
+        effTags.extend(effect.chain.effectTags)
     if self.casterEffect is not None:
-        for subeffect in self.casterEffect.chain:
-            effTags.extend(subeffect.effectTags)
+        effTags.extend(self.casterEffect.chain.effectTags)
     return sorted(list(set(effTags)))</code></pre>
 </details>
 </dd>
@@ -808,7 +1041,11 @@ Can be <code>None</code>.</dd>
             newEffectID = self.data[&#39;sequenceID&#39;]
             self.triggersEffect = SkillEffect(newEffectID, self.fraction)
         except KeyError:
-            self.triggersEffect = None
+            try:
+                newEffectID = self.data[&#39;effectID&#39;]
+                self.triggersEffect = SkillEffect(newEffectID, self.fraction)
+            except KeyError:
+                self.triggersEffect = None
 
     @property
     def data(self):
@@ -821,11 +1058,20 @@ Can be <code>None</code>.</dd>
         return &#39;{} ({:g}x)&#39;.format(self.effectID, self.fraction)
 
     @property
+    def statAffected(self):
+        &#34;&#34;&#34;`str`: The name of the statistic that is affected by this
+        effect.
+        &#34;&#34;&#34;
+        stat = self.data[&#39;statAffected&#39;]
+        return None if stat == &#39;None&#39; else stat
+
+    @property
     def statSource(self):
         &#34;&#34;&#34;`str`: The name of the statistic that serves as the source of
         the effect.
         &#34;&#34;&#34;
-        return self.data[&#39;statSource&#39;]
+        stat = self.data[&#39;statSource&#39;]
+        return None if stat == &#39;None&#39; else stat
 
     @property
     def statSourceFrac(self):
@@ -833,6 +1079,29 @@ Can be <code>None</code>.</dd>
         for the effect.
         &#34;&#34;&#34;
         return self.data[&#39;statSourceFraction&#39;]
+
+    @property
+    def tagAffected(self):
+        &#34;&#34;&#34;`str`: The character tag affected by this skill, if the skill
+        is restricted to a particular character tag. Otherwise, `None`.
+        &#34;&#34;&#34;
+        tag = self.data[&#39;property&#39;]
+        return None if tag == &#39;&#39; else tag
+
+    @property
+    def resistanceType(self):
+        &#34;&#34;&#34;`str`: If the skill offers a chance to resist a detrimental
+        effect, this is the effect. Otherwise, `None`.
+        &#34;&#34;&#34;
+        typ = self.data[&#39;resistanceType&#39;]
+        return None if typ == &#39;None&#39; else typ
+
+    @property
+    def chanceToResist(self):
+        &#34;&#34;&#34;`str`: If the skill offers a chance to resist a detrimental
+        effect, this is the probability. Otherwise, 0.
+        &#34;&#34;&#34;
+        return self.data[&#39;chanceToResist&#39;]
 
     @property
     def effectType(self):
@@ -852,9 +1121,13 @@ Can be <code>None</code>.</dd>
         to have spaces inserted, then added as a tag. If the skill does
         damage, it also gets the &#39;Damage&#39; tag, if it doesn&#39;t already
         have it, as well as either a &#39;Damage (Attack)&#39; or &#39;Damage
-        (Tech)&#39; tag.
+        (Tech)&#39; tag. If the effect type is &#39;Placeholder&#39;, it is ignored
+        and not added as a tag.
         &#34;&#34;&#34;
-        tags = [camelToSpace(self.effectType)]
+        tags = (
+            [camelToSpace(self.effectType)]
+            if self.effectType != &#39;Placeholder&#39; else []
+        )
         if self.doesDamage:
             tags.append(&#39;Damage ({})&#39;.format(self.statSource))
             if &#39;Damage&#39; not in tags:
@@ -906,6 +1179,22 @@ def chain(self):
     return effectChain</code></pre>
 </details>
 </dd>
+<dt id="legends.skill.SkillEffect.chanceToResist"><code class="name">var <span class="ident">chanceToResist</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: If the skill offers a chance to resist a detrimental
+effect, this is the probability. Otherwise, 0.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def chanceToResist(self):
+    &#34;&#34;&#34;`str`: If the skill offers a chance to resist a detrimental
+    effect, this is the probability. Otherwise, 0.
+    &#34;&#34;&#34;
+    return self.data[&#39;chanceToResist&#39;]</code></pre>
+</details>
+</dd>
 <dt id="legends.skill.SkillEffect.data"><code class="name">var <span class="ident">data</span></code></dt>
 <dd>
 <div class="desc"><p><code>dict</code>: The effect data from <code>GSEffect</code>.</p></div>
@@ -951,7 +1240,8 @@ def doesDamage(self):
 to have spaces inserted, then added as a tag. If the skill does
 damage, it also gets the 'Damage' tag, if it doesn't already
 have it, as well as either a 'Damage (Attack)' or 'Damage
-(Tech)' tag.</p></div>
+(Tech)' tag. If the effect type is 'Placeholder', it is ignored
+and not added as a tag.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -962,9 +1252,13 @@ def effectTags(self):
     to have spaces inserted, then added as a tag. If the skill does
     damage, it also gets the &#39;Damage&#39; tag, if it doesn&#39;t already
     have it, as well as either a &#39;Damage (Attack)&#39; or &#39;Damage
-    (Tech)&#39; tag.
+    (Tech)&#39; tag. If the effect type is &#39;Placeholder&#39;, it is ignored
+    and not added as a tag.
     &#34;&#34;&#34;
-    tags = [camelToSpace(self.effectType)]
+    tags = (
+        [camelToSpace(self.effectType)]
+        if self.effectType != &#39;Placeholder&#39; else []
+    )
     if self.doesDamage:
         tags.append(&#39;Damage ({})&#39;.format(self.statSource))
         if &#39;Damage&#39; not in tags:
@@ -995,6 +1289,40 @@ def effectType(self):
     return effectType</code></pre>
 </details>
 </dd>
+<dt id="legends.skill.SkillEffect.resistanceType"><code class="name">var <span class="ident">resistanceType</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: If the skill offers a chance to resist a detrimental
+effect, this is the effect. Otherwise, <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def resistanceType(self):
+    &#34;&#34;&#34;`str`: If the skill offers a chance to resist a detrimental
+    effect, this is the effect. Otherwise, `None`.
+    &#34;&#34;&#34;
+    typ = self.data[&#39;resistanceType&#39;]
+    return None if typ == &#39;None&#39; else typ</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.SkillEffect.statAffected"><code class="name">var <span class="ident">statAffected</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The name of the statistic that is affected by this
+effect.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def statAffected(self):
+    &#34;&#34;&#34;`str`: The name of the statistic that is affected by this
+    effect.
+    &#34;&#34;&#34;
+    stat = self.data[&#39;statAffected&#39;]
+    return None if stat == &#39;None&#39; else stat</code></pre>
+</details>
+</dd>
 <dt id="legends.skill.SkillEffect.statSource"><code class="name">var <span class="ident">statSource</span></code></dt>
 <dd>
 <div class="desc"><p><code>str</code>: The name of the statistic that serves as the source of
@@ -1008,7 +1336,8 @@ def statSource(self):
     &#34;&#34;&#34;`str`: The name of the statistic that serves as the source of
     the effect.
     &#34;&#34;&#34;
-    return self.data[&#39;statSource&#39;]</code></pre>
+    stat = self.data[&#39;statSource&#39;]
+    return None if stat == &#39;None&#39; else stat</code></pre>
 </details>
 </dd>
 <dt id="legends.skill.SkillEffect.statSourceFrac"><code class="name">var <span class="ident">statSourceFrac</span></code></dt>
@@ -1025,6 +1354,23 @@ def statSourceFrac(self):
     for the effect.
     &#34;&#34;&#34;
     return self.data[&#39;statSourceFraction&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.SkillEffect.tagAffected"><code class="name">var <span class="ident">tagAffected</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The character tag affected by this skill, if the skill
+is restricted to a particular character tag. Otherwise, <code>None</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def tagAffected(self):
+    &#34;&#34;&#34;`str`: The character tag affected by this skill, if the skill
+    is restricted to a particular character tag. Otherwise, `None`.
+    &#34;&#34;&#34;
+    tag = self.data[&#39;property&#39;]
+    return None if tag == &#39;&#39; else tag</code></pre>
 </details>
 </dd>
 </dl>
@@ -1046,11 +1392,19 @@ def statSourceFrac(self):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="legends.skill.BridgeSkill" href="#legends.skill.BridgeSkill">BridgeSkill</a></code></h4>
+<ul class="">
+<li><code><a title="legends.skill.BridgeSkill.effect" href="#legends.skill.BridgeSkill.effect">effect</a></code></li>
+<li><code><a title="legends.skill.BridgeSkill.tagAffected" href="#legends.skill.BridgeSkill.tagAffected">tagAffected</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="legends.skill.EffectChain" href="#legends.skill.EffectChain">EffectChain</a></code></h4>
 <ul class="">
 <li><code><a title="legends.skill.EffectChain.damageEffects" href="#legends.skill.EffectChain.damageEffects">damageEffects</a></code></li>
 <li><code><a title="legends.skill.EffectChain.damageFrac" href="#legends.skill.EffectChain.damageFrac">damageFrac</a></code></li>
 <li><code><a title="legends.skill.EffectChain.damageType" href="#legends.skill.EffectChain.damageType">damageType</a></code></li>
+<li><code><a title="legends.skill.EffectChain.effectTags" href="#legends.skill.EffectChain.effectTags">effectTags</a></code></li>
 <li><code><a title="legends.skill.EffectChain.numHits" href="#legends.skill.EffectChain.numHits">numHits</a></code></li>
 </ul>
 </li>
@@ -1074,13 +1428,17 @@ def statSourceFrac(self):
 <h4><code><a title="legends.skill.SkillEffect" href="#legends.skill.SkillEffect">SkillEffect</a></code></h4>
 <ul class="two-column">
 <li><code><a title="legends.skill.SkillEffect.chain" href="#legends.skill.SkillEffect.chain">chain</a></code></li>
+<li><code><a title="legends.skill.SkillEffect.chanceToResist" href="#legends.skill.SkillEffect.chanceToResist">chanceToResist</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.data" href="#legends.skill.SkillEffect.data">data</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.description" href="#legends.skill.SkillEffect.description">description</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.doesDamage" href="#legends.skill.SkillEffect.doesDamage">doesDamage</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.effectTags" href="#legends.skill.SkillEffect.effectTags">effectTags</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.effectType" href="#legends.skill.SkillEffect.effectType">effectType</a></code></li>
+<li><code><a title="legends.skill.SkillEffect.resistanceType" href="#legends.skill.SkillEffect.resistanceType">resistanceType</a></code></li>
+<li><code><a title="legends.skill.SkillEffect.statAffected" href="#legends.skill.SkillEffect.statAffected">statAffected</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.statSource" href="#legends.skill.SkillEffect.statSource">statSource</a></code></li>
 <li><code><a title="legends.skill.SkillEffect.statSourceFrac" href="#legends.skill.SkillEffect.statSourceFrac">statSourceFrac</a></code></li>
+<li><code><a title="legends.skill.SkillEffect.tagAffected" href="#legends.skill.SkillEffect.tagAffected">tagAffected</a></code></li>
 </ul>
 </li>
 </ul>
