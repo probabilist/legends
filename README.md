@@ -101,7 +101,9 @@ When the process is finished, you will find the app inside the newly created "di
 
 For an example that uses the package, see "skillstomd.py", which creates a markdown-formatted file listing all skills in the game, for both current and upcoming characters. You can see the output of this script, after conversion to HTML, at https://probabilist.github.io/legends/skills.html.
 
-Another example is "missionstoms.py". This script outputs (in markdown format) detailed information about all the missions in the game. You can see its output, after conversion to HTML, at https://probabilist.github.io/legends/missions.html.
+Another example is "missionstomd.py". This script outputs (in markdown format) detailed information about all the missions in the game. You can see its output, after conversion to HTML, at https://probabilist.github.io/legends/missions.html.
+
+Yet another example is "bridgeskills.py". This script outputs a csv-formatted spreadsheet of all bridge abilities, for both enabled and upcoming characters. This simple spreadsheet has been used as the basis for a worksheet you can use to select your bridge stations. Here is a link to [the bridge skills worksheet](https://docs.google.com/spreadsheets/d/1bdKFLJ48N37STNxIX1DTIKrymVTiLZsREI6XDuoJ14g/edit?usp=sharing).
 
 ### Comparison to the legendscli package
 
