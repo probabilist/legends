@@ -45,8 +45,8 @@ class CharCard(tk.Frame):
         self.colorByFav()
 
         # pack card contents
-        namePlate.pack(side=tk.LEFT)
         statPlate.pack(side=tk.RIGHT)
+        namePlate.pack(side=tk.LEFT, expand=tk.YES, fill=tk.BOTH)
 
     @property
     def favorite(self):
@@ -84,8 +84,7 @@ class CharCard(tk.Frame):
             tk.Frame: The constructed name plate.
 
         """
-        plate = tk.Frame(self, bg=bgColor, height=118, width=105)
-        plate.pack_propagate(0)
+        plate = tk.Frame(self, bg=bgColor)
         data = self.dictify()
 
         # build name label

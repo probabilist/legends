@@ -1,5 +1,9 @@
 # Change log
 
+## Version 0.19.4
+
+* Edited character card sizing and packing to account for different operating systems.
+
 ## Version 0.19.3
 
 * Added a `BRIDGE_STATIONS` constant.
