@@ -2,6 +2,7 @@
 
 """
 
+from sys import platform
 import tkinter as tk
 from tkinter import ttk
 from getpass import getuser
@@ -73,13 +74,11 @@ class InventoryScreen(ModalMessage):
         """Create the body of the dialog.
 
         """
-        # grid the inventory quantities
+        # grid the inventory quantities other than gear mats
         self.displayCat(master, 'Currency', (0, 0))
         self.displayCat(master, 'General Items', (0, 2))
         self.displayCat(master, 'Bio-Gel', (4, 0), True)
         self.displayCat(master, 'Protomatter', (10, 0), True)
-        self.displayCat(master, 'Gear Leveling Materials', (16, 0), True)
-        self.displayCat(master, 'Gear Ranking Materials', (16, 2), True)
 
         # show total XP
         tk.Label(
@@ -95,7 +94,7 @@ class InventoryScreen(ModalMessage):
             master,
             text='Can fully level {} character{},'.format(
                 chars,
-                's' if chars > 1 else ''
+                's' if chars != 1 else ''
             )
         ).grid(row=6, column=2, columnspan=2, padx=(20,20))
 
@@ -154,6 +153,38 @@ class InventoryScreen(ModalMessage):
                     totalNeeded[ITEMS['Latinum']]
                 )
             ).grid(row=11 + index, column=2, sticky=tk.W)
+
+        cols, rows = master.grid_size()
+        ttk.Separator(master, orient='vertical').grid(
+            row=0, column=cols, rowspan=rows, sticky=tk.NS, padx=(0,20)
+        )
+        self.displayCat(master, 'Gear Leveling Materials', (0, cols + 1))
+        self.displayCat(master, 'Gear Ranking Materials', (4, cols + 1), True)
+        tk.Label(
+            master, text='Needed to Max Roster', font=(None, 13, 'italic')
+        ).grid(row=0, column=cols + 3, columnspan=2, sticky=tk.W)
+        totalNeeded = sum(
+            (
+                char.itemsToMaxGear(self.roster)
+                for char in self.roster.chars.values()
+            ),
+            Inventory()
+        )
+        for index, item in enumerate(
+            self.inventory.keysByCat('Gear Leveling Materials')
+        ):
+            tk.Label(
+                master, text='{:,}'.format(totalNeeded[item])
+            ).grid(row=1 + index, column=cols + 3, sticky=tk.W)
+        for index, item in enumerate(
+            self.inventory.keysByCat('Gear Ranking Materials')
+        ):
+            tk.Label(
+                master, text='{:,}'.format(totalNeeded[item])
+            ).grid(row=5 + index, column=cols + 3, sticky=tk.W)
+        tk.Label(
+            master, text='+ {:,} Latinum'.format(totalNeeded[ITEMS['Latinum']])
+        ).grid(row=8, column=cols + 3, sticky=tk.W)
 
     def setStartLevel(self):
         """Sets the `tkinter` variable in the `startLevel` attribute
@@ -300,6 +331,20 @@ class Session(tk.Frame):
             self.makeTimeBar()
             self.rosterTab()
 
+    @property
+    def charList(self):
+        """`list` of `legends.gameobjects.Character`: The list of
+        characters from the associated save slot, ordered and filtered
+        according to the user's current settings. Is an empty list if
+        there is no associated save slot.
+        """
+        if self.saveslot is None:
+            return []
+        return [
+            char for char in self.saveslot.roster.chars.values()
+            if self.checkFilter(char)
+        ]
+
     def startFrame(self):
         """Build the starting frame, with choices from the `File` menu.
 
@@ -344,13 +389,14 @@ class Session(tk.Frame):
         # build bar and initialize variables
         self.timeBar = tk.Frame(self)
         timestamps = self.saveslot.timestamps
+        fstr = f"%b %{'-' if platform == 'darwin' else '#'}d %Y %H:%M %Z"
         start = (
             'start date: '
-            + timestamps.startDate.strftime('%b %-d %Y %H:%M %Z')
+            + timestamps.startDate.strftime(fstr)
         )
         last = (
             'last played: '
-            + timestamps.timeLastPlayed.strftime('%b %-d %Y %H:%M %Z')
+            + timestamps.timeLastPlayed.strftime(fstr)
         )
         total = (
             'play duration: ' + cleanTime(timestamps.playDuration)
@@ -382,6 +428,71 @@ class Session(tk.Frame):
             self.timeBar.destroy()
             self.timeBar = None
 
+    def checkFilter(self, char):
+        """Checks if the given character passes the current filter
+        options.
+
+        Args:
+            char (legends.gameobjects.Character): The character to
+                check.
+
+        Returns:
+            bool: `True` if the character passes.
+
+        """
+        filt = self.settings.rosterFilter.dictify()
+        return(
+            filt['rarities'][char.rarity]
+            and filt['roles'][char.role]
+            and filt['ranks'][0] <= char.rank <= filt['ranks'][1]
+            and filt['levels'][0] <= char.level <= filt['levels'][1]
+            and any(filt['charTags'][charTag] for charTag in char.tags)
+            and any(
+                filt['effectTags'][effectTag]
+                for effectTag in char.skillEffectTags()
+            )
+        )
+
+    def nextChar(self, char):
+        """Finds and returns the character that follows the given
+        character in the `charList` property.
+
+        Args:
+            char (legends.gameobjects.Character): A character in the
+                `charList` property.
+
+        Returns:
+            legends.gameobjects.Character: The character immediately
+                following the given character in the `charList`
+                property. Returns `None` if the given character is the
+                last item in the `charList` property.
+
+        """
+        chars = self.charList
+        if char is chars[-1]:
+            return None
+        return chars[chars.index(char) + 1]
+
+    def prevChar(self, char):
+        """Finds and returns the character that precedes the given
+        character in the `charList` property.
+
+        Args:
+            char (legends.gameobjects.Character): A character in the
+                `charList` property.
+
+        Returns:
+            legends.gameobjects.Character: The character immediately
+                preceding the given character in the `charList`
+                property. Returns `None` if the given character is the
+                first item in the `charList` property.
+
+        """
+        chars = self.charList
+        if char is chars[0]:
+            return None
+        return chars[chars.index(char) - 1]
+
     def rosterTab(self):
         """Loads a new `legends.ui.rostertab.RosterTab` instance into
         the `tab` attribute.
@@ -389,7 +500,7 @@ class Session(tk.Frame):
         """
         self.tab.destroy()
         self.tab = RosterTab(self)
-        self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
+        self.tab.pack(expand=tk.YES, fill=tk.Y)
         self.master.title('STL Planner - Roster')
 
     def charTab(self, char):
@@ -399,7 +510,7 @@ class Session(tk.Frame):
         """
         self.tab.destroy()
         self.tab = CharTab(char, self)
-        self.tab.pack(side=tk.BOTTOM, expand=tk.YES, fill=tk.Y)
+        self.tab.pack(expand=tk.YES, fill=tk.Y)
         self.master.title('STL Planner - {}'.format(char.shortName))
 
 class SessionSettings(): # pylint: disable=too-few-public-methods

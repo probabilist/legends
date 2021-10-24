@@ -577,31 +577,6 @@ class RosterTab(tk.Frame):
             if isinstance(card, CharCard)
         }
 
-    def checkFilter(self, char):
-        &#34;&#34;&#34;Checks if the given character passes the current filter
-        options.
-
-        Args:
-            char (legends.gameobjects.Character): The character to
-                check.
-
-        Returns:
-            bool: `True` if the character passes.
-
-        &#34;&#34;&#34;
-        filt = self.master.settings.rosterFilter.dictify()
-        return(
-            filt[&#39;rarities&#39;][char.rarity]
-            and filt[&#39;roles&#39;][char.role]
-            and filt[&#39;ranks&#39;][0] &lt;= char.rank &lt;= filt[&#39;ranks&#39;][1]
-            and filt[&#39;levels&#39;][0] &lt;= char.level &lt;= filt[&#39;levels&#39;][1]
-            and any(filt[&#39;charTags&#39;][charTag] for charTag in char.tags)
-            and any(
-                filt[&#39;effectTags&#39;][effectTag]
-                for effectTag in char.skillEffectTags()
-            )
-        )
-
     def fillCards(self):
         &#34;&#34;&#34;Builds a card for each character in the player&#39;s collection
         and places it in the scroll area&#39;s content frame.
@@ -613,10 +588,7 @@ class RosterTab(tk.Frame):
                 j, weight=1, uniform=&#39;roster&#39;
             )
         count = 0
-        chars = [
-            char for char in self.roster.chars.values()
-            if self.checkFilter(char)
-        ]
+        chars = self.master.charList
         for char in chars:
             CharCard(char, self).grid(
                 row=count // columns, column=count % columns, sticky=tk.NSEW
@@ -2046,31 +2018,6 @@ as the instance's parent.</dd>
             if isinstance(card, CharCard)
         }
 
-    def checkFilter(self, char):
-        &#34;&#34;&#34;Checks if the given character passes the current filter
-        options.
-
-        Args:
-            char (legends.gameobjects.Character): The character to
-                check.
-
-        Returns:
-            bool: `True` if the character passes.
-
-        &#34;&#34;&#34;
-        filt = self.master.settings.rosterFilter.dictify()
-        return(
-            filt[&#39;rarities&#39;][char.rarity]
-            and filt[&#39;roles&#39;][char.role]
-            and filt[&#39;ranks&#39;][0] &lt;= char.rank &lt;= filt[&#39;ranks&#39;][1]
-            and filt[&#39;levels&#39;][0] &lt;= char.level &lt;= filt[&#39;levels&#39;][1]
-            and any(filt[&#39;charTags&#39;][charTag] for charTag in char.tags)
-            and any(
-                filt[&#39;effectTags&#39;][effectTag]
-                for effectTag in char.skillEffectTags()
-            )
-        )
-
     def fillCards(self):
         &#34;&#34;&#34;Builds a card for each character in the player&#39;s collection
         and places it in the scroll area&#39;s content frame.
@@ -2082,10 +2029,7 @@ as the instance's parent.</dd>
                 j, weight=1, uniform=&#39;roster&#39;
             )
         count = 0
-        chars = [
-            char for char in self.roster.chars.values()
-            if self.checkFilter(char)
-        ]
+        chars = self.master.charList
         for char in chars:
             CharCard(char, self).grid(
                 row=count // columns, column=count % columns, sticky=tk.NSEW
@@ -2418,53 +2362,6 @@ character cards and info bar.</p></div>
         self.refresh()</code></pre>
 </details>
 </dd>
-<dt id="legends.ui.rostertab.RosterTab.checkFilter"><code class="name flex">
-<span>def <span class="ident">checkFilter</span></span>(<span>self, char)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Checks if the given character passes the current filter
-options.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="../gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
-<dd>The character to
-check.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>bool</code></dt>
-<dd><code>True</code> if the character passes.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def checkFilter(self, char):
-    &#34;&#34;&#34;Checks if the given character passes the current filter
-    options.
-
-    Args:
-        char (legends.gameobjects.Character): The character to
-            check.
-
-    Returns:
-        bool: `True` if the character passes.
-
-    &#34;&#34;&#34;
-    filt = self.master.settings.rosterFilter.dictify()
-    return(
-        filt[&#39;rarities&#39;][char.rarity]
-        and filt[&#39;roles&#39;][char.role]
-        and filt[&#39;ranks&#39;][0] &lt;= char.rank &lt;= filt[&#39;ranks&#39;][1]
-        and filt[&#39;levels&#39;][0] &lt;= char.level &lt;= filt[&#39;levels&#39;][1]
-        and any(filt[&#39;charTags&#39;][charTag] for charTag in char.tags)
-        and any(
-            filt[&#39;effectTags&#39;][effectTag]
-            for effectTag in char.skillEffectTags()
-        )
-    )</code></pre>
-</details>
-</dd>
 <dt id="legends.ui.rostertab.RosterTab.export"><code class="name flex">
 <span>def <span class="ident">export</span></span>(<span>self)</span>
 </code></dt>
@@ -2527,10 +2424,7 @@ and places it in the scroll area's content frame.</p></div>
             j, weight=1, uniform=&#39;roster&#39;
         )
     count = 0
-    chars = [
-        char for char in self.roster.chars.values()
-        if self.checkFilter(char)
-    ]
+    chars = self.master.charList
     for char in chars:
         CharCard(char, self).grid(
             row=count // columns, column=count % columns, sticky=tk.NSEW
@@ -2673,7 +2567,6 @@ selected sorting field. Then refreshes the character cards.</p></div>
 <li><code><a title="legends.ui.rostertab.RosterTab.actionBar" href="#legends.ui.rostertab.RosterTab.actionBar">actionBar</a></code></li>
 <li><code><a title="legends.ui.rostertab.RosterTab.adjustFilter" href="#legends.ui.rostertab.RosterTab.adjustFilter">adjustFilter</a></code></li>
 <li><code><a title="legends.ui.rostertab.RosterTab.cards" href="#legends.ui.rostertab.RosterTab.cards">cards</a></code></li>
-<li><code><a title="legends.ui.rostertab.RosterTab.checkFilter" href="#legends.ui.rostertab.RosterTab.checkFilter">checkFilter</a></code></li>
 <li><code><a title="legends.ui.rostertab.RosterTab.export" href="#legends.ui.rostertab.RosterTab.export">export</a></code></li>
 <li><code><a title="legends.ui.rostertab.RosterTab.fillCards" href="#legends.ui.rostertab.RosterTab.fillCards">fillCards</a></code></li>
 <li><code><a title="legends.ui.rostertab.RosterTab.optimalSummons" href="#legends.ui.rostertab.RosterTab.optimalSummons">optimalSummons</a></code></li>

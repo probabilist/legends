@@ -1,5 +1,28 @@
 # Change log
 
+## Version 0.20.0
+
+* Added a Windows version of the app icon.
+* Edited 'stlplannerapp.spec' to check the operating system and choose the appropriate icon.
+* Imported data changes from recent game updates.
+* Modified `Session.makeTimeBar` to work as expected in both macOS, Windows, and Linux.
+* Modified the `Roster.fillChars()` method to max all skills on added characters.
+* Added the function, `getBasicGearID`.
+* Added the `Gear.itemsToMax()` method.
+* Added the `Character.itemsToMaxGear()` method.
+* Added the `name`, `displayLevel`, and `role` properties to the `Gear` class.
+* Moved the `checkFilter` method from `RosterTab` to `Session`.
+* Added the `Session.charList` property and modified `RosterTab.fillCards()` to use it.
+* Modified the `InventoryScreen` dialog to show materials needed to max all gear.
+* Added `nextChar` and `prevChar` methods to the `Session` class.
+* Added the `displaySkill` function to the `chartab` module.
+* Added the `GearCard` class to the `chartab` module.
+* Centered the action bar of the character tab and added 'next' and 'prev' buttons.
+* Added character role to the character tab.
+* Added gear information to the character tab.
+* Added the `CharTab.roster` property.
+* Added `makeGearCardFrame` and `makeGearUpgradeFrame` to the `CharTab` class.
+
 ## Version 0.19.4
 
 * Edited character card sizing and packing to account for different operating systems.

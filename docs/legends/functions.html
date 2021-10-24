@@ -51,6 +51,7 @@ __all__ = [
     &#39;decryptSaveFile&#39;,
     &#39;gearToMaxCost&#39;,
     &#39;gearUpgradeCost&#39;,
+    &#39;getBasicGearID&#39;,
     &#39;getCharStats&#39;,
     &#39;getGearStats&#39;,
     &#39;getPartStats&#39;,
@@ -205,6 +206,32 @@ def gearUpgradeCost(gearID, level):
     for itemID, qty in GSGearLevel[key][&#39;m_UpgradePrice&#39;][&#39;AllItems&#39;].items():
         cost[ITEMS[itemID]] += qty
     return cost
+
+def getBasicGearID(role, slotIndex):
+    &#34;&#34;&#34;Finds and returns the gear ID for the non-unique gear piece
+    corresponding to the given role and meant for the gear slot with the
+    given index.
+
+    Args:
+        role (str): The role of the gear piece.
+        slotIndex (int): The slot index of the gear piece.
+
+    Returns:
+        str: The gear ID, as it appears in `GSGear`, of the gear piece.
+
+    &#34;&#34;&#34;
+    for gearID, data in GSGear.items():
+        if (
+            data[&#39;m_Type&#39;] == &#39;Role&#39;
+            and data[&#39;m_Role&#39;] == role
+            and data[&#39;m_Slot&#39;] == slotIndex
+        ):
+            return gearID
+    raise ValueError(
+        &#39;Could not find basic gear matching role {} and slot {}&#39;.format(
+            role, slotIndex
+        )
+    )
 
 def getCharStats(nameID, rank, level):
     &#34;&#34;&#34;Calculates a character&#39;s naked stats from its nameID, rank, and
@@ -705,6 +732,56 @@ instance.</dd>
     return cost</code></pre>
 </details>
 </dd>
+<dt id="legends.functions.getBasicGearID"><code class="name flex">
+<span>def <span class="ident">getBasicGearID</span></span>(<span>role, slotIndex)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds and returns the gear ID for the non-unique gear piece
+corresponding to the given role and meant for the gear slot with the
+given index.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>role</code></strong> :&ensp;<code>str</code></dt>
+<dd>The role of the gear piece.</dd>
+<dt><strong><code>slotIndex</code></strong> :&ensp;<code>int</code></dt>
+<dd>The slot index of the gear piece.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The gear ID, as it appears in <code>GSGear</code>, of the gear piece.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getBasicGearID(role, slotIndex):
+    &#34;&#34;&#34;Finds and returns the gear ID for the non-unique gear piece
+    corresponding to the given role and meant for the gear slot with the
+    given index.
+
+    Args:
+        role (str): The role of the gear piece.
+        slotIndex (int): The slot index of the gear piece.
+
+    Returns:
+        str: The gear ID, as it appears in `GSGear`, of the gear piece.
+
+    &#34;&#34;&#34;
+    for gearID, data in GSGear.items():
+        if (
+            data[&#39;m_Type&#39;] == &#39;Role&#39;
+            and data[&#39;m_Role&#39;] == role
+            and data[&#39;m_Slot&#39;] == slotIndex
+        ):
+            return gearID
+    raise ValueError(
+        &#39;Could not find basic gear matching role {} and slot {}&#39;.format(
+            role, slotIndex
+        )
+    )</code></pre>
+</details>
+</dd>
 <dt id="legends.functions.getCharStats"><code class="name flex">
 <span>def <span class="ident">getCharStats</span></span>(<span>nameID, rank, level)</span>
 </code></dt>
@@ -1142,6 +1219,7 @@ advance to the next rank.</dd>
 <li><code><a title="legends.functions.decryptSaveFile" href="#legends.functions.decryptSaveFile">decryptSaveFile</a></code></li>
 <li><code><a title="legends.functions.gearToMaxCost" href="#legends.functions.gearToMaxCost">gearToMaxCost</a></code></li>
 <li><code><a title="legends.functions.gearUpgradeCost" href="#legends.functions.gearUpgradeCost">gearUpgradeCost</a></code></li>
+<li><code><a title="legends.functions.getBasicGearID" href="#legends.functions.getBasicGearID">getBasicGearID</a></code></li>
 <li><code><a title="legends.functions.getCharStats" href="#legends.functions.getCharStats">getCharStats</a></code></li>
 <li><code><a title="legends.functions.getGearStats" href="#legends.functions.getGearStats">getGearStats</a></code></li>
 <li><code><a title="legends.functions.getPartStats" href="#legends.functions.getPartStats">getPartStats</a></code></li>

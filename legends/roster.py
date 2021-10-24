@@ -210,7 +210,8 @@ class Roster():
     def fillChars(self, nameIDs, maxGear=True):
         """For each name ID in the given list of name IDs, a character
         with that name ID is added to the roster, if it is not already
-        present. The character is added at maximum rank and level.
+        present. The character is added at maximum rank and level, and
+        with all skills maxed.
 
         If the `maxGear` attribute is True, maxed gear pieces will be
         created, added to the roster, and equipped to the newly added
@@ -234,6 +235,9 @@ class Roster():
                 continue
             char = Character(nameID, 9)
             char.level = 99
+            for skill in char.skills.values():
+                skill.unlocked = True
+                skill.level = 2
             self.chars[nameID] = char
             if not maxGear:
                 continue

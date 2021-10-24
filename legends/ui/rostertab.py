@@ -548,31 +548,6 @@ class RosterTab(tk.Frame):
             if isinstance(card, CharCard)
         }
 
-    def checkFilter(self, char):
-        """Checks if the given character passes the current filter
-        options.
-
-        Args:
-            char (legends.gameobjects.Character): The character to
-                check.
-
-        Returns:
-            bool: `True` if the character passes.
-
-        """
-        filt = self.master.settings.rosterFilter.dictify()
-        return(
-            filt['rarities'][char.rarity]
-            and filt['roles'][char.role]
-            and filt['ranks'][0] <= char.rank <= filt['ranks'][1]
-            and filt['levels'][0] <= char.level <= filt['levels'][1]
-            and any(filt['charTags'][charTag] for charTag in char.tags)
-            and any(
-                filt['effectTags'][effectTag]
-                for effectTag in char.skillEffectTags()
-            )
-        )
-
     def fillCards(self):
         """Builds a card for each character in the player's collection
         and places it in the scroll area's content frame.
@@ -584,10 +559,7 @@ class RosterTab(tk.Frame):
                 j, weight=1, uniform='roster'
             )
         count = 0
-        chars = [
-            char for char in self.roster.chars.values()
-            if self.checkFilter(char)
-        ]
+        chars = self.master.charList
         for char in chars:
             CharCard(char, self).grid(
                 row=count // columns, column=count % columns, sticky=tk.NSEW

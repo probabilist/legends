@@ -9,9 +9,10 @@ from legends.constants import GSCharacter, GSGear
 from legends.constants import (
     DESCRIPTIONS, ENABLED, PART_STAT_UNLOCKED, RARITIES, UPCOMING
 )
+from legends.constants import Inventory
 from legends.functions import (
-    getCharStats, getGearStats, getPartStats, levelFromXP, tokensNeeded,
-    xpFromLevel
+    gearToMaxCost, getBasicGearID, getCharStats, getGearStats, getPartStats,
+    levelFromXP, tokensNeeded, xpFromLevel
 )
 from legends.stats import Stats
 from legends.skill import BridgeSkill, Skill
@@ -271,6 +272,29 @@ class Character():
                     activeCooldowns[skillID] = skill.cooldown + 1
                     break
 
+    def itemsToMaxGear(self, roster):
+        """Computes and returns the items needed to level all gear on
+        this character to its maximum level. The roster to which the
+        character belongs must be passed as an argument.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.constants.Inventory: The list of items needed.
+
+        """
+        cost = Inventory()
+        for slot in self.gearSlots:
+            try:
+                cost += roster.containsGear[slot].itemsToMax(roster)
+            except KeyError:
+                cost += gearToMaxCost(
+                    getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+                )
+        return cost
+
     def __repr__(self):
         return (
             '<' + repr(self.name) + ', rank ' + repr(self.rank)
@@ -305,6 +329,11 @@ class Gear(Managed):
         self.updateStats()
 
     @property
+    def name(self):
+        """`str`: The in-game name of the piece of gear."""
+        return DESCRIPTIONS[GSGear[self.gearID]['m_NameLocKey']]
+
+    @property
     def level(self):
         """`int`: The level of the gear. Level is 1-based and includes
         rarity. For example, a Level 17 gear piece displays in game as
@@ -312,6 +341,14 @@ class Gear(Managed):
         `Gear.setLevel` method.
         """
         return self._level
+
+    @property
+    def displayLevel(self):
+        """`int`: The level of the gear piece, as it is displayed in
+        game. The displayed level does not account for rarity, and is
+        therefore an integer between 1 and 5, inclusive.
+        """
+        return self.level - 5 * self.rarityIndex
 
     @property
     def rarityIndex(self):
@@ -324,9 +361,18 @@ class Gear(Managed):
         return RARITIES[self.rarityIndex]
 
     @property
+    def role(self):
+        """`str`: The role the gear piece is meant for. Is `None` if it
+        is not restricted to a particular role.
+        """
+        gearRole = GSGear[self.gearID]['m_Role']
+        return None if gearRole == 'None' else gearRole
+
+    @property
     def slot(self):
         """`int`: The 0-based index of the slot into which the gear must
-        be placed.
+        be placed. In game, slots are displayed clockwise, starting from
+        the top left.
         """
         return GSGear[self.gearID]['m_Slot']
 
@@ -358,6 +404,23 @@ class Gear(Managed):
 
         """
         self.stats.update(getGearStats(self.gearID, self.level))
+
+    def itemsToMax(self, roster):
+        """Computes and returns the items needed to level this gear to
+        its maximum level. The gear must be equipped on a character, and
+        the roster to which the gear and character belong must be passed
+        as an argument.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the gear
+                piece belongs.
+
+        Returns:
+            legends.constants.Inventory: The list of items needed.
+
+        """
+        maxLevel = roster.inGearSlot[self].char.maxGearLevel
+        return gearToMaxCost(self.gearID, self.level, maxLevel)
 
     def __repr__(self):
         return '<' + repr(self.gearID) + ', level ' + repr(self.level) + '>'

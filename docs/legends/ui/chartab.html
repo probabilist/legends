@@ -35,10 +35,94 @@ import tkinter as tk
 from tkinter import ttk
 from legends.utils.functions import camelToSpace
 from legends.utils.scrollframe import ScrollFrame
+from legends.constants import ITEMS, RARITY_COLORS
 from legends.functions import xpFromLevel
+from legends.gameobjects import Gear
 from legends.skill import Skill
 
-__all__ = [&#39;CharTab&#39;]
+__all__ = [&#39;displaySkill&#39;, &#39;CharTab&#39;, &#39;GearCard&#39;]
+
+def displaySkill(master, skill, row, column):
+    &#34;&#34;&#34;Constructs information about the given skill and grids it onto
+    the given frame. The information is gridded as a block with its top
+    right corner placed at the given row and column.
+
+    Args:
+        master (tk.Frame): The frame onto which to grid the skill
+            information.
+        skill (legends.skill.Skill): The skill from which to draw
+            information.
+        row (int): The row of the top-left corner of the block of
+            information.
+        column (int): The column of the top-left corner of the block of
+            information.
+
+    &#34;&#34;&#34;
+    bgColor = &#39;cyan&#39; if skill.unlocked else &#39;cornsilk2&#39;
+    fgColor = None if skill.unlocked else &#39;gray&#39;
+
+    # add skill name and level
+    frame = tk.Frame(master, bg=bgColor)
+    frame.grid(row=row, column=column, columnspan=2, sticky=tk.NSEW)
+    tk.Label(
+        frame,
+        text=&#39;{} - Level {}&#39;.format(skill.name, skill.level),
+        bg=bgColor,
+        fg=fgColor,
+        font=(None, 16, &#39;bold&#39;)
+    ).pack(pady=(5,10))
+
+    # place headers
+    headers = [
+        &#39;Description&#39;, &#39;Effects&#39;, &#39;Caster Effect&#39;, &#39;Target&#39;, &#39;Cooldown&#39;,
+        &#39;Effect Tags&#39;
+    ]
+    for offset, header in enumerate(headers):
+        frame = tk.Frame(master, bg=bgColor)
+        frame.grid(row=row + 1 + offset, column=column, sticky=tk.NSEW)
+        label = tk.Label(
+            frame,
+            text=header + &#39;:&#39;,
+            bg=bgColor,
+            fg=fgColor,
+            font=(None, 13, &#39;bold&#39;)
+        )
+        label.pack(anchor=tk.NE, padx=(5,0))
+    label.pack_configure(pady=(0,5))
+
+    # set up content variables
+    cEff = skill.casterEffect
+    target = &#39;{} {} {} ({})&#39;.format(
+        &#39;All&#39; if skill.isAOE else skill.numTargets,
+        skill.data[&#39;targetState&#39;],
+        skill.data[&#39;targetType&#39;],
+        &#39;multiple&#39; if skill.isAOE else (
+            &#39;multiple random&#39; if skill.isMultiRandom else &#39;single&#39;
+        )
+    )
+    info = [
+        skill.description,
+        &#39;, &#39;.join([effect.description for effect in skill.effects]),
+        &#39;None&#39; if cEff is None else cEff.description,
+        target,
+        &#39;{} ({} start)&#39;.format(skill.cooldown, skill.startingCooldown),
+        &#39;, &#39;.join(skill.effectTags)
+    ]
+
+    # place content
+    for offset, text in enumerate(info):
+        frame = tk.Frame(master, bg=bgColor)
+        frame.grid(row=row + 1 + offset, column=column + 1, sticky=tk.NSEW)
+        label = tk.Label(
+            frame,
+            text=text,
+            bg=bgColor,
+            fg=fgColor,
+            wraplength=400,
+            justify=tk.LEFT
+        )
+        label.pack(anchor=tk.NW, padx=(0,5))
+    label.pack_configure(pady=(0,10))
 
 class CharTab(tk.Frame):
     &#34;&#34;&#34;Displays details about a character.
@@ -64,32 +148,35 @@ class CharTab(tk.Frame):
         &#34;&#34;&#34;
         tk.Frame.__init__(self, session, **options)
         self.char = char
-        bgColor = None
+        self.bgColor = None
         self.scrollArea = ScrollFrame(self)
         self.scrollArea.canvas.config(height=0.7 * self.winfo_screenheight())
-        self.scrollArea.content.config(bg=bgColor)
-        self.actionBar().pack(fill=tk.X)
+        self.scrollArea.content.config(bg=self.bgColor)
+        self.actionBar().pack()
         self.scrollArea.pack(expand=tk.YES, fill=tk.BOTH)
+
+        # add character information
         tk.Label(
             self.scrollArea.content,
             text=self.char.name,
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 36, &#39;bold italic&#39;)
         ).pack()
         tk.Label(
             self.scrollArea.content,
             text=&#39;({})&#39;.format(&#39;, &#39;.join(self.char.tags)),
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 16, &#39;bold&#39;)
         ).pack()
         tk.Label(
             self.scrollArea.content,
-            text=&#39;{}, Rank {}, Level {}&#39;.format(
+            text=&#39;{}, Rank {}, Level {}, {}&#39;.format(
                 camelToSpace(self.char.rarity),
                 self.char.rank,
-                self.char.level
+                self.char.level,
+                self.char.role
             ),
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 20, &#39;bold italic&#39;)
         ).pack()
         tk.Label(
@@ -103,124 +190,40 @@ class CharTab(tk.Frame):
                 self.char.xp,
                 self.char.xp/xpFromLevel(99)
             ),
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 13, &#39;bold&#39;)
         ).pack()
+
+        # add gear
+        tk.Label(
+            self.scrollArea.content,
+            text=&#39;GEAR:&#39;,
+            bg=self.bgColor,
+            font=(None, 21, &#39;bold italic&#39;)
+        ).pack(anchor=tk.W)
+        gearFrame = tk.Frame(
+            self.scrollArea.content, bg=&#39;ivory&#39;, highlightthickness=1,
+            highlightbackground=&#39;black&#39;, highlightcolor=&#39;black&#39;
+        )
+        self.makeGearCardFrame(gearFrame).pack()
+        self.makeGearUpgradeFrame(gearFrame, &#39;ivory&#39;).pack()
+        gearFrame.pack(anchor=tk.W)
+
+        # add skills
         tk.Label(
             self.scrollArea.content,
             text=&#39;SKILLS:&#39;,
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 21, &#39;bold italic&#39;)
         ).pack(anchor=tk.W)
-        self.buildSkillFrame()
+        self.skillFrame().pack()
 
-    def buildSkillFrame(self):
-        &#34;&#34;&#34;Builds and packs the frame that will hold the skill
-        information, and stores it in the `skillFrame` attribute.
-        Horizontal and vertical separators are placed, leaving room for
-        a 7 x 2 grid for each skill-level combination. Then the skill
-        descriptions are individually placed in each open grid area.
-
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with the
+        active session.
         &#34;&#34;&#34;
-        self.skillFrame = tk.Frame(self.scrollArea.content)
-        numSkills = len(self.char.skills)
-        for index in range(numSkills + 1):
-            ttk.Separator(self.skillFrame, orient=&#39;horizontal&#39;).grid(
-                row=8 * index, column=0,
-                columnspan=7, sticky=tk.EW
-            )
-        for index in range(3):
-            ttk.Separator(self.skillFrame, orient=&#39;vertical&#39;).grid(
-                row=0, column=3 * index,
-                rowspan=8 * numSkills + 1, sticky=tk.NS
-            )
-        for index, item in enumerate(self.char.skills.items()):
-            skillID, skill = item
-            for level in (1,2):
-                tempSkill = Skill(
-                    skillID,
-                    level,
-                    skill.level == level and skill.unlocked
-                )
-                self.displaySkill(
-                    tempSkill,
-                    8 * index + 1,
-                    3 * (level - 1) + 1
-                )
-        self.skillFrame.pack()
-
-    def displaySkill(self, skill, row, column):
-        &#34;&#34;&#34;Constructs information about the given skill and grids it
-        onto the skill frame. The information is gridded as a block with
-        its top right corner placed at the given row and column.
-
-        Args:
-            skill (legends.skill.Skill): The skill from which to draw
-                information.
-            row (int): The row of the top-left corner of the block of
-                information.
-            column (int): The column of the top-left corner of the block
-                of information.
-
-        &#34;&#34;&#34;
-        bgColor = &#39;cyan&#39; if skill.unlocked else &#39;cornsilk2&#39;
-        fgColor = None if skill.unlocked else &#39;gray&#39;
-        frame = tk.Frame(self.skillFrame, bg=bgColor)
-        frame.grid(row=row, column=column, columnspan=2, sticky=tk.NSEW)
-        tk.Label(
-            frame,
-            text=&#39;{} - Level {}&#39;.format(skill.name, skill.level),
-            bg=bgColor,
-            fg=fgColor,
-            font=(None, 16, &#39;bold&#39;)
-        ).pack(pady=(5,10))
-        headers = [
-            &#39;Description&#39;, &#39;Effects&#39;, &#39;Caster Effect&#39;, &#39;Target&#39;, &#39;Cooldown&#39;,
-            &#39;Effect Tags&#39;
-        ]
-        for offset, header in enumerate(headers):
-            frame = tk.Frame(self.skillFrame, bg=bgColor)
-            frame.grid(row=row + 1 + offset, column=column, sticky=tk.NSEW)
-            label = tk.Label(
-                frame,
-                text=header + &#39;:&#39;,
-                bg=bgColor,
-                fg=fgColor,
-                font=(None, 13, &#39;bold&#39;)
-            )
-            label.pack(anchor=tk.NE, padx=(5,0))
-        label.pack_configure(pady=(0,5))
-
-        cEff = skill.casterEffect
-        target = &#39;{} {} {} ({})&#39;.format(
-            &#39;All&#39; if skill.isAOE else skill.numTargets,
-            skill.data[&#39;targetState&#39;],
-            skill.data[&#39;targetType&#39;],
-            &#39;multiple&#39; if skill.isAOE else (
-                &#39;multiple random&#39; if skill.isMultiRandom else &#39;single&#39;
-            )
-        )
-        info = [
-            skill.description,
-            &#39;, &#39;.join([effect.description for effect in skill.effects]),
-            &#39;None&#39; if cEff is None else cEff.description,
-            target,
-            &#39;{} ({} start)&#39;.format(skill.cooldown, skill.startingCooldown),
-            &#39;, &#39;.join(skill.effectTags)
-        ]
-        for offset, text in enumerate(info):
-            frame = tk.Frame(self.skillFrame, bg=bgColor)
-            frame.grid(row=row + 1 + offset, column=column + 1, sticky=tk.NSEW)
-            label = tk.Label(
-                frame,
-                text=text,
-                bg=bgColor,
-                fg=fgColor,
-                wraplength=400,
-                justify=tk.LEFT
-            )
-            label.pack(anchor=tk.NW, padx=(0,5))
-        label.pack_configure(pady=(0,10))
+        return self.master.saveslot.roster
 
     def actionBar(self):
         &#34;&#34;&#34;Builds and returns an action bar that allows the user to
@@ -233,7 +236,245 @@ class CharTab(tk.Frame):
             text=&#39;back to roster&#39;,
             command=self.master.rosterTab
         ).pack(side=tk.LEFT)
-        return bar</code></pre>
+        nextChar = self.master.nextChar(self.char)
+        prevChar = self.master.prevChar(self.char)
+        tk.Button(
+            bar,
+            text=&#39;prev&#39;,
+            command=lambda: self.master.charTab(prevChar),
+            state=tk.DISABLED if prevChar is None else tk.NORMAL
+        ).pack(side=tk.LEFT)
+        tk.Button(
+            bar,
+            text=&#39;next&#39;,
+            command=lambda: self.master.charTab(nextChar),
+            state=tk.DISABLED if nextChar is None else tk.NORMAL
+        ).pack(side=tk.LEFT)
+        return bar
+
+    def skillFrame(self):
+        &#34;&#34;&#34;Builds and packs the frame that will hold the skill
+        information, and stores it in the `skillFrame` attribute.
+        Horizontal and vertical separators are placed, leaving room for
+        a 7 x 2 grid for each skill-level combination. Then the skill
+        descriptions are individually placed in each open grid area.
+
+        &#34;&#34;&#34;
+        skillFrame = tk.Frame(self.scrollArea.content)
+        skillGrid = tk.Frame(skillFrame)
+        skillGrid.pack()
+        skillGrid.columnconfigure(1, weight=1, uniform=&#39;headers&#39;)
+        skillGrid.columnconfigure(4, weight=1, uniform=&#39;headers&#39;)
+        skillGrid.columnconfigure(2, weight=1, uniform=&#39;descriptions&#39;)
+        skillGrid.columnconfigure(5, weight=1, uniform=&#39;descriptions&#39;)
+        numSkills = len(self.char.skills)
+        for index in range(numSkills + 1):
+            ttk.Separator(skillGrid, orient=&#39;horizontal&#39;).grid(
+                row=8 * index, column=0,
+                columnspan=7, sticky=tk.EW
+            )
+        for index in range(3):
+            ttk.Separator(skillGrid, orient=&#39;vertical&#39;).grid(
+                row=0, column=3 * index,
+                rowspan=8 * numSkills + 1, sticky=tk.NS
+            )
+        for index, item in enumerate(self.char.skills.items()):
+            skillID, skill = item
+            for level in (1,2):
+                tempSkill = Skill(
+                    skillID,
+                    level,
+                    skill.level == level and skill.unlocked
+                )
+                displaySkill(
+                    skillGrid,
+                    tempSkill,
+                    8 * index + 1,
+                    3 * (level - 1) + 1
+                )
+        return skillFrame
+
+    def getGearCardDims(self):
+        &#34;&#34;&#34;Finds and returns the dimensions of the largest possible gear
+        card.
+
+        Returns:
+            tuple: (`int`, `int`) The height and width of the largest
+                possible gear card.
+
+        &#34;&#34;&#34;
+        testCard = GearCard(&#39;test&#39;, self)
+        testCard.pack()
+        testCard.update_idletasks()
+        height = testCard.winfo_height()
+        width = testCard.winfo_width()
+        testCard.destroy()
+        return height, width
+
+    def makeGearCardFrame(self, master):
+        &#34;&#34;&#34;Builds and returns a frame that displays a gear card for each
+        of the character&#39;s gear pieces.
+
+        Args:
+            master (tk.Frame): The frame that holds all gear-related
+                information.
+
+        Returns:
+            tk.Frame: The constructed gear-card frame, a child of the
+                given master frame.
+
+        &#34;&#34;&#34;
+        # setup card frame
+        cardFrame = tk.Frame(master)
+        gearCardDims = self.getGearCardDims()
+        cardFrame.grid_rowconfigure(0, minsize=gearCardDims[0])
+        cardFrame.grid_rowconfigure(1, minsize=gearCardDims[0])
+        cardFrame.grid_columnconfigure(0, minsize=gearCardDims[1])
+        cardFrame.grid_columnconfigure(1, minsize=gearCardDims[1])
+
+        # add gear cards
+        for index in range(4):
+            try:
+                gear = self.roster.containsGear[self.char.gearSlots[index]]
+            except KeyError:
+                gear = None
+            card = GearCard(gear, cardFrame)
+            card.grid(
+                row=int(index/2),
+                column=index if index &lt; 2 else 3 - index,
+                sticky=tk.NSEW
+            )
+        return cardFrame
+
+    def makeGearUpgradeFrame(self, master, bgColor):
+        &#34;&#34;&#34;Builds and returns a frame with information about items
+        needed to upgrade the character&#39;s gear.
+
+        Args:
+            master (tk.Frame): The frame that holds all gear-related
+                information.
+            bgColor (str): The background color of the master frame.
+
+        Returns:
+            tk.Frame: The constructed gear-upgrade frame, a child of the
+                given master frame.
+
+        &#34;&#34;&#34;
+        upgradeFrame = tk.Frame(master, bg=bgColor)
+        upgradeFrame.grid_columnconfigure(2, minsize=20)
+        items = self.char.itemsToMaxGear(self.roster)
+        tk.Label(
+            upgradeFrame,
+            text=&#39;Items Needed to Max All Gear&#39;,
+            bg=bgColor,
+            font=(None, 13, &#39;bold italic&#39;)
+        ).grid(row=0, column=0, columnspan=5)
+        headers = {
+            &#39;Gear Leveling Materials&#39;: &#39;Leveling Mats&#39;,
+            &#39;Gear Ranking Materials&#39;: &#39;Ranking Mats&#39;
+        }
+        col = 0
+        for cat, header in headers.items():
+            tk.Label(
+                upgradeFrame, text=header, bg=bgColor, font=(None, 13, &#39;bold&#39;)
+            ).grid(row=1, column=col, columnspan=2, sticky=tk.W)
+            row = 2
+            for item, qty in items.itemsByCat(cat):
+                tk.Label(
+                    upgradeFrame, text=item.name + &#39;:&#39;, bg=bgColor
+                ).grid(row=row, column=col, sticky=tk.W)
+                tk.Label(
+                    upgradeFrame, text=&#39;{:,}&#39;.format(qty), bg=bgColor
+                ).grid(row=row, column=col + 1, sticky=tk.E)
+                row += 1
+            col += 3
+        tk.Label(
+            upgradeFrame,
+            text=&#39;Latinum: {:,}&#39;.format(items[ITEMS[&#39;Latinum&#39;]]),
+            bg=bgColor
+        ).grid(row=5, column=0, columnspan=4)
+        return upgradeFrame
+
+class GearCard(tk.Frame):
+    &#34;&#34;&#34;A small tile containing basic information about a gear piece.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, gear, *args, **kargs):
+        &#34;&#34;&#34;The constructor builds the card from the given gear piece and
+        passes its remaining arguments to the `tk.Frame` constructor.
+
+        Args:
+            gear (legends.gameobjects.Gear): The gear piece from which
+                to build the card. If `None`, a tile displaying &#34;None&#34;
+                is created. Can also be &#34;test&#34;, in which case a card is
+                created, all of whose display texts are as large as
+                possible. The test card can be used to test sizes when
+                displaying cards.
+
+        &#34;&#34;&#34;
+        # set up gear and card configuration
+        tk.Frame.__init__(self, *args, **kargs)
+        bgColor = (
+            RARITY_COLORS[gear.rarity] if isinstance(gear, Gear)
+            else &#39;cornsilk2&#39;
+        )
+        if gear == &#39;test&#39;:
+            gear = Gear(&#39;Starfleet PADD 2256 Engineering&#39;, 25)
+            gear.stats.hlth = 999.99
+            gear.stats.att = 999.99
+            gear.stats.tech = 999.99
+            gear.stats.dfn = 99.99
+        self.config(
+            bg=bgColor, highlightthickness=2, highlightbackground=&#39;black&#39;,
+            highlightcolor=&#39;black&#39;
+        )
+
+        # make &#39;NONE&#39; card
+        if gear is None:
+            tk.Label(
+                self, text=&#39;NONE&#39;, bg=bgColor, font=(None, 16, &#39;bold italic&#39;),
+                state=tk.DISABLED
+            ).pack(expand=tk.YES)
+            return
+
+        # make and pack name and info
+        tk.Label(
+            self,
+            text=f&#39;{gear.name}&#39;,
+            bg=bgColor,
+            font=(None, 16, &#39;bold italic&#39;)
+        ).pack()
+        tk.Label(
+            self,
+            text=&#39;{}, Level {}, {}&#39;.format(
+                camelToSpace(gear.rarity), gear.displayLevel, gear.role
+            ),
+            bg=bgColor,
+            font=(None, 12, &#39;italic&#39;)
+        ).pack()
+
+        # build stat frame
+        statFrame = tk.Frame(self, bg=bgColor)
+        for column in range(4):
+            statFrame.columnconfigure(
+                column, weight=1, uniform=(
+                    &#39;names&#39; if column % 2 == 0 else &#39;values&#39;
+                )
+            )
+        stats = [&#39;Health&#39;, &#39;Attack&#39;, &#39;Defense&#39;, &#39;Tech&#39;]
+        for index in range(4):
+            tk.Label(
+                statFrame,
+                text=f&#39;{stats[index]}:&#39;,
+                bg=bgColor
+            ).grid(row=int(index/2), column=2 * (index % 2), sticky=tk.W)
+            tk.Label(
+                statFrame,
+                text=f&#39;{gear.stats.get(stats[index]):.2f}&#39;,
+                bg=bgColor
+            ).grid(row=int(index/2), column=2 * (index % 2) + 1, sticky=tk.E)
+        statFrame.pack(expand=tk.YES, fill=tk.X)</code></pre>
 </details>
 </section>
 <section>
@@ -241,6 +482,118 @@ class CharTab(tk.Frame):
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.ui.chartab.displaySkill"><code class="name flex">
+<span>def <span class="ident">displaySkill</span></span>(<span>master, skill, row, column)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructs information about the given skill and grids it onto
+the given frame. The information is gridded as a block with its top
+right corner placed at the given row and column.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>master</code></strong> :&ensp;<code>tk.Frame</code></dt>
+<dd>The frame onto which to grid the skill
+information.</dd>
+<dt><strong><code>skill</code></strong> :&ensp;<code><a title="legends.skill.Skill" href="../skill.html#legends.skill.Skill">Skill</a></code></dt>
+<dd>The skill from which to draw
+information.</dd>
+<dt><strong><code>row</code></strong> :&ensp;<code>int</code></dt>
+<dd>The row of the top-left corner of the block of
+information.</dd>
+<dt><strong><code>column</code></strong> :&ensp;<code>int</code></dt>
+<dd>The column of the top-left corner of the block of
+information.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def displaySkill(master, skill, row, column):
+    &#34;&#34;&#34;Constructs information about the given skill and grids it onto
+    the given frame. The information is gridded as a block with its top
+    right corner placed at the given row and column.
+
+    Args:
+        master (tk.Frame): The frame onto which to grid the skill
+            information.
+        skill (legends.skill.Skill): The skill from which to draw
+            information.
+        row (int): The row of the top-left corner of the block of
+            information.
+        column (int): The column of the top-left corner of the block of
+            information.
+
+    &#34;&#34;&#34;
+    bgColor = &#39;cyan&#39; if skill.unlocked else &#39;cornsilk2&#39;
+    fgColor = None if skill.unlocked else &#39;gray&#39;
+
+    # add skill name and level
+    frame = tk.Frame(master, bg=bgColor)
+    frame.grid(row=row, column=column, columnspan=2, sticky=tk.NSEW)
+    tk.Label(
+        frame,
+        text=&#39;{} - Level {}&#39;.format(skill.name, skill.level),
+        bg=bgColor,
+        fg=fgColor,
+        font=(None, 16, &#39;bold&#39;)
+    ).pack(pady=(5,10))
+
+    # place headers
+    headers = [
+        &#39;Description&#39;, &#39;Effects&#39;, &#39;Caster Effect&#39;, &#39;Target&#39;, &#39;Cooldown&#39;,
+        &#39;Effect Tags&#39;
+    ]
+    for offset, header in enumerate(headers):
+        frame = tk.Frame(master, bg=bgColor)
+        frame.grid(row=row + 1 + offset, column=column, sticky=tk.NSEW)
+        label = tk.Label(
+            frame,
+            text=header + &#39;:&#39;,
+            bg=bgColor,
+            fg=fgColor,
+            font=(None, 13, &#39;bold&#39;)
+        )
+        label.pack(anchor=tk.NE, padx=(5,0))
+    label.pack_configure(pady=(0,5))
+
+    # set up content variables
+    cEff = skill.casterEffect
+    target = &#39;{} {} {} ({})&#39;.format(
+        &#39;All&#39; if skill.isAOE else skill.numTargets,
+        skill.data[&#39;targetState&#39;],
+        skill.data[&#39;targetType&#39;],
+        &#39;multiple&#39; if skill.isAOE else (
+            &#39;multiple random&#39; if skill.isMultiRandom else &#39;single&#39;
+        )
+    )
+    info = [
+        skill.description,
+        &#39;, &#39;.join([effect.description for effect in skill.effects]),
+        &#39;None&#39; if cEff is None else cEff.description,
+        target,
+        &#39;{} ({} start)&#39;.format(skill.cooldown, skill.startingCooldown),
+        &#39;, &#39;.join(skill.effectTags)
+    ]
+
+    # place content
+    for offset, text in enumerate(info):
+        frame = tk.Frame(master, bg=bgColor)
+        frame.grid(row=row + 1 + offset, column=column + 1, sticky=tk.NSEW)
+        label = tk.Label(
+            frame,
+            text=text,
+            bg=bgColor,
+            fg=fgColor,
+            wraplength=400,
+            justify=tk.LEFT
+        )
+        label.pack(anchor=tk.NW, padx=(0,5))
+    label.pack_configure(pady=(0,10))</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -300,32 +653,35 @@ as the instance's parent.</dd>
         &#34;&#34;&#34;
         tk.Frame.__init__(self, session, **options)
         self.char = char
-        bgColor = None
+        self.bgColor = None
         self.scrollArea = ScrollFrame(self)
         self.scrollArea.canvas.config(height=0.7 * self.winfo_screenheight())
-        self.scrollArea.content.config(bg=bgColor)
-        self.actionBar().pack(fill=tk.X)
+        self.scrollArea.content.config(bg=self.bgColor)
+        self.actionBar().pack()
         self.scrollArea.pack(expand=tk.YES, fill=tk.BOTH)
+
+        # add character information
         tk.Label(
             self.scrollArea.content,
             text=self.char.name,
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 36, &#39;bold italic&#39;)
         ).pack()
         tk.Label(
             self.scrollArea.content,
             text=&#39;({})&#39;.format(&#39;, &#39;.join(self.char.tags)),
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 16, &#39;bold&#39;)
         ).pack()
         tk.Label(
             self.scrollArea.content,
-            text=&#39;{}, Rank {}, Level {}&#39;.format(
+            text=&#39;{}, Rank {}, Level {}, {}&#39;.format(
                 camelToSpace(self.char.rarity),
                 self.char.rank,
-                self.char.level
+                self.char.level,
+                self.char.role
             ),
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 20, &#39;bold italic&#39;)
         ).pack()
         tk.Label(
@@ -339,124 +695,40 @@ as the instance's parent.</dd>
                 self.char.xp,
                 self.char.xp/xpFromLevel(99)
             ),
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 13, &#39;bold&#39;)
         ).pack()
+
+        # add gear
+        tk.Label(
+            self.scrollArea.content,
+            text=&#39;GEAR:&#39;,
+            bg=self.bgColor,
+            font=(None, 21, &#39;bold italic&#39;)
+        ).pack(anchor=tk.W)
+        gearFrame = tk.Frame(
+            self.scrollArea.content, bg=&#39;ivory&#39;, highlightthickness=1,
+            highlightbackground=&#39;black&#39;, highlightcolor=&#39;black&#39;
+        )
+        self.makeGearCardFrame(gearFrame).pack()
+        self.makeGearUpgradeFrame(gearFrame, &#39;ivory&#39;).pack()
+        gearFrame.pack(anchor=tk.W)
+
+        # add skills
         tk.Label(
             self.scrollArea.content,
             text=&#39;SKILLS:&#39;,
-            bg=bgColor,
+            bg=self.bgColor,
             font=(None, 21, &#39;bold italic&#39;)
         ).pack(anchor=tk.W)
-        self.buildSkillFrame()
+        self.skillFrame().pack()
 
-    def buildSkillFrame(self):
-        &#34;&#34;&#34;Builds and packs the frame that will hold the skill
-        information, and stores it in the `skillFrame` attribute.
-        Horizontal and vertical separators are placed, leaving room for
-        a 7 x 2 grid for each skill-level combination. Then the skill
-        descriptions are individually placed in each open grid area.
-
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with the
+        active session.
         &#34;&#34;&#34;
-        self.skillFrame = tk.Frame(self.scrollArea.content)
-        numSkills = len(self.char.skills)
-        for index in range(numSkills + 1):
-            ttk.Separator(self.skillFrame, orient=&#39;horizontal&#39;).grid(
-                row=8 * index, column=0,
-                columnspan=7, sticky=tk.EW
-            )
-        for index in range(3):
-            ttk.Separator(self.skillFrame, orient=&#39;vertical&#39;).grid(
-                row=0, column=3 * index,
-                rowspan=8 * numSkills + 1, sticky=tk.NS
-            )
-        for index, item in enumerate(self.char.skills.items()):
-            skillID, skill = item
-            for level in (1,2):
-                tempSkill = Skill(
-                    skillID,
-                    level,
-                    skill.level == level and skill.unlocked
-                )
-                self.displaySkill(
-                    tempSkill,
-                    8 * index + 1,
-                    3 * (level - 1) + 1
-                )
-        self.skillFrame.pack()
-
-    def displaySkill(self, skill, row, column):
-        &#34;&#34;&#34;Constructs information about the given skill and grids it
-        onto the skill frame. The information is gridded as a block with
-        its top right corner placed at the given row and column.
-
-        Args:
-            skill (legends.skill.Skill): The skill from which to draw
-                information.
-            row (int): The row of the top-left corner of the block of
-                information.
-            column (int): The column of the top-left corner of the block
-                of information.
-
-        &#34;&#34;&#34;
-        bgColor = &#39;cyan&#39; if skill.unlocked else &#39;cornsilk2&#39;
-        fgColor = None if skill.unlocked else &#39;gray&#39;
-        frame = tk.Frame(self.skillFrame, bg=bgColor)
-        frame.grid(row=row, column=column, columnspan=2, sticky=tk.NSEW)
-        tk.Label(
-            frame,
-            text=&#39;{} - Level {}&#39;.format(skill.name, skill.level),
-            bg=bgColor,
-            fg=fgColor,
-            font=(None, 16, &#39;bold&#39;)
-        ).pack(pady=(5,10))
-        headers = [
-            &#39;Description&#39;, &#39;Effects&#39;, &#39;Caster Effect&#39;, &#39;Target&#39;, &#39;Cooldown&#39;,
-            &#39;Effect Tags&#39;
-        ]
-        for offset, header in enumerate(headers):
-            frame = tk.Frame(self.skillFrame, bg=bgColor)
-            frame.grid(row=row + 1 + offset, column=column, sticky=tk.NSEW)
-            label = tk.Label(
-                frame,
-                text=header + &#39;:&#39;,
-                bg=bgColor,
-                fg=fgColor,
-                font=(None, 13, &#39;bold&#39;)
-            )
-            label.pack(anchor=tk.NE, padx=(5,0))
-        label.pack_configure(pady=(0,5))
-
-        cEff = skill.casterEffect
-        target = &#39;{} {} {} ({})&#39;.format(
-            &#39;All&#39; if skill.isAOE else skill.numTargets,
-            skill.data[&#39;targetState&#39;],
-            skill.data[&#39;targetType&#39;],
-            &#39;multiple&#39; if skill.isAOE else (
-                &#39;multiple random&#39; if skill.isMultiRandom else &#39;single&#39;
-            )
-        )
-        info = [
-            skill.description,
-            &#39;, &#39;.join([effect.description for effect in skill.effects]),
-            &#39;None&#39; if cEff is None else cEff.description,
-            target,
-            &#39;{} ({} start)&#39;.format(skill.cooldown, skill.startingCooldown),
-            &#39;, &#39;.join(skill.effectTags)
-        ]
-        for offset, text in enumerate(info):
-            frame = tk.Frame(self.skillFrame, bg=bgColor)
-            frame.grid(row=row + 1 + offset, column=column + 1, sticky=tk.NSEW)
-            label = tk.Label(
-                frame,
-                text=text,
-                bg=bgColor,
-                fg=fgColor,
-                wraplength=400,
-                justify=tk.LEFT
-            )
-            label.pack(anchor=tk.NW, padx=(0,5))
-        label.pack_configure(pady=(0,10))
+        return self.master.saveslot.roster
 
     def actionBar(self):
         &#34;&#34;&#34;Builds and returns an action bar that allows the user to
@@ -469,7 +741,164 @@ as the instance's parent.</dd>
             text=&#39;back to roster&#39;,
             command=self.master.rosterTab
         ).pack(side=tk.LEFT)
-        return bar</code></pre>
+        nextChar = self.master.nextChar(self.char)
+        prevChar = self.master.prevChar(self.char)
+        tk.Button(
+            bar,
+            text=&#39;prev&#39;,
+            command=lambda: self.master.charTab(prevChar),
+            state=tk.DISABLED if prevChar is None else tk.NORMAL
+        ).pack(side=tk.LEFT)
+        tk.Button(
+            bar,
+            text=&#39;next&#39;,
+            command=lambda: self.master.charTab(nextChar),
+            state=tk.DISABLED if nextChar is None else tk.NORMAL
+        ).pack(side=tk.LEFT)
+        return bar
+
+    def skillFrame(self):
+        &#34;&#34;&#34;Builds and packs the frame that will hold the skill
+        information, and stores it in the `skillFrame` attribute.
+        Horizontal and vertical separators are placed, leaving room for
+        a 7 x 2 grid for each skill-level combination. Then the skill
+        descriptions are individually placed in each open grid area.
+
+        &#34;&#34;&#34;
+        skillFrame = tk.Frame(self.scrollArea.content)
+        skillGrid = tk.Frame(skillFrame)
+        skillGrid.pack()
+        skillGrid.columnconfigure(1, weight=1, uniform=&#39;headers&#39;)
+        skillGrid.columnconfigure(4, weight=1, uniform=&#39;headers&#39;)
+        skillGrid.columnconfigure(2, weight=1, uniform=&#39;descriptions&#39;)
+        skillGrid.columnconfigure(5, weight=1, uniform=&#39;descriptions&#39;)
+        numSkills = len(self.char.skills)
+        for index in range(numSkills + 1):
+            ttk.Separator(skillGrid, orient=&#39;horizontal&#39;).grid(
+                row=8 * index, column=0,
+                columnspan=7, sticky=tk.EW
+            )
+        for index in range(3):
+            ttk.Separator(skillGrid, orient=&#39;vertical&#39;).grid(
+                row=0, column=3 * index,
+                rowspan=8 * numSkills + 1, sticky=tk.NS
+            )
+        for index, item in enumerate(self.char.skills.items()):
+            skillID, skill = item
+            for level in (1,2):
+                tempSkill = Skill(
+                    skillID,
+                    level,
+                    skill.level == level and skill.unlocked
+                )
+                displaySkill(
+                    skillGrid,
+                    tempSkill,
+                    8 * index + 1,
+                    3 * (level - 1) + 1
+                )
+        return skillFrame
+
+    def getGearCardDims(self):
+        &#34;&#34;&#34;Finds and returns the dimensions of the largest possible gear
+        card.
+
+        Returns:
+            tuple: (`int`, `int`) The height and width of the largest
+                possible gear card.
+
+        &#34;&#34;&#34;
+        testCard = GearCard(&#39;test&#39;, self)
+        testCard.pack()
+        testCard.update_idletasks()
+        height = testCard.winfo_height()
+        width = testCard.winfo_width()
+        testCard.destroy()
+        return height, width
+
+    def makeGearCardFrame(self, master):
+        &#34;&#34;&#34;Builds and returns a frame that displays a gear card for each
+        of the character&#39;s gear pieces.
+
+        Args:
+            master (tk.Frame): The frame that holds all gear-related
+                information.
+
+        Returns:
+            tk.Frame: The constructed gear-card frame, a child of the
+                given master frame.
+
+        &#34;&#34;&#34;
+        # setup card frame
+        cardFrame = tk.Frame(master)
+        gearCardDims = self.getGearCardDims()
+        cardFrame.grid_rowconfigure(0, minsize=gearCardDims[0])
+        cardFrame.grid_rowconfigure(1, minsize=gearCardDims[0])
+        cardFrame.grid_columnconfigure(0, minsize=gearCardDims[1])
+        cardFrame.grid_columnconfigure(1, minsize=gearCardDims[1])
+
+        # add gear cards
+        for index in range(4):
+            try:
+                gear = self.roster.containsGear[self.char.gearSlots[index]]
+            except KeyError:
+                gear = None
+            card = GearCard(gear, cardFrame)
+            card.grid(
+                row=int(index/2),
+                column=index if index &lt; 2 else 3 - index,
+                sticky=tk.NSEW
+            )
+        return cardFrame
+
+    def makeGearUpgradeFrame(self, master, bgColor):
+        &#34;&#34;&#34;Builds and returns a frame with information about items
+        needed to upgrade the character&#39;s gear.
+
+        Args:
+            master (tk.Frame): The frame that holds all gear-related
+                information.
+            bgColor (str): The background color of the master frame.
+
+        Returns:
+            tk.Frame: The constructed gear-upgrade frame, a child of the
+                given master frame.
+
+        &#34;&#34;&#34;
+        upgradeFrame = tk.Frame(master, bg=bgColor)
+        upgradeFrame.grid_columnconfigure(2, minsize=20)
+        items = self.char.itemsToMaxGear(self.roster)
+        tk.Label(
+            upgradeFrame,
+            text=&#39;Items Needed to Max All Gear&#39;,
+            bg=bgColor,
+            font=(None, 13, &#39;bold italic&#39;)
+        ).grid(row=0, column=0, columnspan=5)
+        headers = {
+            &#39;Gear Leveling Materials&#39;: &#39;Leveling Mats&#39;,
+            &#39;Gear Ranking Materials&#39;: &#39;Ranking Mats&#39;
+        }
+        col = 0
+        for cat, header in headers.items():
+            tk.Label(
+                upgradeFrame, text=header, bg=bgColor, font=(None, 13, &#39;bold&#39;)
+            ).grid(row=1, column=col, columnspan=2, sticky=tk.W)
+            row = 2
+            for item, qty in items.itemsByCat(cat):
+                tk.Label(
+                    upgradeFrame, text=item.name + &#39;:&#39;, bg=bgColor
+                ).grid(row=row, column=col, sticky=tk.W)
+                tk.Label(
+                    upgradeFrame, text=&#39;{:,}&#39;.format(qty), bg=bgColor
+                ).grid(row=row, column=col + 1, sticky=tk.E)
+                row += 1
+            col += 3
+        tk.Label(
+            upgradeFrame,
+            text=&#39;Latinum: {:,}&#39;.format(items[ITEMS[&#39;Latinum&#39;]]),
+            bg=bgColor
+        ).grid(row=5, column=0, columnspan=4)
+        return upgradeFrame</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -481,6 +910,25 @@ as the instance's parent.</dd>
 <li>tkinter.Place</li>
 <li>tkinter.Grid</li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.ui.chartab.CharTab.roster"><code class="name">var <span class="ident">roster</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.Roster" href="../roster.html#legends.roster.Roster">Roster</a></code>: The roster associated with the
+active session.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def roster(self):
+    &#34;&#34;&#34;`legends.roster.Roster`: The roster associated with the
+    active session.
+    &#34;&#34;&#34;
+    return self.master.saveslot.roster</code></pre>
+</details>
+</dd>
+</dl>
 <h3>Methods</h3>
 <dl>
 <dt id="legends.ui.chartab.CharTab.actionBar"><code class="name flex">
@@ -504,11 +952,191 @@ interact with the <code><a title="legends.ui.chartab.CharTab" href="#legends.ui.
         text=&#39;back to roster&#39;,
         command=self.master.rosterTab
     ).pack(side=tk.LEFT)
+    nextChar = self.master.nextChar(self.char)
+    prevChar = self.master.prevChar(self.char)
+    tk.Button(
+        bar,
+        text=&#39;prev&#39;,
+        command=lambda: self.master.charTab(prevChar),
+        state=tk.DISABLED if prevChar is None else tk.NORMAL
+    ).pack(side=tk.LEFT)
+    tk.Button(
+        bar,
+        text=&#39;next&#39;,
+        command=lambda: self.master.charTab(nextChar),
+        state=tk.DISABLED if nextChar is None else tk.NORMAL
+    ).pack(side=tk.LEFT)
     return bar</code></pre>
 </details>
 </dd>
-<dt id="legends.ui.chartab.CharTab.buildSkillFrame"><code class="name flex">
-<span>def <span class="ident">buildSkillFrame</span></span>(<span>self)</span>
+<dt id="legends.ui.chartab.CharTab.getGearCardDims"><code class="name flex">
+<span>def <span class="ident">getGearCardDims</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Finds and returns the dimensions of the largest possible gear
+card.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>(<code>int</code>, <code>int</code>) The height and width of the largest
+possible gear card.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getGearCardDims(self):
+    &#34;&#34;&#34;Finds and returns the dimensions of the largest possible gear
+    card.
+
+    Returns:
+        tuple: (`int`, `int`) The height and width of the largest
+            possible gear card.
+
+    &#34;&#34;&#34;
+    testCard = GearCard(&#39;test&#39;, self)
+    testCard.pack()
+    testCard.update_idletasks()
+    height = testCard.winfo_height()
+    width = testCard.winfo_width()
+    testCard.destroy()
+    return height, width</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.chartab.CharTab.makeGearCardFrame"><code class="name flex">
+<span>def <span class="ident">makeGearCardFrame</span></span>(<span>self, master)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds and returns a frame that displays a gear card for each
+of the character's gear pieces.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>master</code></strong> :&ensp;<code>tk.Frame</code></dt>
+<dd>The frame that holds all gear-related
+information.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tk.Frame</code></dt>
+<dd>The constructed gear-card frame, a child of the
+given master frame.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def makeGearCardFrame(self, master):
+    &#34;&#34;&#34;Builds and returns a frame that displays a gear card for each
+    of the character&#39;s gear pieces.
+
+    Args:
+        master (tk.Frame): The frame that holds all gear-related
+            information.
+
+    Returns:
+        tk.Frame: The constructed gear-card frame, a child of the
+            given master frame.
+
+    &#34;&#34;&#34;
+    # setup card frame
+    cardFrame = tk.Frame(master)
+    gearCardDims = self.getGearCardDims()
+    cardFrame.grid_rowconfigure(0, minsize=gearCardDims[0])
+    cardFrame.grid_rowconfigure(1, minsize=gearCardDims[0])
+    cardFrame.grid_columnconfigure(0, minsize=gearCardDims[1])
+    cardFrame.grid_columnconfigure(1, minsize=gearCardDims[1])
+
+    # add gear cards
+    for index in range(4):
+        try:
+            gear = self.roster.containsGear[self.char.gearSlots[index]]
+        except KeyError:
+            gear = None
+        card = GearCard(gear, cardFrame)
+        card.grid(
+            row=int(index/2),
+            column=index if index &lt; 2 else 3 - index,
+            sticky=tk.NSEW
+        )
+    return cardFrame</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.chartab.CharTab.makeGearUpgradeFrame"><code class="name flex">
+<span>def <span class="ident">makeGearUpgradeFrame</span></span>(<span>self, master, bgColor)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds and returns a frame with information about items
+needed to upgrade the character's gear.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>master</code></strong> :&ensp;<code>tk.Frame</code></dt>
+<dd>The frame that holds all gear-related
+information.</dd>
+<dt><strong><code>bgColor</code></strong> :&ensp;<code>str</code></dt>
+<dd>The background color of the master frame.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tk.Frame</code></dt>
+<dd>The constructed gear-upgrade frame, a child of the
+given master frame.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def makeGearUpgradeFrame(self, master, bgColor):
+    &#34;&#34;&#34;Builds and returns a frame with information about items
+    needed to upgrade the character&#39;s gear.
+
+    Args:
+        master (tk.Frame): The frame that holds all gear-related
+            information.
+        bgColor (str): The background color of the master frame.
+
+    Returns:
+        tk.Frame: The constructed gear-upgrade frame, a child of the
+            given master frame.
+
+    &#34;&#34;&#34;
+    upgradeFrame = tk.Frame(master, bg=bgColor)
+    upgradeFrame.grid_columnconfigure(2, minsize=20)
+    items = self.char.itemsToMaxGear(self.roster)
+    tk.Label(
+        upgradeFrame,
+        text=&#39;Items Needed to Max All Gear&#39;,
+        bg=bgColor,
+        font=(None, 13, &#39;bold italic&#39;)
+    ).grid(row=0, column=0, columnspan=5)
+    headers = {
+        &#39;Gear Leveling Materials&#39;: &#39;Leveling Mats&#39;,
+        &#39;Gear Ranking Materials&#39;: &#39;Ranking Mats&#39;
+    }
+    col = 0
+    for cat, header in headers.items():
+        tk.Label(
+            upgradeFrame, text=header, bg=bgColor, font=(None, 13, &#39;bold&#39;)
+        ).grid(row=1, column=col, columnspan=2, sticky=tk.W)
+        row = 2
+        for item, qty in items.itemsByCat(cat):
+            tk.Label(
+                upgradeFrame, text=item.name + &#39;:&#39;, bg=bgColor
+            ).grid(row=row, column=col, sticky=tk.W)
+            tk.Label(
+                upgradeFrame, text=&#39;{:,}&#39;.format(qty), bg=bgColor
+            ).grid(row=row, column=col + 1, sticky=tk.E)
+            row += 1
+        col += 3
+    tk.Label(
+        upgradeFrame,
+        text=&#39;Latinum: {:,}&#39;.format(items[ITEMS[&#39;Latinum&#39;]]),
+        bg=bgColor
+    ).grid(row=5, column=0, columnspan=4)
+    return upgradeFrame</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.chartab.CharTab.skillFrame"><code class="name flex">
+<span>def <span class="ident">skillFrame</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Builds and packs the frame that will hold the skill
@@ -520,7 +1148,7 @@ descriptions are individually placed in each open grid area.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def buildSkillFrame(self):
+<pre><code class="python">def skillFrame(self):
     &#34;&#34;&#34;Builds and packs the frame that will hold the skill
     information, and stores it in the `skillFrame` attribute.
     Horizontal and vertical separators are placed, leaving room for
@@ -528,15 +1156,21 @@ descriptions are individually placed in each open grid area.</p></div>
     descriptions are individually placed in each open grid area.
 
     &#34;&#34;&#34;
-    self.skillFrame = tk.Frame(self.scrollArea.content)
+    skillFrame = tk.Frame(self.scrollArea.content)
+    skillGrid = tk.Frame(skillFrame)
+    skillGrid.pack()
+    skillGrid.columnconfigure(1, weight=1, uniform=&#39;headers&#39;)
+    skillGrid.columnconfigure(4, weight=1, uniform=&#39;headers&#39;)
+    skillGrid.columnconfigure(2, weight=1, uniform=&#39;descriptions&#39;)
+    skillGrid.columnconfigure(5, weight=1, uniform=&#39;descriptions&#39;)
     numSkills = len(self.char.skills)
     for index in range(numSkills + 1):
-        ttk.Separator(self.skillFrame, orient=&#39;horizontal&#39;).grid(
+        ttk.Separator(skillGrid, orient=&#39;horizontal&#39;).grid(
             row=8 * index, column=0,
             columnspan=7, sticky=tk.EW
         )
     for index in range(3):
-        ttk.Separator(self.skillFrame, orient=&#39;vertical&#39;).grid(
+        ttk.Separator(skillGrid, orient=&#39;vertical&#39;).grid(
             row=0, column=3 * index,
             rowspan=8 * numSkills + 1, sticky=tk.NS
         )
@@ -548,112 +1182,130 @@ descriptions are individually placed in each open grid area.</p></div>
                 level,
                 skill.level == level and skill.unlocked
             )
-            self.displaySkill(
+            displaySkill(
+                skillGrid,
                 tempSkill,
                 8 * index + 1,
                 3 * (level - 1) + 1
             )
-    self.skillFrame.pack()</code></pre>
+    return skillFrame</code></pre>
 </details>
 </dd>
-<dt id="legends.ui.chartab.CharTab.displaySkill"><code class="name flex">
-<span>def <span class="ident">displaySkill</span></span>(<span>self, skill, row, column)</span>
+</dl>
+</dd>
+<dt id="legends.ui.chartab.GearCard"><code class="flex name class">
+<span>class <span class="ident">GearCard</span></span>
+<span>(</span><span>gear, *args, **kargs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Constructs information about the given skill and grids it
-onto the skill frame. The information is gridded as a block with
-its top right corner placed at the given row and column.</p>
+<div class="desc"><p>A small tile containing basic information about a gear piece.</p>
+<p>The constructor builds the card from the given gear piece and
+passes its remaining arguments to the <code>tk.Frame</code> constructor.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>skill</code></strong> :&ensp;<code><a title="legends.skill.Skill" href="../skill.html#legends.skill.Skill">Skill</a></code></dt>
-<dd>The skill from which to draw
-information.</dd>
-<dt><strong><code>row</code></strong> :&ensp;<code>int</code></dt>
-<dd>The row of the top-left corner of the block of
-information.</dd>
-<dt><strong><code>column</code></strong> :&ensp;<code>int</code></dt>
-<dd>The column of the top-left corner of the block
-of information.</dd>
+<dt><strong><code>gear</code></strong> :&ensp;<code><a title="legends.gameobjects.Gear" href="../gameobjects.html#legends.gameobjects.Gear">Gear</a></code></dt>
+<dd>The gear piece from which
+to build the card. If <code>None</code>, a tile displaying "None"
+is created. Can also be "test", in which case a card is
+created, all of whose display texts are as large as
+possible. The test card can be used to test sizes when
+displaying cards.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def displaySkill(self, skill, row, column):
-    &#34;&#34;&#34;Constructs information about the given skill and grids it
-    onto the skill frame. The information is gridded as a block with
-    its top right corner placed at the given row and column.
-
-    Args:
-        skill (legends.skill.Skill): The skill from which to draw
-            information.
-        row (int): The row of the top-left corner of the block of
-            information.
-        column (int): The column of the top-left corner of the block
-            of information.
+<pre><code class="python">class GearCard(tk.Frame):
+    &#34;&#34;&#34;A small tile containing basic information about a gear piece.
 
     &#34;&#34;&#34;
-    bgColor = &#39;cyan&#39; if skill.unlocked else &#39;cornsilk2&#39;
-    fgColor = None if skill.unlocked else &#39;gray&#39;
-    frame = tk.Frame(self.skillFrame, bg=bgColor)
-    frame.grid(row=row, column=column, columnspan=2, sticky=tk.NSEW)
-    tk.Label(
-        frame,
-        text=&#39;{} - Level {}&#39;.format(skill.name, skill.level),
-        bg=bgColor,
-        fg=fgColor,
-        font=(None, 16, &#39;bold&#39;)
-    ).pack(pady=(5,10))
-    headers = [
-        &#39;Description&#39;, &#39;Effects&#39;, &#39;Caster Effect&#39;, &#39;Target&#39;, &#39;Cooldown&#39;,
-        &#39;Effect Tags&#39;
-    ]
-    for offset, header in enumerate(headers):
-        frame = tk.Frame(self.skillFrame, bg=bgColor)
-        frame.grid(row=row + 1 + offset, column=column, sticky=tk.NSEW)
-        label = tk.Label(
-            frame,
-            text=header + &#39;:&#39;,
-            bg=bgColor,
-            fg=fgColor,
-            font=(None, 13, &#39;bold&#39;)
-        )
-        label.pack(anchor=tk.NE, padx=(5,0))
-    label.pack_configure(pady=(0,5))
 
-    cEff = skill.casterEffect
-    target = &#39;{} {} {} ({})&#39;.format(
-        &#39;All&#39; if skill.isAOE else skill.numTargets,
-        skill.data[&#39;targetState&#39;],
-        skill.data[&#39;targetType&#39;],
-        &#39;multiple&#39; if skill.isAOE else (
-            &#39;multiple random&#39; if skill.isMultiRandom else &#39;single&#39;
+    def __init__(self, gear, *args, **kargs):
+        &#34;&#34;&#34;The constructor builds the card from the given gear piece and
+        passes its remaining arguments to the `tk.Frame` constructor.
+
+        Args:
+            gear (legends.gameobjects.Gear): The gear piece from which
+                to build the card. If `None`, a tile displaying &#34;None&#34;
+                is created. Can also be &#34;test&#34;, in which case a card is
+                created, all of whose display texts are as large as
+                possible. The test card can be used to test sizes when
+                displaying cards.
+
+        &#34;&#34;&#34;
+        # set up gear and card configuration
+        tk.Frame.__init__(self, *args, **kargs)
+        bgColor = (
+            RARITY_COLORS[gear.rarity] if isinstance(gear, Gear)
+            else &#39;cornsilk2&#39;
         )
-    )
-    info = [
-        skill.description,
-        &#39;, &#39;.join([effect.description for effect in skill.effects]),
-        &#39;None&#39; if cEff is None else cEff.description,
-        target,
-        &#39;{} ({} start)&#39;.format(skill.cooldown, skill.startingCooldown),
-        &#39;, &#39;.join(skill.effectTags)
-    ]
-    for offset, text in enumerate(info):
-        frame = tk.Frame(self.skillFrame, bg=bgColor)
-        frame.grid(row=row + 1 + offset, column=column + 1, sticky=tk.NSEW)
-        label = tk.Label(
-            frame,
-            text=text,
+        if gear == &#39;test&#39;:
+            gear = Gear(&#39;Starfleet PADD 2256 Engineering&#39;, 25)
+            gear.stats.hlth = 999.99
+            gear.stats.att = 999.99
+            gear.stats.tech = 999.99
+            gear.stats.dfn = 99.99
+        self.config(
+            bg=bgColor, highlightthickness=2, highlightbackground=&#39;black&#39;,
+            highlightcolor=&#39;black&#39;
+        )
+
+        # make &#39;NONE&#39; card
+        if gear is None:
+            tk.Label(
+                self, text=&#39;NONE&#39;, bg=bgColor, font=(None, 16, &#39;bold italic&#39;),
+                state=tk.DISABLED
+            ).pack(expand=tk.YES)
+            return
+
+        # make and pack name and info
+        tk.Label(
+            self,
+            text=f&#39;{gear.name}&#39;,
             bg=bgColor,
-            fg=fgColor,
-            wraplength=400,
-            justify=tk.LEFT
-        )
-        label.pack(anchor=tk.NW, padx=(0,5))
-    label.pack_configure(pady=(0,10))</code></pre>
+            font=(None, 16, &#39;bold italic&#39;)
+        ).pack()
+        tk.Label(
+            self,
+            text=&#39;{}, Level {}, {}&#39;.format(
+                camelToSpace(gear.rarity), gear.displayLevel, gear.role
+            ),
+            bg=bgColor,
+            font=(None, 12, &#39;italic&#39;)
+        ).pack()
+
+        # build stat frame
+        statFrame = tk.Frame(self, bg=bgColor)
+        for column in range(4):
+            statFrame.columnconfigure(
+                column, weight=1, uniform=(
+                    &#39;names&#39; if column % 2 == 0 else &#39;values&#39;
+                )
+            )
+        stats = [&#39;Health&#39;, &#39;Attack&#39;, &#39;Defense&#39;, &#39;Tech&#39;]
+        for index in range(4):
+            tk.Label(
+                statFrame,
+                text=f&#39;{stats[index]}:&#39;,
+                bg=bgColor
+            ).grid(row=int(index/2), column=2 * (index % 2), sticky=tk.W)
+            tk.Label(
+                statFrame,
+                text=f&#39;{gear.stats.get(stats[index]):.2f}&#39;,
+                bg=bgColor
+            ).grid(row=int(index/2), column=2 * (index % 2) + 1, sticky=tk.E)
+        statFrame.pack(expand=tk.YES, fill=tk.X)</code></pre>
 </details>
-</dd>
-</dl>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>tkinter.Frame</li>
+<li>tkinter.Widget</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Pack</li>
+<li>tkinter.Place</li>
+<li>tkinter.Grid</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -669,15 +1321,26 @@ of information.</dd>
 <li><code><a title="legends.ui" href="index.html">legends.ui</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.ui.chartab.displaySkill" href="#legends.ui.chartab.displaySkill">displaySkill</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
 <h4><code><a title="legends.ui.chartab.CharTab" href="#legends.ui.chartab.CharTab">CharTab</a></code></h4>
 <ul class="">
 <li><code><a title="legends.ui.chartab.CharTab.actionBar" href="#legends.ui.chartab.CharTab.actionBar">actionBar</a></code></li>
-<li><code><a title="legends.ui.chartab.CharTab.buildSkillFrame" href="#legends.ui.chartab.CharTab.buildSkillFrame">buildSkillFrame</a></code></li>
-<li><code><a title="legends.ui.chartab.CharTab.displaySkill" href="#legends.ui.chartab.CharTab.displaySkill">displaySkill</a></code></li>
+<li><code><a title="legends.ui.chartab.CharTab.getGearCardDims" href="#legends.ui.chartab.CharTab.getGearCardDims">getGearCardDims</a></code></li>
+<li><code><a title="legends.ui.chartab.CharTab.makeGearCardFrame" href="#legends.ui.chartab.CharTab.makeGearCardFrame">makeGearCardFrame</a></code></li>
+<li><code><a title="legends.ui.chartab.CharTab.makeGearUpgradeFrame" href="#legends.ui.chartab.CharTab.makeGearUpgradeFrame">makeGearUpgradeFrame</a></code></li>
+<li><code><a title="legends.ui.chartab.CharTab.roster" href="#legends.ui.chartab.CharTab.roster">roster</a></code></li>
+<li><code><a title="legends.ui.chartab.CharTab.skillFrame" href="#legends.ui.chartab.CharTab.skillFrame">skillFrame</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.chartab.GearCard" href="#legends.ui.chartab.GearCard">GearCard</a></code></h4>
 </li>
 </ul>
 </li>

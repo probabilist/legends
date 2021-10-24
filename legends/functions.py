@@ -22,6 +22,7 @@ __all__ = [
     'decryptSaveFile',
     'gearToMaxCost',
     'gearUpgradeCost',
+    'getBasicGearID',
     'getCharStats',
     'getGearStats',
     'getPartStats',
@@ -176,6 +177,32 @@ def gearUpgradeCost(gearID, level):
     for itemID, qty in GSGearLevel[key]['m_UpgradePrice']['AllItems'].items():
         cost[ITEMS[itemID]] += qty
     return cost
+
+def getBasicGearID(role, slotIndex):
+    """Finds and returns the gear ID for the non-unique gear piece
+    corresponding to the given role and meant for the gear slot with the
+    given index.
+
+    Args:
+        role (str): The role of the gear piece.
+        slotIndex (int): The slot index of the gear piece.
+
+    Returns:
+        str: The gear ID, as it appears in `GSGear`, of the gear piece.
+
+    """
+    for gearID, data in GSGear.items():
+        if (
+            data['m_Type'] == 'Role'
+            and data['m_Role'] == role
+            and data['m_Slot'] == slotIndex
+        ):
+            return gearID
+    raise ValueError(
+        'Could not find basic gear matching role {} and slot {}'.format(
+            role, slotIndex
+        )
+    )
 
 def getCharStats(nameID, rank, level):
     """Calculates a character's naked stats from its nameID, rank, and

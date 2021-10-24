@@ -38,9 +38,10 @@ from legends.constants import GSCharacter, GSGear
 from legends.constants import (
     DESCRIPTIONS, ENABLED, PART_STAT_UNLOCKED, RARITIES, UPCOMING
 )
+from legends.constants import Inventory
 from legends.functions import (
-    getCharStats, getGearStats, getPartStats, levelFromXP, tokensNeeded,
-    xpFromLevel
+    gearToMaxCost, getBasicGearID, getCharStats, getGearStats, getPartStats,
+    levelFromXP, tokensNeeded, xpFromLevel
 )
 from legends.stats import Stats
 from legends.skill import BridgeSkill, Skill
@@ -300,6 +301,29 @@ class Character():
                     activeCooldowns[skillID] = skill.cooldown + 1
                     break
 
+    def itemsToMaxGear(self, roster):
+        &#34;&#34;&#34;Computes and returns the items needed to level all gear on
+        this character to its maximum level. The roster to which the
+        character belongs must be passed as an argument.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.constants.Inventory: The list of items needed.
+
+        &#34;&#34;&#34;
+        cost = Inventory()
+        for slot in self.gearSlots:
+            try:
+                cost += roster.containsGear[slot].itemsToMax(roster)
+            except KeyError:
+                cost += gearToMaxCost(
+                    getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+                )
+        return cost
+
     def __repr__(self):
         return (
             &#39;&lt;&#39; + repr(self.name) + &#39;, rank &#39; + repr(self.rank)
@@ -334,6 +358,11 @@ class Gear(Managed):
         self.updateStats()
 
     @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game name of the piece of gear.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSGear[self.gearID][&#39;m_NameLocKey&#39;]]
+
+    @property
     def level(self):
         &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
         rarity. For example, a Level 17 gear piece displays in game as
@@ -341,6 +370,14 @@ class Gear(Managed):
         `Gear.setLevel` method.
         &#34;&#34;&#34;
         return self._level
+
+    @property
+    def displayLevel(self):
+        &#34;&#34;&#34;`int`: The level of the gear piece, as it is displayed in
+        game. The displayed level does not account for rarity, and is
+        therefore an integer between 1 and 5, inclusive.
+        &#34;&#34;&#34;
+        return self.level - 5 * self.rarityIndex
 
     @property
     def rarityIndex(self):
@@ -353,9 +390,18 @@ class Gear(Managed):
         return RARITIES[self.rarityIndex]
 
     @property
+    def role(self):
+        &#34;&#34;&#34;`str`: The role the gear piece is meant for. Is `None` if it
+        is not restricted to a particular role.
+        &#34;&#34;&#34;
+        gearRole = GSGear[self.gearID][&#39;m_Role&#39;]
+        return None if gearRole == &#39;None&#39; else gearRole
+
+    @property
     def slot(self):
         &#34;&#34;&#34;`int`: The 0-based index of the slot into which the gear must
-        be placed.
+        be placed. In game, slots are displayed clockwise, starting from
+        the top left.
         &#34;&#34;&#34;
         return GSGear[self.gearID][&#39;m_Slot&#39;]
 
@@ -387,6 +433,23 @@ class Gear(Managed):
 
         &#34;&#34;&#34;
         self.stats.update(getGearStats(self.gearID, self.level))
+
+    def itemsToMax(self, roster):
+        &#34;&#34;&#34;Computes and returns the items needed to level this gear to
+        its maximum level. The gear must be equipped on a character, and
+        the roster to which the gear and character belong must be passed
+        as an argument.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the gear
+                piece belongs.
+
+        Returns:
+            legends.constants.Inventory: The list of items needed.
+
+        &#34;&#34;&#34;
+        maxLevel = roster.inGearSlot[self].char.maxGearLevel
+        return gearToMaxCost(self.gearID, self.level, maxLevel)
 
     def __repr__(self):
         return &#39;&lt;&#39; + repr(self.gearID) + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;
@@ -834,6 +897,29 @@ properties.</p>
                     activeCooldowns[skillID] = skill.cooldown + 1
                     break
 
+    def itemsToMaxGear(self, roster):
+        &#34;&#34;&#34;Computes and returns the items needed to level all gear on
+        this character to its maximum level. The roster to which the
+        character belongs must be passed as an argument.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.constants.Inventory: The list of items needed.
+
+        &#34;&#34;&#34;
+        cost = Inventory()
+        for slot in self.gearSlots:
+            try:
+                cost += roster.containsGear[slot].itemsToMax(roster)
+            except KeyError:
+                cost += gearToMaxCost(
+                    getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+                )
+        return cost
+
     def __repr__(self):
         return (
             &#39;&lt;&#39; + repr(self.name) + &#39;, rank &#39; + repr(self.rank)
@@ -1120,6 +1206,52 @@ use the rightmost skill available at any given time.</p>
                 break</code></pre>
 </details>
 </dd>
+<dt id="legends.gameobjects.Character.itemsToMaxGear"><code class="name flex">
+<span>def <span class="ident">itemsToMaxGear</span></span>(<span>self, roster)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the items needed to level all gear on
+this character to its maximum level. The roster to which the
+character belongs must be passed as an argument.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>roster</code></strong> :&ensp;<code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code></dt>
+<dd>The roster to which the
+character belongs.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The list of items needed.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def itemsToMaxGear(self, roster):
+    &#34;&#34;&#34;Computes and returns the items needed to level all gear on
+    this character to its maximum level. The roster to which the
+    character belongs must be passed as an argument.
+
+    Args:
+        roster (legends.roster.Roster): The roster to which the
+            character belongs.
+
+    Returns:
+        legends.constants.Inventory: The list of items needed.
+
+    &#34;&#34;&#34;
+    cost = Inventory()
+    for slot in self.gearSlots:
+        try:
+            cost += roster.containsGear[slot].itemsToMax(roster)
+        except KeyError:
+            cost += gearToMaxCost(
+                getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+            )
+    return cost</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Character.skillEffectTags"><code class="name flex">
 <span>def <span class="ident">skillEffectTags</span></span>(<span>self, showLocked=False)</span>
 </code></dt>
@@ -1239,6 +1371,11 @@ restrictions on gear leveling.</p>
         self.updateStats()
 
     @property
+    def name(self):
+        &#34;&#34;&#34;`str`: The in-game name of the piece of gear.&#34;&#34;&#34;
+        return DESCRIPTIONS[GSGear[self.gearID][&#39;m_NameLocKey&#39;]]
+
+    @property
     def level(self):
         &#34;&#34;&#34;`int`: The level of the gear. Level is 1-based and includes
         rarity. For example, a Level 17 gear piece displays in game as
@@ -1246,6 +1383,14 @@ restrictions on gear leveling.</p>
         `Gear.setLevel` method.
         &#34;&#34;&#34;
         return self._level
+
+    @property
+    def displayLevel(self):
+        &#34;&#34;&#34;`int`: The level of the gear piece, as it is displayed in
+        game. The displayed level does not account for rarity, and is
+        therefore an integer between 1 and 5, inclusive.
+        &#34;&#34;&#34;
+        return self.level - 5 * self.rarityIndex
 
     @property
     def rarityIndex(self):
@@ -1258,9 +1403,18 @@ restrictions on gear leveling.</p>
         return RARITIES[self.rarityIndex]
 
     @property
+    def role(self):
+        &#34;&#34;&#34;`str`: The role the gear piece is meant for. Is `None` if it
+        is not restricted to a particular role.
+        &#34;&#34;&#34;
+        gearRole = GSGear[self.gearID][&#39;m_Role&#39;]
+        return None if gearRole == &#39;None&#39; else gearRole
+
+    @property
     def slot(self):
         &#34;&#34;&#34;`int`: The 0-based index of the slot into which the gear must
-        be placed.
+        be placed. In game, slots are displayed clockwise, starting from
+        the top left.
         &#34;&#34;&#34;
         return GSGear[self.gearID][&#39;m_Slot&#39;]
 
@@ -1293,6 +1447,23 @@ restrictions on gear leveling.</p>
         &#34;&#34;&#34;
         self.stats.update(getGearStats(self.gearID, self.level))
 
+    def itemsToMax(self, roster):
+        &#34;&#34;&#34;Computes and returns the items needed to level this gear to
+        its maximum level. The gear must be equipped on a character, and
+        the roster to which the gear and character belong must be passed
+        as an argument.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the gear
+                piece belongs.
+
+        Returns:
+            legends.constants.Inventory: The list of items needed.
+
+        &#34;&#34;&#34;
+        maxLevel = roster.inGearSlot[self].char.maxGearLevel
+        return gearToMaxCost(self.gearID, self.level, maxLevel)
+
     def __repr__(self):
         return &#39;&lt;&#39; + repr(self.gearID) + &#39;, level &#39; + repr(self.level) + &#39;&gt;&#39;</code></pre>
 </details>
@@ -1302,6 +1473,24 @@ restrictions on gear leveling.</p>
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="legends.gameobjects.Gear.displayLevel"><code class="name">var <span class="ident">displayLevel</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The level of the gear piece, as it is displayed in
+game. The displayed level does not account for rarity, and is
+therefore an integer between 1 and 5, inclusive.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def displayLevel(self):
+    &#34;&#34;&#34;`int`: The level of the gear piece, as it is displayed in
+    game. The displayed level does not account for rarity, and is
+    therefore an integer between 1 and 5, inclusive.
+    &#34;&#34;&#34;
+    return self.level - 5 * self.rarityIndex</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Gear.level"><code class="name">var <span class="ident">level</span></code></dt>
 <dd>
 <div class="desc"><p><code>int</code>: The level of the gear. Level is 1-based and includes
@@ -1320,6 +1509,19 @@ def level(self):
     `Gear.setLevel` method.
     &#34;&#34;&#34;
     return self._level</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Gear.name"><code class="name">var <span class="ident">name</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The in-game name of the piece of gear.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def name(self):
+    &#34;&#34;&#34;`str`: The in-game name of the piece of gear.&#34;&#34;&#34;
+    return DESCRIPTIONS[GSGear[self.gearID][&#39;m_NameLocKey&#39;]]</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Gear.rarity"><code class="name">var <span class="ident">rarity</span></code></dt>
@@ -1348,10 +1550,28 @@ def rarityIndex(self):
     return int((self.level - 1)/5)</code></pre>
 </details>
 </dd>
+<dt id="legends.gameobjects.Gear.role"><code class="name">var <span class="ident">role</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The role the gear piece is meant for. Is <code>None</code> if it
+is not restricted to a particular role.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def role(self):
+    &#34;&#34;&#34;`str`: The role the gear piece is meant for. Is `None` if it
+    is not restricted to a particular role.
+    &#34;&#34;&#34;
+    gearRole = GSGear[self.gearID][&#39;m_Role&#39;]
+    return None if gearRole == &#39;None&#39; else gearRole</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Gear.slot"><code class="name">var <span class="ident">slot</span></code></dt>
 <dd>
 <div class="desc"><p><code>int</code>: The 0-based index of the slot into which the gear must
-be placed.</p></div>
+be placed. In game, slots are displayed clockwise, starting from
+the top left.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1359,7 +1579,8 @@ be placed.</p></div>
 <pre><code class="python">@property
 def slot(self):
     &#34;&#34;&#34;`int`: The 0-based index of the slot into which the gear must
-    be placed.
+    be placed. In game, slots are displayed clockwise, starting from
+    the top left.
     &#34;&#34;&#34;
     return GSGear[self.gearID][&#39;m_Slot&#39;]</code></pre>
 </details>
@@ -1367,6 +1588,47 @@ def slot(self):
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="legends.gameobjects.Gear.itemsToMax"><code class="name flex">
+<span>def <span class="ident">itemsToMax</span></span>(<span>self, roster)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and returns the items needed to level this gear to
+its maximum level. The gear must be equipped on a character, and
+the roster to which the gear and character belong must be passed
+as an argument.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>roster</code></strong> :&ensp;<code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code></dt>
+<dd>The roster to which the gear
+piece belongs.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.constants.Inventory" href="constants.html#legends.constants.Inventory">Inventory</a></code></dt>
+<dd>The list of items needed.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def itemsToMax(self, roster):
+    &#34;&#34;&#34;Computes and returns the items needed to level this gear to
+    its maximum level. The gear must be equipped on a character, and
+    the roster to which the gear and character belong must be passed
+    as an argument.
+
+    Args:
+        roster (legends.roster.Roster): The roster to which the gear
+            piece belongs.
+
+    Returns:
+        legends.constants.Inventory: The list of items needed.
+
+    &#34;&#34;&#34;
+    maxLevel = roster.inGearSlot[self].char.maxGearLevel
+    return gearToMaxCost(self.gearID, self.level, maxLevel)</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Gear.setLevel"><code class="name flex">
 <span>def <span class="ident">setLevel</span></span>(<span>self, roster, value)</span>
 </code></dt>
@@ -1783,6 +2045,7 @@ given index to the given stat name.</p>
 <ul class="two-column">
 <li><code><a title="legends.gameobjects.Character.aiSkillOrder" href="#legends.gameobjects.Character.aiSkillOrder">aiSkillOrder</a></code></li>
 <li><code><a title="legends.gameobjects.Character.bridgeStations" href="#legends.gameobjects.Character.bridgeStations">bridgeStations</a></code></li>
+<li><code><a title="legends.gameobjects.Character.itemsToMaxGear" href="#legends.gameobjects.Character.itemsToMaxGear">itemsToMaxGear</a></code></li>
 <li><code><a title="legends.gameobjects.Character.level" href="#legends.gameobjects.Character.level">level</a></code></li>
 <li><code><a title="legends.gameobjects.Character.maxGearLevel" href="#legends.gameobjects.Character.maxGearLevel">maxGearLevel</a></code></li>
 <li><code><a title="legends.gameobjects.Character.missingSkillLevels" href="#legends.gameobjects.Character.missingSkillLevels">missingSkillLevels</a></code></li>
@@ -1803,9 +2066,13 @@ given index to the given stat name.</p>
 <li>
 <h4><code><a title="legends.gameobjects.Gear" href="#legends.gameobjects.Gear">Gear</a></code></h4>
 <ul class="two-column">
+<li><code><a title="legends.gameobjects.Gear.displayLevel" href="#legends.gameobjects.Gear.displayLevel">displayLevel</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.itemsToMax" href="#legends.gameobjects.Gear.itemsToMax">itemsToMax</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.level" href="#legends.gameobjects.Gear.level">level</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.name" href="#legends.gameobjects.Gear.name">name</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.rarity" href="#legends.gameobjects.Gear.rarity">rarity</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.rarityIndex" href="#legends.gameobjects.Gear.rarityIndex">rarityIndex</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.role" href="#legends.gameobjects.Gear.role">role</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.setLevel" href="#legends.gameobjects.Gear.setLevel">setLevel</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.slot" href="#legends.gameobjects.Gear.slot">slot</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.updateStats" href="#legends.gameobjects.Gear.updateStats">updateStats</a></code></li>

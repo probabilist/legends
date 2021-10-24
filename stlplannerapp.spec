@@ -1,11 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from sys import platform
 
 block_cipher = None
 
 
 a = Analysis(['stlplannerapp.py'],
-             pathex=['/Users/jason/Documents/Programming/Python/STLPlanner'],
              binaries=[],
              datas=[
                 ('legends/data', 'legends/data'),
@@ -42,6 +42,6 @@ exe = EXE(pyz,
           entitlements_file=None , icon='command.icns')
 app = BUNDLE(exe,
              name='STL Planner.app',
-             icon='command.icns',
+             icon='command.icns' if platform == 'darwin' else 'command.ico',
              bundle_identifier=None,
-             version='0.19.1')
+             version='0.20.0')
