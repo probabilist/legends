@@ -470,6 +470,9 @@ class Session(tk.Frame):
 
         &#34;&#34;&#34;
         filt = self.settings.rosterFilter.dictify()
+        timings = [
+            timing for timing, var in filt[&#39;skillTimings&#39;].items() if var
+        ]
         return(
             filt[&#39;rarities&#39;][char.rarity]
             and filt[&#39;roles&#39;][char.role]
@@ -478,7 +481,7 @@ class Session(tk.Frame):
             and any(filt[&#39;charTags&#39;][charTag] for charTag in char.tags)
             and any(
                 filt[&#39;effectTags&#39;][effectTag]
-                for effectTag in char.skillEffectTags()
+                for effectTag in char.skillEffectTags(timings=timings)
             )
         )
 
@@ -1449,6 +1452,9 @@ assigned as the parent of this session.</dd>
 
         &#34;&#34;&#34;
         filt = self.settings.rosterFilter.dictify()
+        timings = [
+            timing for timing, var in filt[&#39;skillTimings&#39;].items() if var
+        ]
         return(
             filt[&#39;rarities&#39;][char.rarity]
             and filt[&#39;roles&#39;][char.role]
@@ -1457,7 +1463,7 @@ assigned as the parent of this session.</dd>
             and any(filt[&#39;charTags&#39;][charTag] for charTag in char.tags)
             and any(
                 filt[&#39;effectTags&#39;][effectTag]
-                for effectTag in char.skillEffectTags()
+                for effectTag in char.skillEffectTags(timings=timings)
             )
         )
 
@@ -1616,6 +1622,9 @@ check.</dd>
 
     &#34;&#34;&#34;
     filt = self.settings.rosterFilter.dictify()
+    timings = [
+        timing for timing, var in filt[&#39;skillTimings&#39;].items() if var
+    ]
     return(
         filt[&#39;rarities&#39;][char.rarity]
         and filt[&#39;roles&#39;][char.role]
@@ -1624,7 +1633,7 @@ check.</dd>
         and any(filt[&#39;charTags&#39;][charTag] for charTag in char.tags)
         and any(
             filt[&#39;effectTags&#39;][effectTag]
-            for effectTag in char.skillEffectTags()
+            for effectTag in char.skillEffectTags(timings=timings)
         )
     )</code></pre>
 </details>

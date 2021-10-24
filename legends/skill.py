@@ -141,6 +141,23 @@ class Skill():
         return self.data['startingCooldown']
 
     @property
+    def timing(self):
+        """`str`: One of 'basic', 'r1', 'r2', or 'r3', describing,
+        respectively, whether the skill is a basic attack (cooldown 0),
+        a Round 1 skill (positive cooldown, starting cooldown 0), a
+        Round 2 skill (positive cooldown, starting cooldown 1), or a
+        skill available in Round 3 or later (positive cooldown, starting
+        cooldown at least 2).
+        """
+        if self.cooldown == 0:
+            return 'basic'
+        if self.startingCooldown == 0:
+            return 'r1'
+        if self.startingCooldown == 1:
+            return 'r2'
+        return 'r3'
+
+    @property
     def isAOE(self):
         """`bool`: `True` if the skill is AOE."""
         return self.data['isAOE']

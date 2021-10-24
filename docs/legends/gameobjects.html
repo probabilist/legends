@@ -254,7 +254,7 @@ class Character():
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
 
-    def skillEffectTags(self, showLocked=False):
+    def skillEffectTags(self, showLocked=False, timings=None):
         &#34;&#34;&#34;Returns the list of tags on all skill effects produced by all
         skills of this character.
 
@@ -262,6 +262,10 @@ class Character():
             showLocked (bool): If `True`, includes all effect types of
                 all skill levels; otherwise, shows only effects of
                 currently unlocked skill levels.
+            timings (list of str): A list of strings from among &#39;basic&#39;,
+                &#39;r1&#39;, &#39;r2&#39;, and &#39;r3&#39;. Skills whose `timing` property is
+                not on the list will be ignored. If this argument is
+                `None`, all skills will be allowed.
 
         Returns:
             list of str: The list of tags.
@@ -269,6 +273,8 @@ class Character():
         &#34;&#34;&#34;
         effTags = []
         for skillID, skill in self.skills.items():
+            if timings is not None and skill.timing not in timings:
+                continue
             for level in (1,2):
                 if showLocked or (skill.level == level and skill.unlocked):
                     effTags.extend(Skill(skillID, level).effectTags)
@@ -850,7 +856,7 @@ properties.</p>
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
 
-    def skillEffectTags(self, showLocked=False):
+    def skillEffectTags(self, showLocked=False, timings=None):
         &#34;&#34;&#34;Returns the list of tags on all skill effects produced by all
         skills of this character.
 
@@ -858,6 +864,10 @@ properties.</p>
             showLocked (bool): If `True`, includes all effect types of
                 all skill levels; otherwise, shows only effects of
                 currently unlocked skill levels.
+            timings (list of str): A list of strings from among &#39;basic&#39;,
+                &#39;r1&#39;, &#39;r2&#39;, and &#39;r3&#39;. Skills whose `timing` property is
+                not on the list will be ignored. If this argument is
+                `None`, all skills will be allowed.
 
         Returns:
             list of str: The list of tags.
@@ -865,6 +875,8 @@ properties.</p>
         &#34;&#34;&#34;
         effTags = []
         for skillID, skill in self.skills.items():
+            if timings is not None and skill.timing not in timings:
+                continue
             for level in (1,2):
                 if showLocked or (skill.level == level and skill.unlocked):
                     effTags.extend(Skill(skillID, level).effectTags)
@@ -1253,7 +1265,7 @@ character belongs.</dd>
 </details>
 </dd>
 <dt id="legends.gameobjects.Character.skillEffectTags"><code class="name flex">
-<span>def <span class="ident">skillEffectTags</span></span>(<span>self, showLocked=False)</span>
+<span>def <span class="ident">skillEffectTags</span></span>(<span>self, showLocked=False, timings=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns the list of tags on all skill effects produced by all
@@ -1264,6 +1276,11 @@ skills of this character.</p>
 <dd>If <code>True</code>, includes all effect types of
 all skill levels; otherwise, shows only effects of
 currently unlocked skill levels.</dd>
+<dt><strong><code>timings</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
+<dd>A list of strings from among 'basic',
+'r1', 'r2', and 'r3'. Skills whose <code>timing</code> property is
+not on the list will be ignored. If this argument is
+<code>None</code>, all skills will be allowed.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1274,7 +1291,7 @@ currently unlocked skill levels.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def skillEffectTags(self, showLocked=False):
+<pre><code class="python">def skillEffectTags(self, showLocked=False, timings=None):
     &#34;&#34;&#34;Returns the list of tags on all skill effects produced by all
     skills of this character.
 
@@ -1282,6 +1299,10 @@ currently unlocked skill levels.</dd>
         showLocked (bool): If `True`, includes all effect types of
             all skill levels; otherwise, shows only effects of
             currently unlocked skill levels.
+        timings (list of str): A list of strings from among &#39;basic&#39;,
+            &#39;r1&#39;, &#39;r2&#39;, and &#39;r3&#39;. Skills whose `timing` property is
+            not on the list will be ignored. If this argument is
+            `None`, all skills will be allowed.
 
     Returns:
         list of str: The list of tags.
@@ -1289,6 +1310,8 @@ currently unlocked skill levels.</dd>
     &#34;&#34;&#34;
     effTags = []
     for skillID, skill in self.skills.items():
+        if timings is not None and skill.timing not in timings:
+            continue
         for level in (1,2):
             if showLocked or (skill.level == level and skill.unlocked):
                 effTags.extend(Skill(skillID, level).effectTags)

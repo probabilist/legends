@@ -49,6 +49,7 @@ from legends.ui.dialogs import (
 
 __all__ = [
     &#39;AskRosterFilter&#39;,
+    &#39;AskSkillTimings&#39;,
     &#39;OptimalSummons&#39;,
     &#39;RosterFilter&#39;,
     &#39;RosterInfoBar&#39;,
@@ -160,13 +161,19 @@ class AskRosterFilter(ModalDialog):
         tk.Button(
             widgets[&#39;effectTagCheckboxes&#39;],
             text=&#39;All&#39;,
-            command = lambda: self.filt.setEffectTags(True)
+            command=lambda: self.filt.setEffectTags(True)
         ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
         count += 1
         tk.Button(
             widgets[&#39;effectTagCheckboxes&#39;],
             text=&#39;None&#39;,
-            command = lambda: self.filt.setEffectTags(False)
+            command=lambda: self.filt.setEffectTags(False)
+        ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
+        count += 1
+        tk.Button(
+            widgets[&#39;effectTagCheckboxes&#39;],
+            text=&#39;Cooldowns...&#39;,
+            command=self.setCooldowns
         ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
 
         # grid the body content
@@ -222,6 +229,15 @@ class AskRosterFilter(ModalDialog):
             )
         return scales
 
+    def setCooldowns(self):
+        &#34;&#34;&#34;Raises an `AskSkillTimings` dialog, then adjusts the `filt`
+        attribute accordingly.
+
+        &#34;&#34;&#34;
+        result = AskSkillTimings(self.root, self.filt).result
+        if result is not None:
+            self.filt.set(result)
+
     def buttonbox(self):
         &#34;&#34;&#34;Add a &#39;Clear All&#39; button to the button box.
 
@@ -238,6 +254,69 @@ class AskRosterFilter(ModalDialog):
 
         &#34;&#34;&#34;
         self.filt.set(RosterFilter())
+
+    def apply(self):
+        &#34;&#34;&#34;Set the `result` attribute.
+
+        &#34;&#34;&#34;
+        self.result = self.filt
+
+class AskSkillTimings(ModalDialog):
+    &#34;&#34;&#34;A modal dialog for selecting skill timings.
+
+    The constructor must be given a `RosterFilter` object. That object&#39;s
+    `skillTimings` attribute will be used to initialize the window, but
+    will not be modified.
+
+    Attributes:
+        filt (RosterFilter): The `RosterFilter` object whose
+            `skillTimings` attribute is  controlled and modified by the
+            dialog window.
+        result (RosterFilter or None): Inherited from
+            `legends.ui.dialogs.ModalDialog`, which inherited it from
+            `tk.simpledialog.Dialog`. Defaults to `None`. Is set by the
+            `AskSkillTimings.apply` method to the value of the `filt`
+            attribute.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, root, rosterFilter, parent=None):
+        &#34;&#34;&#34;The constructor sets the `filt` attribute, then calls the
+        `legends.ui.dialogs.ModalDialog` constructor.
+
+        Args:
+            root (legends.ui.stlplanner.STLPlanner): The currently
+                running `legends.ui.stlplanner.STLPlanner` instance.
+                Passed to the `legends.ui.dialogs.ModalDialog`
+                constructor.
+            rosterFilter (RosterFilter): The instance&#39;s `filt` attribute
+                is assigned a copy of this argument.
+
+        &#34;&#34;&#34;
+        self.filt = RosterFilter(rosterFilter)
+        ModalDialog.__init__(self, root, parent, &#39;Cooldowns&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        tk.Label(
+            master,
+            text=&#39;Selected skill effects should match at least one of...&#39;,
+            font=(None, 13, &#39;bold&#39;)
+        ).pack()
+        buttonLabels = {
+            &#39;basic&#39;: &#39;Basic attacks&#39;,
+            &#39;r1&#39;: &#39;Non-basic skills available in Round 1&#39;,
+            &#39;r2&#39;: &#39;Skills first available in Round 2&#39;,
+            &#39;r3&#39;: &#39;Skills first available in Round 3 or later&#39;,
+        }
+        for timing, description in buttonLabels.items():
+            tk.Checkbutton(
+                master,
+                text=description,
+                variable=self.filt.skillTimings[timing]
+            ).pack(anchor=tk.W)
 
     def apply(self):
         &#34;&#34;&#34;Set the `result` attribute.
@@ -344,14 +423,20 @@ class RosterFilter():
         levels (tuple): (`tk.IntVar`, `tk.IntVar`) The first value is
             the minimum level to include in the
             `legends.ui.rostertab.RosterTab`. The second is the maximum.
-        effectTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
-            skill effect tags to `tkinter` boolean variables indicating
-            whether characters with skills matching the tag should be
-            included in the `legends.ui.rostertab.RosterTab`.
         charTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
             character tags to `tkinter` boolean variables indicating
             whether characters that match the tag should be included in
             the `legends.ui.rostertab.RosterTab`.
+        effectTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
+            skill effect tags to `tkinter` boolean variables indicating
+            whether characters with skills matching the tag should be
+            included in the `legends.ui.rostertab.RosterTab`.
+        skillTimings (dict): {`str`:`tk.BooleanVar`} A dictionary
+            mapping timings to `tkinter` boolean variables indicating
+            whether characters with skills matching the timing should be
+            included in the `legends.ui.rostertab.RosterTab`. The timing
+            strings are the possible values of the
+            `legends.skill.Skill.timing` property.
 
     &#34;&#34;&#34;
 
@@ -381,6 +466,12 @@ class RosterFilter():
             effectTag: tk.BooleanVar(None, True)
             for effectTag in allSkillEffectTags()
         }
+        self.skillTimings = {
+            &#39;basic&#39;: tk.BooleanVar(None, True),
+            &#39;r1&#39;: tk.BooleanVar(None, True),
+            &#39;r2&#39;: tk.BooleanVar(None, True),
+            &#39;r3&#39;: tk.BooleanVar(None, True)
+        }
         if filt is not None:
             self.set(filt)
 
@@ -404,6 +495,8 @@ class RosterFilter():
             var.set(filt.charTags[charTag].get())
         for effectTag, var in self.effectTags.items():
             var.set(filt.effectTags[effectTag].get())
+        for timing, var in self.skillTimings.items():
+            var.set(filt.skillTimings[timing].get())
 
     def setCharTags(self, val):
         &#34;&#34;&#34;Sets all character tag variables to the given value.
@@ -448,6 +541,9 @@ class RosterFilter():
         }
         D[&#39;effectTags&#39;] = {
             effectTag: var.get() for effectTag, var in self.effectTags.items()
+        }
+        D[&#39;skillTimings&#39;] = {
+            timing: var.get() for timing, var in self.skillTimings.items()
         }
         return D
 
@@ -901,13 +997,19 @@ is assigned a copy of this argument.</dd>
         tk.Button(
             widgets[&#39;effectTagCheckboxes&#39;],
             text=&#39;All&#39;,
-            command = lambda: self.filt.setEffectTags(True)
+            command=lambda: self.filt.setEffectTags(True)
         ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
         count += 1
         tk.Button(
             widgets[&#39;effectTagCheckboxes&#39;],
             text=&#39;None&#39;,
-            command = lambda: self.filt.setEffectTags(False)
+            command=lambda: self.filt.setEffectTags(False)
+        ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
+        count += 1
+        tk.Button(
+            widgets[&#39;effectTagCheckboxes&#39;],
+            text=&#39;Cooldowns...&#39;,
+            command=self.setCooldowns
         ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
 
         # grid the body content
@@ -962,6 +1064,15 @@ is assigned a copy of this argument.</dd>
                 funcs[k](int(val), varTuple[k].get()))
             )
         return scales
+
+    def setCooldowns(self):
+        &#34;&#34;&#34;Raises an `AskSkillTimings` dialog, then adjusts the `filt`
+        attribute accordingly.
+
+        &#34;&#34;&#34;
+        result = AskSkillTimings(self.root, self.filt).result
+        if result is not None:
+            self.filt.set(result)
 
     def buttonbox(self):
         &#34;&#34;&#34;Add a &#39;Clear All&#39; button to the button box.
@@ -1096,13 +1207,19 @@ is assigned a copy of this argument.</dd>
     tk.Button(
         widgets[&#39;effectTagCheckboxes&#39;],
         text=&#39;All&#39;,
-        command = lambda: self.filt.setEffectTags(True)
+        command=lambda: self.filt.setEffectTags(True)
     ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
     count += 1
     tk.Button(
         widgets[&#39;effectTagCheckboxes&#39;],
         text=&#39;None&#39;,
-        command = lambda: self.filt.setEffectTags(False)
+        command=lambda: self.filt.setEffectTags(False)
+    ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
+    count += 1
+    tk.Button(
+        widgets[&#39;effectTagCheckboxes&#39;],
+        text=&#39;Cooldowns...&#39;,
+        command=self.setCooldowns
     ).grid(row=count % rows, column=int(count/rows), sticky=tk.EW)
 
     # grid the body content
@@ -1229,11 +1346,205 @@ scales.</p>
     return scales</code></pre>
 </details>
 </dd>
+<dt id="legends.ui.rostertab.AskRosterFilter.setCooldowns"><code class="name flex">
+<span>def <span class="ident">setCooldowns</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raises an <code><a title="legends.ui.rostertab.AskSkillTimings" href="#legends.ui.rostertab.AskSkillTimings">AskSkillTimings</a></code> dialog, then adjusts the <code>filt</code>
+attribute accordingly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setCooldowns(self):
+    &#34;&#34;&#34;Raises an `AskSkillTimings` dialog, then adjusts the `filt`
+    attribute accordingly.
+
+    &#34;&#34;&#34;
+    result = AskSkillTimings(self.root, self.filt).result
+    if result is not None:
+        self.filt.set(result)</code></pre>
+</details>
+</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
 <li><code><b><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
 <ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="dialogs.html#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.ui.rostertab.AskSkillTimings"><code class="flex name class">
+<span>class <span class="ident">AskSkillTimings</span></span>
+<span>(</span><span>root, rosterFilter, parent=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A modal dialog for selecting skill timings.</p>
+<p>The constructor must be given a <code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code> object. That object's
+<code>skillTimings</code> attribute will be used to initialize the window, but
+will not be modified.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>filt</code></strong> :&ensp;<code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code></dt>
+<dd>The <code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code> object whose
+<code>skillTimings</code> attribute is
+controlled and modified by the
+dialog window.</dd>
+<dt><strong><code>result</code></strong> :&ensp;<code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code> or <code>None</code></dt>
+<dd>Inherited from
+<code><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></code>, which inherited it from
+<code>tk.simpledialog.Dialog</code>. Defaults to <code>None</code>. Is set by the
+<code><a title="legends.ui.rostertab.AskSkillTimings.apply" href="#legends.ui.rostertab.AskSkillTimings.apply">AskSkillTimings.apply()</a></code> method to the value of the <code>filt</code>
+attribute.</dd>
+</dl>
+<p>The constructor sets the <code>filt</code> attribute, then calls the
+<code><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></code> constructor.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>root</code></strong> :&ensp;<code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code></dt>
+<dd>The currently
+running <code><a title="legends.ui.stlplanner.STLPlanner" href="stlplanner.html#legends.ui.stlplanner.STLPlanner">STLPlanner</a></code> instance.
+Passed to the <code><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></code>
+constructor.</dd>
+<dt><strong><code>rosterFilter</code></strong> :&ensp;<code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code></dt>
+<dd>The instance's <code>filt</code> attribute
+is assigned a copy of this argument.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AskSkillTimings(ModalDialog):
+    &#34;&#34;&#34;A modal dialog for selecting skill timings.
+
+    The constructor must be given a `RosterFilter` object. That object&#39;s
+    `skillTimings` attribute will be used to initialize the window, but
+    will not be modified.
+
+    Attributes:
+        filt (RosterFilter): The `RosterFilter` object whose
+            `skillTimings` attribute is  controlled and modified by the
+            dialog window.
+        result (RosterFilter or None): Inherited from
+            `legends.ui.dialogs.ModalDialog`, which inherited it from
+            `tk.simpledialog.Dialog`. Defaults to `None`. Is set by the
+            `AskSkillTimings.apply` method to the value of the `filt`
+            attribute.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, root, rosterFilter, parent=None):
+        &#34;&#34;&#34;The constructor sets the `filt` attribute, then calls the
+        `legends.ui.dialogs.ModalDialog` constructor.
+
+        Args:
+            root (legends.ui.stlplanner.STLPlanner): The currently
+                running `legends.ui.stlplanner.STLPlanner` instance.
+                Passed to the `legends.ui.dialogs.ModalDialog`
+                constructor.
+            rosterFilter (RosterFilter): The instance&#39;s `filt` attribute
+                is assigned a copy of this argument.
+
+        &#34;&#34;&#34;
+        self.filt = RosterFilter(rosterFilter)
+        ModalDialog.__init__(self, root, parent, &#39;Cooldowns&#39;)
+
+    def body(self, master):
+        &#34;&#34;&#34;Create the body of the dialog.
+
+        &#34;&#34;&#34;
+        tk.Label(
+            master,
+            text=&#39;Selected skill effects should match at least one of...&#39;,
+            font=(None, 13, &#39;bold&#39;)
+        ).pack()
+        buttonLabels = {
+            &#39;basic&#39;: &#39;Basic attacks&#39;,
+            &#39;r1&#39;: &#39;Non-basic skills available in Round 1&#39;,
+            &#39;r2&#39;: &#39;Skills first available in Round 2&#39;,
+            &#39;r3&#39;: &#39;Skills first available in Round 3 or later&#39;,
+        }
+        for timing, description in buttonLabels.items():
+            tk.Checkbutton(
+                master,
+                text=description,
+                variable=self.filt.skillTimings[timing]
+            ).pack(anchor=tk.W)
+
+    def apply(self):
+        &#34;&#34;&#34;Set the `result` attribute.
+
+        &#34;&#34;&#34;
+        self.result = self.filt</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></li>
+<li><a title="legends.ui.dialogs.ModalMessage" href="dialogs.html#legends.ui.dialogs.ModalMessage">ModalMessage</a></li>
+<li>tkinter.simpledialog.Dialog</li>
+<li>tkinter.Toplevel</li>
+<li>tkinter.BaseWidget</li>
+<li>tkinter.Misc</li>
+<li>tkinter.Wm</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.ui.rostertab.AskSkillTimings.apply"><code class="name flex">
+<span>def <span class="ident">apply</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the <code>result</code> attribute.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply(self):
+    &#34;&#34;&#34;Set the `result` attribute.
+
+    &#34;&#34;&#34;
+    self.result = self.filt</code></pre>
+</details>
+</dd>
+<dt id="legends.ui.rostertab.AskSkillTimings.body"><code class="name flex">
+<span>def <span class="ident">body</span></span>(<span>self, master)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Create the body of the dialog.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def body(self, master):
+    &#34;&#34;&#34;Create the body of the dialog.
+
+    &#34;&#34;&#34;
+    tk.Label(
+        master,
+        text=&#39;Selected skill effects should match at least one of...&#39;,
+        font=(None, 13, &#39;bold&#39;)
+    ).pack()
+    buttonLabels = {
+        &#39;basic&#39;: &#39;Basic attacks&#39;,
+        &#39;r1&#39;: &#39;Non-basic skills available in Round 1&#39;,
+        &#39;r2&#39;: &#39;Skills first available in Round 2&#39;,
+        &#39;r3&#39;: &#39;Skills first available in Round 3 or later&#39;,
+    }
+    for timing, description in buttonLabels.items():
+        tk.Checkbutton(
+            master,
+            text=description,
+            variable=self.filt.skillTimings[timing]
+        ).pack(anchor=tk.W)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.ui.dialogs.ModalDialog" href="dialogs.html#legends.ui.dialogs.ModalDialog">ModalDialog</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.ui.dialogs.ModalDialog.buttonbox" href="dialogs.html#legends.ui.dialogs.ModalDialog.buttonbox">buttonbox</a></code></li>
 <li><code><a title="legends.ui.dialogs.ModalDialog.destroy" href="dialogs.html#legends.ui.dialogs.ModalMessage.destroy">destroy</a></code></li>
 </ul>
 </li>
@@ -1493,16 +1804,23 @@ minimum rank to include in the
 <dd>(<code>tk.IntVar</code>, <code>tk.IntVar</code>) The first value is
 the minimum level to include in the
 <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code>. The second is the maximum.</dd>
-<dt><strong><code>effectTags</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>tk.BooleanVar</code>} A dictionary mapping
-skill effect tags to <code>tkinter</code> boolean variables indicating
-whether characters with skills matching the tag should be
-included in the <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code>.</dd>
 <dt><strong><code>charTags</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>tk.BooleanVar</code>} A dictionary mapping
 character tags to <code>tkinter</code> boolean variables indicating
 whether characters that match the tag should be included in
 the <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code>.</dd>
+<dt><strong><code>effectTags</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>tk.BooleanVar</code>} A dictionary mapping
+skill effect tags to <code>tkinter</code> boolean variables indicating
+whether characters with skills matching the tag should be
+included in the <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code>.</dd>
+<dt><strong><code>skillTimings</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>tk.BooleanVar</code>} A dictionary
+mapping timings to <code>tkinter</code> boolean variables indicating
+whether characters with skills matching the timing should be
+included in the <code><a title="legends.ui.rostertab.RosterTab" href="#legends.ui.rostertab.RosterTab">RosterTab</a></code>. The timing
+strings are the possible values of the
+<code><a title="legends.skill.Skill.timing" href="../skill.html#legends.skill.Skill.timing">Skill.timing</a></code> property.</dd>
 </dl>
 <p>The constructor creates a new <code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code> object with the
 same values as the given <code><a title="legends.ui.rostertab.RosterFilter" href="#legends.ui.rostertab.RosterFilter">RosterFilter</a></code> object. If <code>None</code> is
@@ -1535,14 +1853,20 @@ filter.</dd>
         levels (tuple): (`tk.IntVar`, `tk.IntVar`) The first value is
             the minimum level to include in the
             `legends.ui.rostertab.RosterTab`. The second is the maximum.
-        effectTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
-            skill effect tags to `tkinter` boolean variables indicating
-            whether characters with skills matching the tag should be
-            included in the `legends.ui.rostertab.RosterTab`.
         charTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
             character tags to `tkinter` boolean variables indicating
             whether characters that match the tag should be included in
             the `legends.ui.rostertab.RosterTab`.
+        effectTags (dict): {`str`:`tk.BooleanVar`} A dictionary mapping
+            skill effect tags to `tkinter` boolean variables indicating
+            whether characters with skills matching the tag should be
+            included in the `legends.ui.rostertab.RosterTab`.
+        skillTimings (dict): {`str`:`tk.BooleanVar`} A dictionary
+            mapping timings to `tkinter` boolean variables indicating
+            whether characters with skills matching the timing should be
+            included in the `legends.ui.rostertab.RosterTab`. The timing
+            strings are the possible values of the
+            `legends.skill.Skill.timing` property.
 
     &#34;&#34;&#34;
 
@@ -1572,6 +1896,12 @@ filter.</dd>
             effectTag: tk.BooleanVar(None, True)
             for effectTag in allSkillEffectTags()
         }
+        self.skillTimings = {
+            &#39;basic&#39;: tk.BooleanVar(None, True),
+            &#39;r1&#39;: tk.BooleanVar(None, True),
+            &#39;r2&#39;: tk.BooleanVar(None, True),
+            &#39;r3&#39;: tk.BooleanVar(None, True)
+        }
         if filt is not None:
             self.set(filt)
 
@@ -1595,6 +1925,8 @@ filter.</dd>
             var.set(filt.charTags[charTag].get())
         for effectTag, var in self.effectTags.items():
             var.set(filt.effectTags[effectTag].get())
+        for timing, var in self.skillTimings.items():
+            var.set(filt.skillTimings[timing].get())
 
     def setCharTags(self, val):
         &#34;&#34;&#34;Sets all character tag variables to the given value.
@@ -1639,6 +1971,9 @@ filter.</dd>
         }
         D[&#39;effectTags&#39;] = {
             effectTag: var.get() for effectTag, var in self.effectTags.items()
+        }
+        D[&#39;skillTimings&#39;] = {
+            timing: var.get() for timing, var in self.skillTimings.items()
         }
         return D
 
@@ -1690,6 +2025,9 @@ variable replaced by its value.</p>
     D[&#39;effectTags&#39;] = {
         effectTag: var.get() for effectTag, var in self.effectTags.items()
     }
+    D[&#39;skillTimings&#39;] = {
+        timing: var.get() for timing, var in self.skillTimings.items()
+    }
     return D</code></pre>
 </details>
 </dd>
@@ -1727,7 +2065,9 @@ given filter.</p>
     for charTag, var in self.charTags.items():
         var.set(filt.charTags[charTag].get())
     for effectTag, var in self.effectTags.items():
-        var.set(filt.effectTags[effectTag].get())</code></pre>
+        var.set(filt.effectTags[effectTag].get())
+    for timing, var in self.skillTimings.items():
+        var.set(filt.skillTimings[timing].get())</code></pre>
 </details>
 </dd>
 <dt id="legends.ui.rostertab.RosterFilter.setCharTags"><code class="name flex">
@@ -2530,12 +2870,20 @@ selected sorting field. Then refreshes the character cards.</p></div>
 <ul>
 <li>
 <h4><code><a title="legends.ui.rostertab.AskRosterFilter" href="#legends.ui.rostertab.AskRosterFilter">AskRosterFilter</a></code></h4>
-<ul class="">
+<ul class="two-column">
 <li><code><a title="legends.ui.rostertab.AskRosterFilter.apply" href="#legends.ui.rostertab.AskRosterFilter.apply">apply</a></code></li>
 <li><code><a title="legends.ui.rostertab.AskRosterFilter.body" href="#legends.ui.rostertab.AskRosterFilter.body">body</a></code></li>
 <li><code><a title="legends.ui.rostertab.AskRosterFilter.buttonbox" href="#legends.ui.rostertab.AskRosterFilter.buttonbox">buttonbox</a></code></li>
 <li><code><a title="legends.ui.rostertab.AskRosterFilter.clear" href="#legends.ui.rostertab.AskRosterFilter.clear">clear</a></code></li>
 <li><code><a title="legends.ui.rostertab.AskRosterFilter.makeLinkedScales" href="#legends.ui.rostertab.AskRosterFilter.makeLinkedScales">makeLinkedScales</a></code></li>
+<li><code><a title="legends.ui.rostertab.AskRosterFilter.setCooldowns" href="#legends.ui.rostertab.AskRosterFilter.setCooldowns">setCooldowns</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.ui.rostertab.AskSkillTimings" href="#legends.ui.rostertab.AskSkillTimings">AskSkillTimings</a></code></h4>
+<ul class="">
+<li><code><a title="legends.ui.rostertab.AskSkillTimings.apply" href="#legends.ui.rostertab.AskSkillTimings.apply">apply</a></code></li>
+<li><code><a title="legends.ui.rostertab.AskSkillTimings.body" href="#legends.ui.rostertab.AskSkillTimings.body">body</a></code></li>
 </ul>
 </li>
 <li>

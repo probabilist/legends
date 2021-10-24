@@ -205,9 +205,9 @@ class CharTab(tk.Frame):
             self.scrollArea.content, bg=&#39;ivory&#39;, highlightthickness=1,
             highlightbackground=&#39;black&#39;, highlightcolor=&#39;black&#39;
         )
+        gearFrame.pack(anchor=tk.W)
         self.makeGearCardFrame(gearFrame).pack()
         self.makeGearUpgradeFrame(gearFrame, &#39;ivory&#39;).pack()
-        gearFrame.pack(anchor=tk.W)
 
         # add skills
         tk.Label(
@@ -294,23 +294,6 @@ class CharTab(tk.Frame):
                 )
         return skillFrame
 
-    def getGearCardDims(self):
-        &#34;&#34;&#34;Finds and returns the dimensions of the largest possible gear
-        card.
-
-        Returns:
-            tuple: (`int`, `int`) The height and width of the largest
-                possible gear card.
-
-        &#34;&#34;&#34;
-        testCard = GearCard(&#39;test&#39;, self)
-        testCard.pack()
-        testCard.update_idletasks()
-        height = testCard.winfo_height()
-        width = testCard.winfo_width()
-        testCard.destroy()
-        return height, width
-
     def makeGearCardFrame(self, master):
         &#34;&#34;&#34;Builds and returns a frame that displays a gear card for each
         of the character&#39;s gear pieces.
@@ -324,13 +307,20 @@ class CharTab(tk.Frame):
                 given master frame.
 
         &#34;&#34;&#34;
+        # get test card dimensions
+        testCard = GearCard(&#39;test&#39;, master)
+        testCard.pack()
+        testCard.update_idletasks()
+        height = testCard.winfo_height()
+        width = testCard.winfo_width()
+        testCard.destroy()
+
         # setup card frame
         cardFrame = tk.Frame(master)
-        gearCardDims = self.getGearCardDims()
-        cardFrame.grid_rowconfigure(0, minsize=gearCardDims[0])
-        cardFrame.grid_rowconfigure(1, minsize=gearCardDims[0])
-        cardFrame.grid_columnconfigure(0, minsize=gearCardDims[1])
-        cardFrame.grid_columnconfigure(1, minsize=gearCardDims[1])
+        cardFrame.grid_rowconfigure(0, minsize=height)
+        cardFrame.grid_rowconfigure(1, minsize=height)
+        cardFrame.grid_columnconfigure(0, minsize=width)
+        cardFrame.grid_columnconfigure(1, minsize=width)
 
         # add gear cards
         for index in range(4):
@@ -710,9 +700,9 @@ as the instance's parent.</dd>
             self.scrollArea.content, bg=&#39;ivory&#39;, highlightthickness=1,
             highlightbackground=&#39;black&#39;, highlightcolor=&#39;black&#39;
         )
+        gearFrame.pack(anchor=tk.W)
         self.makeGearCardFrame(gearFrame).pack()
         self.makeGearUpgradeFrame(gearFrame, &#39;ivory&#39;).pack()
-        gearFrame.pack(anchor=tk.W)
 
         # add skills
         tk.Label(
@@ -799,23 +789,6 @@ as the instance's parent.</dd>
                 )
         return skillFrame
 
-    def getGearCardDims(self):
-        &#34;&#34;&#34;Finds and returns the dimensions of the largest possible gear
-        card.
-
-        Returns:
-            tuple: (`int`, `int`) The height and width of the largest
-                possible gear card.
-
-        &#34;&#34;&#34;
-        testCard = GearCard(&#39;test&#39;, self)
-        testCard.pack()
-        testCard.update_idletasks()
-        height = testCard.winfo_height()
-        width = testCard.winfo_width()
-        testCard.destroy()
-        return height, width
-
     def makeGearCardFrame(self, master):
         &#34;&#34;&#34;Builds and returns a frame that displays a gear card for each
         of the character&#39;s gear pieces.
@@ -829,13 +802,20 @@ as the instance's parent.</dd>
                 given master frame.
 
         &#34;&#34;&#34;
+        # get test card dimensions
+        testCard = GearCard(&#39;test&#39;, master)
+        testCard.pack()
+        testCard.update_idletasks()
+        height = testCard.winfo_height()
+        width = testCard.winfo_width()
+        testCard.destroy()
+
         # setup card frame
         cardFrame = tk.Frame(master)
-        gearCardDims = self.getGearCardDims()
-        cardFrame.grid_rowconfigure(0, minsize=gearCardDims[0])
-        cardFrame.grid_rowconfigure(1, minsize=gearCardDims[0])
-        cardFrame.grid_columnconfigure(0, minsize=gearCardDims[1])
-        cardFrame.grid_columnconfigure(1, minsize=gearCardDims[1])
+        cardFrame.grid_rowconfigure(0, minsize=height)
+        cardFrame.grid_rowconfigure(1, minsize=height)
+        cardFrame.grid_columnconfigure(0, minsize=width)
+        cardFrame.grid_columnconfigure(1, minsize=width)
 
         # add gear cards
         for index in range(4):
@@ -969,40 +949,6 @@ interact with the <code><a title="legends.ui.chartab.CharTab" href="#legends.ui.
     return bar</code></pre>
 </details>
 </dd>
-<dt id="legends.ui.chartab.CharTab.getGearCardDims"><code class="name flex">
-<span>def <span class="ident">getGearCardDims</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Finds and returns the dimensions of the largest possible gear
-card.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>tuple</code></dt>
-<dd>(<code>int</code>, <code>int</code>) The height and width of the largest
-possible gear card.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def getGearCardDims(self):
-    &#34;&#34;&#34;Finds and returns the dimensions of the largest possible gear
-    card.
-
-    Returns:
-        tuple: (`int`, `int`) The height and width of the largest
-            possible gear card.
-
-    &#34;&#34;&#34;
-    testCard = GearCard(&#39;test&#39;, self)
-    testCard.pack()
-    testCard.update_idletasks()
-    height = testCard.winfo_height()
-    width = testCard.winfo_width()
-    testCard.destroy()
-    return height, width</code></pre>
-</details>
-</dd>
 <dt id="legends.ui.chartab.CharTab.makeGearCardFrame"><code class="name flex">
 <span>def <span class="ident">makeGearCardFrame</span></span>(<span>self, master)</span>
 </code></dt>
@@ -1038,13 +984,20 @@ given master frame.</dd>
             given master frame.
 
     &#34;&#34;&#34;
+    # get test card dimensions
+    testCard = GearCard(&#39;test&#39;, master)
+    testCard.pack()
+    testCard.update_idletasks()
+    height = testCard.winfo_height()
+    width = testCard.winfo_width()
+    testCard.destroy()
+
     # setup card frame
     cardFrame = tk.Frame(master)
-    gearCardDims = self.getGearCardDims()
-    cardFrame.grid_rowconfigure(0, minsize=gearCardDims[0])
-    cardFrame.grid_rowconfigure(1, minsize=gearCardDims[0])
-    cardFrame.grid_columnconfigure(0, minsize=gearCardDims[1])
-    cardFrame.grid_columnconfigure(1, minsize=gearCardDims[1])
+    cardFrame.grid_rowconfigure(0, minsize=height)
+    cardFrame.grid_rowconfigure(1, minsize=height)
+    cardFrame.grid_columnconfigure(0, minsize=width)
+    cardFrame.grid_columnconfigure(1, minsize=width)
 
     # add gear cards
     for index in range(4):
@@ -1332,7 +1285,6 @@ displaying cards.</dd>
 <h4><code><a title="legends.ui.chartab.CharTab" href="#legends.ui.chartab.CharTab">CharTab</a></code></h4>
 <ul class="">
 <li><code><a title="legends.ui.chartab.CharTab.actionBar" href="#legends.ui.chartab.CharTab.actionBar">actionBar</a></code></li>
-<li><code><a title="legends.ui.chartab.CharTab.getGearCardDims" href="#legends.ui.chartab.CharTab.getGearCardDims">getGearCardDims</a></code></li>
 <li><code><a title="legends.ui.chartab.CharTab.makeGearCardFrame" href="#legends.ui.chartab.CharTab.makeGearCardFrame">makeGearCardFrame</a></code></li>
 <li><code><a title="legends.ui.chartab.CharTab.makeGearUpgradeFrame" href="#legends.ui.chartab.CharTab.makeGearUpgradeFrame">makeGearUpgradeFrame</a></code></li>
 <li><code><a title="legends.ui.chartab.CharTab.roster" href="#legends.ui.chartab.CharTab.roster">roster</a></code></li>

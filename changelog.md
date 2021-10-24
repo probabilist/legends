@@ -1,5 +1,14 @@
 # Change log
 
+## Version 0.21.0
+
+* Added a `timing` property to the `Skill` class, indicating if the skill is 'basic', 'r1', 'r2', or 'r3'.
+* Added a `timing` argument to `Character.skillEffectTags()` to allow for restricting the tags to skills whose cooldowns and starting cooldowns match certain criteria.
+* Added a 'Cooldowns...' button to the `AskRosterFilter` dialog.
+* Added `AskRosterFilter.setCooldowns()`.
+* Added an `AskSkillTimings` class.
+* Added a `skillTimings` attribute to the `RosterFilter` class; modified `RosterFilter.set()`, `RosterFilter.dictify()`, and `Session.checkFilter()` accordingly.
+
 ## Version 0.20.0
 
 * Added a Windows version of the app icon.

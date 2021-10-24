@@ -441,6 +441,9 @@ class Session(tk.Frame):
 
         """
         filt = self.settings.rosterFilter.dictify()
+        timings = [
+            timing for timing, var in filt['skillTimings'].items() if var
+        ]
         return(
             filt['rarities'][char.rarity]
             and filt['roles'][char.role]
@@ -449,7 +452,7 @@ class Session(tk.Frame):
             and any(filt['charTags'][charTag] for charTag in char.tags)
             and any(
                 filt['effectTags'][effectTag]
-                for effectTag in char.skillEffectTags()
+                for effectTag in char.skillEffectTags(timings=timings)
             )
         )
 

@@ -44,4 +44,4 @@ app = BUNDLE(exe,
              name='STL Planner.app',
              icon='command.icns' if platform == 'darwin' else 'command.ico',
              bundle_identifier=None,
-             version='0.20.0')
+             version='0.21.0')

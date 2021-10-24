@@ -170,6 +170,23 @@ class Skill():
         return self.data[&#39;startingCooldown&#39;]
 
     @property
+    def timing(self):
+        &#34;&#34;&#34;`str`: One of &#39;basic&#39;, &#39;r1&#39;, &#39;r2&#39;, or &#39;r3&#39;, describing,
+        respectively, whether the skill is a basic attack (cooldown 0),
+        a Round 1 skill (positive cooldown, starting cooldown 0), a
+        Round 2 skill (positive cooldown, starting cooldown 1), or a
+        skill available in Round 3 or later (positive cooldown, starting
+        cooldown at least 2).
+        &#34;&#34;&#34;
+        if self.cooldown == 0:
+            return &#39;basic&#39;
+        if self.startingCooldown == 0:
+            return &#39;r1&#39;
+        if self.startingCooldown == 1:
+            return &#39;r2&#39;
+        return &#39;r3&#39;
+
+    @property
     def isAOE(self):
         &#34;&#34;&#34;`bool`: `True` if the skill is AOE.&#34;&#34;&#34;
         return self.data[&#39;isAOE&#39;]
@@ -506,6 +523,7 @@ def tagAffected(self):
 <li><code><a title="legends.skill.Skill.numTargets" href="#legends.skill.Skill.numTargets">numTargets</a></code></li>
 <li><code><a title="legends.skill.Skill.startWith" href="#legends.skill.Skill.startWith">startWith</a></code></li>
 <li><code><a title="legends.skill.Skill.startingCooldown" href="#legends.skill.Skill.startingCooldown">startingCooldown</a></code></li>
+<li><code><a title="legends.skill.Skill.timing" href="#legends.skill.Skill.timing">timing</a></code></li>
 </ul>
 </li>
 </ul>
@@ -775,6 +793,23 @@ this skill is used. Does not include the caster effect.</dd>
         return self.data[&#39;startingCooldown&#39;]
 
     @property
+    def timing(self):
+        &#34;&#34;&#34;`str`: One of &#39;basic&#39;, &#39;r1&#39;, &#39;r2&#39;, or &#39;r3&#39;, describing,
+        respectively, whether the skill is a basic attack (cooldown 0),
+        a Round 1 skill (positive cooldown, starting cooldown 0), a
+        Round 2 skill (positive cooldown, starting cooldown 1), or a
+        skill available in Round 3 or later (positive cooldown, starting
+        cooldown at least 2).
+        &#34;&#34;&#34;
+        if self.cooldown == 0:
+            return &#39;basic&#39;
+        if self.startingCooldown == 0:
+            return &#39;r1&#39;
+        if self.startingCooldown == 1:
+            return &#39;r2&#39;
+        return &#39;r3&#39;
+
+    @property
     def isAOE(self):
         &#34;&#34;&#34;`bool`: `True` if the skill is AOE.&#34;&#34;&#34;
         return self.data[&#39;isAOE&#39;]
@@ -988,6 +1023,36 @@ def startingCooldown(self):
     the first time on the third turn.
     &#34;&#34;&#34;
     return self.data[&#39;startingCooldown&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.skill.Skill.timing"><code class="name">var <span class="ident">timing</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: One of 'basic', 'r1', 'r2', or 'r3', describing,
+respectively, whether the skill is a basic attack (cooldown 0),
+a Round 1 skill (positive cooldown, starting cooldown 0), a
+Round 2 skill (positive cooldown, starting cooldown 1), or a
+skill available in Round 3 or later (positive cooldown, starting
+cooldown at least 2).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def timing(self):
+    &#34;&#34;&#34;`str`: One of &#39;basic&#39;, &#39;r1&#39;, &#39;r2&#39;, or &#39;r3&#39;, describing,
+    respectively, whether the skill is a basic attack (cooldown 0),
+    a Round 1 skill (positive cooldown, starting cooldown 0), a
+    Round 2 skill (positive cooldown, starting cooldown 1), or a
+    skill available in Round 3 or later (positive cooldown, starting
+    cooldown at least 2).
+    &#34;&#34;&#34;
+    if self.cooldown == 0:
+        return &#39;basic&#39;
+    if self.startingCooldown == 0:
+        return &#39;r1&#39;
+    if self.startingCooldown == 1:
+        return &#39;r2&#39;
+    return &#39;r3&#39;</code></pre>
 </details>
 </dd>
 </dl>
@@ -1422,6 +1487,7 @@ def tagAffected(self):
 <li><code><a title="legends.skill.Skill.numTargets" href="#legends.skill.Skill.numTargets">numTargets</a></code></li>
 <li><code><a title="legends.skill.Skill.startWith" href="#legends.skill.Skill.startWith">startWith</a></code></li>
 <li><code><a title="legends.skill.Skill.startingCooldown" href="#legends.skill.Skill.startingCooldown">startingCooldown</a></code></li>
+<li><code><a title="legends.skill.Skill.timing" href="#legends.skill.Skill.timing">timing</a></code></li>
 </ul>
 </li>
 <li>

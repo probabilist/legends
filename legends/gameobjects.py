@@ -225,7 +225,7 @@ class Character():
         """
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
 
-    def skillEffectTags(self, showLocked=False):
+    def skillEffectTags(self, showLocked=False, timings=None):
         """Returns the list of tags on all skill effects produced by all
         skills of this character.
 
@@ -233,6 +233,10 @@ class Character():
             showLocked (bool): If `True`, includes all effect types of
                 all skill levels; otherwise, shows only effects of
                 currently unlocked skill levels.
+            timings (list of str): A list of strings from among 'basic',
+                'r1', 'r2', and 'r3'. Skills whose `timing` property is
+                not on the list will be ignored. If this argument is
+                `None`, all skills will be allowed.
 
         Returns:
             list of str: The list of tags.
@@ -240,6 +244,8 @@ class Character():
         """
         effTags = []
         for skillID, skill in self.skills.items():
+            if timings is not None and skill.timing not in timings:
+                continue
             for level in (1,2):
                 if showLocked or (skill.level == level and skill.unlocked):
                     effTags.extend(Skill(skillID, level).effectTags)
