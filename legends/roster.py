@@ -2,18 +2,17 @@
 
 """
 
-from types import MethodType
 from warnings import warn
 from legends.utils.objrelations import OneToOne
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSAccessoryItems, GSCharacter
 from legends.constants import DESCRIPTIONS, SUMMON_POOL
 from legends.gameobjects import Character, Gear, Particle
-from legends.stats import Stats
 
 __all__ = [
     'readGear',
     'readParts',
+    'InGearSlot',
     'Roster'
 ]
 
@@ -74,6 +73,40 @@ def readParts(save, slot):
         parts[saveIndex] = part
     return parts
 
+class InGearSlot(OneToOne):
+    """Models the relationship between gear and gear slots.
+
+    The `InGearSlot` class is a one-to-one mapping from
+    `legends.gameobjects.Gear` instances and
+    `legends.gameobjects.GearSlot` instances.
+
+    Attributes:
+        enforceLevel (bool): If `True`, gear cannot be mapped to a gear
+            slot if the level of the gear exceeds the level the
+            character to which the slot belongs.
+
+    """
+
+    def __init__(self):
+        OneToOne.__init__(self)
+        self.enforceLevel = True
+
+    # pylint: disable-next=arguments-renamed
+    def validate(self, gear, gearSlot):
+        """Raises a value error if the `enforceLevel` attribute is
+        `True` and the rarity of the given gear exceeds the rarity of
+        the character to which the given gear slot belongs. Otherwise,
+        returns `True`.
+
+        """
+        char = gearSlot.char
+        index = gearSlot.index
+        if gear.slot != index or (
+            gear.level > char.maxGearLevel and self.enforceLevel
+        ):
+            raise ValueError((gear, gearSlot))
+        return True
+
 class Roster():
     """A collection of related characters, gear, and particles.
 
@@ -84,15 +117,9 @@ class Roster():
             particles in the roster.
         chars (dict): {`str`:`legends.gameobjects.Character`} A
             dictionary mapping name IDs to characters.
-        inGearSlot (legends.utils.objrelations.OneToOne): A relation
-            mapping `legends.gameobjects.Gear` objects to
-            `legends.gameobjects.GearSlot` objects. The
-            `legends.utils.objrelations.OneToOne.validate()` method is
-            overridden to prohibit the placing of gear in the wrong slot
-            or the placing of gear that exceeds the maximum allowed
-            level. The `legends.utils.objrelations.OneToOne.validate()`
-            method raises a `ValueError` when it fails to validate an
-            assignment.
+        inGearSlot (InGearSlot): A relation mapping
+            `legends.gameobjects.Gear` objects to
+            `legends.gameobjects.GearSlot` objects.
         inPartSlot (legends.utils.objrelations.OneToOne): A relation
             mapping `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
@@ -115,14 +142,7 @@ class Roster():
         self.gear = []
         self.parts = []
         self.chars = {}
-        self.inGearSlot = OneToOne()
-        def validate(slf, gear, gearSlot): # pylint: disable=unused-argument
-            char = gearSlot.char
-            index = gearSlot.index
-            if gear.level > char.maxGearLevel or gear.slot != index:
-                raise ValueError((gear, gearSlot))
-            return True
-        self.inGearSlot.validate = MethodType(validate, self.inGearSlot)
+        self.inGearSlot = InGearSlot()
         self.inPartSlot = OneToOne()
         if save is not None:
             self.fromSaveData(save, slot)
@@ -193,7 +213,15 @@ class Roster():
                 if itemSaveIndex > 0:
                     item = gearDict[itemSaveIndex]
                     slot = char.gearSlots[slotIndex]
-                    self.inGearSlot[item] = slot
+                    try:
+                        self.inGearSlot[item] = slot
+                    except ValueError:
+                        warn('Rarity of {} exceeds rarity of {}'.format(
+                            item, char
+                        ))
+                        self.inGearSlot.enforceLevel = False
+                        self.inGearSlot[item] = slot
+                        self.inGearSlot.enforceLevel = True
 
             # add particles to character
             for slotIndex, itemSaveIndex in (
@@ -247,39 +275,6 @@ class Roster():
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
-
-    def charStats(self, nameID):
-        """Constructs and returns a `legends.stats.Stats` object
-        containing the total stats (including gear and particles) of the
-        character with the given name ID.
-
-        Args:
-            nameID (str): The name ID of the character whose stats to
-                build.
-
-        Returns:
-            legends.stats.Stats: The character's total stats.
-
-        """
-        char = self.chars[nameID]
-        nakedStats = char.stats
-        gears = (
-            self.containsGear[gearSlot] for gearSlot in char.gearSlots
-            if gearSlot in self.containsGear
-        )
-        gearStats = sum(
-            (gear.stats for gear in gears if gear is not None),
-            Stats()
-        )
-        parts = (
-            self.containsPart[partSlot] for partSlot in char.partSlots
-            if partSlot in self.containsPart
-        )
-        partStats = sum(
-            (part.stats for part in parts if part is not None),
-            Stats()
-        )
-        return nakedStats + gearStats + partStats
 
     def maxGearLevel(self, gear):
         """Returns the maximum possible gear level of the given gear

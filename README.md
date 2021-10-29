@@ -21,17 +21,17 @@ The *STL Planner* app must be run on a Mac. If your Mac has *Star Trek: Legends*
 
 ### Download
 
-Version 0.21.0: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1mtF5E4D6o3lCFpTEyz7_Qe5hSKpzdgdZ/view?usp=sharing)
+Version 0.22.0: [STL Planner.app.zip on Google Drive](https://drive.google.com/file/d/1bqo2Df8ZatPk-rfg7ytinrmaVeSYeRdc/view?usp=sharing)
 
 ### Install
 
 There is no install required, but you will need to follow these steps:
 
-1. Unzip the file downloaded above.
-2. Right click on "STL Planner.app" and select "Open" from the contextual menu.
+1. Open the dmg file downloaded above and drag the app to your Applications folder.
+2. Find the app in your Applications folder, right click on it, and select "Open" from the contextual menu.
 3. A dialog will pop up, warning you of the security risk. You can then agree to run the app anyway.
 
-In Step 2, if you accidentally double-click, the security dialog will not allow you to run the app.
+If you skip Step 2 and try to open the app directly, a security dialog will prevent you from running the app.
 
 <!--### Developer version
 

@@ -36,6 +36,12 @@ Attributes:
     RARITY_COLORS (dict): {`str`:`str`} A dictionary mapping character
         rarities to color names in `tkinter`.
     ROLES (list of str): A list of roles in the game.
+    PART_EFFECTS (dict): {`str`:`str`} The `legends` package only tracks
+        the primary effects of three particle types: Amplified Force,
+        Nexus Field, and Undo Damage. This dictionary maps the names of
+        these effects ('Attack Up', 'Shield', and 'Regenerate') to
+        abbreviations used throughout the `legends` package, typically
+        for object attribute names.
     PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
         mapping particle rarities to a list whose indices denote the
         0-based level of the particle and whose values denote the number
@@ -112,6 +118,7 @@ __all__ = [
     'POWER_AT_ORIGIN',
     'PART_STAT_UNLOCKED',
     'RARITIES',
+    'PART_EFFECTS',
     'PART_STAT_VALUES',
     'RARITY_COLORS',
     'ROLES',
@@ -273,6 +280,12 @@ for statName, statData in GSBaseStat.items():
     M = statData['MaxValue']
     POWER_GRADIENT[statName] = 10 / (M - m)
     POWER_AT_ORIGIN += (-m) * 10 / (M - m)
+
+PART_EFFECTS = {
+    'Attack Up': 'attUp',
+    'Shield': 'shield',
+    'Regenerate': 'regen'
+}
 
 PART_STAT_UNLOCKED = {
     'Common': [1, 2, 2, 2, 2],

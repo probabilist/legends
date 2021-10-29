@@ -280,10 +280,9 @@ class CharTab(tk.Frame):
         """
         # get test card dimensions
         testCard = GearCard('test', master)
-        testCard.pack()
         testCard.update_idletasks()
-        height = testCard.winfo_height()
-        width = testCard.winfo_width()
+        height = testCard.winfo_reqheight()
+        width = testCard.winfo_reqwidth()
         testCard.destroy()
 
         # setup card frame

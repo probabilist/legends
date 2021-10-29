@@ -1,5 +1,23 @@
 # Change log
 
+## Version 0.22.0
+
+* Added a `PART_EFFECTS` constant.
+* Fixed a bug in the `decompressData` function that could prevent the app from importing player data.
+* Replaced the `Roster.charStats()` method with `Character.totalStats()`; modified `CharCard` and `RosterTab` accordingly.
+* Added a `Character.partEffects()` method.
+* Changes to `Particle` class:
+    - Converted `typ` and `rarity` attributes to read-only properties.
+    - Added `passive` and `effects` attributes.
+    - Added a `data` property.
+* Subclasses of `StatObject` now support the multiplication operator.
+* Added a `Stats.set()` method.
+* Added a `PartEffects` subclass of `StatObject`.
+* `CharTab.makeGearCardFrame()` now uses `winfo_reqheight()` and `winfo_reqwidth()` instead of `winfo_height()` and `winfo_width()`, so that the test card does not need to be packed.
+* Fixed a bug in `stlplannerapp.spec` that was affecting Windows builds, and also reformatted the file for improved readability.
+* Added `InGearSlot` class with an `enforceLevel` Boolean attribute.
+* Modified `Roster.fromSaveData()` to allow gear whose level exceeds the character level. Now raises a warning instead of an exception.
+
 ## Version 0.21.0
 
 * Added a `timing` property to the `Skill` class, indicating if the skill is 'basic', 'r1', 'r2', or 'r3'.

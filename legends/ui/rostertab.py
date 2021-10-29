@@ -568,7 +568,7 @@ class RosterInfoBar(tk.Frame):
             char.xp for char in chars
         )))
         self.totalPower.config(text='Total power: {:,.0f}'.format(sum(
-            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+            POWER_AT_ORIGIN + char.totalStats(roster).power
             for char in chars
         )))
         self.charCount.config(text='Characters: {}/{}'.format(
@@ -685,10 +685,10 @@ class RosterTab(tk.Frame):
         }
         for statName in STAT_INITIALS:
             self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
-                r.charStats(c.nameID).get(n)
+                c.totalStats(r).get(n)
             )
         self.sortFuncs['Power'] = lambda c,r=ros: (
-            POWER_AT_ORIGIN + r.charStats(c.nameID).power
+            POWER_AT_ORIGIN + c.totalStats(r).power
         )
         self.sortFuncs.update({
             'Missing gear levels': lambda c,r=ros: (

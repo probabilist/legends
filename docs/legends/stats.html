@@ -32,9 +32,9 @@
 &#34;&#34;&#34;
 
 from legends.utils.functions import formatDict
-from legends.constants import POWER_GRADIENT, STAT_ABBREVIATIONS
+from legends.constants import PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS
 
-__all__ = [&#39;StatObject&#39;, &#39;Stats&#39;]
+__all__ = [&#39;PartEffects&#39;, &#39;StatObject&#39;, &#39;Stats&#39;]
 
 class StatObject():
     &#34;&#34;&#34;An object that stores named statistics as attributes.
@@ -46,9 +46,9 @@ class StatObject():
     arguments, and when it does, it should create an object, all of
     whose statistics are zero.
 
-    Two `StatObject` instances can be added. The result is a new
-    `StatObject` instance whose statistics are the sum of the statistics
-    of the given instances.
+    Two `StatObject` instances can be added/multiplied. The result is a
+    new `StatObject` instance whose statistics are the sum/product of
+    the statistics of the given instances.
 
     Attributes:
         statAbbrs (iterable of str): Strings that represent the stored
@@ -65,6 +65,13 @@ class StatObject():
         for statAbbr in self.statAbbrs:
             statSum = getattr(self, statAbbr) + getattr(other, statAbbr)
             setattr(result, statAbbr, statSum)
+        return result
+
+    def __mul__(self, other):
+        result = self.__class__()
+        for statAbbr in self.statAbbrs:
+            statProd = getattr(self, statAbbr) * getattr(other, statAbbr)
+            setattr(result, statAbbr, statProd)
         return result
 
     def __repr__(self):
@@ -110,17 +117,30 @@ class Stats(StatObject):
         return powerDelta
 
     def get(self, statName):
-        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in
-        `GSBaseStat`.
+        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
+        keys of `STAT_ABBREVIATIONS`.
 
         Args:
-            statName (str): A stat name, as it appears in `GSBaseStat`.
+            statName (str): A stat name, as it appears in the keys of
+                `STAT_ABBREVIATIONS`.
 
         Returns:
             int or float: The value of the given stat.
 
         &#34;&#34;&#34;
         return getattr(self, STAT_ABBREVIATIONS[statName])
+
+    def set(self, statName, value):
+        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
+        of `STAT_ABBREVIATIONS`.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                `STAT_ABBREVIATIONS`.
+            value (int or float): The value to assign.
+
+        &#34;&#34;&#34;
+        setattr(self, STAT_ABBREVIATIONS[statName], value)
 
     def update(self, statDict):
         &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
@@ -133,7 +153,70 @@ class Stats(StatObject):
 
         &#34;&#34;&#34;
         for statName, statVal in statDict.items():
-            setattr(self, STAT_ABBREVIATIONS[statName], statVal)</code></pre>
+            setattr(self, STAT_ABBREVIATIONS[statName], statVal)
+
+class PartEffects(StatObject):
+    &#34;&#34;&#34;Stats describing effects of particles in STL.
+
+    Attributes:
+        statAbbrs (iterable of str): The values of `PART_EFFECTS`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, initDict=None):
+        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
+        initializes the instance with these values.
+
+        Args:
+            initDict (dict): {`str`:`int or float`} A dictionary mapping
+                the stat names in the keys of `PART_EFFECTS` to
+                numerical values.
+
+        &#34;&#34;&#34;
+        StatObject.__init__(self)
+        self.statAbbrs = PART_EFFECTS.values()
+        if initDict is None:
+            initDict = {statName: 0 for statName in PART_EFFECTS}
+        self.update(initDict)
+
+    def get(self, statName):
+        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
+        keys of `PART_EFFECTS`.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                `PART_EFFECTS`.
+
+        Returns:
+            int or float: The value of the given stat.
+
+        &#34;&#34;&#34;
+        return getattr(self, PART_EFFECTS[statName])
+
+    def set(self, statName, value):
+        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
+        of `PART_EFFECTS`.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                `PART_EFFECTS`.
+            value (int or float): The value to assign.
+
+        &#34;&#34;&#34;
+        setattr(self, PART_EFFECTS[statName], value)
+
+    def update(self, statDict):
+        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
+        dictionary.
+
+        Args:
+            statDict (dict): {`str`:`int or float`} A dictionary mapping
+                the stat names in the keys of `PART_EFFECTS` to
+                numerical values.
+
+        &#34;&#34;&#34;
+        for statName, statVal in statDict.items():
+            setattr(self, PART_EFFECTS[statName], statVal)</code></pre>
 </details>
 </section>
 <section>
@@ -145,6 +228,199 @@ class Stats(StatObject):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.stats.PartEffects"><code class="flex name class">
+<span>class <span class="ident">PartEffects</span></span>
+<span>(</span><span>initDict=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Stats describing effects of particles in STL.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>statAbbrs</code></strong> :&ensp;<code>iterable</code> of <code>str</code></dt>
+<dd>The values of <code>PART_EFFECTS</code>.</dd>
+</dl>
+<p>If a dictionary of stat values is provided, the constructor
+initializes the instance with these values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>initDict</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
+the stat names in the keys of <code>PART_EFFECTS</code> to
+numerical values.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class PartEffects(StatObject):
+    &#34;&#34;&#34;Stats describing effects of particles in STL.
+
+    Attributes:
+        statAbbrs (iterable of str): The values of `PART_EFFECTS`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, initDict=None):
+        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
+        initializes the instance with these values.
+
+        Args:
+            initDict (dict): {`str`:`int or float`} A dictionary mapping
+                the stat names in the keys of `PART_EFFECTS` to
+                numerical values.
+
+        &#34;&#34;&#34;
+        StatObject.__init__(self)
+        self.statAbbrs = PART_EFFECTS.values()
+        if initDict is None:
+            initDict = {statName: 0 for statName in PART_EFFECTS}
+        self.update(initDict)
+
+    def get(self, statName):
+        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
+        keys of `PART_EFFECTS`.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                `PART_EFFECTS`.
+
+        Returns:
+            int or float: The value of the given stat.
+
+        &#34;&#34;&#34;
+        return getattr(self, PART_EFFECTS[statName])
+
+    def set(self, statName, value):
+        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
+        of `PART_EFFECTS`.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                `PART_EFFECTS`.
+            value (int or float): The value to assign.
+
+        &#34;&#34;&#34;
+        setattr(self, PART_EFFECTS[statName], value)
+
+    def update(self, statDict):
+        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
+        dictionary.
+
+        Args:
+            statDict (dict): {`str`:`int or float`} A dictionary mapping
+                the stat names in the keys of `PART_EFFECTS` to
+                numerical values.
+
+        &#34;&#34;&#34;
+        for statName, statVal in statDict.items():
+            setattr(self, PART_EFFECTS[statName], statVal)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.stats.PartEffects.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, statName)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Looks up a stat value by its full name, as it appears in the
+keys of <code>PART_EFFECTS</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
+<dd>A stat name, as it appears in the keys of
+<code>PART_EFFECTS</code>.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code> or <code>float</code></dt>
+<dd>The value of the given stat.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, statName):
+    &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
+    keys of `PART_EFFECTS`.
+
+    Args:
+        statName (str): A stat name, as it appears in the keys of
+            `PART_EFFECTS`.
+
+    Returns:
+        int or float: The value of the given stat.
+
+    &#34;&#34;&#34;
+    return getattr(self, PART_EFFECTS[statName])</code></pre>
+</details>
+</dd>
+<dt id="legends.stats.PartEffects.set"><code class="name flex">
+<span>def <span class="ident">set</span></span>(<span>self, statName, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets a stat value by its full name, as it appears in the keys
+of <code>PART_EFFECTS</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
+<dd>A stat name, as it appears in the keys of
+<code>PART_EFFECTS</code>.</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
+<dd>The value to assign.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set(self, statName, value):
+    &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
+    of `PART_EFFECTS`.
+
+    Args:
+        statName (str): A stat name, as it appears in the keys of
+            `PART_EFFECTS`.
+        value (int or float): The value to assign.
+
+    &#34;&#34;&#34;
+    setattr(self, PART_EFFECTS[statName], value)</code></pre>
+</details>
+</dd>
+<dt id="legends.stats.PartEffects.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, statDict)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the stat attributes to those contained in the given stat
+dictionary.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statDict</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
+the stat names in the keys of <code>PART_EFFECTS</code> to
+numerical values.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, statDict):
+    &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
+    dictionary.
+
+    Args:
+        statDict (dict): {`str`:`int or float`} A dictionary mapping
+            the stat names in the keys of `PART_EFFECTS` to
+            numerical values.
+
+    &#34;&#34;&#34;
+    for statName, statVal in statDict.items():
+        setattr(self, PART_EFFECTS[statName], statVal)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="legends.stats.StatObject"><code class="flex name class">
 <span>class <span class="ident">StatObject</span></span>
 </code></dt>
@@ -156,9 +432,9 @@ set <code>statAbbrs</code> to an iterable that iterates over the names
 subclass. The subclass constructor must be able to accept no
 arguments, and when it does, it should create an object, all of
 whose statistics are zero.</p>
-<p>Two <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> instances can be added. The result is a new
-<code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> instance whose statistics are the sum of the statistics
-of the given instances.</p>
+<p>Two <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> instances can be added/multiplied. The result is a
+new <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> instance whose statistics are the sum/product of
+the statistics of the given instances.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>statAbbrs</code></strong> :&ensp;<code>iterable</code> of <code>str</code></dt>
@@ -180,9 +456,9 @@ object attributes.</dd>
     arguments, and when it does, it should create an object, all of
     whose statistics are zero.
 
-    Two `StatObject` instances can be added. The result is a new
-    `StatObject` instance whose statistics are the sum of the statistics
-    of the given instances.
+    Two `StatObject` instances can be added/multiplied. The result is a
+    new `StatObject` instance whose statistics are the sum/product of
+    the statistics of the given instances.
 
     Attributes:
         statAbbrs (iterable of str): Strings that represent the stored
@@ -201,6 +477,13 @@ object attributes.</dd>
             setattr(result, statAbbr, statSum)
         return result
 
+    def __mul__(self, other):
+        result = self.__class__()
+        for statAbbr in self.statAbbrs:
+            statProd = getattr(self, statAbbr) * getattr(other, statAbbr)
+            setattr(result, statAbbr, statProd)
+        return result
+
     def __repr__(self):
         return &#39;StatObject({})&#39;.format(formatDict({
             statAbbr: getattr(self, statAbbr) for statAbbr in self.statAbbrs
@@ -208,6 +491,7 @@ object attributes.</dd>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
+<li><a title="legends.stats.PartEffects" href="#legends.stats.PartEffects">PartEffects</a></li>
 <li><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></li>
 </ul>
 </dd>
@@ -274,17 +558,30 @@ numerical values.</dd>
         return powerDelta
 
     def get(self, statName):
-        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in
-        `GSBaseStat`.
+        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
+        keys of `STAT_ABBREVIATIONS`.
 
         Args:
-            statName (str): A stat name, as it appears in `GSBaseStat`.
+            statName (str): A stat name, as it appears in the keys of
+                `STAT_ABBREVIATIONS`.
 
         Returns:
             int or float: The value of the given stat.
 
         &#34;&#34;&#34;
         return getattr(self, STAT_ABBREVIATIONS[statName])
+
+    def set(self, statName, value):
+        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
+        of `STAT_ABBREVIATIONS`.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                `STAT_ABBREVIATIONS`.
+            value (int or float): The value to assign.
+
+        &#34;&#34;&#34;
+        setattr(self, STAT_ABBREVIATIONS[statName], value)
 
     def update(self, statDict):
         &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
@@ -334,12 +631,13 @@ def power(self):
 <span>def <span class="ident">get</span></span>(<span>self, statName)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Looks up a stat value by its full name, as it appears in
-<code>GSBaseStat</code>.</p>
+<div class="desc"><p>Looks up a stat value by its full name, as it appears in the
+keys of <code>STAT_ABBREVIATIONS</code>.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
-<dd>A stat name, as it appears in <code>GSBaseStat</code>.</dd>
+<dd>A stat name, as it appears in the keys of
+<code>STAT_ABBREVIATIONS</code>.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -351,17 +649,49 @@ def power(self):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get(self, statName):
-    &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in
-    `GSBaseStat`.
+    &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
+    keys of `STAT_ABBREVIATIONS`.
 
     Args:
-        statName (str): A stat name, as it appears in `GSBaseStat`.
+        statName (str): A stat name, as it appears in the keys of
+            `STAT_ABBREVIATIONS`.
 
     Returns:
         int or float: The value of the given stat.
 
     &#34;&#34;&#34;
     return getattr(self, STAT_ABBREVIATIONS[statName])</code></pre>
+</details>
+</dd>
+<dt id="legends.stats.Stats.set"><code class="name flex">
+<span>def <span class="ident">set</span></span>(<span>self, statName, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets a stat value by its full name, as it appears in the keys
+of <code>STAT_ABBREVIATIONS</code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
+<dd>A stat name, as it appears in the keys of
+<code>STAT_ABBREVIATIONS</code>.</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
+<dd>The value to assign.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set(self, statName, value):
+    &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
+    of `STAT_ABBREVIATIONS`.
+
+    Args:
+        statName (str): A stat name, as it appears in the keys of
+            `STAT_ABBREVIATIONS`.
+        value (int or float): The value to assign.
+
+    &#34;&#34;&#34;
+    setattr(self, STAT_ABBREVIATIONS[statName], value)</code></pre>
 </details>
 </dd>
 <dt id="legends.stats.Stats.update"><code class="name flex">
@@ -414,6 +744,14 @@ numerical values.</dd>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="legends.stats.PartEffects" href="#legends.stats.PartEffects">PartEffects</a></code></h4>
+<ul class="">
+<li><code><a title="legends.stats.PartEffects.get" href="#legends.stats.PartEffects.get">get</a></code></li>
+<li><code><a title="legends.stats.PartEffects.set" href="#legends.stats.PartEffects.set">set</a></code></li>
+<li><code><a title="legends.stats.PartEffects.update" href="#legends.stats.PartEffects.update">update</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code></h4>
 </li>
 <li>
@@ -421,6 +759,7 @@ numerical values.</dd>
 <ul class="">
 <li><code><a title="legends.stats.Stats.get" href="#legends.stats.Stats.get">get</a></code></li>
 <li><code><a title="legends.stats.Stats.power" href="#legends.stats.Stats.power">power</a></code></li>
+<li><code><a title="legends.stats.Stats.set" href="#legends.stats.Stats.set">set</a></code></li>
 <li><code><a title="legends.stats.Stats.update" href="#legends.stats.Stats.update">update</a></code></li>
 </ul>
 </li>

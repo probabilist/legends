@@ -34,7 +34,7 @@
 from re import findall
 from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
-from legends.constants import GSCharacter, GSGear
+from legends.constants import GSAccessoryItems, GSCharacter, GSGear
 from legends.constants import (
     DESCRIPTIONS, ENABLED, PART_STAT_UNLOCKED, RARITIES, UPCOMING
 )
@@ -43,7 +43,7 @@ from legends.functions import (
     gearToMaxCost, getBasicGearID, getCharStats, getGearStats, getPartStats,
     levelFromXP, tokensNeeded, xpFromLevel
 )
-from legends.stats import Stats
+from legends.stats import PartEffects, Stats
 from legends.skill import BridgeSkill, Skill
 
 __all__ = [
@@ -253,6 +253,59 @@ class Character():
 
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def totalStats(self, roster):
+        &#34;&#34;&#34;Constructs and returns a `legends.stats.Stats` object
+        containing the total stats (including gear and particles) of the
+        character.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.stats.Stats: The character&#39;s total stats.
+
+        &#34;&#34;&#34;
+        gears = (
+            roster.containsGear[gearSlot] for gearSlot in self.gearSlots
+            if gearSlot in roster.containsGear
+        )
+        gearStats = sum(
+            (gear.stats for gear in gears if gear is not None),
+            Stats()
+        )
+        parts = (
+            roster.containsPart[partSlot] for partSlot in self.partSlots
+            if partSlot in roster.containsPart
+        )
+        partStats = sum(
+            (part.stats for part in parts if part is not None),
+            Stats()
+        )
+        return self.stats + gearStats + partStats
+
+    def partEffects(self, roster):
+        &#34;&#34;&#34;Computes and return the total effects of all particles
+        equipped on the character.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.stats.PartEffects: The total effects of the
+                character&#39;s particles.
+
+        &#34;&#34;&#34;
+        effects = PartEffects()
+        for slot in self.partSlots:
+            try:
+                part = roster.containsPart[slot]
+                effects += part.effects
+            except KeyError:
+                continue
+        return effects
 
     def skillEffectTags(self, showLocked=False, timings=None):
         &#34;&#34;&#34;Returns the list of tags on all skill effects produced by all
@@ -484,45 +537,74 @@ class Particle(Managed):
     &#34;&#34;&#34;A particle in STL.
 
     Attributes:
-        typ (str): The type of the particle. This is what the data
-            refers to as the particle&#39;s &#34;display name&#34;. Should be one of
-            &#39;Accelerated Coagulation&#39;, &#39;Amplify Force&#39;, &#39;Nexus Field&#39;,
-            &#39;Temporal Flux&#39;, or &#39;Undo Damage&#39;.
-        rarity (str): The particle&#39;s rarity.
         locked (bool): True if the particle is locked.
         stats (legends.stats.Stats): The Stats object that stores the
             particle&#39;s total stats.
+        passive (legends.skill.Skill): The passive skill granted to the
+            character by this particle.
+        effects (legends.stats.PartEffects): The particle effect stats
+            granted by this particle.
 
     &#34;&#34;&#34;
 
     def __init__(self, typ, rarity, level, locked=False):
-        &#34;&#34;&#34;The constructor passes the given level to a private attribute
-        that is managed by a class property.
+        &#34;&#34;&#34;The constructor passes the given type, rarity, and level to a
+        private dictionary that is managed by class properties.
 
         Args:
             typ (str): The type of particle to create.
             rarity (str): The rarity of the created particle.
             level (int): The level of the created particle.
-            locked (bool): True if the new particle should be locked.
 
         &#34;&#34;&#34;
-        self.typ = typ
-        self.rarity = rarity
-        self._level = level
+        self._data = {
+            &#39;typ&#39;: typ,
+            &#39;rarity&#39;: rarity,
+            &#39;level&#39;: level
+        }
+        self._key = &#39;&#39;.join(self.typ.split(&#39; &#39;)) + &#39;_&#39; + self.rarity
+        self.passive = Skill(self.data[&#39;CombatEffectId&#39;], unlocked=True)
+        self.effects = PartEffects()
+        frac = self.passive.effects[0].statSourceFrac
+        if self.typ == &#39;Amplify Force&#39;:
+            self.effects.attUp = frac
+        elif self.typ == &#39;Nexus Field&#39;:
+            self.effects.shield = frac
+        elif self.typ == &#39;Undo Damage&#39;:
+            self.effects.regen = frac
         self.locked = locked
         self._statNames = [None] * 4
         self.stats = Stats()
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: The particle data from `GSAccessoryItems`.&#34;&#34;&#34;
+        return GSAccessoryItems[self._key]
+
+    @property
+    def typ(self):
+        &#34;&#34;&#34;`str`: The type of the particle. This is what the data refers
+        to as the particle&#39;s &#34;display name&#34;. Should be one of
+        &#39;Accelerated Coagulation&#39;, &#39;Amplify Force&#39;, &#39;Nexus Field&#39;,
+        &#39;Temporal Flux&#39;, or &#39;Undo Damage&#39;.
+        &#34;&#34;&#34;
+        return self._data[&#39;typ&#39;]
+
+    @property
+    def rarity(self):
+        &#34;&#34;&#34;`str`: The particle&#39;s rarity.&#34;&#34;&#34;
+        return self._data[&#39;rarity&#39;]
 
     @property
     def level(self):
         &#34;&#34;&#34;`str`: The particle&#39;s level. Modifying this property also
         calls the `Particle.updateStats` method.
         &#34;&#34;&#34;
-        return self._level
+        return self._data[&#39;level&#39;]
 
     @level.setter
     def level(self, value):
-        self._level = value
+        self._data[&#39;level&#39;] = value
         self.updateStats()
 
     @property
@@ -855,6 +937,59 @@ properties.</p>
 
         &#34;&#34;&#34;
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def totalStats(self, roster):
+        &#34;&#34;&#34;Constructs and returns a `legends.stats.Stats` object
+        containing the total stats (including gear and particles) of the
+        character.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.stats.Stats: The character&#39;s total stats.
+
+        &#34;&#34;&#34;
+        gears = (
+            roster.containsGear[gearSlot] for gearSlot in self.gearSlots
+            if gearSlot in roster.containsGear
+        )
+        gearStats = sum(
+            (gear.stats for gear in gears if gear is not None),
+            Stats()
+        )
+        parts = (
+            roster.containsPart[partSlot] for partSlot in self.partSlots
+            if partSlot in roster.containsPart
+        )
+        partStats = sum(
+            (part.stats for part in parts if part is not None),
+            Stats()
+        )
+        return self.stats + gearStats + partStats
+
+    def partEffects(self, roster):
+        &#34;&#34;&#34;Computes and return the total effects of all particles
+        equipped on the character.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.stats.PartEffects: The total effects of the
+                character&#39;s particles.
+
+        &#34;&#34;&#34;
+        effects = PartEffects()
+        for slot in self.partSlots:
+            try:
+                part = roster.containsPart[slot]
+                effects += part.effects
+            except KeyError:
+                continue
+        return effects
 
     def skillEffectTags(self, showLocked=False, timings=None):
         &#34;&#34;&#34;Returns the list of tags on all skill effects produced by all
@@ -1264,6 +1399,51 @@ character belongs.</dd>
     return cost</code></pre>
 </details>
 </dd>
+<dt id="legends.gameobjects.Character.partEffects"><code class="name flex">
+<span>def <span class="ident">partEffects</span></span>(<span>self, roster)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Computes and return the total effects of all particles
+equipped on the character.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>roster</code></strong> :&ensp;<code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code></dt>
+<dd>The roster to which the
+character belongs.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.stats.PartEffects" href="stats.html#legends.stats.PartEffects">PartEffects</a></code></dt>
+<dd>The total effects of the
+character's particles.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def partEffects(self, roster):
+    &#34;&#34;&#34;Computes and return the total effects of all particles
+    equipped on the character.
+
+    Args:
+        roster (legends.roster.Roster): The roster to which the
+            character belongs.
+
+    Returns:
+        legends.stats.PartEffects: The total effects of the
+            character&#39;s particles.
+
+    &#34;&#34;&#34;
+    effects = PartEffects()
+    for slot in self.partSlots:
+        try:
+            part = roster.containsPart[slot]
+            effects += part.effects
+        except KeyError:
+            continue
+    return effects</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Character.skillEffectTags"><code class="name flex">
 <span>def <span class="ident">skillEffectTags</span></span>(<span>self, showLocked=False, timings=None)</span>
 </code></dt>
@@ -1316,6 +1496,60 @@ not on the list will be ignored. If this argument is
             if showLocked or (skill.level == level and skill.unlocked):
                 effTags.extend(Skill(skillID, level).effectTags)
     return list(set(effTags))</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Character.totalStats"><code class="name flex">
+<span>def <span class="ident">totalStats</span></span>(<span>self, roster)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructs and returns a <code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code> object
+containing the total stats (including gear and particles) of the
+character.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>roster</code></strong> :&ensp;<code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code></dt>
+<dd>The roster to which the
+character belongs.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
+<dd>The character's total stats.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def totalStats(self, roster):
+    &#34;&#34;&#34;Constructs and returns a `legends.stats.Stats` object
+    containing the total stats (including gear and particles) of the
+    character.
+
+    Args:
+        roster (legends.roster.Roster): The roster to which the
+            character belongs.
+
+    Returns:
+        legends.stats.Stats: The character&#39;s total stats.
+
+    &#34;&#34;&#34;
+    gears = (
+        roster.containsGear[gearSlot] for gearSlot in self.gearSlots
+        if gearSlot in roster.containsGear
+    )
+    gearStats = sum(
+        (gear.stats for gear in gears if gear is not None),
+        Stats()
+    )
+    parts = (
+        roster.containsPart[partSlot] for partSlot in self.partSlots
+        if partSlot in roster.containsPart
+    )
+    partStats = sum(
+        (part.stats for part in parts if part is not None),
+        Stats()
+    )
+    return self.stats + gearStats + partStats</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Character.updateStats"><code class="name flex">
@@ -1815,21 +2049,20 @@ part of an object-based relation.</p>
 <div class="desc"><p>A particle in STL.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>typ</code></strong> :&ensp;<code>str</code></dt>
-<dd>The type of the particle. This is what the data
-refers to as the particle's "display name". Should be one of
-'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
-'Temporal Flux', or 'Undo Damage'.</dd>
-<dt><strong><code>rarity</code></strong> :&ensp;<code>str</code></dt>
-<dd>The particle's rarity.</dd>
 <dt><strong><code>locked</code></strong> :&ensp;<code>bool</code></dt>
 <dd>True if the particle is locked.</dd>
 <dt><strong><code>stats</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
 <dd>The Stats object that stores the
 particle's total stats.</dd>
+<dt><strong><code>passive</code></strong> :&ensp;<code><a title="legends.skill.Skill" href="skill.html#legends.skill.Skill">Skill</a></code></dt>
+<dd>The passive skill granted to the
+character by this particle.</dd>
+<dt><strong><code>effects</code></strong> :&ensp;<code><a title="legends.stats.PartEffects" href="stats.html#legends.stats.PartEffects">PartEffects</a></code></dt>
+<dd>The particle effect stats
+granted by this particle.</dd>
 </dl>
-<p>The constructor passes the given level to a private attribute
-that is managed by a class property.</p>
+<p>The constructor passes the given type, rarity, and level to a
+private dictionary that is managed by class properties.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>typ</code></strong> :&ensp;<code>str</code></dt>
@@ -1838,8 +2071,6 @@ that is managed by a class property.</p>
 <dd>The rarity of the created particle.</dd>
 <dt><strong><code>level</code></strong> :&ensp;<code>int</code></dt>
 <dd>The level of the created particle.</dd>
-<dt><strong><code>locked</code></strong> :&ensp;<code>bool</code></dt>
-<dd>True if the new particle should be locked.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -1849,45 +2080,74 @@ that is managed by a class property.</p>
     &#34;&#34;&#34;A particle in STL.
 
     Attributes:
-        typ (str): The type of the particle. This is what the data
-            refers to as the particle&#39;s &#34;display name&#34;. Should be one of
-            &#39;Accelerated Coagulation&#39;, &#39;Amplify Force&#39;, &#39;Nexus Field&#39;,
-            &#39;Temporal Flux&#39;, or &#39;Undo Damage&#39;.
-        rarity (str): The particle&#39;s rarity.
         locked (bool): True if the particle is locked.
         stats (legends.stats.Stats): The Stats object that stores the
             particle&#39;s total stats.
+        passive (legends.skill.Skill): The passive skill granted to the
+            character by this particle.
+        effects (legends.stats.PartEffects): The particle effect stats
+            granted by this particle.
 
     &#34;&#34;&#34;
 
     def __init__(self, typ, rarity, level, locked=False):
-        &#34;&#34;&#34;The constructor passes the given level to a private attribute
-        that is managed by a class property.
+        &#34;&#34;&#34;The constructor passes the given type, rarity, and level to a
+        private dictionary that is managed by class properties.
 
         Args:
             typ (str): The type of particle to create.
             rarity (str): The rarity of the created particle.
             level (int): The level of the created particle.
-            locked (bool): True if the new particle should be locked.
 
         &#34;&#34;&#34;
-        self.typ = typ
-        self.rarity = rarity
-        self._level = level
+        self._data = {
+            &#39;typ&#39;: typ,
+            &#39;rarity&#39;: rarity,
+            &#39;level&#39;: level
+        }
+        self._key = &#39;&#39;.join(self.typ.split(&#39; &#39;)) + &#39;_&#39; + self.rarity
+        self.passive = Skill(self.data[&#39;CombatEffectId&#39;], unlocked=True)
+        self.effects = PartEffects()
+        frac = self.passive.effects[0].statSourceFrac
+        if self.typ == &#39;Amplify Force&#39;:
+            self.effects.attUp = frac
+        elif self.typ == &#39;Nexus Field&#39;:
+            self.effects.shield = frac
+        elif self.typ == &#39;Undo Damage&#39;:
+            self.effects.regen = frac
         self.locked = locked
         self._statNames = [None] * 4
         self.stats = Stats()
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: The particle data from `GSAccessoryItems`.&#34;&#34;&#34;
+        return GSAccessoryItems[self._key]
+
+    @property
+    def typ(self):
+        &#34;&#34;&#34;`str`: The type of the particle. This is what the data refers
+        to as the particle&#39;s &#34;display name&#34;. Should be one of
+        &#39;Accelerated Coagulation&#39;, &#39;Amplify Force&#39;, &#39;Nexus Field&#39;,
+        &#39;Temporal Flux&#39;, or &#39;Undo Damage&#39;.
+        &#34;&#34;&#34;
+        return self._data[&#39;typ&#39;]
+
+    @property
+    def rarity(self):
+        &#34;&#34;&#34;`str`: The particle&#39;s rarity.&#34;&#34;&#34;
+        return self._data[&#39;rarity&#39;]
 
     @property
     def level(self):
         &#34;&#34;&#34;`str`: The particle&#39;s level. Modifying this property also
         calls the `Particle.updateStats` method.
         &#34;&#34;&#34;
-        return self._level
+        return self._data[&#39;level&#39;]
 
     @level.setter
     def level(self, value):
-        self._level = value
+        self._data[&#39;level&#39;] = value
         self.updateStats()
 
     @property
@@ -1938,6 +2198,19 @@ that is managed by a class property.</p>
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="legends.gameobjects.Particle.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dd>
+<div class="desc"><p><code>dict</code>: The particle data from <code>GSAccessoryItems</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def data(self):
+    &#34;&#34;&#34;`dict`: The particle data from `GSAccessoryItems`.&#34;&#34;&#34;
+    return GSAccessoryItems[self._key]</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Particle.level"><code class="name">var <span class="ident">level</span></code></dt>
 <dd>
 <div class="desc"><p><code>str</code>: The particle's level. Modifying this property also
@@ -1951,7 +2224,7 @@ def level(self):
     &#34;&#34;&#34;`str`: The particle&#39;s level. Modifying this property also
     calls the `Particle.updateStats` method.
     &#34;&#34;&#34;
-    return self._level</code></pre>
+    return self._data[&#39;level&#39;]</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Particle.numStats"><code class="name">var <span class="ident">numStats</span></code></dt>
@@ -1965,6 +2238,19 @@ def level(self):
 def numStats(self):
     &#34;&#34;&#34;`int`: The number of unlocked stats on the particle.&#34;&#34;&#34;
     return PART_STAT_UNLOCKED[self.rarity][self.level - 1]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Particle.rarity"><code class="name">var <span class="ident">rarity</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The particle's rarity.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rarity(self):
+    &#34;&#34;&#34;`str`: The particle&#39;s rarity.&#34;&#34;&#34;
+    return self._data[&#39;rarity&#39;]</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Particle.statNames"><code class="name">var <span class="ident">statNames</span></code></dt>
@@ -1983,6 +2269,26 @@ def statNames(self):
     though some values may be `None`.
     &#34;&#34;&#34;
     return tuple(self._statNames)</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Particle.typ"><code class="name">var <span class="ident">typ</span></code></dt>
+<dd>
+<div class="desc"><p><code>str</code>: The type of the particle. This is what the data refers
+to as the particle's "display name". Should be one of
+'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
+'Temporal Flux', or 'Undo Damage'.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def typ(self):
+    &#34;&#34;&#34;`str`: The type of the particle. This is what the data refers
+    to as the particle&#39;s &#34;display name&#34;. Should be one of
+    &#39;Accelerated Coagulation&#39;, &#39;Amplify Force&#39;, &#39;Nexus Field&#39;,
+    &#39;Temporal Flux&#39;, or &#39;Undo Damage&#39;.
+    &#34;&#34;&#34;
+    return self._data[&#39;typ&#39;]</code></pre>
 </details>
 </dd>
 </dl>
@@ -2074,6 +2380,7 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Character.missingSkillLevels" href="#legends.gameobjects.Character.missingSkillLevels">missingSkillLevels</a></code></li>
 <li><code><a title="legends.gameobjects.Character.name" href="#legends.gameobjects.Character.name">name</a></code></li>
 <li><code><a title="legends.gameobjects.Character.nameID" href="#legends.gameobjects.Character.nameID">nameID</a></code></li>
+<li><code><a title="legends.gameobjects.Character.partEffects" href="#legends.gameobjects.Character.partEffects">partEffects</a></code></li>
 <li><code><a title="legends.gameobjects.Character.rank" href="#legends.gameobjects.Character.rank">rank</a></code></li>
 <li><code><a title="legends.gameobjects.Character.rarity" href="#legends.gameobjects.Character.rarity">rarity</a></code></li>
 <li><code><a title="legends.gameobjects.Character.rarityIndex" href="#legends.gameobjects.Character.rarityIndex">rarityIndex</a></code></li>
@@ -2082,6 +2389,7 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Character.skillEffectTags" href="#legends.gameobjects.Character.skillEffectTags">skillEffectTags</a></code></li>
 <li><code><a title="legends.gameobjects.Character.tags" href="#legends.gameobjects.Character.tags">tags</a></code></li>
 <li><code><a title="legends.gameobjects.Character.tokensNeeded" href="#legends.gameobjects.Character.tokensNeeded">tokensNeeded</a></code></li>
+<li><code><a title="legends.gameobjects.Character.totalStats" href="#legends.gameobjects.Character.totalStats">totalStats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">updateStats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.xp" href="#legends.gameobjects.Character.xp">xp</a></code></li>
 </ul>
@@ -2109,11 +2417,14 @@ given index to the given stat name.</p>
 </li>
 <li>
 <h4><code><a title="legends.gameobjects.Particle" href="#legends.gameobjects.Particle">Particle</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="legends.gameobjects.Particle.data" href="#legends.gameobjects.Particle.data">data</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.level" href="#legends.gameobjects.Particle.level">level</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.numStats" href="#legends.gameobjects.Particle.numStats">numStats</a></code></li>
+<li><code><a title="legends.gameobjects.Particle.rarity" href="#legends.gameobjects.Particle.rarity">rarity</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.setStatName" href="#legends.gameobjects.Particle.setStatName">setStatName</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.statNames" href="#legends.gameobjects.Particle.statNames">statNames</a></code></li>
+<li><code><a title="legends.gameobjects.Particle.typ" href="#legends.gameobjects.Particle.typ">typ</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.updateStats" href="#legends.gameobjects.Particle.updateStats">updateStats</a></code></li>
 </ul>
 </li>

@@ -107,7 +107,7 @@ def decompressData(text):
     b64data = text.encode('utf-16')
     compressedData = b64decode(b64data)
     data = decompress(compressedData, -15)
-    return data.decode('ascii')
+    return data.decode('utf-8')
 
 def decryptSaveFile():
     """Finds the STL save file on the local hard drive, then decrypts

@@ -71,6 +71,13 @@ high.</dd>
 rarities to color names in <code>tkinter</code>.</dd>
 <dt><strong><code>ROLES</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
 <dd>A list of roles in the game.</dd>
+<dt><strong><code>PART_EFFECTS</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} The <code><a title="legends" href="index.html">legends</a></code> package only tracks
+the primary effects of three particle types: Amplified Force,
+Nexus Field, and Undo Damage. This dictionary maps the names of
+these effects ('Attack Up', 'Shield', and 'Regenerate') to
+abbreviations used throughout the <code><a title="legends" href="index.html">legends</a></code> package, typically
+for object attribute names.</dd>
 <dt><strong><code>PART_STAT_UNLOCKED</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:[<code>int</code>]}: A dictionary
 mapping particle rarities to a list whose indices denote the
@@ -174,6 +181,12 @@ Attributes:
     RARITY_COLORS (dict): {`str`:`str`} A dictionary mapping character
         rarities to color names in `tkinter`.
     ROLES (list of str): A list of roles in the game.
+    PART_EFFECTS (dict): {`str`:`str`} The `legends` package only tracks
+        the primary effects of three particle types: Amplified Force,
+        Nexus Field, and Undo Damage. This dictionary maps the names of
+        these effects (&#39;Attack Up&#39;, &#39;Shield&#39;, and &#39;Regenerate&#39;) to
+        abbreviations used throughout the `legends` package, typically
+        for object attribute names.
     PART_STAT_UNLOCKED (dict): {`str`:[`int`]}: A dictionary
         mapping particle rarities to a list whose indices denote the
         0-based level of the particle and whose values denote the number
@@ -250,6 +263,7 @@ __all__ = [
     &#39;POWER_AT_ORIGIN&#39;,
     &#39;PART_STAT_UNLOCKED&#39;,
     &#39;RARITIES&#39;,
+    &#39;PART_EFFECTS&#39;,
     &#39;PART_STAT_VALUES&#39;,
     &#39;RARITY_COLORS&#39;,
     &#39;ROLES&#39;,
@@ -411,6 +425,12 @@ for statName, statData in GSBaseStat.items():
     M = statData[&#39;MaxValue&#39;]
     POWER_GRADIENT[statName] = 10 / (M - m)
     POWER_AT_ORIGIN += (-m) * 10 / (M - m)
+
+PART_EFFECTS = {
+    &#39;Attack Up&#39;: &#39;attUp&#39;,
+    &#39;Shield&#39;: &#39;shield&#39;,
+    &#39;Regenerate&#39;: &#39;regen&#39;
+}
 
 PART_STAT_UNLOCKED = {
     &#39;Common&#39;: [1, 2, 2, 2, 2],

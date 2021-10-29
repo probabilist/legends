@@ -5,7 +5,7 @@
 from re import findall
 from legends.utils.objrelations import Managed
 #pylint: disable-next=no-name-in-module
-from legends.constants import GSCharacter, GSGear
+from legends.constants import GSAccessoryItems, GSCharacter, GSGear
 from legends.constants import (
     DESCRIPTIONS, ENABLED, PART_STAT_UNLOCKED, RARITIES, UPCOMING
 )
@@ -14,7 +14,7 @@ from legends.functions import (
     gearToMaxCost, getBasicGearID, getCharStats, getGearStats, getPartStats,
     levelFromXP, tokensNeeded, xpFromLevel
 )
-from legends.stats import Stats
+from legends.stats import PartEffects, Stats
 from legends.skill import BridgeSkill, Skill
 
 __all__ = [
@@ -224,6 +224,59 @@ class Character():
 
         """
         self.stats.update(getCharStats(self.nameID, self.rank, self.level))
+
+    def totalStats(self, roster):
+        """Constructs and returns a `legends.stats.Stats` object
+        containing the total stats (including gear and particles) of the
+        character.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.stats.Stats: The character's total stats.
+
+        """
+        gears = (
+            roster.containsGear[gearSlot] for gearSlot in self.gearSlots
+            if gearSlot in roster.containsGear
+        )
+        gearStats = sum(
+            (gear.stats for gear in gears if gear is not None),
+            Stats()
+        )
+        parts = (
+            roster.containsPart[partSlot] for partSlot in self.partSlots
+            if partSlot in roster.containsPart
+        )
+        partStats = sum(
+            (part.stats for part in parts if part is not None),
+            Stats()
+        )
+        return self.stats + gearStats + partStats
+
+    def partEffects(self, roster):
+        """Computes and return the total effects of all particles
+        equipped on the character.
+
+        Args:
+            roster (legends.roster.Roster): The roster to which the
+                character belongs.
+
+        Returns:
+            legends.stats.PartEffects: The total effects of the
+                character's particles.
+
+        """
+        effects = PartEffects()
+        for slot in self.partSlots:
+            try:
+                part = roster.containsPart[slot]
+                effects += part.effects
+            except KeyError:
+                continue
+        return effects
 
     def skillEffectTags(self, showLocked=False, timings=None):
         """Returns the list of tags on all skill effects produced by all
@@ -455,45 +508,74 @@ class Particle(Managed):
     """A particle in STL.
 
     Attributes:
-        typ (str): The type of the particle. This is what the data
-            refers to as the particle's "display name". Should be one of
-            'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
-            'Temporal Flux', or 'Undo Damage'.
-        rarity (str): The particle's rarity.
         locked (bool): True if the particle is locked.
         stats (legends.stats.Stats): The Stats object that stores the
             particle's total stats.
+        passive (legends.skill.Skill): The passive skill granted to the
+            character by this particle.
+        effects (legends.stats.PartEffects): The particle effect stats
+            granted by this particle.
 
     """
 
     def __init__(self, typ, rarity, level, locked=False):
-        """The constructor passes the given level to a private attribute
-        that is managed by a class property.
+        """The constructor passes the given type, rarity, and level to a
+        private dictionary that is managed by class properties.
 
         Args:
             typ (str): The type of particle to create.
             rarity (str): The rarity of the created particle.
             level (int): The level of the created particle.
-            locked (bool): True if the new particle should be locked.
 
         """
-        self.typ = typ
-        self.rarity = rarity
-        self._level = level
+        self._data = {
+            'typ': typ,
+            'rarity': rarity,
+            'level': level
+        }
+        self._key = ''.join(self.typ.split(' ')) + '_' + self.rarity
+        self.passive = Skill(self.data['CombatEffectId'], unlocked=True)
+        self.effects = PartEffects()
+        frac = self.passive.effects[0].statSourceFrac
+        if self.typ == 'Amplify Force':
+            self.effects.attUp = frac
+        elif self.typ == 'Nexus Field':
+            self.effects.shield = frac
+        elif self.typ == 'Undo Damage':
+            self.effects.regen = frac
         self.locked = locked
         self._statNames = [None] * 4
         self.stats = Stats()
+
+    @property
+    def data(self):
+        """`dict`: The particle data from `GSAccessoryItems`."""
+        return GSAccessoryItems[self._key]
+
+    @property
+    def typ(self):
+        """`str`: The type of the particle. This is what the data refers
+        to as the particle's "display name". Should be one of
+        'Accelerated Coagulation', 'Amplify Force', 'Nexus Field',
+        'Temporal Flux', or 'Undo Damage'.
+        """
+        return self._data['typ']
+
+    @property
+    def rarity(self):
+        """`str`: The particle's rarity."""
+        return self._data['rarity']
 
     @property
     def level(self):
         """`str`: The particle's level. Modifying this property also
         calls the `Particle.updateStats` method.
         """
-        return self._level
+        return self._data['level']
 
     @level.setter
     def level(self, value):
-        self._level = value
+        self._data['level'] = value
         self.updateStats()
 
     @property

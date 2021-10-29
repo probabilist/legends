@@ -309,10 +309,9 @@ class CharTab(tk.Frame):
         &#34;&#34;&#34;
         # get test card dimensions
         testCard = GearCard(&#39;test&#39;, master)
-        testCard.pack()
         testCard.update_idletasks()
-        height = testCard.winfo_height()
-        width = testCard.winfo_width()
+        height = testCard.winfo_reqheight()
+        width = testCard.winfo_reqwidth()
         testCard.destroy()
 
         # setup card frame
@@ -804,10 +803,9 @@ as the instance's parent.</dd>
         &#34;&#34;&#34;
         # get test card dimensions
         testCard = GearCard(&#39;test&#39;, master)
-        testCard.pack()
         testCard.update_idletasks()
-        height = testCard.winfo_height()
-        width = testCard.winfo_width()
+        height = testCard.winfo_reqheight()
+        width = testCard.winfo_reqwidth()
         testCard.destroy()
 
         # setup card frame
@@ -986,10 +984,9 @@ given master frame.</dd>
     &#34;&#34;&#34;
     # get test card dimensions
     testCard = GearCard(&#39;test&#39;, master)
-    testCard.pack()
     testCard.update_idletasks()
-    height = testCard.winfo_height()
-    width = testCard.winfo_width()
+    height = testCard.winfo_reqheight()
+    width = testCard.winfo_reqwidth()
     testCard.destroy()
 
     # setup card frame

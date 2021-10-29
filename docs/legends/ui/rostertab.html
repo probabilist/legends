@@ -597,7 +597,7 @@ class RosterInfoBar(tk.Frame):
             char.xp for char in chars
         )))
         self.totalPower.config(text=&#39;Total power: {:,.0f}&#39;.format(sum(
-            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+            POWER_AT_ORIGIN + char.totalStats(roster).power
             for char in chars
         )))
         self.charCount.config(text=&#39;Characters: {}/{}&#39;.format(
@@ -714,10 +714,10 @@ class RosterTab(tk.Frame):
         }
         for statName in STAT_INITIALS:
             self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
-                r.charStats(c.nameID).get(n)
+                c.totalStats(r).get(n)
             )
         self.sortFuncs[&#39;Power&#39;] = lambda c,r=ros: (
-            POWER_AT_ORIGIN + r.charStats(c.nameID).power
+            POWER_AT_ORIGIN + c.totalStats(r).power
         )
         self.sortFuncs.update({
             &#39;Missing gear levels&#39;: lambda c,r=ros: (
@@ -2188,7 +2188,7 @@ constructor, then builds and packs the attribute labels.</p></div>
             char.xp for char in chars
         )))
         self.totalPower.config(text=&#39;Total power: {:,.0f}&#39;.format(sum(
-            POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+            POWER_AT_ORIGIN + char.totalStats(roster).power
             for char in chars
         )))
         self.charCount.config(text=&#39;Characters: {}/{}&#39;.format(
@@ -2241,7 +2241,7 @@ characters belong.</dd>
         char.xp for char in chars
     )))
     self.totalPower.config(text=&#39;Total power: {:,.0f}&#39;.format(sum(
-        POWER_AT_ORIGIN + roster.charStats(char.nameID).power
+        POWER_AT_ORIGIN + char.totalStats(roster).power
         for char in chars
     )))
     self.charCount.config(text=&#39;Characters: {}/{}&#39;.format(
@@ -2399,10 +2399,10 @@ as the instance's parent.</dd>
         }
         for statName in STAT_INITIALS:
             self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
-                r.charStats(c.nameID).get(n)
+                c.totalStats(r).get(n)
             )
         self.sortFuncs[&#39;Power&#39;] = lambda c,r=ros: (
-            POWER_AT_ORIGIN + r.charStats(c.nameID).power
+            POWER_AT_ORIGIN + c.totalStats(r).power
         )
         self.sortFuncs.update({
             &#39;Missing gear levels&#39;: lambda c,r=ros: (
@@ -2629,10 +2629,10 @@ interact with the <code><a title="legends.ui.rostertab.RosterTab" href="#legends
     }
     for statName in STAT_INITIALS:
         self.sortFuncs[statName] = lambda c,r=ros,n=statName: (
-            r.charStats(c.nameID).get(n)
+            c.totalStats(r).get(n)
         )
     self.sortFuncs[&#39;Power&#39;] = lambda c,r=ros: (
-        POWER_AT_ORIGIN + r.charStats(c.nameID).power
+        POWER_AT_ORIGIN + c.totalStats(r).power
     )
     self.sortFuncs.update({
         &#39;Missing gear levels&#39;: lambda c,r=ros: (

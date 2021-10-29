@@ -136,7 +136,7 @@ def decompressData(text):
     b64data = text.encode(&#39;utf-16&#39;)
     compressedData = b64decode(b64data)
     data = decompress(compressedData, -15)
-    return data.decode(&#39;ascii&#39;)
+    return data.decode(&#39;utf-8&#39;)
 
 def decryptSaveFile():
     &#34;&#34;&#34;Finds the STL save file on the local hard drive, then decrypts
@@ -590,7 +590,7 @@ above. The resulting compressed string may then prepended with
     b64data = text.encode(&#39;utf-16&#39;)
     compressedData = b64decode(b64data)
     data = decompress(compressedData, -15)
-    return data.decode(&#39;ascii&#39;)</code></pre>
+    return data.decode(&#39;utf-8&#39;)</code></pre>
 </details>
 </dd>
 <dt id="legends.functions.decryptSaveFile"><code class="name flex">

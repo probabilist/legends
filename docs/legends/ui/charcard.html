@@ -261,7 +261,7 @@ class CharCard(tk.Frame):
             &#39;level&#39;: self.char.level,
             &#39;xp&#39;: self.char.xp
         }
-        statObj = self.saveslot.roster.charStats(self.char.nameID)
+        statObj = self.char.totalStats(self.saveslot.roster)
         for statName in STAT_INITIALS:
             D[statName] = statObj.get(statName)
         D[&#39;power&#39;] = POWER_AT_ORIGIN + statObj.power
@@ -537,7 +537,7 @@ card belongs.</dd>
             &#39;level&#39;: self.char.level,
             &#39;xp&#39;: self.char.xp
         }
-        statObj = self.saveslot.roster.charStats(self.char.nameID)
+        statObj = self.char.totalStats(self.saveslot.roster)
         for statName in STAT_INITIALS:
             D[statName] = statObj.get(statName)
         D[&#39;power&#39;] = POWER_AT_ORIGIN + statObj.power
@@ -668,7 +668,7 @@ depicted on this card.</p>
         &#39;level&#39;: self.char.level,
         &#39;xp&#39;: self.char.xp
     }
-    statObj = self.saveslot.roster.charStats(self.char.nameID)
+    statObj = self.char.totalStats(self.saveslot.roster)
     for statName in STAT_INITIALS:
         D[statName] = statObj.get(statName)
     D[&#39;power&#39;] = POWER_AT_ORIGIN + statObj.power

@@ -232,7 +232,7 @@ class CharCard(tk.Frame):
             'level': self.char.level,
             'xp': self.char.xp
         }
-        statObj = self.saveslot.roster.charStats(self.char.nameID)
+        statObj = self.char.totalStats(self.saveslot.roster)
         for statName in STAT_INITIALS:
             D[statName] = statObj.get(statName)
         D['power'] = POWER_AT_ORIGIN + statObj.power
