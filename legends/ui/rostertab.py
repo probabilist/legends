@@ -94,7 +94,7 @@ class AskRosterFilter(ModalDialog):
             highlightbackground='black',
             highlightcolor='black'
         )
-        rows = 3
+        rows = 4
         count = 0
         for charTag in CHARACTER_TAGS:
             tk.Checkbutton(
@@ -102,6 +102,7 @@ class AskRosterFilter(ModalDialog):
                 variable=self.filt.charTags[charTag]
             ).grid(row=count % rows, column=int(count/rows), sticky=tk.W)
             count += 1
+        count += 1
         tk.Button(
             widgets['charTagCheckboxes'],
             text='All',

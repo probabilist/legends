@@ -50,5 +50,5 @@ app = BUNDLE(
     name='STL Planner.app',
     icon=icon,
     bundle_identifier=None,
-    version='0.22.0'
+    version='0.22.1'
 )

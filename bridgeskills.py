@@ -44,7 +44,8 @@ def bridgeSkillsToCSV():
 
     """
     nameIDs = ENABLED + UPCOMING
-    nameIDs.remove('JudgeQ') # his bridge skill has no effects
+    nameIDs.remove('JudgeQ')    # his bridge skill has no effects
+    nameIDs.remove('NumberOne') # her bridge skill has no effects
     chars = [Character(nameID) for nameID in nameIDs]
     chars = [char for char in chars if char.bridgeSkill is not None]
     skillDicts = [bridgeSkillToDict(char) for char in chars]

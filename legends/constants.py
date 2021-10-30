@@ -402,7 +402,7 @@ for pool, data in SUMMON_POOL.items():
             for nameID in nameIDs:
                 data['nameIDs'][nameID] = prob
 
-UPCOMING = ['Gowron', 'JadziaDax', 'PicardOld', 'JudgeQ']
+UPCOMING = ['PicardOld', 'JudgeQ', 'Guinan', 'NumberOne']
 UPCOMING = [nameID for nameID in UPCOMING if nameID not in ENABLED]
 
 CHARACTER_TAGS = []

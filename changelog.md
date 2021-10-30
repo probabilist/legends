@@ -1,5 +1,26 @@
 # Change log
 
+## Version 0.22.1
+
+* Data updated for hotfix 8172.
+    - Important changes:
+        + Old Picard replaced by Elnor in `GSBattleEnemy`.
+        + Tuvok added to summon pool and store.
+        + Guinan and Number One added to `GSCharacter`.
+        + Set Dax event to start Nov 1, 8:00 AM UTC.
+        + Added Gowron event to start Nov 15, 8:00 AM UTC.
+    - Effects on `legends` constants:
+        + 'ElAurian' added to `CHARACTER_TAGS`.
+        + `DESCRIPTIONS` updated from hotfix 8172.
+        + 'Gowron' and 'JadziaDax' added to `ENABLED`.
+        + `SUMMON_POOL` updated to account for the addition of Tuvok.
+* 'Guinan' and 'NumberOne' added to `UPCOMING`.
+* The `Character.shortName` property modified to use the short name, 'Number One'.
+* Additional changes:
+    - Max character spreadsheet updated.
+    - Web page of skill data updated.
+    - Bridge buff worksheet updated.
+
 ## Version 0.22.0
 
 * Added a `PART_EFFECTS` constant.
