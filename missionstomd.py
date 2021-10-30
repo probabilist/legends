@@ -5,7 +5,7 @@
 import os
 from graphviz import Digraph
 from pdf2image import convert_from_path
-from legends import DIFFICULTIES, Mission
+from legends import DIFFICULTIES, ITEMS, Mission
 
 def getToText(nodes, edge):
     """Given a list of mission nodes and a node edge, find the edge's
@@ -42,8 +42,18 @@ def missionToMarkdown(episode, orderIndex, difficulty, mapLink=False):
     mdown = '{}\n\n{}\n\nSuggested Power: {}\n\n'.format(
         mission.name, mission.description, mission.power
     )
+    mdown += 'Completion Rewards:'
+    rewardText = ''
+    for item in ITEMS.values():
+        qty = mission.rewards[item]
+        if qty > 0:
+            rewardText += '* {}: {}\n'.format(item.name, qty)
+    if rewardText == '':
+        mdown += ' None\n'
+    else:
+        mdown += '\n\n' + rewardText
     if mapLink:
-        mdown += ('[Mission Map]({}{}-{}-{}.jpg)\n\n'.format(
+        mdown += ('\n[Mission Map]({}{}-{}-{}.jpg)\n\n'.format(
             'https://probabilist.github.io/legends/maps/mission',
             episode, orderIndex, difficulty
         ))
@@ -160,7 +170,3 @@ def missionsToFile(mapLink=False):
 
 if __name__ == '__main__':
     missionsToFile(True)
-    # for difficulty in DIFFICULTIES:
-    #     for episode in range(1,8):
-    #         for orderIndex in range(1,7):
-    #             missionToGraph(episode, orderIndex, difficulty)

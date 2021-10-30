@@ -547,7 +547,7 @@ for pool, data in SUMMON_POOL.items():
             for nameID in nameIDs:
                 data[&#39;nameIDs&#39;][nameID] = prob
 
-UPCOMING = [&#39;Gowron&#39;, &#39;JadziaDax&#39;, &#39;PicardOld&#39;, &#39;JudgeQ&#39;]
+UPCOMING = [&#39;PicardOld&#39;, &#39;JudgeQ&#39;, &#39;Guinan&#39;, &#39;NumberOne&#39;]
 UPCOMING = [nameID for nameID in UPCOMING if nameID not in ENABLED]
 
 CHARACTER_TAGS = []
@@ -567,7 +567,7 @@ class Inventory(MutableMapping):
     will skip over items that are either irrelevant to the `legends`
     package, or are implemented elsewhere. The skipped items are
     determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
-    To iterate over all keys, simply iterate over `ITEMS`.
+    To iterate over all keys, simply iterate over `ITEMS.values()`.
     The `__len__()` method also does not consider these skipped items.
 
     &#34;&#34;&#34;
@@ -704,7 +704,7 @@ simply changes its value to 0. Iterating over an <code><a title="legends.constan
 will skip over items that are either irrelevant to the <code><a title="legends" href="index.html">legends</a></code>
 package, or are implemented elsewhere. The skipped items are
 determined by the <code>hiddenItemIDs</code> and <code>hiddenCategories</code> attributes.
-To iterate over all keys, simply iterate over <code>ITEMS</code>.
+To iterate over all keys, simply iterate over <code>ITEMS.values()</code>.
 The <code>__len__()</code> method also does not consider these skipped items.</p>
 <p>The constructor initializes the <code><a title="legends.constants.Inventory" href="#legends.constants.Inventory">Inventory</a></code> instance with one
 key for each item in <code>ITEMS</code>, and all values 0. If the
@@ -732,7 +732,7 @@ integers. Used to initialize the quantities in the
     will skip over items that are either irrelevant to the `legends`
     package, or are implemented elsewhere. The skipped items are
     determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
-    To iterate over all keys, simply iterate over `ITEMS`.
+    To iterate over all keys, simply iterate over `ITEMS.values()`.
     The `__len__()` method also does not consider these skipped items.
 
     &#34;&#34;&#34;

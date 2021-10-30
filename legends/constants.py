@@ -422,7 +422,7 @@ class Inventory(MutableMapping):
     will skip over items that are either irrelevant to the `legends`
     package, or are implemented elsewhere. The skipped items are
     determined by the `hiddenItemIDs` and `hiddenCategories` attributes.
-    To iterate over all keys, simply iterate over `ITEMS`.
+    To iterate over all keys, simply iterate over `ITEMS.values()`.
     The `__len__()` method also does not consider these skipped items.
 
     """
