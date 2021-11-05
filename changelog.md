@@ -1,5 +1,24 @@
 # Change log
 
+## Version 0.23.0
+
+* Edited `AskRosterFilter` to add spaces in character tags that are expressed in camel case.
+* Added `objDict` function to `utils` module.
+* Added the `eventhandler` module.
+* Changed the `stats` attributes of `Character`, `Gear`, and `Particle` to read-only properties.
+* Added a `StatChangeEvent` class.
+* Changed the `StatObject.statAbbrs` from an attribute pointing to an iterable to a read-only property pointing to a dict.
+* Changed the `StatObject` constructor signature.
+* Added `silent`, `onChange`, and `parent` attributes to `StatObject`.
+* Customized the `StatObject.__setattr__()` method to create a `StatChangeEvent` upon attribute assignment to any stat, and to notify the subscribers of its `onChange` attribute.
+* Added a `checkForStats` function to the `stats` module.
+* Added a `OneToOneChangeEvent` class to the `roster` module.
+* Added `WatchedOneToOne`, `WatchedCollection`, `WatchedList`, and `WatchedDict` classes to the `roster` module.
+* Changed the `InGearSlot` class to inherit from `WatchedOneToOne`.
+* Changed the `gear`, `parts`, and `chars` attributes of `Roster` to read-only properties, and edited `Roster.fromSaveData` accordingly.
+* Added a `Roster.charChangeWatcher()` placeholder method.
+* Edited the `Roster` constructor to initialize `gear`, `parts`, `chars`, `inGearSlot`, and `inPartSlot` as instances of the watched version of their previous data type, with the `charChangeWatcher()` method sent as argument.
+
 ## Version 0.22.1
 
 * Data updated for hotfix 8172.

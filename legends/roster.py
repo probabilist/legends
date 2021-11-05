@@ -2,17 +2,25 @@
 
 """
 
+from collections.abc import MutableMapping, MutableSequence
 from warnings import warn
+from legends.utils.eventhandler import Event, EventHandler
 from legends.utils.objrelations import OneToOne
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSAccessoryItems, GSCharacter
 from legends.constants import DESCRIPTIONS, SUMMON_POOL
+from legends.stats import checkForStats
 from legends.gameobjects import Character, Gear, Particle
 
 __all__ = [
     'readGear',
     'readParts',
+    'OneToOneChangeEvent',
+    'WatchedOneToOne',
     'InGearSlot',
+    'WatchedCollection',
+    'WatchedList',
+    'WatchedDict',
     'Roster'
 ]
 
@@ -73,7 +81,77 @@ def readParts(save, slot):
         parts[saveIndex] = part
     return parts
 
-class InGearSlot(OneToOne):
+class OneToOneChangeEvent(Event): # pylint: disable=too-few-public-methods
+    """A change in a `legends.utils.objrelations.OneToOne` relation.
+
+    Attributes:
+        rel (legends.utils.objrelations.OneToOne): The relation that has
+            changed.
+        key (obj): The key involved in the change.
+        value (obj): The value involved in the change.
+        changeType (str): Either 'added' or 'removed', indicating
+            whether the key-value pair was added or removed. When a key
+            that already has a value is assigned a new value, two events
+            should be created, one to remove the old key-value pair, and
+            another to add the new key-value pair.
+
+    """
+
+    def __init__(self, rel, key, value, changeType):
+        self.rel = rel
+        self.key = key
+        self.value = value
+        self.changeType = changeType
+
+    def __repr__(self):
+        return (
+            '<OneToOneChangeEvent>: key-value pair ({!r}, {!r}) {!r}'
+        ).format(self.key, self.value, self.changeType)
+
+class WatchedOneToOne(OneToOne):
+    """A one-to-one relation with an event handler.
+
+    To catch all changes to the relation, subscribers should subscribe
+    to the `onChange` event handler of both the main relation and its
+    inverse.
+
+    Attributes:
+
+        onChange (legends.utils.eventhandler.EventHandler): When a
+            key-value pair is added or removed, this event handler
+            creates a `OneToOneChangeEvent` and sends it to all
+            subscribers.
+
+    """
+
+    def __init__(self):
+        OneToOne.__init__(self)
+        self.onChange = EventHandler()
+
+    def __delitem__(self, key):
+        oldVal = self[key]
+        OneToOne.__delitem__(self, key)
+        self.onChange.notify(
+            OneToOneChangeEvent(self, key, oldVal, 'removed')
+        )
+
+    def __setfreeval__(self, key, val):
+        oldVal = self.get(key)
+        OneToOne.__setfreeval__(self, key, val)
+        newVal = self.get(key)
+        if oldVal is newVal:
+            return
+        if oldVal is not None:
+            self.onChange.notify(
+                OneToOneChangeEvent(self, key, oldVal, 'removed')
+            )
+        if newVal is not None:
+            self.onChange.notify(
+                OneToOneChangeEvent(self, key, newVal, 'added')
+            )
+
+# pylint: disable-next=too-few-public-methods
+class InGearSlot(WatchedOneToOne):
     """Models the relationship between gear and gear slots.
 
     The `InGearSlot` class is a one-to-one mapping from
@@ -83,12 +161,12 @@ class InGearSlot(OneToOne):
     Attributes:
         enforceLevel (bool): If `True`, gear cannot be mapped to a gear
             slot if the level of the gear exceeds the level the
-            character to which the slot belongs.
+            character to which the slot belongs. Defaults to `True`.
 
     """
 
     def __init__(self):
-        OneToOne.__init__(self)
+        WatchedOneToOne.__init__(self)
         self.enforceLevel = True
 
     # pylint: disable-next=arguments-renamed
@@ -107,21 +185,146 @@ class InGearSlot(OneToOne):
             raise ValueError((gear, gearSlot))
         return True
 
+class WatchedCollection():
+    """A mix-in class for constructing watched collection data types.
+
+    Objects added to a watched collection should have a `stats`
+    attribute that points to a `legends.stats.StatObject` instance. A
+    `ValueError` is raises when trying to add an object that does not
+    satisfy this.
+
+    This mix-in class provides the following methods: `__getitem__`,
+    `__setitem__`, `__delitem__`, and `__len__`. The `__setitem__`
+    method does not unsubscribe the `callback` attribute from the old
+    value's event handler in the case where there was an old value. Such
+    behavior must be implemented by subclasses.
+
+    Attributes:
+        callback (func): A function that takes one argument. This
+            function is subscribed to the `onChange` event handler of
+            the `stats` attribute of every object added to the
+            collection. When an object is removed from the collection,
+            the function is unsubscribed.
+
+    """
+    def __init__(self, collectionType, callback):
+        """The constructor stores the collection data in a private
+        attribute, to be managed by subclasses.
+
+        Args:
+            collectionType (class): The type of collection (`list`,
+                `dict`, etc.)
+
+        """
+        self.callback = callback
+        self._data = collectionType()
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __setitem__(self, key, value):
+        checkForStats(value)
+        self._data[key] = value
+        value.stats.onChange.subscribe(self.callback)
+
+    def __delitem__(self, key):
+        self._data[key].stats.onChange.unsubscribe(self.callback)
+        del self._data[key]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __repr__(self):
+        return '{}({!r})'.format(self.__class__.__name__, self._data)
+
+class WatchedList(WatchedCollection, MutableSequence):
+    """A list of objects with a `stats` attribute.
+
+    The `stats` attribute should point to a `legends.stats.StatObject`
+    instance. Whenever an object is added to the list, the `onChange`
+    event handler of that object's `stat` attribute is subscribed to by
+    the `WatchedList` instance's `callback` attribute (inherited from
+    `WatchedCollection`).
+
+    `WatchedList` does not implement slice assignment. Setting a value
+    by index will unsubscribe from the old value's event handler.
+
+    """
+
+    def __init__(self, callback, *args, **kargs):
+        """The constructor sets the `callback` attribute to the given
+        `callback` argument. The remaining arguments are used to
+        initialize the underlying list data.
+
+        Args:
+            callback (func): The function to assign to the `callback`
+                attribute.
+
+        """
+        WatchedCollection.__init__(self, list, callback)
+        for value in list(*args, **kargs):
+            self.append(value)
+
+    def __setitem__(self, key, value):
+        if isinstance(key, slice):
+            raise NotImplementedError('Slice assignment not implemented')
+        self._data[key].stats.onChange.unsubscribe(self.callback)
+        WatchedCollection.__setitem__(self, key, value)
+
+    def insert(self, index, value):
+        """Same as `list.insert()`, but subscribes to the value's event
+        handler.
+
+        """
+        checkForStats(value)
+        self._data.insert(index, value)
+        value.stats.onChange.subscribe(self.callback)
+
+class WatchedDict(WatchedCollection, MutableMapping):
+    """A dictionary whose values have a `stats` attribute.
+
+    The `stats` attribute should point to a `legends.stats.StatObject`
+    instance. Whenever a value is added to the dictionary, the
+    `onChange` event handler of that value's `stat` attribute is
+    subscribed to by the `WatchedDict` instance's `callback` attribute
+    (inherited from `WatchedCollection`).
+
+    Setting the value of a key that is already in the dictionary will
+    unsubscribe from the old value's event handler.
+
+    """
+
+    def __init__(self, callback, *args, **kargs):
+        """The constructor sets the `callback` attribute to the given
+        `callback` argument. The remaining arguments are used to
+        initialize the underlying dictionary data.
+
+        Args:
+            callback (func): The function to assign to the `callback`
+                attribute.
+
+        """
+        WatchedCollection.__init__(self, dict, callback)
+        for key, value in dict(*args, **kargs):
+            self[key] = value
+
+    def __setitem__(self, key, value):
+        if key in self._data:
+            self._data[key].stats.onChange.unsubscribe(self.callback)
+        WatchedCollection.__setitem__(self, key, value)
+
+    def __iter__(self):
+        return self._data.__iter__()
+
 class Roster():
     """A collection of related characters, gear, and particles.
 
     Attributes:
-        gear (list of legends.gameobjects.Gear): A list of the gear in
-            the roster.
-        parts (list of legends.gameobjects.Particle): A list of the
-            particles in the roster.
-        chars (dict): {`str`:`legends.gameobjects.Character`} A
-            dictionary mapping name IDs to characters.
         inGearSlot (InGearSlot): A relation mapping
             `legends.gameobjects.Gear` objects to
             `legends.gameobjects.GearSlot` objects.
-        inPartSlot (legends.utils.objrelations.OneToOne): A relation
-            mapping `legends.gameobjects.Particle` objects to
+        inPartSlot (WatchedOneToOne): A relation mapping
+            `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
             `
 
@@ -139,13 +342,39 @@ class Roster():
                 read the data.
 
         """
-        self.gear = []
-        self.parts = []
-        self.chars = {}
+        self._gear = WatchedList(self.charChangeWatcher)
+        self._parts = WatchedList(self.charChangeWatcher)
+        self._chars = WatchedDict(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
-        self.inPartSlot = OneToOne()
+        self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
+        self.inGearSlot.inverse.onChange.subscribe(self.charChangeWatcher)
+        self.inPartSlot = WatchedOneToOne()
+        self.inPartSlot.onChange.subscribe(self.charChangeWatcher)
+        self.inPartSlot.inverse.onChange.subscribe(self.charChangeWatcher)
         if save is not None:
             self.fromSaveData(save, slot)
+        self.onCharChange = EventHandler()
+
+    @property
+    def gear(self):
+        """`WatchedList of legends.gameobjects.Gear`: A list of the gear
+        in the roster.
+        """
+        return self._gear
+
+    @property
+    def parts(self):
+        """`WatchedList of legends.gameobjects.Particle`: A list of the
+        particles in the roster.
+        """
+        return self._parts
+
+    @property
+    def chars(self):
+        """`WatchedDict`: {`str`:`legends.gameobjects.Character`} A
+        dictionary mapping name IDs to characters.
+        """
+        return self._chars
 
     @property
     def containsGear(self):
@@ -187,9 +416,11 @@ class Roster():
 
         # fill gear and particles
         gearDict = readGear(save, slot)
-        self.gear = list(gearDict.values())
+        self.gear.clear()
+        self.gear.extend(gearDict.values())
         partDict = readParts(save, slot)
-        self.parts = list(partDict.values())
+        self.parts.clear()
+        self.parts.extend(partDict.values())
 
         # cycle through characters in save data
         slotData = save['{} data'.format(slot)]
@@ -275,6 +506,14 @@ class Roster():
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
+
+    def charChangeWatcher(self, event):
+        # TODO: Fill in this method.
+        """Called when anything (gear, particle, character, or their
+        relations) changes. A placeholder to be updated later.
+
+        """
+        pass # pylint: disable=unnecessary-pass
 
     def maxGearLevel(self, gear):
         """Returns the maximum possible gear level of the given gear

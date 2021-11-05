@@ -6,6 +6,7 @@ import tkinter as tk
 from tkinter import ttk
 from csv import DictWriter
 import os
+from legends.utils.functions import camelToSpace
 from legends.utils.scrollframe import ScrollFrame
 # pylint: disable-next=no-name-in-module
 from legends.constants import (
@@ -98,7 +99,7 @@ class AskRosterFilter(ModalDialog):
         count = 0
         for charTag in CHARACTER_TAGS:
             tk.Checkbutton(
-                widgets['charTagCheckboxes'], text=charTag,
+                widgets['charTagCheckboxes'], text=camelToSpace(charTag),
                 variable=self.filt.charTags[charTag]
             ).grid(row=count % rows, column=int(count/rows), sticky=tk.W)
             count += 1

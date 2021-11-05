@@ -12,6 +12,7 @@ __all__ = [
     'camelToSpace',
     'collapse',
     'formatDict',
+    'objDict',
     'ticksToTimedelta',
     'ticksToDatetime'
 ]
@@ -84,6 +85,23 @@ def formatDict(D):
         display += ' ' + line + ',\n'
     display += ' ' + lines[-1] + '}'
     return display
+
+def objDict(obj):
+    """Constructs and returns a dictionary of object attributes.
+
+    Args:
+        obj (obj): The object from which to build the dictionary.
+
+    Returns:
+        dict: {`str`:`obj`} A dictionary mapping attribute names to
+            their values. Omits names that start with '_' and values
+            that are callable.
+
+    """
+    return {
+        k:v for k,v in obj.__dict__.items()
+        if k[0] != '_' and not callable(v)
+    }
 
 def ticksToDatetime(ticks):
     """Converts a .NET timestamp to a Python `datetime` object. A .NET

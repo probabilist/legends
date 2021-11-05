@@ -44,9 +44,6 @@ class Character():
     """A character in STL.
 
     Attributes:
-        stats (legends.stats.Stats): The Stats object that stores the
-            character's naked stats (i.e. the stats they would have
-            without any gear or particles).
         skills (dict): {`str`:`legends.skill.Skill`} A dictionary
             mapping skill IDs (found in `GSSkill`) to Skill objects.
         bridgeSkill (legends.skill.Skill): The character's bridge skill.
@@ -73,7 +70,7 @@ class Character():
             'rank': rank,
             'xp': xp
         }
-        self.stats = Stats()
+        self._stats = Stats(self)
         self.updateStats()
         self.skills = {}
         for skillID in GSCharacter[self.nameID]['SkillIDs']:
@@ -164,6 +161,14 @@ class Character():
         if self.level != value:
             self._data['xp'] = xpFromLevel(value, self.rarity)
             self.updateStats()
+
+    @property
+    def stats(self):
+        """`legends.stats.Stats`: The Stats object that stores the
+        character's naked stats (i.e. the stats they would have without
+        any gear or particles).
+        """
+        return self._stats
 
     @property
     def rarity(self):
@@ -367,8 +372,6 @@ class Gear(Managed):
     Attributes:
         gearID (str): The in-code ID of the gear piece. Should be a key
             in `GSGear`.
-        stats (legends.stats.Stats): The Stats object that stores the
-            gear's total stats.
 
     """
 
@@ -385,7 +388,7 @@ class Gear(Managed):
         """
         self.gearID = gearID
         self._level = level
-        self.stats = Stats()
+        self._stats = Stats(self)
         self.updateStats()
 
     @property
@@ -427,6 +430,13 @@ class Gear(Managed):
         """
         gearRole = GSGear[self.gearID]['m_Role']
         return None if gearRole == 'None' else gearRole
+
+    @property
+    def stats(self):
+        """`legends.stats.Stats`: The Stats object that stores the
+        gear's total stats.
+        """
+        return self._stats
 
     @property
     def slot(self):
@@ -510,8 +520,6 @@ class Particle(Managed):
 
     Attributes:
         locked (bool): True if the particle is locked.
-        stats (legends.stats.Stats): The Stats object that stores the
-            particle's total stats.
         passive (legends.skill.Skill): The passive skill granted to the
             character by this particle.
         effects (legends.stats.PartEffects): The particle effect stats
@@ -546,7 +554,7 @@ class Particle(Managed):
             self.effects.regen = frac
         self.locked = locked
         self._statNames = [None] * 4
-        self.stats = Stats()
+        self._stats = Stats(self)
 
     @property
     def data(self):
@@ -578,6 +586,13 @@ class Particle(Managed):
     def level(self, value):
         self._data['level'] = value
         self.updateStats()
+
+    @property
+    def stats(self):
+        """`legends.stats.Stats`: The Stats object that stores the
+        particle's total stats.
+        """
+        return self._stats
 
     @property
     def numStats(self):

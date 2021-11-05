@@ -271,7 +271,7 @@ class OneToOne(BiMapping, Managed):
             self.map[id(key)] = id(val)
 
     def __inverse__(self):
-        inverse = OneToOne()
+        inverse = self.__class__()
         inverse.map = self.map.inverse
         def validate(slf, key, val):
             return slf.inverse.validate(val, key)

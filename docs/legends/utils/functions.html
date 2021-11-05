@@ -41,6 +41,7 @@ __all__ = [
     &#39;camelToSpace&#39;,
     &#39;collapse&#39;,
     &#39;formatDict&#39;,
+    &#39;objDict&#39;,
     &#39;ticksToTimedelta&#39;,
     &#39;ticksToDatetime&#39;
 ]
@@ -113,6 +114,20 @@ def formatDict(D):
         display += &#39; &#39; + line + &#39;,\n&#39;
     display += &#39; &#39; + lines[-1] + &#39;}&#39;
     return display
+
+def objDict(obj):
+    &#34;&#34;&#34;Constructs and returns a dictionary of object attributes.
+
+    Args:
+        obj (obj): The object from which to build the dictionary.
+
+    Returns:
+        dict: {`str`:`obj`} A dictionary mapping attribute names to
+            their values. Omits names that start with &#39;_&#39; and values
+            that are callable.
+
+    &#34;&#34;&#34;
+    return {k:v for k,v in obj.__dict__ if k[0] != &#39;_&#39; and not callable(v)}
 
 def ticksToDatetime(ticks):
     &#34;&#34;&#34;Converts a .NET timestamp to a Python `datetime` object. A .NET
@@ -301,6 +316,42 @@ pair on its own line.</p>
     return display</code></pre>
 </details>
 </dd>
+<dt id="legends.utils.functions.objDict"><code class="name flex">
+<span>def <span class="ident">objDict</span></span>(<span>obj)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Constructs and returns a dictionary of object attributes.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>obj</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The object from which to build the dictionary.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>{<code>str</code>:<code>obj</code>} A dictionary mapping attribute names to
+their values. Omits names that start with '_' and values
+that are callable.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def objDict(obj):
+    &#34;&#34;&#34;Constructs and returns a dictionary of object attributes.
+
+    Args:
+        obj (obj): The object from which to build the dictionary.
+
+    Returns:
+        dict: {`str`:`obj`} A dictionary mapping attribute names to
+            their values. Omits names that start with &#39;_&#39; and values
+            that are callable.
+
+    &#34;&#34;&#34;
+    return {k:v for k,v in obj.__dict__ if k[0] != &#39;_&#39; and not callable(v)}</code></pre>
+</details>
+</dd>
 <dt id="legends.utils.functions.ticksToDatetime"><code class="name flex">
 <span>def <span class="ident">ticksToDatetime</span></span>(<span>ticks)</span>
 </code></dt>
@@ -400,6 +451,7 @@ uses ticks to mark time.</p>
 <li><code><a title="legends.utils.functions.camelToSpace" href="#legends.utils.functions.camelToSpace">camelToSpace</a></code></li>
 <li><code><a title="legends.utils.functions.collapse" href="#legends.utils.functions.collapse">collapse</a></code></li>
 <li><code><a title="legends.utils.functions.formatDict" href="#legends.utils.functions.formatDict">formatDict</a></code></li>
+<li><code><a title="legends.utils.functions.objDict" href="#legends.utils.functions.objDict">objDict</a></code></li>
 <li><code><a title="legends.utils.functions.ticksToDatetime" href="#legends.utils.functions.ticksToDatetime">ticksToDatetime</a></code></li>
 <li><code><a title="legends.utils.functions.ticksToTimedelta" href="#legends.utils.functions.ticksToTimedelta">ticksToTimedelta</a></code></li>
 </ul>

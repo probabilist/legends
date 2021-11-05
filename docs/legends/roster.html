@@ -31,17 +31,25 @@
 
 &#34;&#34;&#34;
 
+from collections.abc import MutableMapping, MutableSequence
 from warnings import warn
+from legends.utils.eventhandler import Event, EventHandler
 from legends.utils.objrelations import OneToOne
 #pylint: disable-next=no-name-in-module
 from legends.constants import GSAccessoryItems, GSCharacter
 from legends.constants import DESCRIPTIONS, SUMMON_POOL
+from legends.stats import checkForStats
 from legends.gameobjects import Character, Gear, Particle
 
 __all__ = [
     &#39;readGear&#39;,
     &#39;readParts&#39;,
+    &#39;OneToOneChangeEvent&#39;,
+    &#39;WatchedOneToOne&#39;,
     &#39;InGearSlot&#39;,
+    &#39;WatchedCollection&#39;,
+    &#39;WatchedList&#39;,
+    &#39;WatchedDict&#39;,
     &#39;Roster&#39;
 ]
 
@@ -102,7 +110,73 @@ def readParts(save, slot):
         parts[saveIndex] = part
     return parts
 
-class InGearSlot(OneToOne):
+class OneToOneChangeEvent(Event): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A change in a `legends.utils.objrelations.OneToOne` relation.
+
+    Attributes:
+        rel (legends.utils.objrelations.OneToOne): The relation that has
+            changed.
+        key (obj): The key involved in the change.
+        value (obj): The value involved in the change.
+        changeType (str): Either &#39;added&#39; or &#39;removed&#39;, indicating
+            whether the key-value pair was added or removed. When a key
+            that already has a value is assigned a new value, two events
+            should be created, one to remove the old key-value pair, and
+            another to add the new key-value pair.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, rel, key, value, changeType):
+        self.rel = rel
+        self.key = key
+        self.value = value
+        self.changeType = changeType
+
+    def __repr__(self):
+        return (
+            &#39;&lt;OneToOneChangeEvent&gt; for {!r}: &#39;
+            + &#39;key-value pair ({!r}, {!r}) {!r}&#39;
+        ).format(self.rel, self.key, self.value, self.changeType)
+
+class WatchedOneToOne(OneToOne):
+    &#34;&#34;&#34;A one-to-one relation with an event handler.
+
+    Attributes:
+
+        onChange (legends.utils.eventhandler.EventHandler): When a
+            key-value pair is added or removed, this event handler
+            creates a `OneToOneChangeEvent` and sends it to all
+            subscribers.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        OneToOne.__init__(self)
+        self.onChange = EventHandler()
+
+    def __delitem__(self, key):
+        OneToOne.__delitem__(self, key)
+        self.onChange.notify(
+            OneToOneChangeEvent(self, key, self[key], &#39;removed&#39;)
+        )
+
+    def __setfreeval__(self, key, val):
+        oldVal = self.get(key)
+        OneToOne.__setfreeval__(self, key, val)
+        newVal = self.get(key)
+        if oldVal is newVal:
+            return
+        if oldVal is not None:
+            self.onChange.notify(
+                OneToOneChangeEvent(self, key, oldVal, &#39;removed&#39;)
+            )
+        if newVal is not None:
+            self.onChange.notify(
+                OneToOneChangeEvent(self, key, newVal, &#39;added&#39;)
+            )
+
+# pylint: disable-next=too-few-public-methods
+class InGearSlot(WatchedOneToOne):
     &#34;&#34;&#34;Models the relationship between gear and gear slots.
 
     The `InGearSlot` class is a one-to-one mapping from
@@ -112,12 +186,12 @@ class InGearSlot(OneToOne):
     Attributes:
         enforceLevel (bool): If `True`, gear cannot be mapped to a gear
             slot if the level of the gear exceeds the level the
-            character to which the slot belongs.
+            character to which the slot belongs. Defaults to `True`.
 
     &#34;&#34;&#34;
 
     def __init__(self):
-        OneToOne.__init__(self)
+        WatchedOneToOne.__init__(self)
         self.enforceLevel = True
 
     # pylint: disable-next=arguments-renamed
@@ -136,21 +210,146 @@ class InGearSlot(OneToOne):
             raise ValueError((gear, gearSlot))
         return True
 
+class WatchedCollection():
+    &#34;&#34;&#34;A mix-in class for constructing watched collection data types.
+
+    Objects added to a watched collection should have a `stats`
+    attribute that points to a `legends.stats.StatObject` instance. A
+    `ValueError` is raises when trying to add an object that does not
+    satisfy this.
+
+    This mix-in class provides the following methods: `__getitem__`,
+    `__setitem__`, `__delitem__`, and `__len__`. The `__setitem__`
+    method does not unsubscribe the `callback` attribute from the old
+    value&#39;s event handler in the case where there was an old value. Such
+    behavior must be implemented by subclasses.
+
+    Attributes:
+        callback (func): A function that takes one argument. This
+            function is subscribed to the `onChange` event handler of
+            the `stats` attribute of every object added to the
+            collection. When an object is removed from the collection,
+            the function is unsubscribed.
+
+    &#34;&#34;&#34;
+    def __init__(self, collectionType, callback):
+        &#34;&#34;&#34;The constructor stores the collection data in a private
+        attribute, to be managed by subclasses.
+
+        Args:
+            collectionType (class): The type of collection (`list`,
+                `dict`, etc.)
+
+        &#34;&#34;&#34;
+        self.callback = callback
+        self._data = collectionType()
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __setitem__(self, key, value):
+        checkForStats(value)
+        self._data[key] = value
+        value.stats.onChange.subscribe(self.callback)
+
+    def __delitem__(self, key):
+        self._data[key].stats.onChange.unsubscribe(self.callback)
+        del self._data[key]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __repr__(self):
+        return &#39;{}({!r})&#39;.format(self.__class__.__name__, self._data)
+
+class WatchedList(WatchedCollection, MutableSequence):
+    &#34;&#34;&#34;A list of objects with a `stats` attribute.
+
+    The `stats` attribute should point to a `legends.stats.StatObject`
+    instance. Whenever an object is added to the list, the `onChange`
+    event handler of that object&#39;s `stat` attribute is subscribed to by
+    the `WatchedList` instance&#39;s `callback` attribute (inherited from
+    `WatchedCollection`).
+
+    `WatchedList` does not implement slice assignment. Setting a value
+    by index will unsubscribe from the old value&#39;s event handler.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, callback, *args, **kargs):
+        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
+        `callback` argument. The remaining arguments are used to
+        initialize the underlying list data.
+
+        Args:
+            callback (func): The function to assign to the `callback`
+                attribute.
+
+        &#34;&#34;&#34;
+        WatchedCollection.__init__(self, list, callback)
+        for value in list(*args, **kargs):
+            self.append(value)
+
+    def __setitem__(self, key, value):
+        if isinstance(key, slice):
+            raise NotImplementedError(&#39;Slice assignment not implemented&#39;)
+        self._data[key].stats.onChange.unsubscribe(self.callback)
+        WatchedCollection.__setitem__(self, key, value)
+
+    def insert(self, index, value):
+        &#34;&#34;&#34;Same as `list.insert()`, but subscribes to the value&#39;s event
+        handler.
+
+        &#34;&#34;&#34;
+        checkForStats(value)
+        self._data.insert(index, value)
+        value.stats.onChange.subscribe(self.callback)
+
+class WatchedDict(WatchedCollection, MutableMapping):
+    &#34;&#34;&#34;A dictionary whose values have a `stats` attribute.
+
+    The `stats` attribute should point to a `legends.stats.StatObject`
+    instance. Whenever a value is added to the dictionary, the
+    `onChange` event handler of that value&#39;s `stat` attribute is
+    subscribed to by the `WatchedDict` instance&#39;s `callback` attribute
+    (inherited from `WatchedCollection`).
+
+    Setting the value of a key that is already in the dictionary will
+    unsubscribe from the old value&#39;s event handler.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, callback, *args, **kargs):
+        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
+        `callback` argument. The remaining arguments are used to
+        initialize the underlying dictionary data.
+
+        Args:
+            callback (func): The function to assign to the `callback`
+                attribute.
+
+        &#34;&#34;&#34;
+        WatchedCollection.__init__(self, dict, callback)
+        for key, value in dict(*args, **kargs):
+            self[key] = value
+
+    def __setitem__(self, key, value):
+        if key in self._data:
+            self._data[key].stats.onChange.unsubscribe(self.callback)
+        WatchedCollection.__setitem__(self, key, value)
+
+    def __iter__(self):
+        return self._data.__iter__()
+
 class Roster():
     &#34;&#34;&#34;A collection of related characters, gear, and particles.
 
     Attributes:
-        gear (list of legends.gameobjects.Gear): A list of the gear in
-            the roster.
-        parts (list of legends.gameobjects.Particle): A list of the
-            particles in the roster.
-        chars (dict): {`str`:`legends.gameobjects.Character`} A
-            dictionary mapping name IDs to characters.
         inGearSlot (InGearSlot): A relation mapping
             `legends.gameobjects.Gear` objects to
             `legends.gameobjects.GearSlot` objects.
-        inPartSlot (legends.utils.objrelations.OneToOne): A relation
-            mapping `legends.gameobjects.Particle` objects to
+        inPartSlot (WatchedOneToOne): A relation mapping
+            `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
             `
 
@@ -168,13 +367,37 @@ class Roster():
                 read the data.
 
         &#34;&#34;&#34;
-        self.gear = []
-        self.parts = []
-        self.chars = {}
+        self._gear = WatchedList(self.charChangeWatcher)
+        self._parts = WatchedList(self.charChangeWatcher)
+        self._chars = WatchedDict(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
-        self.inPartSlot = OneToOne()
+        self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
+        self.inPartSlot = WatchedOneToOne()
+        self.inPartSlot.onChange.subscribe(self.charChangeWatcher)
         if save is not None:
             self.fromSaveData(save, slot)
+        self.onCharChange = EventHandler()
+
+    @property
+    def gear(self):
+        &#34;&#34;&#34;`WatchedList of legends.gameobjects.Gear`: A list of the gear
+        in the roster.
+        &#34;&#34;&#34;
+        return self._gear
+
+    @property
+    def parts(self):
+        &#34;&#34;&#34;`WatchedList of legends.gameobjects.Particle`: A list of the
+        particles in the roster.
+        &#34;&#34;&#34;
+        return self._parts
+
+    @property
+    def chars(self):
+        &#34;&#34;&#34;`WatchedDict`: {`str`:`legends.gameobjects.Character`} A
+        dictionary mapping name IDs to characters.
+        &#34;&#34;&#34;
+        return self._chars
 
     @property
     def containsGear(self):
@@ -216,9 +439,11 @@ class Roster():
 
         # fill gear and particles
         gearDict = readGear(save, slot)
-        self.gear = list(gearDict.values())
+        self.gear.clear()
+        self.gear.extend(gearDict.values())
         partDict = readParts(save, slot)
-        self.parts = list(partDict.values())
+        self.parts.clear()
+        self.parts.extend(partDict.values())
 
         # cycle through characters in save data
         slotData = save[&#39;{} data&#39;.format(slot)]
@@ -304,6 +529,14 @@ class Roster():
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
+
+    def charChangeWatcher(self, event):
+        # TODO: Fill in this method.
+        &#34;&#34;&#34;Called when anything (gear, particle, character, or their
+        relations) changes. A placeholder to be updated later.
+
+        &#34;&#34;&#34;
+        pass # pylint: disable=unnecessary-pass
 
     def maxGearLevel(self, gear):
         &#34;&#34;&#34;Returns the maximum possible gear level of the given gear
@@ -526,13 +759,13 @@ mapping IDs to particles.</dd>
 <dt><strong><code>enforceLevel</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If <code>True</code>, gear cannot be mapped to a gear
 slot if the level of the gear exceeds the level the
-character to which the slot belongs.</dd>
+character to which the slot belongs. Defaults to <code>True</code>.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class InGearSlot(OneToOne):
+<pre><code class="python">class InGearSlot(WatchedOneToOne):
     &#34;&#34;&#34;Models the relationship between gear and gear slots.
 
     The `InGearSlot` class is a one-to-one mapping from
@@ -542,12 +775,12 @@ character to which the slot belongs.</dd>
     Attributes:
         enforceLevel (bool): If `True`, gear cannot be mapped to a gear
             slot if the level of the gear exceeds the level the
-            character to which the slot belongs.
+            character to which the slot belongs. Defaults to `True`.
 
     &#34;&#34;&#34;
 
     def __init__(self):
-        OneToOne.__init__(self)
+        WatchedOneToOne.__init__(self)
         self.enforceLevel = True
 
     # pylint: disable-next=arguments-renamed
@@ -568,6 +801,7 @@ character to which the slot belongs.</dd>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
+<li><a title="legends.roster.WatchedOneToOne" href="#legends.roster.WatchedOneToOne">WatchedOneToOne</a></li>
 <li><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></li>
 <li><a title="legends.utils.customabcs.BiMapping" href="utils/customabcs.html#legends.utils.customabcs.BiMapping">BiMapping</a></li>
 <li>collections.abc.MutableMapping</li>
@@ -611,11 +845,70 @@ returns <code>True</code>.</p></div>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
-<li><code><b><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></b></code>:
+<li><code><b><a title="legends.roster.WatchedOneToOne" href="#legends.roster.WatchedOneToOne">WatchedOneToOne</a></b></code>:
 <ul class="hlist">
-<li><code><a title="legends.utils.objrelations.OneToOne.inverse" href="utils/customabcs.html#legends.utils.customabcs.BiMapping.inverse">inverse</a></code></li>
+<li><code><a title="legends.roster.WatchedOneToOne.inverse" href="utils/customabcs.html#legends.utils.customabcs.BiMapping.inverse">inverse</a></code></li>
 </ul>
 </li>
+</ul>
+</dd>
+<dt id="legends.roster.OneToOneChangeEvent"><code class="flex name class">
+<span>class <span class="ident">OneToOneChangeEvent</span></span>
+<span>(</span><span>rel, key, value, changeType)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A change in a <code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code> relation.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>rel</code></strong> :&ensp;<code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code></dt>
+<dd>The relation that has
+changed.</dd>
+<dt><strong><code>key</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The key involved in the change.</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The value involved in the change.</dd>
+<dt><strong><code>changeType</code></strong> :&ensp;<code>str</code></dt>
+<dd>Either 'added' or 'removed', indicating
+whether the key-value pair was added or removed. When a key
+that already has a value is assigned a new value, two events
+should be created, one to remove the old key-value pair, and
+another to add the new key-value pair.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class OneToOneChangeEvent(Event): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;A change in a `legends.utils.objrelations.OneToOne` relation.
+
+    Attributes:
+        rel (legends.utils.objrelations.OneToOne): The relation that has
+            changed.
+        key (obj): The key involved in the change.
+        value (obj): The value involved in the change.
+        changeType (str): Either &#39;added&#39; or &#39;removed&#39;, indicating
+            whether the key-value pair was added or removed. When a key
+            that already has a value is assigned a new value, two events
+            should be created, one to remove the old key-value pair, and
+            another to add the new key-value pair.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, rel, key, value, changeType):
+        self.rel = rel
+        self.key = key
+        self.value = value
+        self.changeType = changeType
+
+    def __repr__(self):
+        return (
+            &#39;&lt;OneToOneChangeEvent&gt; for {!r}: &#39;
+            + &#39;key-value pair ({!r}, {!r}) {!r}&#39;
+        ).format(self.rel, self.key, self.value, self.changeType)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.eventhandler.Event" href="utils/eventhandler.html#legends.utils.eventhandler.Event">Event</a></li>
 </ul>
 </dd>
 <dt id="legends.roster.Roster"><code class="flex name class">
@@ -626,22 +919,13 @@ returns <code>True</code>.</p></div>
 <div class="desc"><p>A collection of related characters, gear, and particles.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>gear</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code></dt>
-<dd>A list of the gear in
-the roster.</dd>
-<dt><strong><code>parts</code></strong> :&ensp;<code>list</code> of <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code></dt>
-<dd>A list of the
-particles in the roster.</dd>
-<dt><strong><code>chars</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code>} A
-dictionary mapping name IDs to characters.</dd>
 <dt><strong><code>inGearSlot</code></strong> :&ensp;<code><a title="legends.roster.InGearSlot" href="#legends.roster.InGearSlot">InGearSlot</a></code></dt>
 <dd>A relation mapping
 <code><a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code> objects to
 <code><a title="legends.gameobjects.GearSlot" href="gameobjects.html#legends.gameobjects.GearSlot">GearSlot</a></code> objects.</dd>
-<dt><strong><code>inPartSlot</code></strong> :&ensp;<code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code></dt>
-<dd>A relation
-mapping <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code> objects to
+<dt><strong><code>inPartSlot</code></strong> :&ensp;<code><a title="legends.roster.WatchedOneToOne" href="#legends.roster.WatchedOneToOne">WatchedOneToOne</a></code></dt>
+<dd>A relation mapping
+<code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code> objects to
 <code><a title="legends.gameobjects.PartSlot" href="gameobjects.html#legends.gameobjects.PartSlot">PartSlot</a></code> objects.
 `</dd>
 </dl>
@@ -666,17 +950,11 @@ read the data.</dd>
     &#34;&#34;&#34;A collection of related characters, gear, and particles.
 
     Attributes:
-        gear (list of legends.gameobjects.Gear): A list of the gear in
-            the roster.
-        parts (list of legends.gameobjects.Particle): A list of the
-            particles in the roster.
-        chars (dict): {`str`:`legends.gameobjects.Character`} A
-            dictionary mapping name IDs to characters.
         inGearSlot (InGearSlot): A relation mapping
             `legends.gameobjects.Gear` objects to
             `legends.gameobjects.GearSlot` objects.
-        inPartSlot (legends.utils.objrelations.OneToOne): A relation
-            mapping `legends.gameobjects.Particle` objects to
+        inPartSlot (WatchedOneToOne): A relation mapping
+            `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
             `
 
@@ -694,13 +972,37 @@ read the data.</dd>
                 read the data.
 
         &#34;&#34;&#34;
-        self.gear = []
-        self.parts = []
-        self.chars = {}
+        self._gear = WatchedList(self.charChangeWatcher)
+        self._parts = WatchedList(self.charChangeWatcher)
+        self._chars = WatchedDict(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
-        self.inPartSlot = OneToOne()
+        self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
+        self.inPartSlot = WatchedOneToOne()
+        self.inPartSlot.onChange.subscribe(self.charChangeWatcher)
         if save is not None:
             self.fromSaveData(save, slot)
+        self.onCharChange = EventHandler()
+
+    @property
+    def gear(self):
+        &#34;&#34;&#34;`WatchedList of legends.gameobjects.Gear`: A list of the gear
+        in the roster.
+        &#34;&#34;&#34;
+        return self._gear
+
+    @property
+    def parts(self):
+        &#34;&#34;&#34;`WatchedList of legends.gameobjects.Particle`: A list of the
+        particles in the roster.
+        &#34;&#34;&#34;
+        return self._parts
+
+    @property
+    def chars(self):
+        &#34;&#34;&#34;`WatchedDict`: {`str`:`legends.gameobjects.Character`} A
+        dictionary mapping name IDs to characters.
+        &#34;&#34;&#34;
+        return self._chars
 
     @property
     def containsGear(self):
@@ -742,9 +1044,11 @@ read the data.</dd>
 
         # fill gear and particles
         gearDict = readGear(save, slot)
-        self.gear = list(gearDict.values())
+        self.gear.clear()
+        self.gear.extend(gearDict.values())
         partDict = readParts(save, slot)
-        self.parts = list(partDict.values())
+        self.parts.clear()
+        self.parts.extend(partDict.values())
 
         # cycle through characters in save data
         slotData = save[&#39;{} data&#39;.format(slot)]
@@ -831,6 +1135,14 @@ read the data.</dd>
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
 
+    def charChangeWatcher(self, event):
+        # TODO: Fill in this method.
+        &#34;&#34;&#34;Called when anything (gear, particle, character, or their
+        relations) changes. A placeholder to be updated later.
+
+        &#34;&#34;&#34;
+        pass # pylint: disable=unnecessary-pass
+
     def maxGearLevel(self, gear):
         &#34;&#34;&#34;Returns the maximum possible gear level of the given gear
         piece, which is determined by the rarity of the character on
@@ -911,6 +1223,22 @@ read the data.</dd>
 </details>
 <h3>Instance variables</h3>
 <dl>
+<dt id="legends.roster.Roster.chars"><code class="name">var <span class="ident">chars</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></code>: {<code>str</code>:<code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code>} A
+dictionary mapping name IDs to characters.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def chars(self):
+    &#34;&#34;&#34;`WatchedDict`: {`str`:`legends.gameobjects.Character`} A
+    dictionary mapping name IDs to characters.
+    &#34;&#34;&#34;
+    return self._chars</code></pre>
+</details>
+</dd>
 <dt id="legends.roster.Roster.containsGear"><code class="name">var <span class="ident">containsGear</span></code></dt>
 <dd>
 <div class="desc"><p><code><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></code>: The inverse of
@@ -943,9 +1271,60 @@ def containsPart(self):
     return self.inPartSlot.inverse</code></pre>
 </details>
 </dd>
+<dt id="legends.roster.Roster.gear"><code class="name">var <span class="ident">gear</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a> of <a title="legends.gameobjects.Gear" href="gameobjects.html#legends.gameobjects.Gear">Gear</a></code>: A list of the gear
+in the roster.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def gear(self):
+    &#34;&#34;&#34;`WatchedList of legends.gameobjects.Gear`: A list of the gear
+    in the roster.
+    &#34;&#34;&#34;
+    return self._gear</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.Roster.parts"><code class="name">var <span class="ident">parts</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a> of <a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code>: A list of the
+particles in the roster.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def parts(self):
+    &#34;&#34;&#34;`WatchedList of legends.gameobjects.Particle`: A list of the
+    particles in the roster.
+    &#34;&#34;&#34;
+    return self._parts</code></pre>
+</details>
+</dd>
 </dl>
 <h3>Methods</h3>
 <dl>
+<dt id="legends.roster.Roster.charChangeWatcher"><code class="name flex">
+<span>def <span class="ident">charChangeWatcher</span></span>(<span>self, event)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when anything (gear, particle, character, or their
+relations) changes. A placeholder to be updated later.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def charChangeWatcher(self, event):
+    # TODO: Fill in this method.
+    &#34;&#34;&#34;Called when anything (gear, particle, character, or their
+    relations) changes. A placeholder to be updated later.
+
+    &#34;&#34;&#34;
+    pass # pylint: disable=unnecessary-pass</code></pre>
+</details>
+</dd>
 <dt id="legends.roster.Roster.clear"><code class="name flex">
 <span>def <span class="ident">clear</span></span>(<span>self)</span>
 </code></dt>
@@ -1068,9 +1447,11 @@ read the data.</dd>
 
     # fill gear and particles
     gearDict = readGear(save, slot)
-    self.gear = list(gearDict.values())
+    self.gear.clear()
+    self.gear.extend(gearDict.values())
     partDict = readParts(save, slot)
-    self.parts = list(partDict.values())
+    self.parts.clear()
+    self.parts.extend(partDict.values())
 
     # cycle through characters in save data
     slotData = save[&#39;{} data&#39;.format(slot)]
@@ -1285,6 +1666,357 @@ characters.</dd>
 </dd>
 </dl>
 </dd>
+<dt id="legends.roster.WatchedCollection"><code class="flex name class">
+<span>class <span class="ident">WatchedCollection</span></span>
+<span>(</span><span>collectionType, callback)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A mix-in class for constructing watched collection data types.</p>
+<p>Objects added to a watched collection should have a <code>stats</code>
+attribute that points to a <code><a title="legends.stats.StatObject" href="stats.html#legends.stats.StatObject">StatObject</a></code> instance. A
+<code>ValueError</code> is raises when trying to add an object that does not
+satisfy this.</p>
+<p>This mix-in class provides the following methods: <code>__getitem__</code>,
+<code>__setitem__</code>, <code>__delitem__</code>, and <code>__len__</code>. The <code>__setitem__</code>
+method does not unsubscribe the <code>callback</code> attribute from the old
+value's event handler in the case where there was an old value. Such
+behavior must be implemented by subclasses.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>callback</code></strong> :&ensp;<code>func</code></dt>
+<dd>A function that takes one argument. This
+function is subscribed to the <code>onChange</code> event handler of
+the <code>stats</code> attribute of every object added to the
+collection. When an object is removed from the collection,
+the function is unsubscribed.</dd>
+</dl>
+<p>The constructor stores the collection data in a private
+attribute, to be managed by subclasses.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>collectionType</code></strong> :&ensp;<code>class</code></dt>
+<dd>The type of collection (<code>list</code>,
+<code>dict</code>, etc.)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WatchedCollection():
+    &#34;&#34;&#34;A mix-in class for constructing watched collection data types.
+
+    Objects added to a watched collection should have a `stats`
+    attribute that points to a `legends.stats.StatObject` instance. A
+    `ValueError` is raises when trying to add an object that does not
+    satisfy this.
+
+    This mix-in class provides the following methods: `__getitem__`,
+    `__setitem__`, `__delitem__`, and `__len__`. The `__setitem__`
+    method does not unsubscribe the `callback` attribute from the old
+    value&#39;s event handler in the case where there was an old value. Such
+    behavior must be implemented by subclasses.
+
+    Attributes:
+        callback (func): A function that takes one argument. This
+            function is subscribed to the `onChange` event handler of
+            the `stats` attribute of every object added to the
+            collection. When an object is removed from the collection,
+            the function is unsubscribed.
+
+    &#34;&#34;&#34;
+    def __init__(self, collectionType, callback):
+        &#34;&#34;&#34;The constructor stores the collection data in a private
+        attribute, to be managed by subclasses.
+
+        Args:
+            collectionType (class): The type of collection (`list`,
+                `dict`, etc.)
+
+        &#34;&#34;&#34;
+        self.callback = callback
+        self._data = collectionType()
+
+    def __getitem__(self, key):
+        return self._data[key]
+
+    def __setitem__(self, key, value):
+        checkForStats(value)
+        self._data[key] = value
+        value.stats.onChange.subscribe(self.callback)
+
+    def __delitem__(self, key):
+        self._data[key].stats.onChange.unsubscribe(self.callback)
+        del self._data[key]
+
+    def __len__(self):
+        return len(self._data)
+
+    def __repr__(self):
+        return &#39;{}({!r})&#39;.format(self.__class__.__name__, self._data)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></li>
+<li><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></li>
+</ul>
+</dd>
+<dt id="legends.roster.WatchedDict"><code class="flex name class">
+<span>class <span class="ident">WatchedDict</span></span>
+<span>(</span><span>callback, *args, **kargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A dictionary whose values have a <code>stats</code> attribute.</p>
+<p>The <code>stats</code> attribute should point to a <code><a title="legends.stats.StatObject" href="stats.html#legends.stats.StatObject">StatObject</a></code>
+instance. Whenever a value is added to the dictionary, the
+<code>onChange</code> event handler of that value's <code>stat</code> attribute is
+subscribed to by the <code><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></code> instance's <code>callback</code> attribute
+(inherited from <code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code>).</p>
+<p>Setting the value of a key that is already in the dictionary will
+unsubscribe from the old value's event handler.</p>
+<p>The constructor sets the <code>callback</code> attribute to the given
+<code>callback</code> argument. The remaining arguments are used to
+initialize the underlying dictionary data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>callback</code></strong> :&ensp;<code>func</code></dt>
+<dd>The function to assign to the <code>callback</code>
+attribute.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WatchedDict(WatchedCollection, MutableMapping):
+    &#34;&#34;&#34;A dictionary whose values have a `stats` attribute.
+
+    The `stats` attribute should point to a `legends.stats.StatObject`
+    instance. Whenever a value is added to the dictionary, the
+    `onChange` event handler of that value&#39;s `stat` attribute is
+    subscribed to by the `WatchedDict` instance&#39;s `callback` attribute
+    (inherited from `WatchedCollection`).
+
+    Setting the value of a key that is already in the dictionary will
+    unsubscribe from the old value&#39;s event handler.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, callback, *args, **kargs):
+        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
+        `callback` argument. The remaining arguments are used to
+        initialize the underlying dictionary data.
+
+        Args:
+            callback (func): The function to assign to the `callback`
+                attribute.
+
+        &#34;&#34;&#34;
+        WatchedCollection.__init__(self, dict, callback)
+        for key, value in dict(*args, **kargs):
+            self[key] = value
+
+    def __setitem__(self, key, value):
+        if key in self._data:
+            self._data[key].stats.onChange.unsubscribe(self.callback)
+        WatchedCollection.__setitem__(self, key, value)
+
+    def __iter__(self):
+        return self._data.__iter__()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></li>
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+</dd>
+<dt id="legends.roster.WatchedList"><code class="flex name class">
+<span>class <span class="ident">WatchedList</span></span>
+<span>(</span><span>callback, *args, **kargs)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A list of objects with a <code>stats</code> attribute.</p>
+<p>The <code>stats</code> attribute should point to a <code><a title="legends.stats.StatObject" href="stats.html#legends.stats.StatObject">StatObject</a></code>
+instance. Whenever an object is added to the list, the <code>onChange</code>
+event handler of that object's <code>stat</code> attribute is subscribed to by
+the <code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></code> instance's <code>callback</code> attribute (inherited from
+<code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code>).</p>
+<p><code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></code> does not implement slice assignment. Setting a value
+by index will unsubscribe from the old value's event handler.</p>
+<p>The constructor sets the <code>callback</code> attribute to the given
+<code>callback</code> argument. The remaining arguments are used to
+initialize the underlying list data.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>callback</code></strong> :&ensp;<code>func</code></dt>
+<dd>The function to assign to the <code>callback</code>
+attribute.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WatchedList(WatchedCollection, MutableSequence):
+    &#34;&#34;&#34;A list of objects with a `stats` attribute.
+
+    The `stats` attribute should point to a `legends.stats.StatObject`
+    instance. Whenever an object is added to the list, the `onChange`
+    event handler of that object&#39;s `stat` attribute is subscribed to by
+    the `WatchedList` instance&#39;s `callback` attribute (inherited from
+    `WatchedCollection`).
+
+    `WatchedList` does not implement slice assignment. Setting a value
+    by index will unsubscribe from the old value&#39;s event handler.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, callback, *args, **kargs):
+        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
+        `callback` argument. The remaining arguments are used to
+        initialize the underlying list data.
+
+        Args:
+            callback (func): The function to assign to the `callback`
+                attribute.
+
+        &#34;&#34;&#34;
+        WatchedCollection.__init__(self, list, callback)
+        for value in list(*args, **kargs):
+            self.append(value)
+
+    def __setitem__(self, key, value):
+        if isinstance(key, slice):
+            raise NotImplementedError(&#39;Slice assignment not implemented&#39;)
+        self._data[key].stats.onChange.unsubscribe(self.callback)
+        WatchedCollection.__setitem__(self, key, value)
+
+    def insert(self, index, value):
+        &#34;&#34;&#34;Same as `list.insert()`, but subscribes to the value&#39;s event
+        handler.
+
+        &#34;&#34;&#34;
+        checkForStats(value)
+        self._data.insert(index, value)
+        value.stats.onChange.subscribe(self.callback)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></li>
+<li>collections.abc.MutableSequence</li>
+<li>collections.abc.Sequence</li>
+<li>collections.abc.Reversible</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.roster.WatchedList.insert"><code class="name flex">
+<span>def <span class="ident">insert</span></span>(<span>self, index, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Same as <code>list.insert()</code>, but subscribes to the value's event
+handler.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def insert(self, index, value):
+    &#34;&#34;&#34;Same as `list.insert()`, but subscribes to the value&#39;s event
+    handler.
+
+    &#34;&#34;&#34;
+    checkForStats(value)
+    self._data.insert(index, value)
+    value.stats.onChange.subscribe(self.callback)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.roster.WatchedOneToOne"><code class="flex name class">
+<span>class <span class="ident">WatchedOneToOne</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A one-to-one relation with an event handler.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>onChange</code></strong> :&ensp;<code><a title="legends.utils.eventhandler.EventHandler" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler">EventHandler</a></code></dt>
+<dd>When a
+key-value pair is added or removed, this event handler
+creates a <code><a title="legends.roster.OneToOneChangeEvent" href="#legends.roster.OneToOneChangeEvent">OneToOneChangeEvent</a></code> and sends it to all
+subscribers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WatchedOneToOne(OneToOne):
+    &#34;&#34;&#34;A one-to-one relation with an event handler.
+
+    Attributes:
+
+        onChange (legends.utils.eventhandler.EventHandler): When a
+            key-value pair is added or removed, this event handler
+            creates a `OneToOneChangeEvent` and sends it to all
+            subscribers.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        OneToOne.__init__(self)
+        self.onChange = EventHandler()
+
+    def __delitem__(self, key):
+        OneToOne.__delitem__(self, key)
+        self.onChange.notify(
+            OneToOneChangeEvent(self, key, self[key], &#39;removed&#39;)
+        )
+
+    def __setfreeval__(self, key, val):
+        oldVal = self.get(key)
+        OneToOne.__setfreeval__(self, key, val)
+        newVal = self.get(key)
+        if oldVal is newVal:
+            return
+        if oldVal is not None:
+            self.onChange.notify(
+                OneToOneChangeEvent(self, key, oldVal, &#39;removed&#39;)
+            )
+        if newVal is not None:
+            self.onChange.notify(
+                OneToOneChangeEvent(self, key, newVal, &#39;added&#39;)
+            )</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></li>
+<li><a title="legends.utils.customabcs.BiMapping" href="utils/customabcs.html#legends.utils.customabcs.BiMapping">BiMapping</a></li>
+<li>collections.abc.MutableMapping</li>
+<li>collections.abc.Mapping</li>
+<li>collections.abc.Collection</li>
+<li>collections.abc.Sized</li>
+<li>collections.abc.Iterable</li>
+<li>collections.abc.Container</li>
+<li><a title="legends.utils.objrelations.Managed" href="utils/objrelations.html#legends.utils.objrelations.Managed">Managed</a></li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="legends.roster.InGearSlot" href="#legends.roster.InGearSlot">InGearSlot</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.objrelations.OneToOne" href="utils/objrelations.html#legends.utils.objrelations.OneToOne">OneToOne</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.objrelations.OneToOne.inverse" href="utils/customabcs.html#legends.utils.customabcs.BiMapping.inverse">inverse</a></code></li>
+<li><code><a title="legends.utils.objrelations.OneToOne.validate" href="utils/objrelations.html#legends.utils.objrelations.OneToOne.validate">validate</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 </dl>
 </section>
 </article>
@@ -1314,18 +2046,40 @@ characters.</dd>
 </ul>
 </li>
 <li>
+<h4><code><a title="legends.roster.OneToOneChangeEvent" href="#legends.roster.OneToOneChangeEvent">OneToOneChangeEvent</a></code></h4>
+</li>
+<li>
 <h4><code><a title="legends.roster.Roster" href="#legends.roster.Roster">Roster</a></code></h4>
 <ul class="two-column">
+<li><code><a title="legends.roster.Roster.charChangeWatcher" href="#legends.roster.Roster.charChangeWatcher">charChangeWatcher</a></code></li>
+<li><code><a title="legends.roster.Roster.chars" href="#legends.roster.Roster.chars">chars</a></code></li>
 <li><code><a title="legends.roster.Roster.clear" href="#legends.roster.Roster.clear">clear</a></code></li>
 <li><code><a title="legends.roster.Roster.containsGear" href="#legends.roster.Roster.containsGear">containsGear</a></code></li>
 <li><code><a title="legends.roster.Roster.containsPart" href="#legends.roster.Roster.containsPart">containsPart</a></code></li>
 <li><code><a title="legends.roster.Roster.fillChars" href="#legends.roster.Roster.fillChars">fillChars</a></code></li>
 <li><code><a title="legends.roster.Roster.fromSaveData" href="#legends.roster.Roster.fromSaveData">fromSaveData</a></code></li>
+<li><code><a title="legends.roster.Roster.gear" href="#legends.roster.Roster.gear">gear</a></code></li>
 <li><code><a title="legends.roster.Roster.maxGearLevel" href="#legends.roster.Roster.maxGearLevel">maxGearLevel</a></code></li>
 <li><code><a title="legends.roster.Roster.missingGearLevels" href="#legends.roster.Roster.missingGearLevels">missingGearLevels</a></code></li>
 <li><code><a title="legends.roster.Roster.missingGearRanks" href="#legends.roster.Roster.missingGearRanks">missingGearRanks</a></code></li>
+<li><code><a title="legends.roster.Roster.parts" href="#legends.roster.Roster.parts">parts</a></code></li>
 <li><code><a title="legends.roster.Roster.tokensPerOrb" href="#legends.roster.Roster.tokensPerOrb">tokensPerOrb</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></code></h4>
+<ul class="">
+<li><code><a title="legends.roster.WatchedList.insert" href="#legends.roster.WatchedList.insert">insert</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.roster.WatchedOneToOne" href="#legends.roster.WatchedOneToOne">WatchedOneToOne</a></code></h4>
 </li>
 </ul>
 </li>

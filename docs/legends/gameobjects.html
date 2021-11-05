@@ -73,9 +73,6 @@ class Character():
     &#34;&#34;&#34;A character in STL.
 
     Attributes:
-        stats (legends.stats.Stats): The Stats object that stores the
-            character&#39;s naked stats (i.e. the stats they would have
-            without any gear or particles).
         skills (dict): {`str`:`legends.skill.Skill`} A dictionary
             mapping skill IDs (found in `GSSkill`) to Skill objects.
         bridgeSkill (legends.skill.Skill): The character&#39;s bridge skill.
@@ -102,7 +99,7 @@ class Character():
             &#39;rank&#39;: rank,
             &#39;xp&#39;: xp
         }
-        self.stats = Stats()
+        self._stats = Stats(self)
         self.updateStats()
         self.skills = {}
         for skillID in GSCharacter[self.nameID][&#39;SkillIDs&#39;]:
@@ -193,6 +190,14 @@ class Character():
         if self.level != value:
             self._data[&#39;xp&#39;] = xpFromLevel(value, self.rarity)
             self.updateStats()
+
+    @property
+    def stats(self):
+        &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+        character&#39;s naked stats (i.e. the stats they would have without
+        any gear or particles).
+        &#34;&#34;&#34;
+        return self._stats
 
     @property
     def rarity(self):
@@ -396,8 +401,6 @@ class Gear(Managed):
     Attributes:
         gearID (str): The in-code ID of the gear piece. Should be a key
             in `GSGear`.
-        stats (legends.stats.Stats): The Stats object that stores the
-            gear&#39;s total stats.
 
     &#34;&#34;&#34;
 
@@ -414,7 +417,7 @@ class Gear(Managed):
         &#34;&#34;&#34;
         self.gearID = gearID
         self._level = level
-        self.stats = Stats()
+        self._stats = Stats(self)
         self.updateStats()
 
     @property
@@ -456,6 +459,13 @@ class Gear(Managed):
         &#34;&#34;&#34;
         gearRole = GSGear[self.gearID][&#39;m_Role&#39;]
         return None if gearRole == &#39;None&#39; else gearRole
+
+    @property
+    def stats(self):
+        &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+        gear&#39;s total stats.
+        &#34;&#34;&#34;
+        return self._stats
 
     @property
     def slot(self):
@@ -539,8 +549,6 @@ class Particle(Managed):
 
     Attributes:
         locked (bool): True if the particle is locked.
-        stats (legends.stats.Stats): The Stats object that stores the
-            particle&#39;s total stats.
         passive (legends.skill.Skill): The passive skill granted to the
             character by this particle.
         effects (legends.stats.PartEffects): The particle effect stats
@@ -575,7 +583,7 @@ class Particle(Managed):
             self.effects.regen = frac
         self.locked = locked
         self._statNames = [None] * 4
-        self.stats = Stats()
+        self._stats = Stats(self)
 
     @property
     def data(self):
@@ -607,6 +615,13 @@ class Particle(Managed):
     def level(self, value):
         self._data[&#39;level&#39;] = value
         self.updateStats()
+
+    @property
+    def stats(self):
+        &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+        particle&#39;s total stats.
+        &#34;&#34;&#34;
+        return self._stats
 
     @property
     def numStats(self):
@@ -722,10 +737,6 @@ current and upcoming.</p>
 <div class="desc"><p>A character in STL.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>stats</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
-<dd>The Stats object that stores the
-character's naked stats (i.e. the stats they would have
-without any gear or particles).</dd>
 <dt><strong><code>skills</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code><a title="legends.skill.Skill" href="skill.html#legends.skill.Skill">Skill</a></code>} A dictionary
 mapping skill IDs (found in <code>GSSkill</code>) to Skill objects.</dd>
@@ -758,9 +769,6 @@ properties.</p>
     &#34;&#34;&#34;A character in STL.
 
     Attributes:
-        stats (legends.stats.Stats): The Stats object that stores the
-            character&#39;s naked stats (i.e. the stats they would have
-            without any gear or particles).
         skills (dict): {`str`:`legends.skill.Skill`} A dictionary
             mapping skill IDs (found in `GSSkill`) to Skill objects.
         bridgeSkill (legends.skill.Skill): The character&#39;s bridge skill.
@@ -787,7 +795,7 @@ properties.</p>
             &#39;rank&#39;: rank,
             &#39;xp&#39;: xp
         }
-        self.stats = Stats()
+        self._stats = Stats(self)
         self.updateStats()
         self.skills = {}
         for skillID in GSCharacter[self.nameID][&#39;SkillIDs&#39;]:
@@ -878,6 +886,14 @@ properties.</p>
         if self.level != value:
             self._data[&#39;xp&#39;] = xpFromLevel(value, self.rarity)
             self.updateStats()
+
+    @property
+    def stats(self):
+        &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+        character&#39;s naked stats (i.e. the stats they would have without
+        any gear or particles).
+        &#34;&#34;&#34;
+        return self._stats
 
     @property
     def rarity(self):
@@ -1261,6 +1277,24 @@ def shortName(self):
     return betterNames.get(self.nameID, self.nameID)</code></pre>
 </details>
 </dd>
+<dt id="legends.gameobjects.Character.stats"><code class="name">var <span class="ident">stats</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code>: The Stats object that stores the
+character's naked stats (i.e. the stats they would have without
+any gear or particles).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def stats(self):
+    &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+    character&#39;s naked stats (i.e. the stats they would have without
+    any gear or particles).
+    &#34;&#34;&#34;
+    return self._stats</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Character.tags"><code class="name">var <span class="ident">tags</span></code></dt>
 <dd>
 <div class="desc"><p><code>list</code>: [<code>str</code>] A list of the character's in-game tags.</p></div>
@@ -1584,9 +1618,6 @@ character belongs.</dd>
 <dt><strong><code>gearID</code></strong> :&ensp;<code>str</code></dt>
 <dd>The in-code ID of the gear piece. Should be a key
 in <code>GSGear</code>.</dd>
-<dt><strong><code>stats</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
-<dd>The Stats object that stores the
-gear's total stats.</dd>
 </dl>
 <p>The constructor stores the given level in a private attribute
 that is managed by a class property. At instance creation, the
@@ -1609,8 +1640,6 @@ restrictions on gear leveling.</p>
     Attributes:
         gearID (str): The in-code ID of the gear piece. Should be a key
             in `GSGear`.
-        stats (legends.stats.Stats): The Stats object that stores the
-            gear&#39;s total stats.
 
     &#34;&#34;&#34;
 
@@ -1627,7 +1656,7 @@ restrictions on gear leveling.</p>
         &#34;&#34;&#34;
         self.gearID = gearID
         self._level = level
-        self.stats = Stats()
+        self._stats = Stats(self)
         self.updateStats()
 
     @property
@@ -1669,6 +1698,13 @@ restrictions on gear leveling.</p>
         &#34;&#34;&#34;
         gearRole = GSGear[self.gearID][&#39;m_Role&#39;]
         return None if gearRole == &#39;None&#39; else gearRole
+
+    @property
+    def stats(self):
+        &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+        gear&#39;s total stats.
+        &#34;&#34;&#34;
+        return self._stats
 
     @property
     def slot(self):
@@ -1843,6 +1879,22 @@ def slot(self):
     the top left.
     &#34;&#34;&#34;
     return GSGear[self.gearID][&#39;m_Slot&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.gameobjects.Gear.stats"><code class="name">var <span class="ident">stats</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code>: The Stats object that stores the
+gear's total stats.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def stats(self):
+    &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+    gear&#39;s total stats.
+    &#34;&#34;&#34;
+    return self._stats</code></pre>
 </details>
 </dd>
 </dl>
@@ -2054,9 +2106,6 @@ part of an object-based relation.</p>
 <dl>
 <dt><strong><code>locked</code></strong> :&ensp;<code>bool</code></dt>
 <dd>True if the particle is locked.</dd>
-<dt><strong><code>stats</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code></dt>
-<dd>The Stats object that stores the
-particle's total stats.</dd>
 <dt><strong><code>passive</code></strong> :&ensp;<code><a title="legends.skill.Skill" href="skill.html#legends.skill.Skill">Skill</a></code></dt>
 <dd>The passive skill granted to the
 character by this particle.</dd>
@@ -2084,8 +2133,6 @@ private dictionary that is managed by class properties.</p>
 
     Attributes:
         locked (bool): True if the particle is locked.
-        stats (legends.stats.Stats): The Stats object that stores the
-            particle&#39;s total stats.
         passive (legends.skill.Skill): The passive skill granted to the
             character by this particle.
         effects (legends.stats.PartEffects): The particle effect stats
@@ -2120,7 +2167,7 @@ private dictionary that is managed by class properties.</p>
             self.effects.regen = frac
         self.locked = locked
         self._statNames = [None] * 4
-        self.stats = Stats()
+        self._stats = Stats(self)
 
     @property
     def data(self):
@@ -2152,6 +2199,13 @@ private dictionary that is managed by class properties.</p>
     def level(self, value):
         self._data[&#39;level&#39;] = value
         self.updateStats()
+
+    @property
+    def stats(self):
+        &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+        particle&#39;s total stats.
+        &#34;&#34;&#34;
+        return self._stats
 
     @property
     def numStats(self):
@@ -2274,6 +2328,22 @@ def statNames(self):
     return tuple(self._statNames)</code></pre>
 </details>
 </dd>
+<dt id="legends.gameobjects.Particle.stats"><code class="name">var <span class="ident">stats</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.stats.Stats" href="stats.html#legends.stats.Stats">Stats</a></code>: The Stats object that stores the
+particle's total stats.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def stats(self):
+    &#34;&#34;&#34;`legends.stats.Stats`: The Stats object that stores the
+    particle&#39;s total stats.
+    &#34;&#34;&#34;
+    return self._stats</code></pre>
+</details>
+</dd>
 <dt id="legends.gameobjects.Particle.typ"><code class="name">var <span class="ident">typ</span></code></dt>
 <dd>
 <div class="desc"><p><code>str</code>: The type of the particle. This is what the data refers
@@ -2390,6 +2460,7 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Character.role" href="#legends.gameobjects.Character.role">role</a></code></li>
 <li><code><a title="legends.gameobjects.Character.shortName" href="#legends.gameobjects.Character.shortName">shortName</a></code></li>
 <li><code><a title="legends.gameobjects.Character.skillEffectTags" href="#legends.gameobjects.Character.skillEffectTags">skillEffectTags</a></code></li>
+<li><code><a title="legends.gameobjects.Character.stats" href="#legends.gameobjects.Character.stats">stats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.tags" href="#legends.gameobjects.Character.tags">tags</a></code></li>
 <li><code><a title="legends.gameobjects.Character.tokensNeeded" href="#legends.gameobjects.Character.tokensNeeded">tokensNeeded</a></code></li>
 <li><code><a title="legends.gameobjects.Character.totalStats" href="#legends.gameobjects.Character.totalStats">totalStats</a></code></li>
@@ -2409,6 +2480,7 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Gear.role" href="#legends.gameobjects.Gear.role">role</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.setLevel" href="#legends.gameobjects.Gear.setLevel">setLevel</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.slot" href="#legends.gameobjects.Gear.slot">slot</a></code></li>
+<li><code><a title="legends.gameobjects.Gear.stats" href="#legends.gameobjects.Gear.stats">stats</a></code></li>
 <li><code><a title="legends.gameobjects.Gear.updateStats" href="#legends.gameobjects.Gear.updateStats">updateStats</a></code></li>
 </ul>
 </li>
@@ -2427,6 +2499,7 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Particle.rarity" href="#legends.gameobjects.Particle.rarity">rarity</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.setStatName" href="#legends.gameobjects.Particle.setStatName">setStatName</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.statNames" href="#legends.gameobjects.Particle.statNames">statNames</a></code></li>
+<li><code><a title="legends.gameobjects.Particle.stats" href="#legends.gameobjects.Particle.stats">stats</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.typ" href="#legends.gameobjects.Particle.typ">typ</a></code></li>
 <li><code><a title="legends.gameobjects.Particle.updateStats" href="#legends.gameobjects.Particle.updateStats">updateStats</a></code></li>
 </ul>

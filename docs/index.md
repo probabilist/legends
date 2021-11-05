@@ -25,6 +25,8 @@ title: probabilist's STL resources
     - all characters, current and upcoming
     - max rank, max level, max gear
     - no particles
+* Fechto's [comprehensive bug list](https://docs.google.com/document/d/10o3CHkV_W46IQM-nXThbyMDdHj4BpBWDjNw0CuTuBF8/edit)
+* Fechto's [list of broken skills](https://docs.google.com/document/d/12yYxhh5u2Y2ohSRwk17q9GiIVdSyE-xua6MN8tlMnFE/edit)
 
 ## Pythonista scripts
 

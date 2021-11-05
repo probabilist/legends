@@ -32,9 +32,53 @@
 &#34;&#34;&#34;
 
 from legends.utils.functions import formatDict
+from legends.utils.eventhandler import Event, EventHandler
 from legends.constants import PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS
 
-__all__ = [&#39;PartEffects&#39;, &#39;StatObject&#39;, &#39;Stats&#39;]
+__all__ = [
+    &#39;checkForStats&#39;,
+    &#39;PartEffects&#39;,
+    &#39;StatChangeEvent&#39;,
+    &#39;StatObject&#39;,
+    &#39;Stats&#39;
+]
+
+def checkForStats(obj):
+    &#34;&#34;&#34;Checks if the given objects has a &#39;stats&#39; attribute that points
+    to a `StatObject` instance.
+
+    Args:
+        obj (obj): The object to check.
+
+    Raises:
+        ValueError: If the object fails the check.
+
+    &#34;&#34;&#34;
+    if not hasattr(obj, &#39;stats&#39;):
+        raise ValueError(&#39;{} has no `stats` attribute&#39;.format(obj))
+    if not isinstance(obj.stats, StatObject):
+        raise ValueError(
+            &#39;{} is not an instance of `StatObject`&#39;.format(obj.stats)
+        )
+
+class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;Created when one of a `StatObject`&#39;s attributes changes.
+
+    Should only be created when the changing attribute is a statistic.
+
+    Attributes:
+        parent (obj): The object whose statistics have changed.
+        attrName (str): The name of the statistic that changed.
+        oldVal (int or float): The old value of the statistic.
+        newVal (int or float): The new value of the statistic.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent, attrName, oldVal, newVal):
+        self.parent = parent
+        self.attrName = attrName
+        self.oldVal = oldVal
+        self.newVal = newVal
 
 class StatObject():
     &#34;&#34;&#34;An object that stores named statistics as attributes.
@@ -51,25 +95,104 @@ class StatObject():
     the statistics of the given instances.
 
     Attributes:
-        statAbbrs (iterable of str): Strings that represent the stored
-            statistics. Typically abbreviations. Used to construct
-            object attributes.
+        parent (obj): The object to which these stats belong.
+        onChange (legends.utils.eventhandler.EventHandler): Sends a
+            `StatChangeEvent` to subscribers when a statistic changes.
+        silent (bool): Set to `True` to prevent the sending of a
+            `StatChangeEvent` when a statistic changes. Defaults to
+            `False`.
 
     &#34;&#34;&#34;
 
-    def __init__(self):
-        self.statAbbrs = []
+    def __init__(self, statAbbrs, parent=None, initDict=None):
+        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
+        initializes the instance with these values.
+
+        Args:
+            statAbbrs (dict): {`str`:`str`} The dictionary to assign to
+                the `statAbbrs` property.
+            initDict (dict): {`str`:`int or float`} A dictionary mapping
+                stat names to numerical values. The keys of `initDict`
+                should match the keys of the `statAbbrs` property.
+
+        &#34;&#34;&#34;
+        self._statAbbrs = statAbbrs
+        self.parent = parent
+        self.silent = False
+        self.onChange = EventHandler()
+        if initDict is None:
+            initDict = {statName: 0 for statName in self.statAbbrs}
+        self.update(initDict)
+
+    @property
+    def statAbbrs(self):
+        &#34;&#34;&#34;dict: {`str`:`str`} A dictionary mapping the names of stats
+        to be stored to the abbreviations that are to be used as
+        attribute names.
+        &#34;&#34;&#34;
+        return self._statAbbrs
+
+    def __setattr__(self, attrName, value):
+        oldVal = getattr(self, attrName) if hasattr(self, attrName) else None
+        self.__dict__[attrName] = value
+        if (
+            attrName in self.statAbbrs.values()
+            and oldVal != value
+            and not self.silent
+        ):
+            self.onChange.notify(StatChangeEvent(
+                self.parent, attrName, oldVal, value
+            ))
+
+    def get(self, statName):
+        &#34;&#34;&#34;Looks up a stat value by its name, as it appears in the keys
+        of the `statAbbrs` property.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                the `statAbbrs` property.
+
+        Returns:
+            int or float: The value of the given stat.
+
+        &#34;&#34;&#34;
+        return getattr(self, self.statAbbrs[statName])
+
+    def set(self, statName, value):
+        &#34;&#34;&#34;Sets a stat value by its name, as it appears in the keys of
+        the `statAbbrs` property.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                the `statAbbrs` property.
+            value (int or float): The value to assign.
+
+        &#34;&#34;&#34;
+        setattr(self, self.statAbbrs[statName], value)
+
+    def update(self, statDict):
+        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
+        dictionary.
+
+        Args:
+            statDict (dict): {`str`:`int or float`} A dictionary mapping
+                stat names to numerical values. The keys of `statDict`
+                should match the keys of the `statAbbrs` attribute.
+
+        &#34;&#34;&#34;
+        for statName, statVal in statDict.items():
+            setattr(self, self.statAbbrs[statName], statVal)
 
     def __add__(self, other):
-        result = self.__class__()
-        for statAbbr in self.statAbbrs:
+        result = self.__class__(self.statAbbrs)
+        for statAbbr in self.statAbbrs.values():
             statSum = getattr(self, statAbbr) + getattr(other, statAbbr)
             setattr(result, statAbbr, statSum)
         return result
 
     def __mul__(self, other):
-        result = self.__class__()
-        for statAbbr in self.statAbbrs:
+        result = self.__class__(self.statAbbrs)
+        for statAbbr in self.statAbbrs.values():
             statProd = getattr(self, statAbbr) * getattr(other, statAbbr)
             setattr(result, statAbbr, statProd)
         return result
@@ -82,27 +205,13 @@ class StatObject():
 class Stats(StatObject):
     &#34;&#34;&#34;Stores the basic stats in STL.
 
-    Attributes:
-        statAbbrs (iterable of str): The values of `STAT_ABBREVIATIONS`,
-            which are abbreviations for the keys of `GSBaseStat`.
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `STAT_ABBREVIATIONS`.
 
     &#34;&#34;&#34;
 
-    def __init__(self, initDict=None):
-        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
-        initializes the instance with these values.
-
-        Args:
-            initDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `STAT_ABBREVIATIONS` to
-                numerical values.
-
-        &#34;&#34;&#34;
-        StatObject.__init__(self)
-        self.statAbbrs = STAT_ABBREVIATIONS.values()
-        if initDict is None:
-            initDict = {statName: 0 for statName in STAT_ABBREVIATIONS}
-        self.update(initDict)
+    def __init__(self, parent=None, initDict=None):
+        StatObject.__init__(self, STAT_ABBREVIATIONS.copy(), parent, initDict)
 
     @property
     def power(self):
@@ -116,54 +225,15 @@ class Stats(StatObject):
             powerDelta += POWER_GRADIENT[statName] * statVal
         return powerDelta
 
-    def get(self, statName):
-        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
-        keys of `STAT_ABBREVIATIONS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `STAT_ABBREVIATIONS`.
-
-        Returns:
-            int or float: The value of the given stat.
-
-        &#34;&#34;&#34;
-        return getattr(self, STAT_ABBREVIATIONS[statName])
-
-    def set(self, statName, value):
-        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
-        of `STAT_ABBREVIATIONS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `STAT_ABBREVIATIONS`.
-            value (int or float): The value to assign.
-
-        &#34;&#34;&#34;
-        setattr(self, STAT_ABBREVIATIONS[statName], value)
-
-    def update(self, statDict):
-        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-        dictionary.
-
-        Args:
-            statDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `STAT_ABBREVIATIONS` to
-                numerical values.
-
-        &#34;&#34;&#34;
-        for statName, statVal in statDict.items():
-            setattr(self, STAT_ABBREVIATIONS[statName], statVal)
-
 class PartEffects(StatObject):
     &#34;&#34;&#34;Stats describing effects of particles in STL.
 
-    Attributes:
-        statAbbrs (iterable of str): The values of `PART_EFFECTS`.
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `PART_EFFECTS`.
 
     &#34;&#34;&#34;
 
-    def __init__(self, initDict=None):
+    def __init__(self, parent=None, initDict=None):
         &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
         initializes the instance with these values.
 
@@ -173,50 +243,7 @@ class PartEffects(StatObject):
                 numerical values.
 
         &#34;&#34;&#34;
-        StatObject.__init__(self)
-        self.statAbbrs = PART_EFFECTS.values()
-        if initDict is None:
-            initDict = {statName: 0 for statName in PART_EFFECTS}
-        self.update(initDict)
-
-    def get(self, statName):
-        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
-        keys of `PART_EFFECTS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `PART_EFFECTS`.
-
-        Returns:
-            int or float: The value of the given stat.
-
-        &#34;&#34;&#34;
-        return getattr(self, PART_EFFECTS[statName])
-
-    def set(self, statName, value):
-        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
-        of `PART_EFFECTS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `PART_EFFECTS`.
-            value (int or float): The value to assign.
-
-        &#34;&#34;&#34;
-        setattr(self, PART_EFFECTS[statName], value)
-
-    def update(self, statDict):
-        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-        dictionary.
-
-        Args:
-            statDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `PART_EFFECTS` to
-                numerical values.
-
-        &#34;&#34;&#34;
-        for statName, statVal in statDict.items():
-            setattr(self, PART_EFFECTS[statName], statVal)</code></pre>
+        StatObject.__init__(self, PART_EFFECTS, parent, initDict)</code></pre>
 </details>
 </section>
 <section>
@@ -224,21 +251,60 @@ class PartEffects(StatObject):
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.stats.checkForStats"><code class="name flex">
+<span>def <span class="ident">checkForStats</span></span>(<span>obj)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks if the given objects has a 'stats' attribute that points
+to a <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> instance.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>obj</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The object to check.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If the object fails the check.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def checkForStats(obj):
+    &#34;&#34;&#34;Checks if the given objects has a &#39;stats&#39; attribute that points
+    to a `StatObject` instance.
+
+    Args:
+        obj (obj): The object to check.
+
+    Raises:
+        ValueError: If the object fails the check.
+
+    &#34;&#34;&#34;
+    if not hasattr(obj, &#39;stats&#39;):
+        raise ValueError(&#39;{} has no `stats` attribute&#39;.format(obj))
+    if not isinstance(obj.stats, StatObject):
+        raise ValueError(
+            &#39;{} is not an instance of `StatObject`&#39;.format(obj.stats)
+        )</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
 <dt id="legends.stats.PartEffects"><code class="flex name class">
 <span>class <span class="ident">PartEffects</span></span>
-<span>(</span><span>initDict=None)</span>
+<span>(</span><span>parent=None, initDict=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Stats describing effects of particles in STL.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>statAbbrs</code></strong> :&ensp;<code>iterable</code> of <code>str</code></dt>
-<dd>The values of <code>PART_EFFECTS</code>.</dd>
-</dl>
+<p>A subclass of <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> whose <code>statAbbrs</code> property is set to
+<code>PART_EFFECTS</code>.</p>
 <p>If a dictionary of stat values is provided, the constructor
 initializes the instance with these values.</p>
 <h2 id="args">Args</h2>
@@ -255,12 +321,12 @@ numerical values.</dd>
 <pre><code class="python">class PartEffects(StatObject):
     &#34;&#34;&#34;Stats describing effects of particles in STL.
 
-    Attributes:
-        statAbbrs (iterable of str): The values of `PART_EFFECTS`.
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `PART_EFFECTS`.
 
     &#34;&#34;&#34;
 
-    def __init__(self, initDict=None):
+    def __init__(self, parent=None, initDict=None):
         &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
         initializes the instance with these values.
 
@@ -270,159 +336,73 @@ numerical values.</dd>
                 numerical values.
 
         &#34;&#34;&#34;
-        StatObject.__init__(self)
-        self.statAbbrs = PART_EFFECTS.values()
-        if initDict is None:
-            initDict = {statName: 0 for statName in PART_EFFECTS}
-        self.update(initDict)
-
-    def get(self, statName):
-        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
-        keys of `PART_EFFECTS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `PART_EFFECTS`.
-
-        Returns:
-            int or float: The value of the given stat.
-
-        &#34;&#34;&#34;
-        return getattr(self, PART_EFFECTS[statName])
-
-    def set(self, statName, value):
-        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
-        of `PART_EFFECTS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `PART_EFFECTS`.
-            value (int or float): The value to assign.
-
-        &#34;&#34;&#34;
-        setattr(self, PART_EFFECTS[statName], value)
-
-    def update(self, statDict):
-        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-        dictionary.
-
-        Args:
-            statDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `PART_EFFECTS` to
-                numerical values.
-
-        &#34;&#34;&#34;
-        for statName, statVal in statDict.items():
-            setattr(self, PART_EFFECTS[statName], statVal)</code></pre>
+        StatObject.__init__(self, PART_EFFECTS, parent, initDict)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></li>
 </ul>
-<h3>Methods</h3>
-<dl>
-<dt id="legends.stats.PartEffects.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self, statName)</span>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
+<li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
+<li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+<dt id="legends.stats.StatChangeEvent"><code class="flex name class">
+<span>class <span class="ident">StatChangeEvent</span></span>
+<span>(</span><span>parent, attrName, oldVal, newVal)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Looks up a stat value by its full name, as it appears in the
-keys of <code>PART_EFFECTS</code>.</p>
-<h2 id="args">Args</h2>
+<div class="desc"><p>Created when one of a <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>'s attributes changes.</p>
+<p>Should only be created when the changing attribute is a statistic.</p>
+<h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
-<dd>A stat name, as it appears in the keys of
-<code>PART_EFFECTS</code>.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code> or <code>float</code></dt>
-<dd>The value of the given stat.</dd>
+<dt><strong><code>parent</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The object whose statistics have changed.</dd>
+<dt><strong><code>attrName</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the statistic that changed.</dd>
+<dt><strong><code>oldVal</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
+<dd>The old value of the statistic.</dd>
+<dt><strong><code>newVal</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
+<dd>The new value of the statistic.</dd>
 </dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get(self, statName):
-    &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
-    keys of `PART_EFFECTS`.
+<pre><code class="python">class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;Created when one of a `StatObject`&#39;s attributes changes.
 
-    Args:
-        statName (str): A stat name, as it appears in the keys of
-            `PART_EFFECTS`.
+    Should only be created when the changing attribute is a statistic.
 
-    Returns:
-        int or float: The value of the given stat.
-
-    &#34;&#34;&#34;
-    return getattr(self, PART_EFFECTS[statName])</code></pre>
-</details>
-</dd>
-<dt id="legends.stats.PartEffects.set"><code class="name flex">
-<span>def <span class="ident">set</span></span>(<span>self, statName, value)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Sets a stat value by its full name, as it appears in the keys
-of <code>PART_EFFECTS</code>.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
-<dd>A stat name, as it appears in the keys of
-<code>PART_EFFECTS</code>.</dd>
-<dt><strong><code>value</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
-<dd>The value to assign.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set(self, statName, value):
-    &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
-    of `PART_EFFECTS`.
-
-    Args:
-        statName (str): A stat name, as it appears in the keys of
-            `PART_EFFECTS`.
-        value (int or float): The value to assign.
+    Attributes:
+        parent (obj): The object whose statistics have changed.
+        attrName (str): The name of the statistic that changed.
+        oldVal (int or float): The old value of the statistic.
+        newVal (int or float): The new value of the statistic.
 
     &#34;&#34;&#34;
-    setattr(self, PART_EFFECTS[statName], value)</code></pre>
-</details>
-</dd>
-<dt id="legends.stats.PartEffects.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, statDict)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Sets the stat attributes to those contained in the given stat
-dictionary.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>statDict</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
-the stat names in the keys of <code>PART_EFFECTS</code> to
-numerical values.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update(self, statDict):
-    &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-    dictionary.
 
-    Args:
-        statDict (dict): {`str`:`int or float`} A dictionary mapping
-            the stat names in the keys of `PART_EFFECTS` to
-            numerical values.
-
-    &#34;&#34;&#34;
-    for statName, statVal in statDict.items():
-        setattr(self, PART_EFFECTS[statName], statVal)</code></pre>
+    def __init__(self, parent, attrName, oldVal, newVal):
+        self.parent = parent
+        self.attrName = attrName
+        self.oldVal = oldVal
+        self.newVal = newVal</code></pre>
 </details>
-</dd>
-</dl>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.eventhandler.Event" href="utils/eventhandler.html#legends.utils.eventhandler.Event">Event</a></li>
+</ul>
 </dd>
 <dt id="legends.stats.StatObject"><code class="flex name class">
 <span>class <span class="ident">StatObject</span></span>
+<span>(</span><span>statAbbrs, parent=None, initDict=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>An object that stores named statistics as attributes.</p>
@@ -437,10 +417,27 @@ new <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">S
 the statistics of the given instances.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>statAbbrs</code></strong> :&ensp;<code>iterable</code> of <code>str</code></dt>
-<dd>Strings that represent the stored
-statistics. Typically abbreviations. Used to construct
-object attributes.</dd>
+<dt><strong><code>parent</code></strong> :&ensp;<code>obj</code></dt>
+<dd>The object to which these stats belong.</dd>
+<dt><strong><code>onChange</code></strong> :&ensp;<code><a title="legends.utils.eventhandler.EventHandler" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler">EventHandler</a></code></dt>
+<dd>Sends a
+<code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code> to subscribers when a statistic changes.</dd>
+<dt><strong><code>silent</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Set to <code>True</code> to prevent the sending of a
+<code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code> when a statistic changes. Defaults to
+<code>False</code>.</dd>
+</dl>
+<p>If a dictionary of stat values is provided, the constructor
+initializes the instance with these values.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statAbbrs</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} The dictionary to assign to
+the <code>statAbbrs</code> property.</dd>
+<dt><strong><code>initDict</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
+stat names to numerical values. The keys of <code>initDict</code>
+should match the keys of the <code>statAbbrs</code> property.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -461,25 +458,104 @@ object attributes.</dd>
     the statistics of the given instances.
 
     Attributes:
-        statAbbrs (iterable of str): Strings that represent the stored
-            statistics. Typically abbreviations. Used to construct
-            object attributes.
+        parent (obj): The object to which these stats belong.
+        onChange (legends.utils.eventhandler.EventHandler): Sends a
+            `StatChangeEvent` to subscribers when a statistic changes.
+        silent (bool): Set to `True` to prevent the sending of a
+            `StatChangeEvent` when a statistic changes. Defaults to
+            `False`.
 
     &#34;&#34;&#34;
 
-    def __init__(self):
-        self.statAbbrs = []
+    def __init__(self, statAbbrs, parent=None, initDict=None):
+        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
+        initializes the instance with these values.
+
+        Args:
+            statAbbrs (dict): {`str`:`str`} The dictionary to assign to
+                the `statAbbrs` property.
+            initDict (dict): {`str`:`int or float`} A dictionary mapping
+                stat names to numerical values. The keys of `initDict`
+                should match the keys of the `statAbbrs` property.
+
+        &#34;&#34;&#34;
+        self._statAbbrs = statAbbrs
+        self.parent = parent
+        self.silent = False
+        self.onChange = EventHandler()
+        if initDict is None:
+            initDict = {statName: 0 for statName in self.statAbbrs}
+        self.update(initDict)
+
+    @property
+    def statAbbrs(self):
+        &#34;&#34;&#34;dict: {`str`:`str`} A dictionary mapping the names of stats
+        to be stored to the abbreviations that are to be used as
+        attribute names.
+        &#34;&#34;&#34;
+        return self._statAbbrs
+
+    def __setattr__(self, attrName, value):
+        oldVal = getattr(self, attrName) if hasattr(self, attrName) else None
+        self.__dict__[attrName] = value
+        if (
+            attrName in self.statAbbrs.values()
+            and oldVal != value
+            and not self.silent
+        ):
+            self.onChange.notify(StatChangeEvent(
+                self.parent, attrName, oldVal, value
+            ))
+
+    def get(self, statName):
+        &#34;&#34;&#34;Looks up a stat value by its name, as it appears in the keys
+        of the `statAbbrs` property.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                the `statAbbrs` property.
+
+        Returns:
+            int or float: The value of the given stat.
+
+        &#34;&#34;&#34;
+        return getattr(self, self.statAbbrs[statName])
+
+    def set(self, statName, value):
+        &#34;&#34;&#34;Sets a stat value by its name, as it appears in the keys of
+        the `statAbbrs` property.
+
+        Args:
+            statName (str): A stat name, as it appears in the keys of
+                the `statAbbrs` property.
+            value (int or float): The value to assign.
+
+        &#34;&#34;&#34;
+        setattr(self, self.statAbbrs[statName], value)
+
+    def update(self, statDict):
+        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
+        dictionary.
+
+        Args:
+            statDict (dict): {`str`:`int or float`} A dictionary mapping
+                stat names to numerical values. The keys of `statDict`
+                should match the keys of the `statAbbrs` attribute.
+
+        &#34;&#34;&#34;
+        for statName, statVal in statDict.items():
+            setattr(self, self.statAbbrs[statName], statVal)
 
     def __add__(self, other):
-        result = self.__class__()
-        for statAbbr in self.statAbbrs:
+        result = self.__class__(self.statAbbrs)
+        for statAbbr in self.statAbbrs.values():
             statSum = getattr(self, statAbbr) + getattr(other, statAbbr)
             setattr(result, statAbbr, statSum)
         return result
 
     def __mul__(self, other):
-        result = self.__class__()
-        for statAbbr in self.statAbbrs:
+        result = self.__class__(self.statAbbrs)
+        for statAbbr in self.statAbbrs.values():
             statProd = getattr(self, statAbbr) * getattr(other, statAbbr)
             setattr(result, statAbbr, statProd)
         return result
@@ -494,27 +570,148 @@ object attributes.</dd>
 <li><a title="legends.stats.PartEffects" href="#legends.stats.PartEffects">PartEffects</a></li>
 <li><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></li>
 </ul>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.stats.StatObject.statAbbrs"><code class="name">var <span class="ident">statAbbrs</span></code></dt>
+<dd>
+<div class="desc"><p>dict: {<code>str</code>:<code>str</code>} A dictionary mapping the names of stats
+to be stored to the abbreviations that are to be used as
+attribute names.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def statAbbrs(self):
+    &#34;&#34;&#34;dict: {`str`:`str`} A dictionary mapping the names of stats
+    to be stored to the abbreviations that are to be used as
+    attribute names.
+    &#34;&#34;&#34;
+    return self._statAbbrs</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.stats.StatObject.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, statName)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Looks up a stat value by its name, as it appears in the keys
+of the <code>statAbbrs</code> property.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
+<dd>A stat name, as it appears in the keys of
+the <code>statAbbrs</code> property.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code> or <code>float</code></dt>
+<dd>The value of the given stat.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, statName):
+    &#34;&#34;&#34;Looks up a stat value by its name, as it appears in the keys
+    of the `statAbbrs` property.
+
+    Args:
+        statName (str): A stat name, as it appears in the keys of
+            the `statAbbrs` property.
+
+    Returns:
+        int or float: The value of the given stat.
+
+    &#34;&#34;&#34;
+    return getattr(self, self.statAbbrs[statName])</code></pre>
+</details>
+</dd>
+<dt id="legends.stats.StatObject.set"><code class="name flex">
+<span>def <span class="ident">set</span></span>(<span>self, statName, value)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets a stat value by its name, as it appears in the keys of
+the <code>statAbbrs</code> property.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
+<dd>A stat name, as it appears in the keys of
+the <code>statAbbrs</code> property.</dd>
+<dt><strong><code>value</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
+<dd>The value to assign.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set(self, statName, value):
+    &#34;&#34;&#34;Sets a stat value by its name, as it appears in the keys of
+    the `statAbbrs` property.
+
+    Args:
+        statName (str): A stat name, as it appears in the keys of
+            the `statAbbrs` property.
+        value (int or float): The value to assign.
+
+    &#34;&#34;&#34;
+    setattr(self, self.statAbbrs[statName], value)</code></pre>
+</details>
+</dd>
+<dt id="legends.stats.StatObject.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, statDict)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the stat attributes to those contained in the given stat
+dictionary.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statDict</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
+stat names to numerical values. The keys of <code>statDict</code>
+should match the keys of the <code>statAbbrs</code> attribute.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, statDict):
+    &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
+    dictionary.
+
+    Args:
+        statDict (dict): {`str`:`int or float`} A dictionary mapping
+            stat names to numerical values. The keys of `statDict`
+            should match the keys of the `statAbbrs` attribute.
+
+    &#34;&#34;&#34;
+    for statName, statVal in statDict.items():
+        setattr(self, self.statAbbrs[statName], statVal)</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="legends.stats.Stats"><code class="flex name class">
 <span>class <span class="ident">Stats</span></span>
-<span>(</span><span>initDict=None)</span>
+<span>(</span><span>parent=None, initDict=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Stores the basic stats in STL.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>statAbbrs</code></strong> :&ensp;<code>iterable</code> of <code>str</code></dt>
-<dd>The values of <code>STAT_ABBREVIATIONS</code>,
-which are abbreviations for the keys of <code>GSBaseStat</code>.</dd>
-</dl>
+<p>A subclass of <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> whose <code>statAbbrs</code> property is set to
+<code>STAT_ABBREVIATIONS</code>.</p>
 <p>If a dictionary of stat values is provided, the constructor
 initializes the instance with these values.</p>
 <h2 id="args">Args</h2>
 <dl>
+<dt><strong><code>statAbbrs</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} The dictionary to assign to
+the <code>statAbbrs</code> property.</dd>
 <dt><strong><code>initDict</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
-the stat names in the keys of <code>STAT_ABBREVIATIONS</code> to
-numerical values.</dd>
+stat names to numerical values. The keys of <code>initDict</code>
+should match the keys of the <code>statAbbrs</code> property.</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -523,27 +720,13 @@ numerical values.</dd>
 <pre><code class="python">class Stats(StatObject):
     &#34;&#34;&#34;Stores the basic stats in STL.
 
-    Attributes:
-        statAbbrs (iterable of str): The values of `STAT_ABBREVIATIONS`,
-            which are abbreviations for the keys of `GSBaseStat`.
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `STAT_ABBREVIATIONS`.
 
     &#34;&#34;&#34;
 
-    def __init__(self, initDict=None):
-        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
-        initializes the instance with these values.
-
-        Args:
-            initDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `STAT_ABBREVIATIONS` to
-                numerical values.
-
-        &#34;&#34;&#34;
-        StatObject.__init__(self)
-        self.statAbbrs = STAT_ABBREVIATIONS.values()
-        if initDict is None:
-            initDict = {statName: 0 for statName in STAT_ABBREVIATIONS}
-        self.update(initDict)
+    def __init__(self, parent=None, initDict=None):
+        StatObject.__init__(self, STAT_ABBREVIATIONS.copy(), parent, initDict)
 
     @property
     def power(self):
@@ -555,46 +738,7 @@ numerical values.</dd>
         for statName in STAT_ABBREVIATIONS:
             statVal = self.get(statName)
             powerDelta += POWER_GRADIENT[statName] * statVal
-        return powerDelta
-
-    def get(self, statName):
-        &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
-        keys of `STAT_ABBREVIATIONS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `STAT_ABBREVIATIONS`.
-
-        Returns:
-            int or float: The value of the given stat.
-
-        &#34;&#34;&#34;
-        return getattr(self, STAT_ABBREVIATIONS[statName])
-
-    def set(self, statName, value):
-        &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
-        of `STAT_ABBREVIATIONS`.
-
-        Args:
-            statName (str): A stat name, as it appears in the keys of
-                `STAT_ABBREVIATIONS`.
-            value (int or float): The value to assign.
-
-        &#34;&#34;&#34;
-        setattr(self, STAT_ABBREVIATIONS[statName], value)
-
-    def update(self, statDict):
-        &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-        dictionary.
-
-        Args:
-            statDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `STAT_ABBREVIATIONS` to
-                numerical values.
-
-        &#34;&#34;&#34;
-        for statName, statVal in statDict.items():
-            setattr(self, STAT_ABBREVIATIONS[statName], statVal)</code></pre>
+        return powerDelta</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -625,107 +769,17 @@ def power(self):
 </details>
 </dd>
 </dl>
-<h3>Methods</h3>
-<dl>
-<dt id="legends.stats.Stats.get"><code class="name flex">
-<span>def <span class="ident">get</span></span>(<span>self, statName)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Looks up a stat value by its full name, as it appears in the
-keys of <code>STAT_ABBREVIATIONS</code>.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
-<dd>A stat name, as it appears in the keys of
-<code>STAT_ABBREVIATIONS</code>.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>int</code> or <code>float</code></dt>
-<dd>The value of the given stat.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get(self, statName):
-    &#34;&#34;&#34;Looks up a stat value by its full name, as it appears in the
-    keys of `STAT_ABBREVIATIONS`.
-
-    Args:
-        statName (str): A stat name, as it appears in the keys of
-            `STAT_ABBREVIATIONS`.
-
-    Returns:
-        int or float: The value of the given stat.
-
-    &#34;&#34;&#34;
-    return getattr(self, STAT_ABBREVIATIONS[statName])</code></pre>
-</details>
-</dd>
-<dt id="legends.stats.Stats.set"><code class="name flex">
-<span>def <span class="ident">set</span></span>(<span>self, statName, value)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Sets a stat value by its full name, as it appears in the keys
-of <code>STAT_ABBREVIATIONS</code>.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
-<dd>A stat name, as it appears in the keys of
-<code>STAT_ABBREVIATIONS</code>.</dd>
-<dt><strong><code>value</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
-<dd>The value to assign.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def set(self, statName, value):
-    &#34;&#34;&#34;Sets a stat value by its full name, as it appears in the keys
-    of `STAT_ABBREVIATIONS`.
-
-    Args:
-        statName (str): A stat name, as it appears in the keys of
-            `STAT_ABBREVIATIONS`.
-        value (int or float): The value to assign.
-
-    &#34;&#34;&#34;
-    setattr(self, STAT_ABBREVIATIONS[statName], value)</code></pre>
-</details>
-</dd>
-<dt id="legends.stats.Stats.update"><code class="name flex">
-<span>def <span class="ident">update</span></span>(<span>self, statDict)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Sets the stat attributes to those contained in the given stat
-dictionary.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>statDict</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
-the stat names in the keys of <code>STAT_ABBREVIATIONS</code> to
-numerical values.</dd>
-</dl></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def update(self, statDict):
-    &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-    dictionary.
-
-    Args:
-        statDict (dict): {`str`:`int or float`} A dictionary mapping
-            the stat names in the keys of `STAT_ABBREVIATIONS` to
-            numerical values.
-
-    &#34;&#34;&#34;
-    for statName, statVal in statDict.items():
-        setattr(self, STAT_ABBREVIATIONS[statName], statVal)</code></pre>
-</details>
-</dd>
-</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
+<li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
+<li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 </dl>
 </section>
@@ -741,26 +795,32 @@ numerical values.</dd>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.stats.checkForStats" href="#legends.stats.checkForStats">checkForStats</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
 <h4><code><a title="legends.stats.PartEffects" href="#legends.stats.PartEffects">PartEffects</a></code></h4>
-<ul class="">
-<li><code><a title="legends.stats.PartEffects.get" href="#legends.stats.PartEffects.get">get</a></code></li>
-<li><code><a title="legends.stats.PartEffects.set" href="#legends.stats.PartEffects.set">set</a></code></li>
-<li><code><a title="legends.stats.PartEffects.update" href="#legends.stats.PartEffects.update">update</a></code></li>
-</ul>
+</li>
+<li>
+<h4><code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code></h4>
 </li>
 <li>
 <h4><code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code></h4>
+<ul class="">
+<li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
+<li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
+<li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></code></h4>
 <ul class="">
-<li><code><a title="legends.stats.Stats.get" href="#legends.stats.Stats.get">get</a></code></li>
 <li><code><a title="legends.stats.Stats.power" href="#legends.stats.Stats.power">power</a></code></li>
-<li><code><a title="legends.stats.Stats.set" href="#legends.stats.Stats.set">set</a></code></li>
-<li><code><a title="legends.stats.Stats.update" href="#legends.stats.Stats.update">update</a></code></li>
 </ul>
 </li>
 </ul>
