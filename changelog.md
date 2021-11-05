@@ -1,5 +1,11 @@
 # Change log
 
+## Version 0.24.0
+
+* Eliminated the `maxGearLevel` and `tokensNeeded` properties of the `Character` class. Made changes throughout the package to adjust for this. (The `Character` class had grown too large and needed to be simplified.)
+* Edited the `WatchedOneToOne` class so that changes trigger the event handler of both itself and its inverse. Client classes now need only subscribe to one event handler.
+* Fixed an error in `SaveSlot.sort()` that prevented sorting when the method tried to set the now read-only `Roster.chars` property.
+
 ## Version 0.23.0
 
 * Edited `AskRosterFilter` to add spaces in character tags that are expressed in camel case.

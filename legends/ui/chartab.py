@@ -7,7 +7,7 @@ from tkinter import ttk
 from legends.utils.functions import camelToSpace
 from legends.utils.scrollframe import ScrollFrame
 from legends.constants import ITEMS, RARITY_COLORS
-from legends.functions import xpFromLevel
+from legends.functions import tokensNeeded, xpFromLevel
 from legends.gameobjects import Gear
 from legends.skill import Skill
 
@@ -157,7 +157,7 @@ class CharTab(tk.Frame):
                 + 'XP: {:,} ({:.1%} toward maximum level)'
             ).format(
                 self.master.saveslot.tokens[self.char.nameID],
-                self.char.tokensNeeded,
+                tokensNeeded(self.char.rarity, self.char.rank),
                 self.char.xp,
                 self.char.xp/xpFromLevel(99)
             ),

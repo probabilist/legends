@@ -416,11 +416,14 @@ class SaveSlot():
                 in descending order.
 
         """
-        self.roster.chars = dict(sorted(
+        charDict = dict(sorted(
             self.roster.chars.items(),
             key=lambda item:func(item[1]),
             reverse=descending
         ))
+        self.roster.chars.clear()
+        for nameID, char in charDict.items():
+            self.roster.chars[nameID] = char
 
 class STLTimeStamps():
     """Stores and manages *Star Trek: Legends* timestamps.

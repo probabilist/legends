@@ -12,7 +12,7 @@ from legends.constants import (
 from legends.constants import Inventory
 from legends.functions import (
     gearToMaxCost, getBasicGearID, getCharStats, getGearStats, getPartStats,
-    levelFromXP, tokensNeeded, xpFromLevel
+    levelFromXP, xpFromLevel
 )
 from legends.stats import PartEffects, Stats
 from legends.skill import BridgeSkill, Skill
@@ -202,11 +202,6 @@ class Character():
         ]
 
     @property
-    def maxGearLevel(self):
-        """`int`: The maximum level of gear this character can equip."""
-        return 5 + 5 * self.rarityIndex
-
-    @property
     def missingSkillLevels(self):
         """`int`: The number of missing skill levels. Assumes the
         maximum level for every skill is 2.
@@ -217,13 +212,6 @@ class Character():
             if skill.unlocked:
                 missingLevels -= skill.level
         return missingLevels
-
-    @property
-    def tokensNeeded(self):
-        """`int`: The total number of tokens needed for the character to
-        reach the next rank.
-        """
-        return tokensNeeded(self.rarity, self.rank)
 
     def updateStats(self):
         """Updates the `stats` attribute.
@@ -356,7 +344,9 @@ class Character():
                 cost += roster.containsGear[slot].itemsToMax(roster)
             except KeyError:
                 cost += gearToMaxCost(
-                    getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+                    getBasicGearID(self.role, slot.index),
+                    1,
+                    5 + 5 * self.rarityIndex
                 )
         return cost
 
@@ -489,7 +479,7 @@ class Gear(Managed):
             legends.constants.Inventory: The list of items needed.
 
         """
-        maxLevel = roster.inGearSlot[self].char.maxGearLevel
+        maxLevel = roster.maxGearLevel(self)
         return gearToMaxCost(self.gearID, self.level, maxLevel)
 
     def __repr__(self):

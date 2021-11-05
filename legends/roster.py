@@ -111,9 +111,8 @@ class OneToOneChangeEvent(Event): # pylint: disable=too-few-public-methods
 class WatchedOneToOne(OneToOne):
     """A one-to-one relation with an event handler.
 
-    To catch all changes to the relation, subscribers should subscribe
-    to the `onChange` event handler of both the main relation and its
-    inverse.
+    Changes made to the relation trigger the event handler of both the
+    relation and its inverse.
 
     Attributes:
 
@@ -134,6 +133,9 @@ class WatchedOneToOne(OneToOne):
         self.onChange.notify(
             OneToOneChangeEvent(self, key, oldVal, 'removed')
         )
+        self.inverse.onChange.notify(
+            OneToOneChangeEvent(self, oldVal, key, 'removed')
+        )
 
     def __setfreeval__(self, key, val):
         oldVal = self.get(key)
@@ -145,9 +147,15 @@ class WatchedOneToOne(OneToOne):
             self.onChange.notify(
                 OneToOneChangeEvent(self, key, oldVal, 'removed')
             )
+            self.inverse.onChange.notify(
+                OneToOneChangeEvent(self, oldVal, key, 'removed')
+            )
         if newVal is not None:
             self.onChange.notify(
                 OneToOneChangeEvent(self, key, newVal, 'added')
+            )
+            self.inverse.onChange.notify(
+                OneToOneChangeEvent(self, newVal, key, 'added')
             )
 
 # pylint: disable-next=too-few-public-methods
@@ -180,7 +188,7 @@ class InGearSlot(WatchedOneToOne):
         char = gearSlot.char
         index = gearSlot.index
         if gear.slot != index or (
-            gear.level > char.maxGearLevel and self.enforceLevel
+            gear.level > 5 + 5 * char.rarityIndex and self.enforceLevel
         ):
             raise ValueError((gear, gearSlot))
         return True
@@ -347,10 +355,8 @@ class Roster():
         self._chars = WatchedDict(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
         self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
-        self.inGearSlot.inverse.onChange.subscribe(self.charChangeWatcher)
         self.inPartSlot = WatchedOneToOne()
         self.inPartSlot.onChange.subscribe(self.charChangeWatcher)
-        self.inPartSlot.inverse.onChange.subscribe(self.charChangeWatcher)
         if save is not None:
             self.fromSaveData(save, slot)
         self.onCharChange = EventHandler()
@@ -416,10 +422,8 @@ class Roster():
 
         # fill gear and particles
         gearDict = readGear(save, slot)
-        self.gear.clear()
         self.gear.extend(gearDict.values())
         partDict = readParts(save, slot)
-        self.parts.clear()
         self.parts.extend(partDict.values())
 
         # cycle through characters in save data
@@ -502,7 +506,8 @@ class Roster():
                 continue
             for slot, gearName in enumerate(gearNames):
                 gear = Gear(
-                    '{} {}'.format(gearName, char.role), char.maxGearLevel
+                    '{} {}'.format(gearName, char.role),
+                    5 + 5 * char.rarityIndex
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
@@ -529,7 +534,7 @@ class Roster():
         """
         if gear not in self.inGearSlot:
             return 1
-        return self.inGearSlot[gear].char.maxGearLevel
+        return 5 + 5 * self.inGearSlot[gear].char.rarityIndex
 
     def missingGearLevels(self, nameID):
         """Computes and returns the number of missing gear levels for
@@ -549,7 +554,8 @@ class Roster():
                 gearLevels += self.containsGear[slot].level
             except (KeyError, AttributeError):
                 pass
-        return 4 * char.maxGearLevel - gearLevels
+        maxGearLevel = 5 + 5 * char.rarityIndex
+        return 4 * maxGearLevel - gearLevels
 
     def missingGearRanks(self, nameID):
         """Computes and returns the number of missing gear ranks for the

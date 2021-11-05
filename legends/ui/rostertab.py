@@ -13,6 +13,7 @@ from legends.constants import (
     CHARACTER_TAGS, ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS,
     SUMMON_POOL
 )
+from legends.functions import tokensNeeded
 from legends.gameobjects import allSkillEffectTags
 from legends.ui.charcard import CharCard
 from legends.ui.dialogs import (
@@ -682,7 +683,7 @@ class RosterTab(tk.Frame):
             'Role': lambda c: c.role,
             'Tokens': lambda c,s=sslot: s.tokens[c.nameID],
             'Tokens needed': lambda c,s=sslot: (
-                c.tokensNeeded - s.tokens[c.nameID]
+                tokensNeeded(c.rarity, c.rank) - s.tokens[c.nameID]
             )
         }
         for statName in STAT_INITIALS:

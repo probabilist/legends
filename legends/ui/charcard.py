@@ -4,7 +4,7 @@
 
 import tkinter as tk
 from legends.constants import POWER_AT_ORIGIN, RARITY_COLORS, STAT_INITIALS
-from legends.functions import xpFromLevel
+from legends.functions import tokensNeeded, xpFromLevel
 
 __all__ = ['CharCard']
 
@@ -228,7 +228,7 @@ class CharCard(tk.Frame):
             'role': self.char.role,
             'rank': self.char.rank,
             'tokens': self.saveslot.tokens[self.char.nameID],
-            'tokensNeeded': self.char.tokensNeeded,
+            'tokensNeeded': tokensNeeded(self.char.rarity, self.char.rank),
             'level': self.char.level,
             'xp': self.char.xp
         }
