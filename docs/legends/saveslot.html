@@ -445,11 +445,14 @@ class SaveSlot():
                 in descending order.
 
         &#34;&#34;&#34;
-        self.roster.chars = dict(sorted(
+        charDict = dict(sorted(
             self.roster.chars.items(),
             key=lambda item:func(item[1]),
             reverse=descending
         ))
+        self.roster.chars.clear()
+        for nameID, char in charDict.items():
+            self.roster.chars[nameID] = char
 
 class STLTimeStamps():
     &#34;&#34;&#34;Stores and manages *Star Trek: Legends* timestamps.
@@ -1372,11 +1375,14 @@ list is the number of battles remaining for that effect.</dd>
                 in descending order.
 
         &#34;&#34;&#34;
-        self.roster.chars = dict(sorted(
+        charDict = dict(sorted(
             self.roster.chars.items(),
             key=lambda item:func(item[1]),
             reverse=descending
-        ))</code></pre>
+        ))
+        self.roster.chars.clear()
+        for nameID, char in charDict.items():
+            self.roster.chars[nameID] = char</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -1490,11 +1496,14 @@ in descending order.</dd>
             in descending order.
 
     &#34;&#34;&#34;
-    self.roster.chars = dict(sorted(
+    charDict = dict(sorted(
         self.roster.chars.items(),
         key=lambda item:func(item[1]),
         reverse=descending
-    ))</code></pre>
+    ))
+    self.roster.chars.clear()
+    for nameID, char in charDict.items():
+        self.roster.chars[nameID] = char</code></pre>
 </details>
 </dd>
 </dl>

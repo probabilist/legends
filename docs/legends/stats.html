@@ -68,17 +68,16 @@ class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
 
     Attributes:
         parent (obj): The object whose statistics have changed.
-        attrName (str): The name of the statistic that changed.
-        oldVal (int or float): The old value of the statistic.
-        newVal (int or float): The new value of the statistic.
+        oldStats (dict): {`str`:`int` or `float`} A dictionary mapping
+            stat names (the keys of the `StatObject`&#39;s `statAbbrs`
+            property) to their previous values (at the time of the last
+            issuance of a `StatChangeEvent`).
 
     &#34;&#34;&#34;
 
-    def __init__(self, parent, attrName, oldVal, newVal):
+    def __init__(self, parent, oldStats):
         self.parent = parent
-        self.attrName = attrName
-        self.oldVal = oldVal
-        self.newVal = newVal
+        self.oldStats = oldStats
 
 class StatObject():
     &#34;&#34;&#34;An object that stores named statistics as attributes.
@@ -120,29 +119,46 @@ class StatObject():
         self.parent = parent
         self.silent = False
         self.onChange = EventHandler()
+        self._oldStats = {statName: 0 for statName in self.statAbbrs}
         if initDict is None:
-            initDict = {statName: 0 for statName in self.statAbbrs}
+            initDict = self._oldStats.copy()
         self.update(initDict)
 
     @property
     def statAbbrs(self):
-        &#34;&#34;&#34;dict: {`str`:`str`} A dictionary mapping the names of stats
+        &#34;&#34;&#34;`dict`: {`str`:`str`} A dictionary mapping the names of stats
         to be stored to the abbreviations that are to be used as
         attribute names.
         &#34;&#34;&#34;
         return self._statAbbrs
 
+    @property
+    def oldStats(self):
+        &#34;&#34;&#34;`dict`: {`str`:`int or float`} A dictionary mapping stat
+        names to the values they held the last time a `StatChangeEvent`
+        was issued. If no `StatChangeEvent` has been issued, all values
+        of this dictionary will be 0.
+        &#34;&#34;&#34;
+        return self._oldStats
+
+    @property
+    def asDict(self):
+        &#34;&#34;&#34;`dict`: {`str`:`int or float`} A dictionary mapping stat
+        names to their current values.
+        &#34;&#34;&#34;
+        return {statName: self.get(statName) for statName in self.statAbbrs}
+
     def __setattr__(self, attrName, value):
-        oldVal = getattr(self, attrName) if hasattr(self, attrName) else None
         self.__dict__[attrName] = value
-        if (
-            attrName in self.statAbbrs.values()
-            and oldVal != value
-            and not self.silent
-        ):
-            self.onChange.notify(StatChangeEvent(
-                self.parent, attrName, oldVal, value
-            ))
+        if attrName in self.statAbbrs.values() and not self.silent:
+            self.notify()
+
+    def notify(self):
+        &#34;&#34;&#34;Sends a `StatChangeEvent` to the `onChange` subscribers, and
+        updates the `oldStats` property.
+        &#34;&#34;&#34;
+        self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+        self._oldStats = self.asDict
 
     def get(self, statName):
         &#34;&#34;&#34;Looks up a stat value by its name, as it appears in the keys
@@ -172,7 +188,9 @@ class StatObject():
 
     def update(self, statDict):
         &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-        dictionary.
+        dictionary. Suppresses all issuing of `StatChangeEvent`
+        instances until the update is completed, then issues a single
+        event to cover the entire update.
 
         Args:
             statDict (dict): {`str`:`int or float`} A dictionary mapping
@@ -180,8 +198,13 @@ class StatObject():
                 should match the keys of the `statAbbrs` attribute.
 
         &#34;&#34;&#34;
+        initSilent = self.silent
+        self.silent = True
         for statName, statVal in statDict.items():
             setattr(self, self.statAbbrs[statName], statVal)
+        self.silent = initSilent
+        if not self.silent:
+            self.notify()
 
     def __add__(self, other):
         result = self.__class__(self.statAbbrs)
@@ -199,7 +222,8 @@ class StatObject():
 
     def __repr__(self):
         return &#39;StatObject({})&#39;.format(formatDict({
-            statAbbr: getattr(self, statAbbr) for statAbbr in self.statAbbrs
+            statAbbr: getattr(self, statAbbr)
+            for statAbbr in self.statAbbrs.values()
         }))
 
 class Stats(StatObject):
@@ -346,7 +370,10 @@ numerical values.</dd>
 <ul class="hlist">
 <li><code><b><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></b></code>:
 <ul class="hlist">
+<li><code><a title="legends.stats.StatObject.asDict" href="#legends.stats.StatObject.asDict">asDict</a></code></li>
 <li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.notify" href="#legends.stats.StatObject.notify">notify</a></code></li>
+<li><code><a title="legends.stats.StatObject.oldStats" href="#legends.stats.StatObject.oldStats">oldStats</a></code></li>
 <li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
 <li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
 <li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>
@@ -356,7 +383,7 @@ numerical values.</dd>
 </dd>
 <dt id="legends.stats.StatChangeEvent"><code class="flex name class">
 <span>class <span class="ident">StatChangeEvent</span></span>
-<span>(</span><span>parent, attrName, oldVal, newVal)</span>
+<span>(</span><span>parent, oldStats)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Created when one of a <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>'s attributes changes.</p>
@@ -365,12 +392,11 @@ numerical values.</dd>
 <dl>
 <dt><strong><code>parent</code></strong> :&ensp;<code>obj</code></dt>
 <dd>The object whose statistics have changed.</dd>
-<dt><strong><code>attrName</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the statistic that changed.</dd>
-<dt><strong><code>oldVal</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
-<dd>The old value of the statistic.</dd>
-<dt><strong><code>newVal</code></strong> :&ensp;<code>int</code> or <code>float</code></dt>
-<dd>The new value of the statistic.</dd>
+<dt><strong><code>oldStats</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>int</code> or <code>float</code>} A dictionary mapping
+stat names (the keys of the <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>'s <code>statAbbrs</code>
+property) to their previous values (at the time of the last
+issuance of a <code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code>).</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -383,17 +409,16 @@ numerical values.</dd>
 
     Attributes:
         parent (obj): The object whose statistics have changed.
-        attrName (str): The name of the statistic that changed.
-        oldVal (int or float): The old value of the statistic.
-        newVal (int or float): The new value of the statistic.
+        oldStats (dict): {`str`:`int` or `float`} A dictionary mapping
+            stat names (the keys of the `StatObject`&#39;s `statAbbrs`
+            property) to their previous values (at the time of the last
+            issuance of a `StatChangeEvent`).
 
     &#34;&#34;&#34;
 
-    def __init__(self, parent, attrName, oldVal, newVal):
+    def __init__(self, parent, oldStats):
         self.parent = parent
-        self.attrName = attrName
-        self.oldVal = oldVal
-        self.newVal = newVal</code></pre>
+        self.oldStats = oldStats</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -483,29 +508,46 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
         self.parent = parent
         self.silent = False
         self.onChange = EventHandler()
+        self._oldStats = {statName: 0 for statName in self.statAbbrs}
         if initDict is None:
-            initDict = {statName: 0 for statName in self.statAbbrs}
+            initDict = self._oldStats.copy()
         self.update(initDict)
 
     @property
     def statAbbrs(self):
-        &#34;&#34;&#34;dict: {`str`:`str`} A dictionary mapping the names of stats
+        &#34;&#34;&#34;`dict`: {`str`:`str`} A dictionary mapping the names of stats
         to be stored to the abbreviations that are to be used as
         attribute names.
         &#34;&#34;&#34;
         return self._statAbbrs
 
+    @property
+    def oldStats(self):
+        &#34;&#34;&#34;`dict`: {`str`:`int or float`} A dictionary mapping stat
+        names to the values they held the last time a `StatChangeEvent`
+        was issued. If no `StatChangeEvent` has been issued, all values
+        of this dictionary will be 0.
+        &#34;&#34;&#34;
+        return self._oldStats
+
+    @property
+    def asDict(self):
+        &#34;&#34;&#34;`dict`: {`str`:`int or float`} A dictionary mapping stat
+        names to their current values.
+        &#34;&#34;&#34;
+        return {statName: self.get(statName) for statName in self.statAbbrs}
+
     def __setattr__(self, attrName, value):
-        oldVal = getattr(self, attrName) if hasattr(self, attrName) else None
         self.__dict__[attrName] = value
-        if (
-            attrName in self.statAbbrs.values()
-            and oldVal != value
-            and not self.silent
-        ):
-            self.onChange.notify(StatChangeEvent(
-                self.parent, attrName, oldVal, value
-            ))
+        if attrName in self.statAbbrs.values() and not self.silent:
+            self.notify()
+
+    def notify(self):
+        &#34;&#34;&#34;Sends a `StatChangeEvent` to the `onChange` subscribers, and
+        updates the `oldStats` property.
+        &#34;&#34;&#34;
+        self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+        self._oldStats = self.asDict
 
     def get(self, statName):
         &#34;&#34;&#34;Looks up a stat value by its name, as it appears in the keys
@@ -535,7 +577,9 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
 
     def update(self, statDict):
         &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-        dictionary.
+        dictionary. Suppresses all issuing of `StatChangeEvent`
+        instances until the update is completed, then issues a single
+        event to cover the entire update.
 
         Args:
             statDict (dict): {`str`:`int or float`} A dictionary mapping
@@ -543,8 +587,13 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
                 should match the keys of the `statAbbrs` attribute.
 
         &#34;&#34;&#34;
+        initSilent = self.silent
+        self.silent = True
         for statName, statVal in statDict.items():
             setattr(self, self.statAbbrs[statName], statVal)
+        self.silent = initSilent
+        if not self.silent:
+            self.notify()
 
     def __add__(self, other):
         result = self.__class__(self.statAbbrs)
@@ -562,7 +611,8 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
 
     def __repr__(self):
         return &#39;StatObject({})&#39;.format(formatDict({
-            statAbbr: getattr(self, statAbbr) for statAbbr in self.statAbbrs
+            statAbbr: getattr(self, statAbbr)
+            for statAbbr in self.statAbbrs.values()
         }))</code></pre>
 </details>
 <h3>Subclasses</h3>
@@ -572,9 +622,45 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
 </ul>
 <h3>Instance variables</h3>
 <dl>
+<dt id="legends.stats.StatObject.asDict"><code class="name">var <span class="ident">asDict</span></code></dt>
+<dd>
+<div class="desc"><p><code>dict</code>: {<code>str</code>:<code>int or float</code>} A dictionary mapping stat
+names to their current values.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def asDict(self):
+    &#34;&#34;&#34;`dict`: {`str`:`int or float`} A dictionary mapping stat
+    names to their current values.
+    &#34;&#34;&#34;
+    return {statName: self.get(statName) for statName in self.statAbbrs}</code></pre>
+</details>
+</dd>
+<dt id="legends.stats.StatObject.oldStats"><code class="name">var <span class="ident">oldStats</span></code></dt>
+<dd>
+<div class="desc"><p><code>dict</code>: {<code>str</code>:<code>int or float</code>} A dictionary mapping stat
+names to the values they held the last time a <code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code>
+was issued. If no <code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code> has been issued, all values
+of this dictionary will be 0.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def oldStats(self):
+    &#34;&#34;&#34;`dict`: {`str`:`int or float`} A dictionary mapping stat
+    names to the values they held the last time a `StatChangeEvent`
+    was issued. If no `StatChangeEvent` has been issued, all values
+    of this dictionary will be 0.
+    &#34;&#34;&#34;
+    return self._oldStats</code></pre>
+</details>
+</dd>
 <dt id="legends.stats.StatObject.statAbbrs"><code class="name">var <span class="ident">statAbbrs</span></code></dt>
 <dd>
-<div class="desc"><p>dict: {<code>str</code>:<code>str</code>} A dictionary mapping the names of stats
+<div class="desc"><p><code>dict</code>: {<code>str</code>:<code>str</code>} A dictionary mapping the names of stats
 to be stored to the abbreviations that are to be used as
 attribute names.</p></div>
 <details class="source">
@@ -583,7 +669,7 @@ attribute names.</p></div>
 </summary>
 <pre><code class="python">@property
 def statAbbrs(self):
-    &#34;&#34;&#34;dict: {`str`:`str`} A dictionary mapping the names of stats
+    &#34;&#34;&#34;`dict`: {`str`:`str`} A dictionary mapping the names of stats
     to be stored to the abbreviations that are to be used as
     attribute names.
     &#34;&#34;&#34;
@@ -629,6 +715,24 @@ the <code>statAbbrs</code> property.</dd>
     return getattr(self, self.statAbbrs[statName])</code></pre>
 </details>
 </dd>
+<dt id="legends.stats.StatObject.notify"><code class="name flex">
+<span>def <span class="ident">notify</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sends a <code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code> to the <code>onChange</code> subscribers, and
+updates the <code>oldStats</code> property.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def notify(self):
+    &#34;&#34;&#34;Sends a `StatChangeEvent` to the `onChange` subscribers, and
+    updates the `oldStats` property.
+    &#34;&#34;&#34;
+    self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+    self._oldStats = self.asDict</code></pre>
+</details>
+</dd>
 <dt id="legends.stats.StatObject.set"><code class="name flex">
 <span>def <span class="ident">set</span></span>(<span>self, statName, value)</span>
 </code></dt>
@@ -665,7 +769,9 @@ the <code>statAbbrs</code> property.</dd>
 </code></dt>
 <dd>
 <div class="desc"><p>Sets the stat attributes to those contained in the given stat
-dictionary.</p>
+dictionary. Suppresses all issuing of <code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code>
+instances until the update is completed, then issues a single
+event to cover the entire update.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>statDict</code></strong> :&ensp;<code>dict</code></dt>
@@ -679,7 +785,9 @@ should match the keys of the <code>statAbbrs</code> attribute.</dd>
 </summary>
 <pre><code class="python">def update(self, statDict):
     &#34;&#34;&#34;Sets the stat attributes to those contained in the given stat
-    dictionary.
+    dictionary. Suppresses all issuing of `StatChangeEvent`
+    instances until the update is completed, then issues a single
+    event to cover the entire update.
 
     Args:
         statDict (dict): {`str`:`int or float`} A dictionary mapping
@@ -687,8 +795,13 @@ should match the keys of the <code>statAbbrs</code> attribute.</dd>
             should match the keys of the `statAbbrs` attribute.
 
     &#34;&#34;&#34;
+    initSilent = self.silent
+    self.silent = True
     for statName, statVal in statDict.items():
-        setattr(self, self.statAbbrs[statName], statVal)</code></pre>
+        setattr(self, self.statAbbrs[statName], statVal)
+    self.silent = initSilent
+    if not self.silent:
+        self.notify()</code></pre>
 </details>
 </dd>
 </dl>
@@ -773,7 +886,10 @@ def power(self):
 <ul class="hlist">
 <li><code><b><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></b></code>:
 <ul class="hlist">
+<li><code><a title="legends.stats.StatObject.asDict" href="#legends.stats.StatObject.asDict">asDict</a></code></li>
 <li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.notify" href="#legends.stats.StatObject.notify">notify</a></code></li>
+<li><code><a title="legends.stats.StatObject.oldStats" href="#legends.stats.StatObject.oldStats">oldStats</a></code></li>
 <li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
 <li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
 <li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>
@@ -810,8 +926,11 @@ def power(self):
 </li>
 <li>
 <h4><code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code></h4>
-<ul class="">
+<ul class="two-column">
+<li><code><a title="legends.stats.StatObject.asDict" href="#legends.stats.StatObject.asDict">asDict</a></code></li>
 <li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.notify" href="#legends.stats.StatObject.notify">notify</a></code></li>
+<li><code><a title="legends.stats.StatObject.oldStats" href="#legends.stats.StatObject.oldStats">oldStats</a></code></li>
 <li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
 <li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
 <li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>

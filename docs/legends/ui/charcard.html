@@ -33,7 +33,7 @@
 
 import tkinter as tk
 from legends.constants import POWER_AT_ORIGIN, RARITY_COLORS, STAT_INITIALS
-from legends.functions import xpFromLevel
+from legends.functions import tokensNeeded, xpFromLevel
 
 __all__ = [&#39;CharCard&#39;]
 
@@ -257,7 +257,7 @@ class CharCard(tk.Frame):
             &#39;role&#39;: self.char.role,
             &#39;rank&#39;: self.char.rank,
             &#39;tokens&#39;: self.saveslot.tokens[self.char.nameID],
-            &#39;tokensNeeded&#39;: self.char.tokensNeeded,
+            &#39;tokensNeeded&#39;: tokensNeeded(self.char.rarity, self.char.rank),
             &#39;level&#39;: self.char.level,
             &#39;xp&#39;: self.char.xp
         }
@@ -533,7 +533,7 @@ card belongs.</dd>
             &#39;role&#39;: self.char.role,
             &#39;rank&#39;: self.char.rank,
             &#39;tokens&#39;: self.saveslot.tokens[self.char.nameID],
-            &#39;tokensNeeded&#39;: self.char.tokensNeeded,
+            &#39;tokensNeeded&#39;: tokensNeeded(self.char.rarity, self.char.rank),
             &#39;level&#39;: self.char.level,
             &#39;xp&#39;: self.char.xp
         }
@@ -664,7 +664,7 @@ depicted on this card.</p>
         &#39;role&#39;: self.char.role,
         &#39;rank&#39;: self.char.rank,
         &#39;tokens&#39;: self.saveslot.tokens[self.char.nameID],
-        &#39;tokensNeeded&#39;: self.char.tokensNeeded,
+        &#39;tokensNeeded&#39;: tokensNeeded(self.char.rarity, self.char.rank),
         &#39;level&#39;: self.char.level,
         &#39;xp&#39;: self.char.xp
     }

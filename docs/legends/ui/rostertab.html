@@ -42,6 +42,7 @@ from legends.constants import (
     CHARACTER_TAGS, ENABLED, POWER_AT_ORIGIN, RARITIES, ROLES, STAT_INITIALS,
     SUMMON_POOL
 )
+from legends.functions import tokensNeeded
 from legends.gameobjects import allSkillEffectTags
 from legends.ui.charcard import CharCard
 from legends.ui.dialogs import (
@@ -711,7 +712,7 @@ class RosterTab(tk.Frame):
             &#39;Role&#39;: lambda c: c.role,
             &#39;Tokens&#39;: lambda c,s=sslot: s.tokens[c.nameID],
             &#39;Tokens needed&#39;: lambda c,s=sslot: (
-                c.tokensNeeded - s.tokens[c.nameID]
+                tokensNeeded(c.rarity, c.rank) - s.tokens[c.nameID]
             )
         }
         for statName in STAT_INITIALS:
@@ -2398,7 +2399,7 @@ as the instance's parent.</dd>
             &#39;Role&#39;: lambda c: c.role,
             &#39;Tokens&#39;: lambda c,s=sslot: s.tokens[c.nameID],
             &#39;Tokens needed&#39;: lambda c,s=sslot: (
-                c.tokensNeeded - s.tokens[c.nameID]
+                tokensNeeded(c.rarity, c.rank) - s.tokens[c.nameID]
             )
         }
         for statName in STAT_INITIALS:
@@ -2628,7 +2629,7 @@ interact with the <code><a title="legends.ui.rostertab.RosterTab" href="#legends
         &#39;Role&#39;: lambda c: c.role,
         &#39;Tokens&#39;: lambda c,s=sslot: s.tokens[c.nameID],
         &#39;Tokens needed&#39;: lambda c,s=sslot: (
-            c.tokensNeeded - s.tokens[c.nameID]
+            tokensNeeded(c.rarity, c.rank) - s.tokens[c.nameID]
         )
     }
     for statName in STAT_INITIALS:

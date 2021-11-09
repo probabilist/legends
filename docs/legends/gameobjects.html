@@ -41,7 +41,7 @@ from legends.constants import (
 from legends.constants import Inventory
 from legends.functions import (
     gearToMaxCost, getBasicGearID, getCharStats, getGearStats, getPartStats,
-    levelFromXP, tokensNeeded, xpFromLevel
+    levelFromXP, xpFromLevel
 )
 from legends.stats import PartEffects, Stats
 from legends.skill import BridgeSkill, Skill
@@ -231,11 +231,6 @@ class Character():
         ]
 
     @property
-    def maxGearLevel(self):
-        &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
-        return 5 + 5 * self.rarityIndex
-
-    @property
     def missingSkillLevels(self):
         &#34;&#34;&#34;`int`: The number of missing skill levels. Assumes the
         maximum level for every skill is 2.
@@ -246,13 +241,6 @@ class Character():
             if skill.unlocked:
                 missingLevels -= skill.level
         return missingLevels
-
-    @property
-    def tokensNeeded(self):
-        &#34;&#34;&#34;`int`: The total number of tokens needed for the character to
-        reach the next rank.
-        &#34;&#34;&#34;
-        return tokensNeeded(self.rarity, self.rank)
 
     def updateStats(self):
         &#34;&#34;&#34;Updates the `stats` attribute.
@@ -385,7 +373,9 @@ class Character():
                 cost += roster.containsGear[slot].itemsToMax(roster)
             except KeyError:
                 cost += gearToMaxCost(
-                    getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+                    getBasicGearID(self.role, slot.index),
+                    1,
+                    5 + 5 * self.rarityIndex
                 )
         return cost
 
@@ -518,7 +508,7 @@ class Gear(Managed):
             legends.constants.Inventory: The list of items needed.
 
         &#34;&#34;&#34;
-        maxLevel = roster.inGearSlot[self].char.maxGearLevel
+        maxLevel = roster.maxGearLevel(self)
         return gearToMaxCost(self.gearID, self.level, maxLevel)
 
     def __repr__(self):
@@ -927,11 +917,6 @@ properties.</p>
         ]
 
     @property
-    def maxGearLevel(self):
-        &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
-        return 5 + 5 * self.rarityIndex
-
-    @property
     def missingSkillLevels(self):
         &#34;&#34;&#34;`int`: The number of missing skill levels. Assumes the
         maximum level for every skill is 2.
@@ -942,13 +927,6 @@ properties.</p>
             if skill.unlocked:
                 missingLevels -= skill.level
         return missingLevels
-
-    @property
-    def tokensNeeded(self):
-        &#34;&#34;&#34;`int`: The total number of tokens needed for the character to
-        reach the next rank.
-        &#34;&#34;&#34;
-        return tokensNeeded(self.rarity, self.rank)
 
     def updateStats(self):
         &#34;&#34;&#34;Updates the `stats` attribute.
@@ -1081,7 +1059,9 @@ properties.</p>
                 cost += roster.containsGear[slot].itemsToMax(roster)
             except KeyError:
                 cost += gearToMaxCost(
-                    getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+                    getBasicGearID(self.role, slot.index),
+                    1,
+                    5 + 5 * self.rarityIndex
                 )
         return cost
 
@@ -1128,19 +1108,6 @@ def level(self):
     to the minimum xp required to attain the new level.
     &#34;&#34;&#34;
     return levelFromXP(self.xp)</code></pre>
-</details>
-</dd>
-<dt id="legends.gameobjects.Character.maxGearLevel"><code class="name">var <span class="ident">maxGearLevel</span></code></dt>
-<dd>
-<div class="desc"><p><code>int</code>: The maximum level of gear this character can equip.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def maxGearLevel(self):
-    &#34;&#34;&#34;`int`: The maximum level of gear this character can equip.&#34;&#34;&#34;
-    return 5 + 5 * self.rarityIndex</code></pre>
 </details>
 </dd>
 <dt id="legends.gameobjects.Character.missingSkillLevels"><code class="name">var <span class="ident">missingSkillLevels</span></code></dt>
@@ -1309,22 +1276,6 @@ def tags(self):
     return GSCharacter[self.nameID][&#39;Tags&#39;]</code></pre>
 </details>
 </dd>
-<dt id="legends.gameobjects.Character.tokensNeeded"><code class="name">var <span class="ident">tokensNeeded</span></code></dt>
-<dd>
-<div class="desc"><p><code>int</code>: The total number of tokens needed for the character to
-reach the next rank.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@property
-def tokensNeeded(self):
-    &#34;&#34;&#34;`int`: The total number of tokens needed for the character to
-    reach the next rank.
-    &#34;&#34;&#34;
-    return tokensNeeded(self.rarity, self.rank)</code></pre>
-</details>
-</dd>
 <dt id="legends.gameobjects.Character.xp"><code class="name">var <span class="ident">xp</span></code></dt>
 <dd>
 <div class="desc"><p><code>int</code>: The xp of the character. Modifying this property also
@@ -1431,7 +1382,9 @@ character belongs.</dd>
             cost += roster.containsGear[slot].itemsToMax(roster)
         except KeyError:
             cost += gearToMaxCost(
-                getBasicGearID(self.role, slot.index), 1, self.maxGearLevel
+                getBasicGearID(self.role, slot.index),
+                1,
+                5 + 5 * self.rarityIndex
             )
     return cost</code></pre>
 </details>
@@ -1757,7 +1710,7 @@ restrictions on gear leveling.</p>
             legends.constants.Inventory: The list of items needed.
 
         &#34;&#34;&#34;
-        maxLevel = roster.inGearSlot[self].char.maxGearLevel
+        maxLevel = roster.maxGearLevel(self)
         return gearToMaxCost(self.gearID, self.level, maxLevel)
 
     def __repr__(self):
@@ -1937,7 +1890,7 @@ piece belongs.</dd>
         legends.constants.Inventory: The list of items needed.
 
     &#34;&#34;&#34;
-    maxLevel = roster.inGearSlot[self].char.maxGearLevel
+    maxLevel = roster.maxGearLevel(self)
     return gearToMaxCost(self.gearID, self.level, maxLevel)</code></pre>
 </details>
 </dd>
@@ -2449,7 +2402,6 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Character.bridgeStations" href="#legends.gameobjects.Character.bridgeStations">bridgeStations</a></code></li>
 <li><code><a title="legends.gameobjects.Character.itemsToMaxGear" href="#legends.gameobjects.Character.itemsToMaxGear">itemsToMaxGear</a></code></li>
 <li><code><a title="legends.gameobjects.Character.level" href="#legends.gameobjects.Character.level">level</a></code></li>
-<li><code><a title="legends.gameobjects.Character.maxGearLevel" href="#legends.gameobjects.Character.maxGearLevel">maxGearLevel</a></code></li>
 <li><code><a title="legends.gameobjects.Character.missingSkillLevels" href="#legends.gameobjects.Character.missingSkillLevels">missingSkillLevels</a></code></li>
 <li><code><a title="legends.gameobjects.Character.name" href="#legends.gameobjects.Character.name">name</a></code></li>
 <li><code><a title="legends.gameobjects.Character.nameID" href="#legends.gameobjects.Character.nameID">nameID</a></code></li>
@@ -2462,7 +2414,6 @@ given index to the given stat name.</p>
 <li><code><a title="legends.gameobjects.Character.skillEffectTags" href="#legends.gameobjects.Character.skillEffectTags">skillEffectTags</a></code></li>
 <li><code><a title="legends.gameobjects.Character.stats" href="#legends.gameobjects.Character.stats">stats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.tags" href="#legends.gameobjects.Character.tags">tags</a></code></li>
-<li><code><a title="legends.gameobjects.Character.tokensNeeded" href="#legends.gameobjects.Character.tokensNeeded">tokensNeeded</a></code></li>
 <li><code><a title="legends.gameobjects.Character.totalStats" href="#legends.gameobjects.Character.totalStats">totalStats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.updateStats" href="#legends.gameobjects.Character.updateStats">updateStats</a></code></li>
 <li><code><a title="legends.gameobjects.Character.xp" href="#legends.gameobjects.Character.xp">xp</a></code></li>

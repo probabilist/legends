@@ -39,17 +39,16 @@ class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
 
     Attributes:
         parent (obj): The object whose statistics have changed.
-        attrName (str): The name of the statistic that changed.
-        oldVal (int or float): The old value of the statistic.
-        newVal (int or float): The new value of the statistic.
+        oldStats (dict): {`str`:`int` or `float`} A dictionary mapping
+            stat names (the keys of the `StatObject`'s `statAbbrs`
+            property) to their previous values (at the time of the last
+            issuance of a `StatChangeEvent`).
 
     """
 
-    def __init__(self, parent, attrName, oldVal, newVal):
+    def __init__(self, parent, oldStats):
         self.parent = parent
-        self.attrName = attrName
-        self.oldVal = oldVal
-        self.newVal = newVal
+        self.oldStats = oldStats
 
 class StatObject():
     """An object that stores named statistics as attributes.
@@ -91,29 +90,46 @@ class StatObject():
         self.parent = parent
         self.silent = False
         self.onChange = EventHandler()
+        self._oldStats = {statName: 0 for statName in self.statAbbrs}
         if initDict is None:
-            initDict = {statName: 0 for statName in self.statAbbrs}
+            initDict = self._oldStats.copy()
         self.update(initDict)
 
     @property
     def statAbbrs(self):
-        """dict: {`str`:`str`} A dictionary mapping the names of stats
+        """`dict`: {`str`:`str`} A dictionary mapping the names of stats
         to be stored to the abbreviations that are to be used as
         attribute names.
         """
         return self._statAbbrs
 
+    @property
+    def oldStats(self):
+        """`dict`: {`str`:`int or float`} A dictionary mapping stat
+        names to the values they held the last time a `StatChangeEvent`
+        was issued. If no `StatChangeEvent` has been issued, all values
+        of this dictionary will be 0.
+        """
+        return self._oldStats
+
+    @property
+    def asDict(self):
+        """`dict`: {`str`:`int or float`} A dictionary mapping stat
+        names to their current values.
+        """
+        return {statName: self.get(statName) for statName in self.statAbbrs}
+
     def __setattr__(self, attrName, value):
-        oldVal = getattr(self, attrName) if hasattr(self, attrName) else None
         self.__dict__[attrName] = value
-        if (
-            attrName in self.statAbbrs.values()
-            and oldVal != value
-            and not self.silent
-        ):
-            self.onChange.notify(StatChangeEvent(
-                self.parent, attrName, oldVal, value
-            ))
+        if attrName in self.statAbbrs.values() and not self.silent:
+            self.notify()
+
+    def notify(self):
+        """Sends a `StatChangeEvent` to the `onChange` subscribers, and
+        updates the `oldStats` property.
+        """
+        self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+        self._oldStats = self.asDict
 
     def get(self, statName):
         """Looks up a stat value by its name, as it appears in the keys
@@ -143,7 +159,9 @@ class StatObject():
 
     def update(self, statDict):
         """Sets the stat attributes to those contained in the given stat
-        dictionary.
+        dictionary. Suppresses all issuing of `StatChangeEvent`
+        instances until the update is completed, then issues a single
+        event to cover the entire update.
 
         Args:
             statDict (dict): {`str`:`int or float`} A dictionary mapping
@@ -151,8 +169,13 @@ class StatObject():
                 should match the keys of the `statAbbrs` attribute.
 
         """
+        initSilent = self.silent
+        self.silent = True
         for statName, statVal in statDict.items():
             setattr(self, self.statAbbrs[statName], statVal)
+        self.silent = initSilent
+        if not self.silent:
+            self.notify()
 
     def __add__(self, other):
         result = self.__class__(self.statAbbrs)

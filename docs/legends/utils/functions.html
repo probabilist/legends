@@ -127,7 +127,10 @@ def objDict(obj):
             that are callable.
 
     &#34;&#34;&#34;
-    return {k:v for k,v in obj.__dict__ if k[0] != &#39;_&#39; and not callable(v)}
+    return {
+        k:v for k,v in obj.__dict__.items()
+        if k[0] != &#39;_&#39; and not callable(v)
+    }
 
 def ticksToDatetime(ticks):
     &#34;&#34;&#34;Converts a .NET timestamp to a Python `datetime` object. A .NET
@@ -349,7 +352,10 @@ that are callable.</dd>
             that are callable.
 
     &#34;&#34;&#34;
-    return {k:v for k,v in obj.__dict__ if k[0] != &#39;_&#39; and not callable(v)}</code></pre>
+    return {
+        k:v for k,v in obj.__dict__.items()
+        if k[0] != &#39;_&#39; and not callable(v)
+    }</code></pre>
 </details>
 </dd>
 <dt id="legends.utils.functions.ticksToDatetime"><code class="name flex">

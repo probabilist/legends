@@ -134,12 +134,14 @@ class OneToOneChangeEvent(Event): # pylint: disable=too-few-public-methods
 
     def __repr__(self):
         return (
-            &#39;&lt;OneToOneChangeEvent&gt; for {!r}: &#39;
-            + &#39;key-value pair ({!r}, {!r}) {!r}&#39;
-        ).format(self.rel, self.key, self.value, self.changeType)
+            &#39;&lt;OneToOneChangeEvent&gt;: key-value pair ({!r}, {!r}) {!r}&#39;
+        ).format(self.key, self.value, self.changeType)
 
 class WatchedOneToOne(OneToOne):
     &#34;&#34;&#34;A one-to-one relation with an event handler.
+
+    Changes made to the relation trigger the event handler of both the
+    relation and its inverse.
 
     Attributes:
 
@@ -155,9 +157,13 @@ class WatchedOneToOne(OneToOne):
         self.onChange = EventHandler()
 
     def __delitem__(self, key):
+        oldVal = self[key]
         OneToOne.__delitem__(self, key)
         self.onChange.notify(
-            OneToOneChangeEvent(self, key, self[key], &#39;removed&#39;)
+            OneToOneChangeEvent(self, key, oldVal, &#39;removed&#39;)
+        )
+        self.inverse.onChange.notify(
+            OneToOneChangeEvent(self, oldVal, key, &#39;removed&#39;)
         )
 
     def __setfreeval__(self, key, val):
@@ -170,9 +176,15 @@ class WatchedOneToOne(OneToOne):
             self.onChange.notify(
                 OneToOneChangeEvent(self, key, oldVal, &#39;removed&#39;)
             )
+            self.inverse.onChange.notify(
+                OneToOneChangeEvent(self, oldVal, key, &#39;removed&#39;)
+            )
         if newVal is not None:
             self.onChange.notify(
                 OneToOneChangeEvent(self, key, newVal, &#39;added&#39;)
+            )
+            self.inverse.onChange.notify(
+                OneToOneChangeEvent(self, newVal, key, &#39;added&#39;)
             )
 
 # pylint: disable-next=too-few-public-methods
@@ -205,7 +217,7 @@ class InGearSlot(WatchedOneToOne):
         char = gearSlot.char
         index = gearSlot.index
         if gear.slot != index or (
-            gear.level &gt; char.maxGearLevel and self.enforceLevel
+            gear.level &gt; 5 + 5 * char.rarityIndex and self.enforceLevel
         ):
             raise ValueError((gear, gearSlot))
         return True
@@ -218,21 +230,24 @@ class WatchedCollection():
     `ValueError` is raises when trying to add an object that does not
     satisfy this.
 
+    A watched collection maintains a list of subscribers in a private
+    attribute. Whenever a value is added to the collection, the
+    `onChange` event handler of that value&#39;s `stats` attribute is
+    subscribed to by every callable in the list of subscribers.
+    Callbacks are automatically unsubscribed when values are removed
+    from the collection.
+
     This mix-in class provides the following methods: `__getitem__`,
     `__setitem__`, `__delitem__`, and `__len__`. The `__setitem__`
-    method does not unsubscribe the `callback` attribute from the old
-    value&#39;s event handler in the case where there was an old value. Such
-    behavior must be implemented by subclasses.
+    method does not unsubscribe callbacks from the old value&#39;s event
+    handler in the case where there was an old value. Such behavior must
+    be implemented by subclasses.
 
-    Attributes:
-        callback (func): A function that takes one argument. This
-            function is subscribed to the `onChange` event handler of
-            the `stats` attribute of every object added to the
-            collection. When an object is removed from the collection,
-            the function is unsubscribed.
+    Subclasses must override the `values()` method with a method that
+    returns an iterator over the values contained in the collection.
 
     &#34;&#34;&#34;
-    def __init__(self, collectionType, callback):
+    def __init__(self, collectionType):
         &#34;&#34;&#34;The constructor stores the collection data in a private
         attribute, to be managed by subclasses.
 
@@ -241,8 +256,8 @@ class WatchedCollection():
                 `dict`, etc.)
 
         &#34;&#34;&#34;
-        self.callback = callback
         self._data = collectionType()
+        self._subscribers = []
 
     def __getitem__(self, key):
         return self._data[key]
@@ -250,14 +265,51 @@ class WatchedCollection():
     def __setitem__(self, key, value):
         checkForStats(value)
         self._data[key] = value
-        value.stats.onChange.subscribe(self.callback)
+        for callback in self._subscribers:
+            value.stats.onChange.subscribe(callback)
 
     def __delitem__(self, key):
-        self._data[key].stats.onChange.unsubscribe(self.callback)
+        for callback in self._subscribers:
+            self._data[key].stats.onChange.unsubscribe(callback)
         del self._data[key]
 
     def __len__(self):
         return len(self._data)
+
+    def values(self):
+        &#34;&#34;&#34;Raises a `NotImplementedError`. Must be overridden by
+        subclasses.
+
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def subscribe(self, callback):
+        &#34;&#34;&#34;Adds the given callback to the list of subscribers, then
+        subscribes to the `onChange` event handler of the `stats`
+        attribute of every value currently in the collection.
+
+        Args:
+            callback (callable): The callable object to send to the
+                `onChange` event handlers.
+
+        &#34;&#34;&#34;
+        self._subscribers.append(callback)
+        for value in self.values():
+            value.stats.onChange.subscribe(callback)
+
+    def unsubscribe(self, callback):
+        &#34;&#34;&#34;Removes the given callback from the list of subscribers, then
+        unsubscribes from the `onChange` event handler of the `stats`
+        attribute of every value currently in the collection.
+
+        Args:
+            callback (callable): The callable object to unsubscribe from
+                the `onChange` event handlers.
+
+        &#34;&#34;&#34;
+        self._subscribers.remove(callback)
+        for value in self.values():
+            value.stats.onChange.unsubscribe(callback)
 
     def __repr__(self):
         return &#39;{}({!r})&#39;.format(self.__class__.__name__, self._data)
@@ -267,33 +319,25 @@ class WatchedList(WatchedCollection, MutableSequence):
 
     The `stats` attribute should point to a `legends.stats.StatObject`
     instance. Whenever an object is added to the list, the `onChange`
-    event handler of that object&#39;s `stat` attribute is subscribed to by
-    the `WatchedList` instance&#39;s `callback` attribute (inherited from
-    `WatchedCollection`).
+    event handler of that object&#39;s `stats` attribute is subscribed to by
+    all callbacks in the `WatchedList` instance&#39;s list of subscribers
+    (inherited from `WatchedCollection`).
 
     `WatchedList` does not implement slice assignment. Setting a value
     by index will unsubscribe from the old value&#39;s event handler.
 
     &#34;&#34;&#34;
 
-    def __init__(self, callback, *args, **kargs):
-        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
-        `callback` argument. The remaining arguments are used to
-        initialize the underlying list data.
-
-        Args:
-            callback (func): The function to assign to the `callback`
-                attribute.
-
-        &#34;&#34;&#34;
-        WatchedCollection.__init__(self, list, callback)
+    def __init__(self, *args, **kargs):
+        WatchedCollection.__init__(self, list)
         for value in list(*args, **kargs):
             self.append(value)
 
     def __setitem__(self, key, value):
         if isinstance(key, slice):
             raise NotImplementedError(&#39;Slice assignment not implemented&#39;)
-        self._data[key].stats.onChange.unsubscribe(self.callback)
+        for callback in self._subscribers:
+            self._data[key].stats.onChange.unsubscribe(callback)
         WatchedCollection.__setitem__(self, key, value)
 
     def insert(self, index, value):
@@ -303,7 +347,14 @@ class WatchedList(WatchedCollection, MutableSequence):
         &#34;&#34;&#34;
         checkForStats(value)
         self._data.insert(index, value)
-        value.stats.onChange.subscribe(self.callback)
+        for callback in self._subscribers:
+            value.stats.onChange.subscribe(callback)
+
+    def values(self):
+        &#34;&#34;&#34;An alias for `__iter__()`.
+
+        &#34;&#34;&#34;
+        return self.__iter__()
 
 class WatchedDict(WatchedCollection, MutableMapping):
     &#34;&#34;&#34;A dictionary whose values have a `stats` attribute.
@@ -311,35 +362,34 @@ class WatchedDict(WatchedCollection, MutableMapping):
     The `stats` attribute should point to a `legends.stats.StatObject`
     instance. Whenever a value is added to the dictionary, the
     `onChange` event handler of that value&#39;s `stat` attribute is
-    subscribed to by the `WatchedDict` instance&#39;s `callback` attribute
-    (inherited from `WatchedCollection`).
+    subscribed to by all callbacks in the `WatchedDict` instance&#39;s list
+    of subscribers (inherited from `WatchedCollection`).
 
     Setting the value of a key that is already in the dictionary will
     unsubscribe from the old value&#39;s event handler.
 
     &#34;&#34;&#34;
 
-    def __init__(self, callback, *args, **kargs):
-        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
-        `callback` argument. The remaining arguments are used to
-        initialize the underlying dictionary data.
-
-        Args:
-            callback (func): The function to assign to the `callback`
-                attribute.
-
-        &#34;&#34;&#34;
-        WatchedCollection.__init__(self, dict, callback)
+    def __init__(self, *args, **kargs):
+        WatchedCollection.__init__(self, dict)
         for key, value in dict(*args, **kargs):
             self[key] = value
 
     def __setitem__(self, key, value):
         if key in self._data:
-            self._data[key].stats.onChange.unsubscribe(self.callback)
+            for callback in self._subscribers:
+                self._data[key].stats.onChange.unsubscribe(callback)
         WatchedCollection.__setitem__(self, key, value)
 
     def __iter__(self):
         return self._data.__iter__()
+
+    def values(self):
+        &#34;&#34;&#34;Returns an iterator over the values of the watched
+        dictionary.
+
+        &#34;&#34;&#34;
+        return MutableMapping.values(self)
 
 class Roster():
     &#34;&#34;&#34;A collection of related characters, gear, and particles.
@@ -351,7 +401,6 @@ class Roster():
         inPartSlot (WatchedOneToOne): A relation mapping
             `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
-            `
 
     &#34;&#34;&#34;
     def __init__(self, save=None, slot=0):
@@ -367,9 +416,12 @@ class Roster():
                 read the data.
 
         &#34;&#34;&#34;
-        self._gear = WatchedList(self.charChangeWatcher)
-        self._parts = WatchedList(self.charChangeWatcher)
-        self._chars = WatchedDict(self.charChangeWatcher)
+        self._gear = WatchedList()
+        self._gear.subscribe(self.charChangeWatcher)
+        self._parts = WatchedList()
+        self._parts.subscribe(self.charChangeWatcher)
+        self._chars = WatchedDict()
+        self._chars.subscribe(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
         self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
         self.inPartSlot = WatchedOneToOne()
@@ -439,10 +491,8 @@ class Roster():
 
         # fill gear and particles
         gearDict = readGear(save, slot)
-        self.gear.clear()
         self.gear.extend(gearDict.values())
         partDict = readParts(save, slot)
-        self.parts.clear()
         self.parts.extend(partDict.values())
 
         # cycle through characters in save data
@@ -525,15 +575,20 @@ class Roster():
                 continue
             for slot, gearName in enumerate(gearNames):
                 gear = Gear(
-                    &#39;{} {}&#39;.format(gearName, char.role), char.maxGearLevel
+                    &#39;{} {}&#39;.format(gearName, char.role),
+                    5 + 5 * char.rarityIndex
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
 
     def charChangeWatcher(self, event):
         # TODO: Fill in this method.
-        &#34;&#34;&#34;Called when anything (gear, particle, character, or their
-        relations) changes. A placeholder to be updated later.
+        &#34;&#34;&#34;This method is subscribed to the `gear`, `parts`, and `chars`
+        watched collections, as well as to the `onChange` event handlers
+        of the `inGearSlot` and `inPartSlot` relations. As such, this
+        method is called when anything (gear, particle, character, or
+        their relations) changes. For now, this method is just a
+        placeholder to be updated later.
 
         &#34;&#34;&#34;
         pass # pylint: disable=unnecessary-pass
@@ -552,7 +607,7 @@ class Roster():
         &#34;&#34;&#34;
         if gear not in self.inGearSlot:
             return 1
-        return self.inGearSlot[gear].char.maxGearLevel
+        return 5 + 5 * self.inGearSlot[gear].char.rarityIndex
 
     def missingGearLevels(self, nameID):
         &#34;&#34;&#34;Computes and returns the number of missing gear levels for
@@ -572,7 +627,8 @@ class Roster():
                 gearLevels += self.containsGear[slot].level
             except (KeyError, AttributeError):
                 pass
-        return 4 * char.maxGearLevel - gearLevels
+        maxGearLevel = 5 + 5 * char.rarityIndex
+        return 4 * maxGearLevel - gearLevels
 
     def missingGearRanks(self, nameID):
         &#34;&#34;&#34;Computes and returns the number of missing gear ranks for the
@@ -794,7 +850,7 @@ character to which the slot belongs. Defaults to <code>True</code>.</dd>
         char = gearSlot.char
         index = gearSlot.index
         if gear.slot != index or (
-            gear.level &gt; char.maxGearLevel and self.enforceLevel
+            gear.level &gt; 5 + 5 * char.rarityIndex and self.enforceLevel
         ):
             raise ValueError((gear, gearSlot))
         return True</code></pre>
@@ -836,7 +892,7 @@ returns <code>True</code>.</p></div>
     char = gearSlot.char
     index = gearSlot.index
     if gear.slot != index or (
-        gear.level &gt; char.maxGearLevel and self.enforceLevel
+        gear.level &gt; 5 + 5 * char.rarityIndex and self.enforceLevel
     ):
         raise ValueError((gear, gearSlot))
     return True</code></pre>
@@ -902,9 +958,8 @@ another to add the new key-value pair.</dd>
 
     def __repr__(self):
         return (
-            &#39;&lt;OneToOneChangeEvent&gt; for {!r}: &#39;
-            + &#39;key-value pair ({!r}, {!r}) {!r}&#39;
-        ).format(self.rel, self.key, self.value, self.changeType)</code></pre>
+            &#39;&lt;OneToOneChangeEvent&gt;: key-value pair ({!r}, {!r}) {!r}&#39;
+        ).format(self.key, self.value, self.changeType)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -926,8 +981,7 @@ another to add the new key-value pair.</dd>
 <dt><strong><code>inPartSlot</code></strong> :&ensp;<code><a title="legends.roster.WatchedOneToOne" href="#legends.roster.WatchedOneToOne">WatchedOneToOne</a></code></dt>
 <dd>A relation mapping
 <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code> objects to
-<code><a title="legends.gameobjects.PartSlot" href="gameobjects.html#legends.gameobjects.PartSlot">PartSlot</a></code> objects.
-`</dd>
+<code><a title="legends.gameobjects.PartSlot" href="gameobjects.html#legends.gameobjects.PartSlot">PartSlot</a></code> objects.</dd>
 </dl>
 <p>If save data is provided, the constructor will populate the
 roster with objects built from the save data. Otherwise, an
@@ -956,7 +1010,6 @@ read the data.</dd>
         inPartSlot (WatchedOneToOne): A relation mapping
             `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
-            `
 
     &#34;&#34;&#34;
     def __init__(self, save=None, slot=0):
@@ -972,9 +1025,12 @@ read the data.</dd>
                 read the data.
 
         &#34;&#34;&#34;
-        self._gear = WatchedList(self.charChangeWatcher)
-        self._parts = WatchedList(self.charChangeWatcher)
-        self._chars = WatchedDict(self.charChangeWatcher)
+        self._gear = WatchedList()
+        self._gear.subscribe(self.charChangeWatcher)
+        self._parts = WatchedList()
+        self._parts.subscribe(self.charChangeWatcher)
+        self._chars = WatchedDict()
+        self._chars.subscribe(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
         self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
         self.inPartSlot = WatchedOneToOne()
@@ -1044,10 +1100,8 @@ read the data.</dd>
 
         # fill gear and particles
         gearDict = readGear(save, slot)
-        self.gear.clear()
         self.gear.extend(gearDict.values())
         partDict = readParts(save, slot)
-        self.parts.clear()
         self.parts.extend(partDict.values())
 
         # cycle through characters in save data
@@ -1130,15 +1184,20 @@ read the data.</dd>
                 continue
             for slot, gearName in enumerate(gearNames):
                 gear = Gear(
-                    &#39;{} {}&#39;.format(gearName, char.role), char.maxGearLevel
+                    &#39;{} {}&#39;.format(gearName, char.role),
+                    5 + 5 * char.rarityIndex
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
 
     def charChangeWatcher(self, event):
         # TODO: Fill in this method.
-        &#34;&#34;&#34;Called when anything (gear, particle, character, or their
-        relations) changes. A placeholder to be updated later.
+        &#34;&#34;&#34;This method is subscribed to the `gear`, `parts`, and `chars`
+        watched collections, as well as to the `onChange` event handlers
+        of the `inGearSlot` and `inPartSlot` relations. As such, this
+        method is called when anything (gear, particle, character, or
+        their relations) changes. For now, this method is just a
+        placeholder to be updated later.
 
         &#34;&#34;&#34;
         pass # pylint: disable=unnecessary-pass
@@ -1157,7 +1216,7 @@ read the data.</dd>
         &#34;&#34;&#34;
         if gear not in self.inGearSlot:
             return 1
-        return self.inGearSlot[gear].char.maxGearLevel
+        return 5 + 5 * self.inGearSlot[gear].char.rarityIndex
 
     def missingGearLevels(self, nameID):
         &#34;&#34;&#34;Computes and returns the number of missing gear levels for
@@ -1177,7 +1236,8 @@ read the data.</dd>
                 gearLevels += self.containsGear[slot].level
             except (KeyError, AttributeError):
                 pass
-        return 4 * char.maxGearLevel - gearLevels
+        maxGearLevel = 5 + 5 * char.rarityIndex
+        return 4 * maxGearLevel - gearLevels
 
     def missingGearRanks(self, nameID):
         &#34;&#34;&#34;Computes and returns the number of missing gear ranks for the
@@ -1310,16 +1370,24 @@ def parts(self):
 <span>def <span class="ident">charChangeWatcher</span></span>(<span>self, event)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Called when anything (gear, particle, character, or their
-relations) changes. A placeholder to be updated later.</p></div>
+<div class="desc"><p>This method is subscribed to the <code>gear</code>, <code>parts</code>, and <code>chars</code>
+watched collections, as well as to the <code>onChange</code> event handlers
+of the <code>inGearSlot</code> and <code>inPartSlot</code> relations. As such, this
+method is called when anything (gear, particle, character, or
+their relations) changes. For now, this method is just a
+placeholder to be updated later.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def charChangeWatcher(self, event):
     # TODO: Fill in this method.
-    &#34;&#34;&#34;Called when anything (gear, particle, character, or their
-    relations) changes. A placeholder to be updated later.
+    &#34;&#34;&#34;This method is subscribed to the `gear`, `parts`, and `chars`
+    watched collections, as well as to the `onChange` event handlers
+    of the `inGearSlot` and `inPartSlot` relations. As such, this
+    method is called when anything (gear, particle, character, or
+    their relations) changes. For now, this method is just a
+    placeholder to be updated later.
 
     &#34;&#34;&#34;
     pass # pylint: disable=unnecessary-pass</code></pre>
@@ -1405,7 +1473,8 @@ maxed gear.</dd>
             continue
         for slot, gearName in enumerate(gearNames):
             gear = Gear(
-                &#39;{} {}&#39;.format(gearName, char.role), char.maxGearLevel
+                &#39;{} {}&#39;.format(gearName, char.role),
+                5 + 5 * char.rarityIndex
             )
             self.gear.append(gear)
             self.inGearSlot[gear] = char.gearSlots[slot]</code></pre>
@@ -1447,10 +1516,8 @@ read the data.</dd>
 
     # fill gear and particles
     gearDict = readGear(save, slot)
-    self.gear.clear()
     self.gear.extend(gearDict.values())
     partDict = readParts(save, slot)
-    self.parts.clear()
     self.parts.extend(partDict.values())
 
     # cycle through characters in save data
@@ -1533,7 +1600,7 @@ which it is equipped, and is 1 if it is not equipped.</p>
     &#34;&#34;&#34;
     if gear not in self.inGearSlot:
         return 1
-    return self.inGearSlot[gear].char.maxGearLevel</code></pre>
+    return 5 + 5 * self.inGearSlot[gear].char.rarityIndex</code></pre>
 </details>
 </dd>
 <dt id="legends.roster.Roster.missingGearLevels"><code class="name flex">
@@ -1574,7 +1641,8 @@ the character with the given name ID.</p>
             gearLevels += self.containsGear[slot].level
         except (KeyError, AttributeError):
             pass
-    return 4 * char.maxGearLevel - gearLevels</code></pre>
+    maxGearLevel = 5 + 5 * char.rarityIndex
+    return 4 * maxGearLevel - gearLevels</code></pre>
 </details>
 </dd>
 <dt id="legends.roster.Roster.missingGearRanks"><code class="name flex">
@@ -1668,7 +1736,7 @@ characters.</dd>
 </dd>
 <dt id="legends.roster.WatchedCollection"><code class="flex name class">
 <span>class <span class="ident">WatchedCollection</span></span>
-<span>(</span><span>collectionType, callback)</span>
+<span>(</span><span>collectionType)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A mix-in class for constructing watched collection data types.</p>
@@ -1676,20 +1744,19 @@ characters.</dd>
 attribute that points to a <code><a title="legends.stats.StatObject" href="stats.html#legends.stats.StatObject">StatObject</a></code> instance. A
 <code>ValueError</code> is raises when trying to add an object that does not
 satisfy this.</p>
+<p>A watched collection maintains a list of subscribers in a private
+attribute. Whenever a value is added to the collection, the
+<code>onChange</code> event handler of that value's <code>stats</code> attribute is
+subscribed to by every callable in the list of subscribers.
+Callbacks are automatically unsubscribed when values are removed
+from the collection.</p>
 <p>This mix-in class provides the following methods: <code>__getitem__</code>,
 <code>__setitem__</code>, <code>__delitem__</code>, and <code>__len__</code>. The <code>__setitem__</code>
-method does not unsubscribe the <code>callback</code> attribute from the old
-value's event handler in the case where there was an old value. Such
-behavior must be implemented by subclasses.</p>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>callback</code></strong> :&ensp;<code>func</code></dt>
-<dd>A function that takes one argument. This
-function is subscribed to the <code>onChange</code> event handler of
-the <code>stats</code> attribute of every object added to the
-collection. When an object is removed from the collection,
-the function is unsubscribed.</dd>
-</dl>
+method does not unsubscribe callbacks from the old value's event
+handler in the case where there was an old value. Such behavior must
+be implemented by subclasses.</p>
+<p>Subclasses must override the <code>values()</code> method with a method that
+returns an iterator over the values contained in the collection.</p>
 <p>The constructor stores the collection data in a private
 attribute, to be managed by subclasses.</p>
 <h2 id="args">Args</h2>
@@ -1710,21 +1777,24 @@ attribute, to be managed by subclasses.</p>
     `ValueError` is raises when trying to add an object that does not
     satisfy this.
 
+    A watched collection maintains a list of subscribers in a private
+    attribute. Whenever a value is added to the collection, the
+    `onChange` event handler of that value&#39;s `stats` attribute is
+    subscribed to by every callable in the list of subscribers.
+    Callbacks are automatically unsubscribed when values are removed
+    from the collection.
+
     This mix-in class provides the following methods: `__getitem__`,
     `__setitem__`, `__delitem__`, and `__len__`. The `__setitem__`
-    method does not unsubscribe the `callback` attribute from the old
-    value&#39;s event handler in the case where there was an old value. Such
-    behavior must be implemented by subclasses.
+    method does not unsubscribe callbacks from the old value&#39;s event
+    handler in the case where there was an old value. Such behavior must
+    be implemented by subclasses.
 
-    Attributes:
-        callback (func): A function that takes one argument. This
-            function is subscribed to the `onChange` event handler of
-            the `stats` attribute of every object added to the
-            collection. When an object is removed from the collection,
-            the function is unsubscribed.
+    Subclasses must override the `values()` method with a method that
+    returns an iterator over the values contained in the collection.
 
     &#34;&#34;&#34;
-    def __init__(self, collectionType, callback):
+    def __init__(self, collectionType):
         &#34;&#34;&#34;The constructor stores the collection data in a private
         attribute, to be managed by subclasses.
 
@@ -1733,8 +1803,8 @@ attribute, to be managed by subclasses.</p>
                 `dict`, etc.)
 
         &#34;&#34;&#34;
-        self.callback = callback
         self._data = collectionType()
+        self._subscribers = []
 
     def __getitem__(self, key):
         return self._data[key]
@@ -1742,14 +1812,51 @@ attribute, to be managed by subclasses.</p>
     def __setitem__(self, key, value):
         checkForStats(value)
         self._data[key] = value
-        value.stats.onChange.subscribe(self.callback)
+        for callback in self._subscribers:
+            value.stats.onChange.subscribe(callback)
 
     def __delitem__(self, key):
-        self._data[key].stats.onChange.unsubscribe(self.callback)
+        for callback in self._subscribers:
+            self._data[key].stats.onChange.unsubscribe(callback)
         del self._data[key]
 
     def __len__(self):
         return len(self._data)
+
+    def values(self):
+        &#34;&#34;&#34;Raises a `NotImplementedError`. Must be overridden by
+        subclasses.
+
+        &#34;&#34;&#34;
+        raise NotImplementedError
+
+    def subscribe(self, callback):
+        &#34;&#34;&#34;Adds the given callback to the list of subscribers, then
+        subscribes to the `onChange` event handler of the `stats`
+        attribute of every value currently in the collection.
+
+        Args:
+            callback (callable): The callable object to send to the
+                `onChange` event handlers.
+
+        &#34;&#34;&#34;
+        self._subscribers.append(callback)
+        for value in self.values():
+            value.stats.onChange.subscribe(callback)
+
+    def unsubscribe(self, callback):
+        &#34;&#34;&#34;Removes the given callback from the list of subscribers, then
+        unsubscribes from the `onChange` event handler of the `stats`
+        attribute of every value currently in the collection.
+
+        Args:
+            callback (callable): The callable object to unsubscribe from
+                the `onChange` event handlers.
+
+        &#34;&#34;&#34;
+        self._subscribers.remove(callback)
+        for value in self.values():
+            value.stats.onChange.unsubscribe(callback)
 
     def __repr__(self):
         return &#39;{}({!r})&#39;.format(self.__class__.__name__, self._data)</code></pre>
@@ -1759,28 +1866,112 @@ attribute, to be managed by subclasses.</p>
 <li><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></li>
 <li><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.roster.WatchedCollection.subscribe"><code class="name flex">
+<span>def <span class="ident">subscribe</span></span>(<span>self, callback)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Adds the given callback to the list of subscribers, then
+subscribes to the <code>onChange</code> event handler of the <code>stats</code>
+attribute of every value currently in the collection.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>callback</code></strong> :&ensp;<code>callable</code></dt>
+<dd>The callable object to send to the
+<code>onChange</code> event handlers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def subscribe(self, callback):
+    &#34;&#34;&#34;Adds the given callback to the list of subscribers, then
+    subscribes to the `onChange` event handler of the `stats`
+    attribute of every value currently in the collection.
+
+    Args:
+        callback (callable): The callable object to send to the
+            `onChange` event handlers.
+
+    &#34;&#34;&#34;
+    self._subscribers.append(callback)
+    for value in self.values():
+        value.stats.onChange.subscribe(callback)</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.WatchedCollection.unsubscribe"><code class="name flex">
+<span>def <span class="ident">unsubscribe</span></span>(<span>self, callback)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the given callback from the list of subscribers, then
+unsubscribes from the <code>onChange</code> event handler of the <code>stats</code>
+attribute of every value currently in the collection.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>callback</code></strong> :&ensp;<code>callable</code></dt>
+<dd>The callable object to unsubscribe from
+the <code>onChange</code> event handlers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def unsubscribe(self, callback):
+    &#34;&#34;&#34;Removes the given callback from the list of subscribers, then
+    unsubscribes from the `onChange` event handler of the `stats`
+    attribute of every value currently in the collection.
+
+    Args:
+        callback (callable): The callable object to unsubscribe from
+            the `onChange` event handlers.
+
+    &#34;&#34;&#34;
+    self._subscribers.remove(callback)
+    for value in self.values():
+        value.stats.onChange.unsubscribe(callback)</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.WatchedCollection.values"><code class="name flex">
+<span>def <span class="ident">values</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Raises a <code>NotImplementedError</code>. Must be overridden by
+subclasses.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def values(self):
+    &#34;&#34;&#34;Raises a `NotImplementedError`. Must be overridden by
+    subclasses.
+
+    &#34;&#34;&#34;
+    raise NotImplementedError</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="legends.roster.WatchedDict"><code class="flex name class">
 <span>class <span class="ident">WatchedDict</span></span>
-<span>(</span><span>callback, *args, **kargs)</span>
+<span>(</span><span>*args, **kargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A dictionary whose values have a <code>stats</code> attribute.</p>
 <p>The <code>stats</code> attribute should point to a <code><a title="legends.stats.StatObject" href="stats.html#legends.stats.StatObject">StatObject</a></code>
 instance. Whenever a value is added to the dictionary, the
 <code>onChange</code> event handler of that value's <code>stat</code> attribute is
-subscribed to by the <code><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></code> instance's <code>callback</code> attribute
-(inherited from <code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code>).</p>
+subscribed to by all callbacks in the <code><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></code> instance's list
+of subscribers (inherited from <code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code>).</p>
 <p>Setting the value of a key that is already in the dictionary will
 unsubscribe from the old value's event handler.</p>
-<p>The constructor sets the <code>callback</code> attribute to the given
-<code>callback</code> argument. The remaining arguments are used to
-initialize the underlying dictionary data.</p>
+<p>The constructor stores the collection data in a private
+attribute, to be managed by subclasses.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>callback</code></strong> :&ensp;<code>func</code></dt>
-<dd>The function to assign to the <code>callback</code>
-attribute.</dd>
+<dt><strong><code>collectionType</code></strong> :&ensp;<code>class</code></dt>
+<dd>The type of collection (<code>list</code>,
+<code>dict</code>, etc.)</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -1792,35 +1983,34 @@ attribute.</dd>
     The `stats` attribute should point to a `legends.stats.StatObject`
     instance. Whenever a value is added to the dictionary, the
     `onChange` event handler of that value&#39;s `stat` attribute is
-    subscribed to by the `WatchedDict` instance&#39;s `callback` attribute
-    (inherited from `WatchedCollection`).
+    subscribed to by all callbacks in the `WatchedDict` instance&#39;s list
+    of subscribers (inherited from `WatchedCollection`).
 
     Setting the value of a key that is already in the dictionary will
     unsubscribe from the old value&#39;s event handler.
 
     &#34;&#34;&#34;
 
-    def __init__(self, callback, *args, **kargs):
-        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
-        `callback` argument. The remaining arguments are used to
-        initialize the underlying dictionary data.
-
-        Args:
-            callback (func): The function to assign to the `callback`
-                attribute.
-
-        &#34;&#34;&#34;
-        WatchedCollection.__init__(self, dict, callback)
+    def __init__(self, *args, **kargs):
+        WatchedCollection.__init__(self, dict)
         for key, value in dict(*args, **kargs):
             self[key] = value
 
     def __setitem__(self, key, value):
         if key in self._data:
-            self._data[key].stats.onChange.unsubscribe(self.callback)
+            for callback in self._subscribers:
+                self._data[key].stats.onChange.unsubscribe(callback)
         WatchedCollection.__setitem__(self, key, value)
 
     def __iter__(self):
-        return self._data.__iter__()</code></pre>
+        return self._data.__iter__()
+
+    def values(self):
+        &#34;&#34;&#34;Returns an iterator over the values of the watched
+        dictionary.
+
+        &#34;&#34;&#34;
+        return MutableMapping.values(self)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1832,28 +2022,57 @@ attribute.</dd>
 <li>collections.abc.Iterable</li>
 <li>collections.abc.Container</li>
 </ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.roster.WatchedDict.values"><code class="name flex">
+<span>def <span class="ident">values</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns an iterator over the values of the watched
+dictionary.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def values(self):
+    &#34;&#34;&#34;Returns an iterator over the values of the watched
+    dictionary.
+
+    &#34;&#34;&#34;
+    return MutableMapping.values(self)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.roster.WatchedCollection.subscribe" href="#legends.roster.WatchedCollection.subscribe">subscribe</a></code></li>
+<li><code><a title="legends.roster.WatchedCollection.unsubscribe" href="#legends.roster.WatchedCollection.unsubscribe">unsubscribe</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="legends.roster.WatchedList"><code class="flex name class">
 <span>class <span class="ident">WatchedList</span></span>
-<span>(</span><span>callback, *args, **kargs)</span>
+<span>(</span><span>*args, **kargs)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>A list of objects with a <code>stats</code> attribute.</p>
 <p>The <code>stats</code> attribute should point to a <code><a title="legends.stats.StatObject" href="stats.html#legends.stats.StatObject">StatObject</a></code>
 instance. Whenever an object is added to the list, the <code>onChange</code>
-event handler of that object's <code>stat</code> attribute is subscribed to by
-the <code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></code> instance's <code>callback</code> attribute (inherited from
-<code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code>).</p>
+event handler of that object's <code>stats</code> attribute is subscribed to by
+all callbacks in the <code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></code> instance's list of subscribers
+(inherited from <code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code>).</p>
 <p><code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></code> does not implement slice assignment. Setting a value
 by index will unsubscribe from the old value's event handler.</p>
-<p>The constructor sets the <code>callback</code> attribute to the given
-<code>callback</code> argument. The remaining arguments are used to
-initialize the underlying list data.</p>
+<p>The constructor stores the collection data in a private
+attribute, to be managed by subclasses.</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>callback</code></strong> :&ensp;<code>func</code></dt>
-<dd>The function to assign to the <code>callback</code>
-attribute.</dd>
+<dt><strong><code>collectionType</code></strong> :&ensp;<code>class</code></dt>
+<dd>The type of collection (<code>list</code>,
+<code>dict</code>, etc.)</dd>
 </dl></div>
 <details class="source">
 <summary>
@@ -1864,33 +2083,25 @@ attribute.</dd>
 
     The `stats` attribute should point to a `legends.stats.StatObject`
     instance. Whenever an object is added to the list, the `onChange`
-    event handler of that object&#39;s `stat` attribute is subscribed to by
-    the `WatchedList` instance&#39;s `callback` attribute (inherited from
-    `WatchedCollection`).
+    event handler of that object&#39;s `stats` attribute is subscribed to by
+    all callbacks in the `WatchedList` instance&#39;s list of subscribers
+    (inherited from `WatchedCollection`).
 
     `WatchedList` does not implement slice assignment. Setting a value
     by index will unsubscribe from the old value&#39;s event handler.
 
     &#34;&#34;&#34;
 
-    def __init__(self, callback, *args, **kargs):
-        &#34;&#34;&#34;The constructor sets the `callback` attribute to the given
-        `callback` argument. The remaining arguments are used to
-        initialize the underlying list data.
-
-        Args:
-            callback (func): The function to assign to the `callback`
-                attribute.
-
-        &#34;&#34;&#34;
-        WatchedCollection.__init__(self, list, callback)
+    def __init__(self, *args, **kargs):
+        WatchedCollection.__init__(self, list)
         for value in list(*args, **kargs):
             self.append(value)
 
     def __setitem__(self, key, value):
         if isinstance(key, slice):
             raise NotImplementedError(&#39;Slice assignment not implemented&#39;)
-        self._data[key].stats.onChange.unsubscribe(self.callback)
+        for callback in self._subscribers:
+            self._data[key].stats.onChange.unsubscribe(callback)
         WatchedCollection.__setitem__(self, key, value)
 
     def insert(self, index, value):
@@ -1900,7 +2111,14 @@ attribute.</dd>
         &#34;&#34;&#34;
         checkForStats(value)
         self._data.insert(index, value)
-        value.stats.onChange.subscribe(self.callback)</code></pre>
+        for callback in self._subscribers:
+            value.stats.onChange.subscribe(callback)
+
+    def values(self):
+        &#34;&#34;&#34;An alias for `__iter__()`.
+
+        &#34;&#34;&#34;
+        return self.__iter__()</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -1932,16 +2150,44 @@ handler.</p></div>
     &#34;&#34;&#34;
     checkForStats(value)
     self._data.insert(index, value)
-    value.stats.onChange.subscribe(self.callback)</code></pre>
+    for callback in self._subscribers:
+        value.stats.onChange.subscribe(callback)</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.WatchedList.values"><code class="name flex">
+<span>def <span class="ident">values</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An alias for <code>__iter__()</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def values(self):
+    &#34;&#34;&#34;An alias for `__iter__()`.
+
+    &#34;&#34;&#34;
+    return self.__iter__()</code></pre>
 </details>
 </dd>
 </dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.roster.WatchedCollection.subscribe" href="#legends.roster.WatchedCollection.subscribe">subscribe</a></code></li>
+<li><code><a title="legends.roster.WatchedCollection.unsubscribe" href="#legends.roster.WatchedCollection.unsubscribe">unsubscribe</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="legends.roster.WatchedOneToOne"><code class="flex name class">
 <span>class <span class="ident">WatchedOneToOne</span></span>
 </code></dt>
 <dd>
 <div class="desc"><p>A one-to-one relation with an event handler.</p>
+<p>Changes made to the relation trigger the event handler of both the
+relation and its inverse.</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>onChange</code></strong> :&ensp;<code><a title="legends.utils.eventhandler.EventHandler" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler">EventHandler</a></code></dt>
@@ -1957,6 +2203,9 @@ subscribers.</dd>
 <pre><code class="python">class WatchedOneToOne(OneToOne):
     &#34;&#34;&#34;A one-to-one relation with an event handler.
 
+    Changes made to the relation trigger the event handler of both the
+    relation and its inverse.
+
     Attributes:
 
         onChange (legends.utils.eventhandler.EventHandler): When a
@@ -1971,9 +2220,13 @@ subscribers.</dd>
         self.onChange = EventHandler()
 
     def __delitem__(self, key):
+        oldVal = self[key]
         OneToOne.__delitem__(self, key)
         self.onChange.notify(
-            OneToOneChangeEvent(self, key, self[key], &#39;removed&#39;)
+            OneToOneChangeEvent(self, key, oldVal, &#39;removed&#39;)
+        )
+        self.inverse.onChange.notify(
+            OneToOneChangeEvent(self, oldVal, key, &#39;removed&#39;)
         )
 
     def __setfreeval__(self, key, val):
@@ -1986,9 +2239,15 @@ subscribers.</dd>
             self.onChange.notify(
                 OneToOneChangeEvent(self, key, oldVal, &#39;removed&#39;)
             )
+            self.inverse.onChange.notify(
+                OneToOneChangeEvent(self, oldVal, key, &#39;removed&#39;)
+            )
         if newVal is not None:
             self.onChange.notify(
                 OneToOneChangeEvent(self, key, newVal, &#39;added&#39;)
+            )
+            self.inverse.onChange.notify(
+                OneToOneChangeEvent(self, newVal, key, &#39;added&#39;)
             )</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -2068,14 +2327,23 @@ subscribers.</dd>
 </li>
 <li>
 <h4><code><a title="legends.roster.WatchedCollection" href="#legends.roster.WatchedCollection">WatchedCollection</a></code></h4>
+<ul class="">
+<li><code><a title="legends.roster.WatchedCollection.subscribe" href="#legends.roster.WatchedCollection.subscribe">subscribe</a></code></li>
+<li><code><a title="legends.roster.WatchedCollection.unsubscribe" href="#legends.roster.WatchedCollection.unsubscribe">unsubscribe</a></code></li>
+<li><code><a title="legends.roster.WatchedCollection.values" href="#legends.roster.WatchedCollection.values">values</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="legends.roster.WatchedDict" href="#legends.roster.WatchedDict">WatchedDict</a></code></h4>
+<ul class="">
+<li><code><a title="legends.roster.WatchedDict.values" href="#legends.roster.WatchedDict.values">values</a></code></li>
+</ul>
 </li>
 <li>
 <h4><code><a title="legends.roster.WatchedList" href="#legends.roster.WatchedList">WatchedList</a></code></h4>
 <ul class="">
 <li><code><a title="legends.roster.WatchedList.insert" href="#legends.roster.WatchedList.insert">insert</a></code></li>
+<li><code><a title="legends.roster.WatchedList.values" href="#legends.roster.WatchedList.values">values</a></code></li>
 </ul>
 </li>
 <li>

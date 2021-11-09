@@ -41,7 +41,7 @@ class Event(): # pylint: disable=too-few-public-methods
     &#34;&#34;&#34;
 
     def __repr__(self):
-        return &#39;{}({!r})&#39;.format(
+        return &#39;{}({})&#39;.format(
             self.__class__.__name__, formatDict(objDict(self))
         )
 
@@ -111,7 +111,7 @@ class EventHandler():
     &#34;&#34;&#34;
 
     def __repr__(self):
-        return &#39;{}({!r})&#39;.format(
+        return &#39;{}({})&#39;.format(
             self.__class__.__name__, formatDict(objDict(self))
         )</code></pre>
 </details>
