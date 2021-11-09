@@ -5,7 +5,7 @@
 * Replaced the `callback` attribute of `WatchedCollection` with a `_subscribers` attribute that contains a list of callbacks; eliminated the `callback` argument from the constructor; edited `WatchedCollection` methods to subscribe and unsubscribe from all callbacks in the `_subscribers` attribute; edited `WatchedList`, `WatchedDict`, and `Roster` to accommodate these changes.
 * Added `values`, `subscribe`, and `unsubscribe` methods to `WatchedCollection`; edited `WatchedList`, `WatchedDict`, and `Roster` to accommodate these changes.
 * Replaced `attrName`, `oldVal`, and `newVal` attributes in `StatChangeEvent` with a single `oldStats` attribute.
-* Added `oldStats` and `asDict` attributes to the `StatObject` class.
+* Added `oldStats` and `asDict` properties to the `StatObject` class.
 * Added a `StatObject.notify()` method and edited the `__setattr__` method accordingly.
 * Edited the `StatObject.update()` method to send a single `StatChangeEvent` at the end of the update.
 
