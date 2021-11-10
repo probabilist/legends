@@ -362,6 +362,111 @@ class WatchedDict(WatchedCollection, MutableMapping):
         """
         return MutableMapping.values(self)
 
+class CharChangeEvent(Event): # pylint: disable=too-few-public-methods
+    """An event indicating a character has changed.
+
+    Typically created by a `CharChangeWatcher` instance.
+
+    Attributes:
+        char (legends.gameobjects.Character): The character that has
+            changed.
+        triggerEvent (legends.utils.eventhandler.Event): The event that
+            triggered the creation of the `CharChangeEvent` instance.
+            Typically either a `legends.stats.StatChangeEvent` or a
+            `OneToOneChangeEvent`.
+
+    """
+
+    def __init__(self, char, triggerEvent):
+        self.char = char
+        self.triggerEvent = triggerEvent
+
+class CharChangeWatcher(EventHandler):
+    """An event handler that watches a roster for changes to characters.
+
+    A character in a roster can change for one of five reasons. (1) The
+    character's naked stats (not accounting for gear or particles) can
+    change. (2) The stats of a piece of equipped gear can change. (3)
+    The stats of an equipped particle can change. (4) A piece of gear
+    can be removed or added. (5) A particle can be removed or added.
+
+    This event handler watches for all five changes by subscribing to
+    the `gear`, `parts`, and `chars` properties of the roster, and by
+    subscribing to the `onChange` event handlers of the roster's
+    `inGearSlot` and `inPartSlot` attributes. When a character change is
+    detected, this event handler creates and sends subscribers a
+    `CharChangeEvent` instance.
+
+    Attributes:
+        roster (Roster): The roster to watch.
+
+    """
+
+    def __init__(self, roster):
+        EventHandler.__init__(self)
+        self.roster = roster
+        self.roster.gear.subscribe(self.onGearChange)
+        self.roster.parts.subscribe(self.onPartChange)
+        self.roster.chars.subscribe(self.onCharChange)
+        self.roster.inGearSlot.onChange.subscribe(self.onRelChange)
+        self.roster.inPartSlot.onChange.subscribe(self.onRelChange)
+
+    def onGearChange(self, statChangeEvent):
+        """Called when the stats of a gear piece in the roster changes.
+        If that gear piece is equipped on a character, subscribers are
+        sent a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster's `gear` property.
+
+        """
+        gear = statChangeEvent.parent
+        if gear in self.roster.inGearSlot:
+            self.notify(CharChangeEvent(
+                self.roster.inGearSlot[gear].char, statChangeEvent
+            ))
+
+    def onPartChange(self, statChangeEvent):
+        """Called when the stats of a particle in the roster changes.
+        If that particle is equipped on a character, subscribers are
+        sent a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster's `parts` property.
+
+        """
+        part = statChangeEvent.parent
+        if part in self.roster.inPartSlot:
+            self.notify(CharChangeEvent(
+                self.roster.inPartSlot[part].char, statChangeEvent
+            ))
+
+    def onCharChange(self, statChangeEvent):
+        """Called when the stats of a character (i.e., the naked stats,
+        not accounting for gear or particles) in the roster changes.
+        Sends subscribers a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster's `chars` property.
+
+        """
+        self.notify(CharChangeEvent(
+            statChangeEvent.parent, statChangeEvent
+        ))
+
+    def onRelChange(self, oneToOneChangeEvent):
+        """Called when the `onChange` event handler of either the
+        roster's `inGearSlot` or `inPartSlot` attributes send a
+        `OneToOneChangeEvent`. Sends subscribers a `CharChangeEvent`.
+
+        """
+        self.notify(CharChangeEvent(
+            oneToOneChangeEvent.value.char, oneToOneChangeEvent
+        ))
+
 class Roster():
     """A collection of related characters, gear, and particles.
 
@@ -388,18 +493,13 @@ class Roster():
 
         """
         self._gear = WatchedList()
-        self._gear.subscribe(self.charChangeWatcher)
         self._parts = WatchedList()
-        self._parts.subscribe(self.charChangeWatcher)
         self._chars = WatchedDict()
-        self._chars.subscribe(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
-        self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
         self.inPartSlot = WatchedOneToOne()
-        self.inPartSlot.onChange.subscribe(self.charChangeWatcher)
         if save is not None:
             self.fromSaveData(save, slot)
-        self.onCharChange = EventHandler()
+        self.charChangeWatcher = CharChangeWatcher(self)
 
     @property
     def gear(self):
@@ -551,18 +651,6 @@ class Roster():
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
-
-    def charChangeWatcher(self, event):
-        # TODO: Fill in this method.
-        """This method is subscribed to the `gear`, `parts`, and `chars`
-        watched collections, as well as to the `onChange` event handlers
-        of the `inGearSlot` and `inPartSlot` relations. As such, this
-        method is called when anything (gear, particle, character, or
-        their relations) changes. For now, this method is just a
-        placeholder to be updated later.
-
-        """
-        pass # pylint: disable=unnecessary-pass
 
     def maxGearLevel(self, gear):
         """Returns the maximum possible gear level of the given gear

@@ -1,5 +1,14 @@
 # Change log
 
+## Version 0.26.0
+
+* Added a `CharChangeEvent` class.
+* Added a `CharChangeWatcher` class.
+* Changed the `Roster` constructor so that it does not subscribe to any event handlers.
+* Added a `Roster.charChangeWatcher` attribute.
+* Deleted the unused `Roster.onCharChange` attribute.
+* Deleted the `Roster.charChangeWatcher()` placeholder method.
+
 ## Version 0.25.0
 
 * Replaced the `callback` attribute of `WatchedCollection` with a `_subscribers` attribute that contains a list of callbacks; eliminated the `callback` argument from the constructor; edited `WatchedCollection` methods to subscribe and unsubscribe from all callbacks in the `_subscribers` attribute; edited `WatchedList`, `WatchedDict`, and `Roster` to accommodate these changes.
