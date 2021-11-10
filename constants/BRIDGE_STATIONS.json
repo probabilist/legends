@@ -1,10 +1,10 @@
 [
+    "Captain",
     "Medical",
+    "Operations",
     "Tactical",
     "Conn",
-    "Captain",
     "Engineering",
-    "FirstOfficer",
-    "Operations",
-    "Science"
+    "Science",
+    "FirstOfficer"
 ]
