@@ -152,7 +152,7 @@ class EnemyChar():
                 enemy character may have equipped.
 
         Return:
-            int or float: The modified value of the statistic.
+            `int` or `float`: The modified value of the statistic.
 
         """
         char = self.settings.char
