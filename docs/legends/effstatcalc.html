@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
 <title>legends.effstatcalc API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Tools used to calculate effective stats for characters." />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,120 +22,219 @@
 <h1 class="title">Module <code>legends.effstatcalc</code></h1>
 </header>
 <section id="section-intro">
+<p>Tools used to calculate effective stats for characters.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python"># TODO: Make this auto-update on stat changes
-# from legends.constants import STAT_ABBREVIATIONS
+<pre><code class="python">&#34;&#34;&#34;Tools used to calculate effective stats for characters.
 
-# class ThreatCalc():
-#     &#34;&#34;&#34;Used to calculate the threat posed by an enemy character.
+&#34;&#34;&#34;
 
-#     Attributes:
-#         char (legends.gameobjects.Character): The character being
-#             considered.
-#         roster (legends.roster.Roster): The roster to which the
-#             character belongs.
-#         rounds (int): The number of combat rounds used to calculate the
-#             threat assessment.
-#         multMods (legends.stats.Stats): A `legends.stats.Stats` object
-#             that stores the multiplicative stat modifiers to be applied
-#             to the character.
-#         preAddMods (legends.stats.Stats): A `legends.stats.Stats` object
-#             that stores additive stat modifiers to be applied to the
-#             character. These modifiers are applied before the
-#             multiplicative modifiers.
-#         postAddMods (legends.stats.Stats): A `legends.stats.Stats`
-#             object that stores additive stat modifiers to be applied to
-#             the character. These modifiers are applied after the
-#             multiplicative modifiers. Note: The attack up modifier from
-#             an Amplify Force particle is applied after the `postAddMods`
-#             modifiers.
+from legends.roster import Roster
+from legends.stats import StatMods, ThreatStats
 
-#     &#34;&#34;&#34;
+__all__ = [&#39;EnemyChar&#39;, &#39;EnemyCharSettings&#39;]
 
-#     def __init__(self, char, roster=None, rounds=3):
-#         &#34;&#34;&#34;The constructor sets the `char`, `roster`, and `rounds`
-#         attributes using the given arguments. If no roster is given, a
-#         new, empty roster is created and the given character is added to
-#         it.
+class EnemyCharSettings():
+    &#34;&#34;&#34;Settings for an `EnemyChar` instance.
 
-#         New `legends.stats.Stats` objects are created for the
-#         multiplicative and additive modifiers. All multiplicative
-#         modifiers default to 1; all additive modifiers default to 0.
+    &#34;&#34;&#34;
 
-#         &#34;&#34;&#34;
-#         self.char = char
-#         self.roster = roster
-#         if self.roster is None:
-#             self.roster = Roster()
-#             self.roster.chars[self.char.nameID] = self.char
-#         self.rounds = rounds
-#         self.multMods = Stats({statName: 1 for statName in STAT_ABBREVIATIONS})
-#         self.preAddMods = Stats()
-#         self.postAddMods = Stats()
-#         self._data = {
-#             &#39;techChance&#39;: None,
-#             &#39;attDmg&#39;: None,
-#             &#39;techDmg&#39;: None
-#         }
+    def __init__(self, parent, char, roster=None, rounds=3):
+        &#34;&#34;&#34;The constructor sets the `parent`, `char`, `roster`, and
+        `rounds` properties to the given values. If no roster is given,
+        a new, empty roster is created and the given character is added
+        to it.
 
-#     @property
-#     def techChance(self):
-#         return self._data[&#39;techChance&#39;]
+        &#34;&#34;&#34;
+        if roster is None:
+            roster = Roster()
+            roster.chars[char.nameID] = char
 
-#     @property
-#     def attDmg(self):
-#         return self._data[&#39;attDmg&#39;]
+        self._parent = parent
+        self._char = char
+        self._roster = roster
 
-#     @property
-#     def techDmg(self):
-#         return self._data[&#39;techDmg&#39;]
+        self.rounds = rounds
 
-#     def getStat(self, statName, firstRound=False):
-#         stat = self.char.totalStats(self.roster).get(statName)
-#         stat = (
-#             (stat + self.preAddMods.get(statName))
-#             * self.multMods.get(statName) + self.postAddMods.get(statName)
-#         )
-#         if firstRound and statName == &#39;Attack&#39;:
-#             stat *= self.char.partEffects(self.roster).get(&#39;Attack Up&#39;)
-#         return stat
+        self._statMods = StatMods()
 
-#     def calculate(self):
-#         cc = self.getStat(&#39;CritChance&#39;)
-#         cd = self.getStat(&#39;CritDamage&#39;)
-#         numHits = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
-#         dmg = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
-#         skillSequence = char.aiSkillOrder()
-#         rounds = self.rounds
-#         firstRound = True
-#         while rounds &gt; 0:
-#             skill = next(skillSequence)
-#             if &#39;Damage&#39; not in skill.effectTags:
-#                 continue
-#             numTargets = 4 if skill.isAOE else skill.numTargets
-#             effects = sum((effect.chain for effect in skill.effects), [])
-#             effects = [effect for effect in effects if effect.doesDamage]
-#             for effect in effects:
-#                 numHits[effect.statSource] += 1
-#                 dmg[effect.statSource] += (
-#                     (numTargets/4)          # chance to be targeted
-#                     * self.getStat(         # raw stat value
-#                         effect.statSource,
-#                         firstRound
-#                     )
-#                     * effect.fraction       # fractions determined
-#                     * effect.statSourceFrac #   by skill effect
-#                     * (1 + cc * (cd - 1)))  # effect of potential crits
-#             firstRound = False
-#             rounds -= 1
-#         self._data[&#39;techChance&#39;] = (
-#             numHits[&#39;Tech&#39;] / max( 1, sum(numHits.values()) )
-#         )
-#         self._data[&#39;attDmg&#39;] = dmg[&#39;Attack&#39;]/max(1, numHits[&#39;Attack&#39;])
-#         self._data[&#39;techDmg&#39;] = dmg[&#39;Tech&#39;]/max(1, numHits[&#39;Tech&#39;])</code></pre>
+        self.roster.onCharChange.subscribe(self.onCharChange)
+        self.statMods.onChange.subscribe(lambda event:self.parent.update())
+
+    @property
+    def parent(self):
+        &#34;&#34;&#34;`EnemyChar`: The `EnemyChar` instance to which these settings
+        belong.
+        &#34;&#34;&#34;
+        return self._parent
+
+    @property
+    def char(self):
+        &#34;&#34;&#34;`legends.gameobjects.Character`: The character associated
+        with the parent `EnemyChar` instance.
+        &#34;&#34;&#34;
+        return self._char
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster to which the enemy
+        character belongs.
+        &#34;&#34;&#34;
+        return self._roster
+
+    @property
+    def rounds(self):
+        &#34;&#34;&#34;`int`: The number of combat rounds used to calculate the
+        threat assessment. Must be a positive integer. Setting this
+        property forces the parent `EnemyChar` instance to update its
+        threat statistics.
+        &#34;&#34;&#34;
+        return self._rounds
+
+    @rounds.setter
+    def rounds(self, value):
+        if not isinstance(value, int) or value &lt;= 0:
+            raise ValueError(&#39;{!r} not a positive integer&#39;.format(value))
+        self._rounds = value
+        self.parent.update()
+
+    @property
+    def statMods(self):
+        &#34;&#34;&#34;`legends.stats.StatMods`: Stat modifiers to be applied to the
+        enemy character. Defaults to a newly created instance of
+        `legends.stats.StatMods`. This property cannot be set, but its
+        value can be changed in place. Doing so forces the parent
+        `EnemyChar` instance to update its threat statistics.
+        &#34;&#34;&#34;
+        return self._statMods
+
+    def onCharChange(self, charChangeEvent):
+        &#34;&#34;&#34;Triggered when the associated roster sends a
+        `legends.roster.CharChangeEvent`. If it is the enemy character
+        that changed, the parent `EnemyChar` instance is forced to
+        update its threat statistics. Otherwise, nothing happens.
+
+        Args:
+            charChangeEvent (legends.roster.CharChangeEvent): The event
+                sent by the associated roster.
+
+        &#34;&#34;&#34;
+        if charChangeEvent.char is self.char:
+            self.parent.update()
+
+class EnemyChar():
+    &#34;&#34;&#34;Used to calculate the threat posed by an enemy character.
+
+    Attributes:
+        pauseUpdate (bool): Defaults to `False`. Set to `True` to
+            prevent the `update` method from running.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, roster=None, rounds=3):
+        &#34;&#34;&#34;The constructor passes the given arguments to the
+        `EnemyCharSettings` constructor and assigns the resulting
+        `EnemyCharSettings` instance to the `settings` property.
+
+        The `threatStats` property is assigned a new instance of
+        `legends.stats.ThreatStats` and the `update` method is called.
+
+        &#34;&#34;&#34;
+        self.pauseUpdate = False
+        self._settings = EnemyCharSettings(self, char, roster, rounds)
+        self._threatStats = ThreatStats()
+        self.update()
+
+    @property
+    def settings(self):
+        &#34;&#34;&#34;`EnemyCharSettings`: The settings for this `EnemyChar`
+        instance.
+        &#34;&#34;&#34;
+        return self._settings
+
+    @property
+    def threatStats(self):
+        &#34;&#34;&#34;`legends.stats.ThreatStats`: The threat statistics for this
+        `EnemyChar` instance. There are four threat statistics: &#39;Attack
+        Hits Per Round&#39;, &#39;Tech Hits Per Round&#39;, &#39;Attack Damage Per
+        Round&#39;, and &#39;Tech Damage Per Round&#39;. Given a particular allied
+        character, the value of &#39;Attack Hits Per Round&#39; is the average
+        number of times per round that the enemy character will do
+        attack damage to the given allied character. The other threat
+        statistics should be interpreted similarly.
+        &#34;&#34;&#34;
+        return self._threatStats
+
+    def getStat(self, statName, firstRound=False):
+        &#34;&#34;&#34;Fetches the value of the given statistic for the enemy
+        character, modifies it according to the stat modifiers in the
+        `settings` attribute, then modifies it, as needed, for any
+        Amplify Force particles that may be equipped.
+
+        Args:
+            statName (str): One of the stat names in
+                `STAT_ABBREVIATIONS`.
+            firstRound (bool): If `True` and `statName` is &#39;Attack&#39;, the
+                stat is modified by any Amplify Force particles that the
+                enemy character may have equipped.
+
+        Return:
+            int or float: The modified value of the statistic.
+
+        &#34;&#34;&#34;
+        char = self.settings.char
+        roster = self.settings.roster
+        stats = char.totalStats(roster)
+        stat = self.settings.statMods.apply(stats).get(statName)
+        if firstRound and statName == &#39;Attack&#39;:
+            stat *= char.partEffects(roster).get(&#39;Attack Up&#39;)
+        return stat
+
+    def update(self):
+        &#34;&#34;&#34;Uses the current value of the `settings` property to update
+        the `threatStats` property. Does nothing if `pauseUpdate` is
+        set to `True`.
+
+        &#34;&#34;&#34;
+        # pylint: disable=invalid-name
+        if self.pauseUpdate:
+            return
+        cc = self.getStat(&#39;CritChance&#39;)
+        cd = self.getStat(&#39;CritDamage&#39;)
+        numHits = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
+        dmg = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
+        skillSequence = self.settings.char.aiSkillOrder()
+        rounds = self.settings.rounds
+        firstRound = True
+        while rounds &gt; 0:
+            skill = next(skillSequence)
+            if &#39;Damage&#39; not in skill.effectTags:
+                continue
+            numTargets = 4 if skill.isAOE else skill.numTargets
+            effects = sum((effect.chain for effect in skill.effects), [])
+            effects = [effect for effect in effects if effect.doesDamage]
+            for effect in effects:
+                numHits[effect.statSource] += 1
+                dmg[effect.statSource] += (
+                    (numTargets/4)          # chance to be targeted
+                    * self.getStat(         # raw stat value
+                        effect.statSource,
+                        firstRound
+                    )
+                    * effect.fraction       # fractions determined
+                    * effect.statSourceFrac #   by skill effect
+                    * (1 + cc * (cd - 1))   # effect of potential crits
+                )
+            firstRound = False
+            rounds -= 1
+        self.threatStats.update({
+            &#39;Attack Hits Per Round&#39;: numHits[&#39;Attack&#39;] / self.settings.rounds,
+            &#39;Tech Hits Per Round&#39;: numHits[&#39;Tech&#39;] / self.settings.rounds,
+            &#39;Attack Damage Per Round&#39;: dmg[&#39;Attack&#39;] / self.settings.rounds,
+            &#39;Tech Damage Per Round&#39;: dmg[&#39;Tech&#39;] / self.settings.rounds
+        })</code></pre>
 </details>
 </section>
 <section>
@@ -145,6 +244,531 @@
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="legends.effstatcalc.EnemyChar"><code class="flex name class">
+<span>class <span class="ident">EnemyChar</span></span>
+<span>(</span><span>char, roster=None, rounds=3)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Used to calculate the threat posed by an enemy character.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>pauseUpdate</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Defaults to <code>False</code>. Set to <code>True</code> to
+prevent the <code>update</code> method from running.</dd>
+</dl>
+<p>The constructor passes the given arguments to the
+<code><a title="legends.effstatcalc.EnemyCharSettings" href="#legends.effstatcalc.EnemyCharSettings">EnemyCharSettings</a></code> constructor and assigns the resulting
+<code><a title="legends.effstatcalc.EnemyCharSettings" href="#legends.effstatcalc.EnemyCharSettings">EnemyCharSettings</a></code> instance to the <code>settings</code> property.</p>
+<p>The <code>threatStats</code> property is assigned a new instance of
+<code><a title="legends.stats.ThreatStats" href="stats.html#legends.stats.ThreatStats">ThreatStats</a></code> and the <code>update</code> method is called.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnemyChar():
+    &#34;&#34;&#34;Used to calculate the threat posed by an enemy character.
+
+    Attributes:
+        pauseUpdate (bool): Defaults to `False`. Set to `True` to
+            prevent the `update` method from running.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, roster=None, rounds=3):
+        &#34;&#34;&#34;The constructor passes the given arguments to the
+        `EnemyCharSettings` constructor and assigns the resulting
+        `EnemyCharSettings` instance to the `settings` property.
+
+        The `threatStats` property is assigned a new instance of
+        `legends.stats.ThreatStats` and the `update` method is called.
+
+        &#34;&#34;&#34;
+        self.pauseUpdate = False
+        self._settings = EnemyCharSettings(self, char, roster, rounds)
+        self._threatStats = ThreatStats()
+        self.update()
+
+    @property
+    def settings(self):
+        &#34;&#34;&#34;`EnemyCharSettings`: The settings for this `EnemyChar`
+        instance.
+        &#34;&#34;&#34;
+        return self._settings
+
+    @property
+    def threatStats(self):
+        &#34;&#34;&#34;`legends.stats.ThreatStats`: The threat statistics for this
+        `EnemyChar` instance. There are four threat statistics: &#39;Attack
+        Hits Per Round&#39;, &#39;Tech Hits Per Round&#39;, &#39;Attack Damage Per
+        Round&#39;, and &#39;Tech Damage Per Round&#39;. Given a particular allied
+        character, the value of &#39;Attack Hits Per Round&#39; is the average
+        number of times per round that the enemy character will do
+        attack damage to the given allied character. The other threat
+        statistics should be interpreted similarly.
+        &#34;&#34;&#34;
+        return self._threatStats
+
+    def getStat(self, statName, firstRound=False):
+        &#34;&#34;&#34;Fetches the value of the given statistic for the enemy
+        character, modifies it according to the stat modifiers in the
+        `settings` attribute, then modifies it, as needed, for any
+        Amplify Force particles that may be equipped.
+
+        Args:
+            statName (str): One of the stat names in
+                `STAT_ABBREVIATIONS`.
+            firstRound (bool): If `True` and `statName` is &#39;Attack&#39;, the
+                stat is modified by any Amplify Force particles that the
+                enemy character may have equipped.
+
+        Return:
+            int or float: The modified value of the statistic.
+
+        &#34;&#34;&#34;
+        char = self.settings.char
+        roster = self.settings.roster
+        stats = char.totalStats(roster)
+        stat = self.settings.statMods.apply(stats).get(statName)
+        if firstRound and statName == &#39;Attack&#39;:
+            stat *= char.partEffects(roster).get(&#39;Attack Up&#39;)
+        return stat
+
+    def update(self):
+        &#34;&#34;&#34;Uses the current value of the `settings` property to update
+        the `threatStats` property. Does nothing if `pauseUpdate` is
+        set to `True`.
+
+        &#34;&#34;&#34;
+        # pylint: disable=invalid-name
+        if self.pauseUpdate:
+            return
+        cc = self.getStat(&#39;CritChance&#39;)
+        cd = self.getStat(&#39;CritDamage&#39;)
+        numHits = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
+        dmg = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
+        skillSequence = self.settings.char.aiSkillOrder()
+        rounds = self.settings.rounds
+        firstRound = True
+        while rounds &gt; 0:
+            skill = next(skillSequence)
+            if &#39;Damage&#39; not in skill.effectTags:
+                continue
+            numTargets = 4 if skill.isAOE else skill.numTargets
+            effects = sum((effect.chain for effect in skill.effects), [])
+            effects = [effect for effect in effects if effect.doesDamage]
+            for effect in effects:
+                numHits[effect.statSource] += 1
+                dmg[effect.statSource] += (
+                    (numTargets/4)          # chance to be targeted
+                    * self.getStat(         # raw stat value
+                        effect.statSource,
+                        firstRound
+                    )
+                    * effect.fraction       # fractions determined
+                    * effect.statSourceFrac #   by skill effect
+                    * (1 + cc * (cd - 1))   # effect of potential crits
+                )
+            firstRound = False
+            rounds -= 1
+        self.threatStats.update({
+            &#39;Attack Hits Per Round&#39;: numHits[&#39;Attack&#39;] / self.settings.rounds,
+            &#39;Tech Hits Per Round&#39;: numHits[&#39;Tech&#39;] / self.settings.rounds,
+            &#39;Attack Damage Per Round&#39;: dmg[&#39;Attack&#39;] / self.settings.rounds,
+            &#39;Tech Damage Per Round&#39;: dmg[&#39;Tech&#39;] / self.settings.rounds
+        })</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.effstatcalc.EnemyChar.settings"><code class="name">var <span class="ident">settings</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.effstatcalc.EnemyCharSettings" href="#legends.effstatcalc.EnemyCharSettings">EnemyCharSettings</a></code>: The settings for this <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code>
+instance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def settings(self):
+    &#34;&#34;&#34;`EnemyCharSettings`: The settings for this `EnemyChar`
+    instance.
+    &#34;&#34;&#34;
+    return self._settings</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EnemyChar.threatStats"><code class="name">var <span class="ident">threatStats</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.stats.ThreatStats" href="stats.html#legends.stats.ThreatStats">ThreatStats</a></code>: The threat statistics for this
+<code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance. There are four threat statistics: 'Attack
+Hits Per Round', 'Tech Hits Per Round', 'Attack Damage Per
+Round', and 'Tech Damage Per Round'. Given a particular allied
+character, the value of 'Attack Hits Per Round' is the average
+number of times per round that the enemy character will do
+attack damage to the given allied character. The other threat
+statistics should be interpreted similarly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def threatStats(self):
+    &#34;&#34;&#34;`legends.stats.ThreatStats`: The threat statistics for this
+    `EnemyChar` instance. There are four threat statistics: &#39;Attack
+    Hits Per Round&#39;, &#39;Tech Hits Per Round&#39;, &#39;Attack Damage Per
+    Round&#39;, and &#39;Tech Damage Per Round&#39;. Given a particular allied
+    character, the value of &#39;Attack Hits Per Round&#39; is the average
+    number of times per round that the enemy character will do
+    attack damage to the given allied character. The other threat
+    statistics should be interpreted similarly.
+    &#34;&#34;&#34;
+    return self._threatStats</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.effstatcalc.EnemyChar.getStat"><code class="name flex">
+<span>def <span class="ident">getStat</span></span>(<span>self, statName, firstRound=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Fetches the value of the given statistic for the enemy
+character, modifies it according to the stat modifiers in the
+<code>settings</code> attribute, then modifies it, as needed, for any
+Amplify Force particles that may be equipped.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statName</code></strong> :&ensp;<code>str</code></dt>
+<dd>One of the stat names in
+<code>STAT_ABBREVIATIONS</code>.</dd>
+<dt><strong><code>firstRound</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If <code>True</code> and <code>statName</code> is 'Attack', the
+stat is modified by any Amplify Force particles that the
+enemy character may have equipped.</dd>
+</dl>
+<h2 id="return">Return</h2>
+<p>int or float: The modified value of the statistic.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def getStat(self, statName, firstRound=False):
+    &#34;&#34;&#34;Fetches the value of the given statistic for the enemy
+    character, modifies it according to the stat modifiers in the
+    `settings` attribute, then modifies it, as needed, for any
+    Amplify Force particles that may be equipped.
+
+    Args:
+        statName (str): One of the stat names in
+            `STAT_ABBREVIATIONS`.
+        firstRound (bool): If `True` and `statName` is &#39;Attack&#39;, the
+            stat is modified by any Amplify Force particles that the
+            enemy character may have equipped.
+
+    Return:
+        int or float: The modified value of the statistic.
+
+    &#34;&#34;&#34;
+    char = self.settings.char
+    roster = self.settings.roster
+    stats = char.totalStats(roster)
+    stat = self.settings.statMods.apply(stats).get(statName)
+    if firstRound and statName == &#39;Attack&#39;:
+        stat *= char.partEffects(roster).get(&#39;Attack Up&#39;)
+    return stat</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EnemyChar.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Uses the current value of the <code>settings</code> property to update
+the <code>threatStats</code> property. Does nothing if <code>pauseUpdate</code> is
+set to <code>True</code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self):
+    &#34;&#34;&#34;Uses the current value of the `settings` property to update
+    the `threatStats` property. Does nothing if `pauseUpdate` is
+    set to `True`.
+
+    &#34;&#34;&#34;
+    # pylint: disable=invalid-name
+    if self.pauseUpdate:
+        return
+    cc = self.getStat(&#39;CritChance&#39;)
+    cd = self.getStat(&#39;CritDamage&#39;)
+    numHits = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
+    dmg = {&#39;Attack&#39;: 0, &#39;Tech&#39;: 0}
+    skillSequence = self.settings.char.aiSkillOrder()
+    rounds = self.settings.rounds
+    firstRound = True
+    while rounds &gt; 0:
+        skill = next(skillSequence)
+        if &#39;Damage&#39; not in skill.effectTags:
+            continue
+        numTargets = 4 if skill.isAOE else skill.numTargets
+        effects = sum((effect.chain for effect in skill.effects), [])
+        effects = [effect for effect in effects if effect.doesDamage]
+        for effect in effects:
+            numHits[effect.statSource] += 1
+            dmg[effect.statSource] += (
+                (numTargets/4)          # chance to be targeted
+                * self.getStat(         # raw stat value
+                    effect.statSource,
+                    firstRound
+                )
+                * effect.fraction       # fractions determined
+                * effect.statSourceFrac #   by skill effect
+                * (1 + cc * (cd - 1))   # effect of potential crits
+            )
+        firstRound = False
+        rounds -= 1
+    self.threatStats.update({
+        &#39;Attack Hits Per Round&#39;: numHits[&#39;Attack&#39;] / self.settings.rounds,
+        &#39;Tech Hits Per Round&#39;: numHits[&#39;Tech&#39;] / self.settings.rounds,
+        &#39;Attack Damage Per Round&#39;: dmg[&#39;Attack&#39;] / self.settings.rounds,
+        &#39;Tech Damage Per Round&#39;: dmg[&#39;Tech&#39;] / self.settings.rounds
+    })</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.effstatcalc.EnemyCharSettings"><code class="flex name class">
+<span>class <span class="ident">EnemyCharSettings</span></span>
+<span>(</span><span>parent, char, roster=None, rounds=3)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Settings for an <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance.</p>
+<p>The constructor sets the <code>parent</code>, <code>char</code>, <code>roster</code>, and
+<code>rounds</code> properties to the given values. If no roster is given,
+a new, empty roster is created and the given character is added
+to it.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EnemyCharSettings():
+    &#34;&#34;&#34;Settings for an `EnemyChar` instance.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent, char, roster=None, rounds=3):
+        &#34;&#34;&#34;The constructor sets the `parent`, `char`, `roster`, and
+        `rounds` properties to the given values. If no roster is given,
+        a new, empty roster is created and the given character is added
+        to it.
+
+        &#34;&#34;&#34;
+        if roster is None:
+            roster = Roster()
+            roster.chars[char.nameID] = char
+
+        self._parent = parent
+        self._char = char
+        self._roster = roster
+
+        self.rounds = rounds
+
+        self._statMods = StatMods()
+
+        self.roster.onCharChange.subscribe(self.onCharChange)
+        self.statMods.onChange.subscribe(lambda event:self.parent.update())
+
+    @property
+    def parent(self):
+        &#34;&#34;&#34;`EnemyChar`: The `EnemyChar` instance to which these settings
+        belong.
+        &#34;&#34;&#34;
+        return self._parent
+
+    @property
+    def char(self):
+        &#34;&#34;&#34;`legends.gameobjects.Character`: The character associated
+        with the parent `EnemyChar` instance.
+        &#34;&#34;&#34;
+        return self._char
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster to which the enemy
+        character belongs.
+        &#34;&#34;&#34;
+        return self._roster
+
+    @property
+    def rounds(self):
+        &#34;&#34;&#34;`int`: The number of combat rounds used to calculate the
+        threat assessment. Must be a positive integer. Setting this
+        property forces the parent `EnemyChar` instance to update its
+        threat statistics.
+        &#34;&#34;&#34;
+        return self._rounds
+
+    @rounds.setter
+    def rounds(self, value):
+        if not isinstance(value, int) or value &lt;= 0:
+            raise ValueError(&#39;{!r} not a positive integer&#39;.format(value))
+        self._rounds = value
+        self.parent.update()
+
+    @property
+    def statMods(self):
+        &#34;&#34;&#34;`legends.stats.StatMods`: Stat modifiers to be applied to the
+        enemy character. Defaults to a newly created instance of
+        `legends.stats.StatMods`. This property cannot be set, but its
+        value can be changed in place. Doing so forces the parent
+        `EnemyChar` instance to update its threat statistics.
+        &#34;&#34;&#34;
+        return self._statMods
+
+    def onCharChange(self, charChangeEvent):
+        &#34;&#34;&#34;Triggered when the associated roster sends a
+        `legends.roster.CharChangeEvent`. If it is the enemy character
+        that changed, the parent `EnemyChar` instance is forced to
+        update its threat statistics. Otherwise, nothing happens.
+
+        Args:
+            charChangeEvent (legends.roster.CharChangeEvent): The event
+                sent by the associated roster.
+
+        &#34;&#34;&#34;
+        if charChangeEvent.char is self.char:
+            self.parent.update()</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.effstatcalc.EnemyCharSettings.char"><code class="name">var <span class="ident">char</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code>: The character associated
+with the parent <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def char(self):
+    &#34;&#34;&#34;`legends.gameobjects.Character`: The character associated
+    with the parent `EnemyChar` instance.
+    &#34;&#34;&#34;
+    return self._char</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EnemyCharSettings.parent"><code class="name">var <span class="ident">parent</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code>: The <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance to which these settings
+belong.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def parent(self):
+    &#34;&#34;&#34;`EnemyChar`: The `EnemyChar` instance to which these settings
+    belong.
+    &#34;&#34;&#34;
+    return self._parent</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EnemyCharSettings.roster"><code class="name">var <span class="ident">roster</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code>: The roster to which the enemy
+character belongs.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def roster(self):
+    &#34;&#34;&#34;`legends.roster.Roster`: The roster to which the enemy
+    character belongs.
+    &#34;&#34;&#34;
+    return self._roster</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EnemyCharSettings.rounds"><code class="name">var <span class="ident">rounds</span></code></dt>
+<dd>
+<div class="desc"><p><code>int</code>: The number of combat rounds used to calculate the
+threat assessment. Must be a positive integer. Setting this
+property forces the parent <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance to update its
+threat statistics.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def rounds(self):
+    &#34;&#34;&#34;`int`: The number of combat rounds used to calculate the
+    threat assessment. Must be a positive integer. Setting this
+    property forces the parent `EnemyChar` instance to update its
+    threat statistics.
+    &#34;&#34;&#34;
+    return self._rounds</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EnemyCharSettings.statMods"><code class="name">var <span class="ident">statMods</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.stats.StatMods" href="stats.html#legends.stats.StatMods">StatMods</a></code>: Stat modifiers to be applied to the
+enemy character. Defaults to a newly created instance of
+<code><a title="legends.stats.StatMods" href="stats.html#legends.stats.StatMods">StatMods</a></code>. This property cannot be set, but its
+value can be changed in place. Doing so forces the parent
+<code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance to update its threat statistics.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def statMods(self):
+    &#34;&#34;&#34;`legends.stats.StatMods`: Stat modifiers to be applied to the
+    enemy character. Defaults to a newly created instance of
+    `legends.stats.StatMods`. This property cannot be set, but its
+    value can be changed in place. Doing so forces the parent
+    `EnemyChar` instance to update its threat statistics.
+    &#34;&#34;&#34;
+    return self._statMods</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.effstatcalc.EnemyCharSettings.onCharChange"><code class="name flex">
+<span>def <span class="ident">onCharChange</span></span>(<span>self, charChangeEvent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Triggered when the associated roster sends a
+<code><a title="legends.roster.CharChangeEvent" href="roster.html#legends.roster.CharChangeEvent">CharChangeEvent</a></code>. If it is the enemy character
+that changed, the parent <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance is forced to
+update its threat statistics. Otherwise, nothing happens.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>charChangeEvent</code></strong> :&ensp;<code><a title="legends.roster.CharChangeEvent" href="roster.html#legends.roster.CharChangeEvent">CharChangeEvent</a></code></dt>
+<dd>The event
+sent by the associated roster.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onCharChange(self, charChangeEvent):
+    &#34;&#34;&#34;Triggered when the associated roster sends a
+    `legends.roster.CharChangeEvent`. If it is the enemy character
+    that changed, the parent `EnemyChar` instance is forced to
+    update its threat statistics. Otherwise, nothing happens.
+
+    Args:
+        charChangeEvent (legends.roster.CharChangeEvent): The event
+            sent by the associated roster.
+
+    &#34;&#34;&#34;
+    if charChangeEvent.char is self.char:
+        self.parent.update()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -156,6 +780,30 @@
 <li><h3>Super-module</h3>
 <ul>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code></h4>
+<ul class="">
+<li><code><a title="legends.effstatcalc.EnemyChar.getStat" href="#legends.effstatcalc.EnemyChar.getStat">getStat</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyChar.settings" href="#legends.effstatcalc.EnemyChar.settings">settings</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyChar.threatStats" href="#legends.effstatcalc.EnemyChar.threatStats">threatStats</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyChar.update" href="#legends.effstatcalc.EnemyChar.update">update</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.effstatcalc.EnemyCharSettings" href="#legends.effstatcalc.EnemyCharSettings">EnemyCharSettings</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.effstatcalc.EnemyCharSettings.char" href="#legends.effstatcalc.EnemyCharSettings.char">char</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyCharSettings.onCharChange" href="#legends.effstatcalc.EnemyCharSettings.onCharChange">onCharChange</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyCharSettings.parent" href="#legends.effstatcalc.EnemyCharSettings.parent">parent</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyCharSettings.roster" href="#legends.effstatcalc.EnemyCharSettings.roster">roster</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyCharSettings.rounds" href="#legends.effstatcalc.EnemyCharSettings.rounds">rounds</a></code></li>
+<li><code><a title="legends.effstatcalc.EnemyCharSettings.statMods" href="#legends.effstatcalc.EnemyCharSettings.statMods">statMods</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

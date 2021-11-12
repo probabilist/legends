@@ -1,5 +1,12 @@
 # Change log
 
+## Version 0.26.1
+
+* Added a `THREAT_STATS` constant.
+* Added `StatMods` and `ThreatStats` classes.
+* Added a `statObj` attribute to the `StatChangeEvent` class.
+* Added an `effstatcalc` module with two classes: `EnemyChar` and `EnemyCharSettings`.
+
 ## Version 0.26.0
 
 * Added a `CharChangeEvent` class.

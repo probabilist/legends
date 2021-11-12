@@ -50,6 +50,8 @@ __all__ = [
     &#39;WatchedCollection&#39;,
     &#39;WatchedList&#39;,
     &#39;WatchedDict&#39;,
+    &#39;CharChangeEvent&#39;,
+    &#39;CharChangeWatcher&#39;,
     &#39;Roster&#39;
 ]
 
@@ -391,6 +393,111 @@ class WatchedDict(WatchedCollection, MutableMapping):
         &#34;&#34;&#34;
         return MutableMapping.values(self)
 
+class CharChangeEvent(Event): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;An event indicating a character has changed.
+
+    Typically created by a `CharChangeWatcher` instance.
+
+    Attributes:
+        char (legends.gameobjects.Character): The character that has
+            changed.
+        triggerEvent (legends.utils.eventhandler.Event): The event that
+            triggered the creation of the `CharChangeEvent` instance.
+            Typically either a `legends.stats.StatChangeEvent` or a
+            `OneToOneChangeEvent`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, triggerEvent):
+        self.char = char
+        self.triggerEvent = triggerEvent
+
+class CharChangeWatcher(EventHandler):
+    &#34;&#34;&#34;An event handler that watches a roster for changes to characters.
+
+    A character in a roster can change for one of five reasons. (1) The
+    character&#39;s naked stats (not accounting for gear or particles) can
+    change. (2) The stats of a piece of equipped gear can change. (3)
+    The stats of an equipped particle can change. (4) A piece of gear
+    can be removed or added. (5) A particle can be removed or added.
+
+    This event handler watches for all five changes by subscribing to
+    the `gear`, `parts`, and `chars` properties of the roster, and by
+    subscribing to the `onChange` event handlers of the roster&#39;s
+    `inGearSlot` and `inPartSlot` attributes. When a character change is
+    detected, this event handler creates and sends subscribers a
+    `CharChangeEvent` instance.
+
+    Attributes:
+        roster (Roster): The roster to watch.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, roster):
+        EventHandler.__init__(self)
+        self.roster = roster
+        self.roster.gear.subscribe(self.onGearChange)
+        self.roster.parts.subscribe(self.onPartChange)
+        self.roster.chars.subscribe(self.onCharChange)
+        self.roster.inGearSlot.onChange.subscribe(self.onRelChange)
+        self.roster.inPartSlot.onChange.subscribe(self.onRelChange)
+
+    def onGearChange(self, statChangeEvent):
+        &#34;&#34;&#34;Called when the stats of a gear piece in the roster changes.
+        If that gear piece is equipped on a character, subscribers are
+        sent a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster&#39;s `gear` property.
+
+        &#34;&#34;&#34;
+        gear = statChangeEvent.parent
+        if gear in self.roster.inGearSlot:
+            self.notify(CharChangeEvent(
+                self.roster.inGearSlot[gear].char, statChangeEvent
+            ))
+
+    def onPartChange(self, statChangeEvent):
+        &#34;&#34;&#34;Called when the stats of a particle in the roster changes.
+        If that particle is equipped on a character, subscribers are
+        sent a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster&#39;s `parts` property.
+
+        &#34;&#34;&#34;
+        part = statChangeEvent.parent
+        if part in self.roster.inPartSlot:
+            self.notify(CharChangeEvent(
+                self.roster.inPartSlot[part].char, statChangeEvent
+            ))
+
+    def onCharChange(self, statChangeEvent):
+        &#34;&#34;&#34;Called when the stats of a character (i.e., the naked stats,
+        not accounting for gear or particles) in the roster changes.
+        Sends subscribers a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster&#39;s `chars` property.
+
+        &#34;&#34;&#34;
+        self.notify(CharChangeEvent(
+            statChangeEvent.parent, statChangeEvent
+        ))
+
+    def onRelChange(self, oneToOneChangeEvent):
+        &#34;&#34;&#34;Called when the `onChange` event handler of either the
+        roster&#39;s `inGearSlot` or `inPartSlot` attributes send a
+        `OneToOneChangeEvent`. Sends subscribers a `CharChangeEvent`.
+
+        &#34;&#34;&#34;
+        self.notify(CharChangeEvent(
+            oneToOneChangeEvent.value.char, oneToOneChangeEvent
+        ))
+
 class Roster():
     &#34;&#34;&#34;A collection of related characters, gear, and particles.
 
@@ -401,6 +508,8 @@ class Roster():
         inPartSlot (WatchedOneToOne): A relation mapping
             `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
+        charChangeWatcher (CharChangeWatcher): The event handler that
+            watches for changes to characters in this roster.
 
     &#34;&#34;&#34;
     def __init__(self, save=None, slot=0):
@@ -417,18 +526,13 @@ class Roster():
 
         &#34;&#34;&#34;
         self._gear = WatchedList()
-        self._gear.subscribe(self.charChangeWatcher)
         self._parts = WatchedList()
-        self._parts.subscribe(self.charChangeWatcher)
         self._chars = WatchedDict()
-        self._chars.subscribe(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
-        self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
         self.inPartSlot = WatchedOneToOne()
-        self.inPartSlot.onChange.subscribe(self.charChangeWatcher)
         if save is not None:
             self.fromSaveData(save, slot)
-        self.onCharChange = EventHandler()
+        self.charChangeWatcher = CharChangeWatcher(self)
 
     @property
     def gear(self):
@@ -580,18 +684,6 @@ class Roster():
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
-
-    def charChangeWatcher(self, event):
-        # TODO: Fill in this method.
-        &#34;&#34;&#34;This method is subscribed to the `gear`, `parts`, and `chars`
-        watched collections, as well as to the `onChange` event handlers
-        of the `inGearSlot` and `inPartSlot` relations. As such, this
-        method is called when anything (gear, particle, character, or
-        their relations) changes. For now, this method is just a
-        placeholder to be updated later.
-
-        &#34;&#34;&#34;
-        pass # pylint: disable=unnecessary-pass
 
     def maxGearLevel(self, gear):
         &#34;&#34;&#34;Returns the maximum possible gear level of the given gear
@@ -802,6 +894,304 @@ mapping IDs to particles.</dd>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.roster.CharChangeEvent"><code class="flex name class">
+<span>class <span class="ident">CharChangeEvent</span></span>
+<span>(</span><span>char, triggerEvent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An event indicating a character has changed.</p>
+<p>Typically created by a <code><a title="legends.roster.CharChangeWatcher" href="#legends.roster.CharChangeWatcher">CharChangeWatcher</a></code> instance.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character that has
+changed.</dd>
+<dt><strong><code>triggerEvent</code></strong> :&ensp;<code><a title="legends.utils.eventhandler.Event" href="utils/eventhandler.html#legends.utils.eventhandler.Event">Event</a></code></dt>
+<dd>The event that
+triggered the creation of the <code><a title="legends.roster.CharChangeEvent" href="#legends.roster.CharChangeEvent">CharChangeEvent</a></code> instance.
+Typically either a <code><a title="legends.stats.StatChangeEvent" href="stats.html#legends.stats.StatChangeEvent">StatChangeEvent</a></code> or a
+<code><a title="legends.roster.OneToOneChangeEvent" href="#legends.roster.OneToOneChangeEvent">OneToOneChangeEvent</a></code>.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CharChangeEvent(Event): # pylint: disable=too-few-public-methods
+    &#34;&#34;&#34;An event indicating a character has changed.
+
+    Typically created by a `CharChangeWatcher` instance.
+
+    Attributes:
+        char (legends.gameobjects.Character): The character that has
+            changed.
+        triggerEvent (legends.utils.eventhandler.Event): The event that
+            triggered the creation of the `CharChangeEvent` instance.
+            Typically either a `legends.stats.StatChangeEvent` or a
+            `OneToOneChangeEvent`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, char, triggerEvent):
+        self.char = char
+        self.triggerEvent = triggerEvent</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.eventhandler.Event" href="utils/eventhandler.html#legends.utils.eventhandler.Event">Event</a></li>
+</ul>
+</dd>
+<dt id="legends.roster.CharChangeWatcher"><code class="flex name class">
+<span>class <span class="ident">CharChangeWatcher</span></span>
+<span>(</span><span>roster)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An event handler that watches a roster for changes to characters.</p>
+<p>A character in a roster can change for one of five reasons. (1) The
+character's naked stats (not accounting for gear or particles) can
+change. (2) The stats of a piece of equipped gear can change. (3)
+The stats of an equipped particle can change. (4) A piece of gear
+can be removed or added. (5) A particle can be removed or added.</p>
+<p>This event handler watches for all five changes by subscribing to
+the <code>gear</code>, <code>parts</code>, and <code>chars</code> properties of the roster, and by
+subscribing to the <code>onChange</code> event handlers of the roster's
+<code>inGearSlot</code> and <code>inPartSlot</code> attributes. When a character change is
+detected, this event handler creates and sends subscribers a
+<code><a title="legends.roster.CharChangeEvent" href="#legends.roster.CharChangeEvent">CharChangeEvent</a></code> instance.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>roster</code></strong> :&ensp;<code><a title="legends.roster.Roster" href="#legends.roster.Roster">Roster</a></code></dt>
+<dd>The roster to watch.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class CharChangeWatcher(EventHandler):
+    &#34;&#34;&#34;An event handler that watches a roster for changes to characters.
+
+    A character in a roster can change for one of five reasons. (1) The
+    character&#39;s naked stats (not accounting for gear or particles) can
+    change. (2) The stats of a piece of equipped gear can change. (3)
+    The stats of an equipped particle can change. (4) A piece of gear
+    can be removed or added. (5) A particle can be removed or added.
+
+    This event handler watches for all five changes by subscribing to
+    the `gear`, `parts`, and `chars` properties of the roster, and by
+    subscribing to the `onChange` event handlers of the roster&#39;s
+    `inGearSlot` and `inPartSlot` attributes. When a character change is
+    detected, this event handler creates and sends subscribers a
+    `CharChangeEvent` instance.
+
+    Attributes:
+        roster (Roster): The roster to watch.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, roster):
+        EventHandler.__init__(self)
+        self.roster = roster
+        self.roster.gear.subscribe(self.onGearChange)
+        self.roster.parts.subscribe(self.onPartChange)
+        self.roster.chars.subscribe(self.onCharChange)
+        self.roster.inGearSlot.onChange.subscribe(self.onRelChange)
+        self.roster.inPartSlot.onChange.subscribe(self.onRelChange)
+
+    def onGearChange(self, statChangeEvent):
+        &#34;&#34;&#34;Called when the stats of a gear piece in the roster changes.
+        If that gear piece is equipped on a character, subscribers are
+        sent a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster&#39;s `gear` property.
+
+        &#34;&#34;&#34;
+        gear = statChangeEvent.parent
+        if gear in self.roster.inGearSlot:
+            self.notify(CharChangeEvent(
+                self.roster.inGearSlot[gear].char, statChangeEvent
+            ))
+
+    def onPartChange(self, statChangeEvent):
+        &#34;&#34;&#34;Called when the stats of a particle in the roster changes.
+        If that particle is equipped on a character, subscribers are
+        sent a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster&#39;s `parts` property.
+
+        &#34;&#34;&#34;
+        part = statChangeEvent.parent
+        if part in self.roster.inPartSlot:
+            self.notify(CharChangeEvent(
+                self.roster.inPartSlot[part].char, statChangeEvent
+            ))
+
+    def onCharChange(self, statChangeEvent):
+        &#34;&#34;&#34;Called when the stats of a character (i.e., the naked stats,
+        not accounting for gear or particles) in the roster changes.
+        Sends subscribers a `CharChangeEvent`.
+
+        Args:
+            statChangeEvent (legends.stats.StatChangeEvent): The stat
+                change event sent by the roster&#39;s `chars` property.
+
+        &#34;&#34;&#34;
+        self.notify(CharChangeEvent(
+            statChangeEvent.parent, statChangeEvent
+        ))
+
+    def onRelChange(self, oneToOneChangeEvent):
+        &#34;&#34;&#34;Called when the `onChange` event handler of either the
+        roster&#39;s `inGearSlot` or `inPartSlot` attributes send a
+        `OneToOneChangeEvent`. Sends subscribers a `CharChangeEvent`.
+
+        &#34;&#34;&#34;
+        self.notify(CharChangeEvent(
+            oneToOneChangeEvent.value.char, oneToOneChangeEvent
+        ))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.utils.eventhandler.EventHandler" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler">EventHandler</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.roster.CharChangeWatcher.onCharChange"><code class="name flex">
+<span>def <span class="ident">onCharChange</span></span>(<span>self, statChangeEvent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the stats of a character (i.e., the naked stats,
+not accounting for gear or particles) in the roster changes.
+Sends subscribers a <code><a title="legends.roster.CharChangeEvent" href="#legends.roster.CharChangeEvent">CharChangeEvent</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statChangeEvent</code></strong> :&ensp;<code><a title="legends.stats.StatChangeEvent" href="stats.html#legends.stats.StatChangeEvent">StatChangeEvent</a></code></dt>
+<dd>The stat
+change event sent by the roster's <code>chars</code> property.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onCharChange(self, statChangeEvent):
+    &#34;&#34;&#34;Called when the stats of a character (i.e., the naked stats,
+    not accounting for gear or particles) in the roster changes.
+    Sends subscribers a `CharChangeEvent`.
+
+    Args:
+        statChangeEvent (legends.stats.StatChangeEvent): The stat
+            change event sent by the roster&#39;s `chars` property.
+
+    &#34;&#34;&#34;
+    self.notify(CharChangeEvent(
+        statChangeEvent.parent, statChangeEvent
+    ))</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.CharChangeWatcher.onGearChange"><code class="name flex">
+<span>def <span class="ident">onGearChange</span></span>(<span>self, statChangeEvent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the stats of a gear piece in the roster changes.
+If that gear piece is equipped on a character, subscribers are
+sent a <code><a title="legends.roster.CharChangeEvent" href="#legends.roster.CharChangeEvent">CharChangeEvent</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statChangeEvent</code></strong> :&ensp;<code><a title="legends.stats.StatChangeEvent" href="stats.html#legends.stats.StatChangeEvent">StatChangeEvent</a></code></dt>
+<dd>The stat
+change event sent by the roster's <code>gear</code> property.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onGearChange(self, statChangeEvent):
+    &#34;&#34;&#34;Called when the stats of a gear piece in the roster changes.
+    If that gear piece is equipped on a character, subscribers are
+    sent a `CharChangeEvent`.
+
+    Args:
+        statChangeEvent (legends.stats.StatChangeEvent): The stat
+            change event sent by the roster&#39;s `gear` property.
+
+    &#34;&#34;&#34;
+    gear = statChangeEvent.parent
+    if gear in self.roster.inGearSlot:
+        self.notify(CharChangeEvent(
+            self.roster.inGearSlot[gear].char, statChangeEvent
+        ))</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.CharChangeWatcher.onPartChange"><code class="name flex">
+<span>def <span class="ident">onPartChange</span></span>(<span>self, statChangeEvent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the stats of a particle in the roster changes.
+If that particle is equipped on a character, subscribers are
+sent a <code><a title="legends.roster.CharChangeEvent" href="#legends.roster.CharChangeEvent">CharChangeEvent</a></code>.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>statChangeEvent</code></strong> :&ensp;<code><a title="legends.stats.StatChangeEvent" href="stats.html#legends.stats.StatChangeEvent">StatChangeEvent</a></code></dt>
+<dd>The stat
+change event sent by the roster's <code>parts</code> property.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onPartChange(self, statChangeEvent):
+    &#34;&#34;&#34;Called when the stats of a particle in the roster changes.
+    If that particle is equipped on a character, subscribers are
+    sent a `CharChangeEvent`.
+
+    Args:
+        statChangeEvent (legends.stats.StatChangeEvent): The stat
+            change event sent by the roster&#39;s `parts` property.
+
+    &#34;&#34;&#34;
+    part = statChangeEvent.parent
+    if part in self.roster.inPartSlot:
+        self.notify(CharChangeEvent(
+            self.roster.inPartSlot[part].char, statChangeEvent
+        ))</code></pre>
+</details>
+</dd>
+<dt id="legends.roster.CharChangeWatcher.onRelChange"><code class="name flex">
+<span>def <span class="ident">onRelChange</span></span>(<span>self, oneToOneChangeEvent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Called when the <code>onChange</code> event handler of either the
+roster's <code>inGearSlot</code> or <code>inPartSlot</code> attributes send a
+<code><a title="legends.roster.OneToOneChangeEvent" href="#legends.roster.OneToOneChangeEvent">OneToOneChangeEvent</a></code>. Sends subscribers a <code><a title="legends.roster.CharChangeEvent" href="#legends.roster.CharChangeEvent">CharChangeEvent</a></code>.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onRelChange(self, oneToOneChangeEvent):
+    &#34;&#34;&#34;Called when the `onChange` event handler of either the
+    roster&#39;s `inGearSlot` or `inPartSlot` attributes send a
+    `OneToOneChangeEvent`. Sends subscribers a `CharChangeEvent`.
+
+    &#34;&#34;&#34;
+    self.notify(CharChangeEvent(
+        oneToOneChangeEvent.value.char, oneToOneChangeEvent
+    ))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.utils.eventhandler.EventHandler" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler">EventHandler</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.utils.eventhandler.EventHandler.notify" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler.notify">notify</a></code></li>
+<li><code><a title="legends.utils.eventhandler.EventHandler.subscribe" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler.subscribe">subscribe</a></code></li>
+<li><code><a title="legends.utils.eventhandler.EventHandler.unsubscribe" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler.unsubscribe">unsubscribe</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="legends.roster.InGearSlot"><code class="flex name class">
 <span>class <span class="ident">InGearSlot</span></span>
 </code></dt>
@@ -982,6 +1372,9 @@ another to add the new key-value pair.</dd>
 <dd>A relation mapping
 <code><a title="legends.gameobjects.Particle" href="gameobjects.html#legends.gameobjects.Particle">Particle</a></code> objects to
 <code><a title="legends.gameobjects.PartSlot" href="gameobjects.html#legends.gameobjects.PartSlot">PartSlot</a></code> objects.</dd>
+<dt><strong><code>charChangeWatcher</code></strong> :&ensp;<code><a title="legends.roster.CharChangeWatcher" href="#legends.roster.CharChangeWatcher">CharChangeWatcher</a></code></dt>
+<dd>The event handler that
+watches for changes to characters in this roster.</dd>
 </dl>
 <p>If save data is provided, the constructor will populate the
 roster with objects built from the save data. Otherwise, an
@@ -1010,6 +1403,8 @@ read the data.</dd>
         inPartSlot (WatchedOneToOne): A relation mapping
             `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
+        charChangeWatcher (CharChangeWatcher): The event handler that
+            watches for changes to characters in this roster.
 
     &#34;&#34;&#34;
     def __init__(self, save=None, slot=0):
@@ -1026,18 +1421,13 @@ read the data.</dd>
 
         &#34;&#34;&#34;
         self._gear = WatchedList()
-        self._gear.subscribe(self.charChangeWatcher)
         self._parts = WatchedList()
-        self._parts.subscribe(self.charChangeWatcher)
         self._chars = WatchedDict()
-        self._chars.subscribe(self.charChangeWatcher)
         self.inGearSlot = InGearSlot()
-        self.inGearSlot.onChange.subscribe(self.charChangeWatcher)
         self.inPartSlot = WatchedOneToOne()
-        self.inPartSlot.onChange.subscribe(self.charChangeWatcher)
         if save is not None:
             self.fromSaveData(save, slot)
-        self.onCharChange = EventHandler()
+        self.charChangeWatcher = CharChangeWatcher(self)
 
     @property
     def gear(self):
@@ -1189,18 +1579,6 @@ read the data.</dd>
                 )
                 self.gear.append(gear)
                 self.inGearSlot[gear] = char.gearSlots[slot]
-
-    def charChangeWatcher(self, event):
-        # TODO: Fill in this method.
-        &#34;&#34;&#34;This method is subscribed to the `gear`, `parts`, and `chars`
-        watched collections, as well as to the `onChange` event handlers
-        of the `inGearSlot` and `inPartSlot` relations. As such, this
-        method is called when anything (gear, particle, character, or
-        their relations) changes. For now, this method is just a
-        placeholder to be updated later.
-
-        &#34;&#34;&#34;
-        pass # pylint: disable=unnecessary-pass
 
     def maxGearLevel(self, gear):
         &#34;&#34;&#34;Returns the maximum possible gear level of the given gear
@@ -1366,33 +1744,6 @@ def parts(self):
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="legends.roster.Roster.charChangeWatcher"><code class="name flex">
-<span>def <span class="ident">charChangeWatcher</span></span>(<span>self, event)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>This method is subscribed to the <code>gear</code>, <code>parts</code>, and <code>chars</code>
-watched collections, as well as to the <code>onChange</code> event handlers
-of the <code>inGearSlot</code> and <code>inPartSlot</code> relations. As such, this
-method is called when anything (gear, particle, character, or
-their relations) changes. For now, this method is just a
-placeholder to be updated later.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def charChangeWatcher(self, event):
-    # TODO: Fill in this method.
-    &#34;&#34;&#34;This method is subscribed to the `gear`, `parts`, and `chars`
-    watched collections, as well as to the `onChange` event handlers
-    of the `inGearSlot` and `inPartSlot` relations. As such, this
-    method is called when anything (gear, particle, character, or
-    their relations) changes. For now, this method is just a
-    placeholder to be updated later.
-
-    &#34;&#34;&#34;
-    pass # pylint: disable=unnecessary-pass</code></pre>
-</details>
-</dd>
 <dt id="legends.roster.Roster.clear"><code class="name flex">
 <span>def <span class="ident">clear</span></span>(<span>self)</span>
 </code></dt>
@@ -2299,6 +2650,18 @@ subscribers.</dd>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
+<h4><code><a title="legends.roster.CharChangeEvent" href="#legends.roster.CharChangeEvent">CharChangeEvent</a></code></h4>
+</li>
+<li>
+<h4><code><a title="legends.roster.CharChangeWatcher" href="#legends.roster.CharChangeWatcher">CharChangeWatcher</a></code></h4>
+<ul class="">
+<li><code><a title="legends.roster.CharChangeWatcher.onCharChange" href="#legends.roster.CharChangeWatcher.onCharChange">onCharChange</a></code></li>
+<li><code><a title="legends.roster.CharChangeWatcher.onGearChange" href="#legends.roster.CharChangeWatcher.onGearChange">onGearChange</a></code></li>
+<li><code><a title="legends.roster.CharChangeWatcher.onPartChange" href="#legends.roster.CharChangeWatcher.onPartChange">onPartChange</a></code></li>
+<li><code><a title="legends.roster.CharChangeWatcher.onRelChange" href="#legends.roster.CharChangeWatcher.onRelChange">onRelChange</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="legends.roster.InGearSlot" href="#legends.roster.InGearSlot">InGearSlot</a></code></h4>
 <ul class="">
 <li><code><a title="legends.roster.InGearSlot.validate" href="#legends.roster.InGearSlot.validate">validate</a></code></li>
@@ -2310,7 +2673,6 @@ subscribers.</dd>
 <li>
 <h4><code><a title="legends.roster.Roster" href="#legends.roster.Roster">Roster</a></code></h4>
 <ul class="two-column">
-<li><code><a title="legends.roster.Roster.charChangeWatcher" href="#legends.roster.Roster.charChangeWatcher">charChangeWatcher</a></code></li>
 <li><code><a title="legends.roster.Roster.chars" href="#legends.roster.Roster.chars">chars</a></code></li>
 <li><code><a title="legends.roster.Roster.clear" href="#legends.roster.Roster.clear">clear</a></code></li>
 <li><code><a title="legends.roster.Roster.containsGear" href="#legends.roster.Roster.containsGear">containsGear</a></code></li>

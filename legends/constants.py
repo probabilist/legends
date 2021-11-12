@@ -67,6 +67,12 @@ Attributes:
         of summoning the available rarities; and 'cost', which maps to
         the number of orbs required to summon from that pool. See the
         examples below.
+    THREAT_STATS (dict): {`str`:`str`} There are four stats used by this
+        package to model the threat posed by enemies in battle: 'Attack
+        Hits Per Round', 'Tech Hits Per Round', 'Attack Damage Per
+        Round', and 'Tech Damage Per Round'. This dictionary maps the
+        names of these stats to their abbreviations, 'attHits',
+        'techHits', 'attDmg', and 'techDmg'.
     SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
         dictionary mapping pool names their summon IDs, which are used
         by the game data to identify particular summon pools.
@@ -126,6 +132,7 @@ __all__ = [
     'STAT_INITIALS',
     'SUMMON_POOL',
     'SUMMON_POOL_IDS',
+    'THREAT_STATS',
     'UPCOMING',
     'Inventory'
 ]
@@ -401,6 +408,13 @@ for pool, data in SUMMON_POOL.items():
             prob = data['rarityChances'][rarity] / len(nameIDs)
             for nameID in nameIDs:
                 data['nameIDs'][nameID] = prob
+
+THREAT_STATS = {
+    'Attack Hits Per Round': 'attHits',
+    'Tech Hits Per Round': 'techHits',
+    'Attack Damage Per Round': 'attDmg',
+    'Tech Damage Per Round': 'techDmg'
+}
 
 UPCOMING = ['PicardOld', 'JudgeQ', 'Guinan', 'NumberOne']
 UPCOMING = [nameID for nameID in UPCOMING if nameID not in ENABLED]

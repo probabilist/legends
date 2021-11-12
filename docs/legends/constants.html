@@ -108,6 +108,13 @@ probabilities; 'rarityChances', which maps to the probabilities
 of summoning the available rarities; and 'cost', which maps to
 the number of orbs required to summon from that pool. See the
 examples below.</dd>
+<dt><strong><code>THREAT_STATS</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} There are four stats used by this
+package to model the threat posed by enemies in battle: 'Attack
+Hits Per Round', 'Tech Hits Per Round', 'Attack Damage Per
+Round', and 'Tech Damage Per Round'. This dictionary maps the
+names of these stats to their abbreviations, 'attHits',
+'techHits', 'attDmg', and 'techDmg'.</dd>
 <dt><strong><code>SUMMON_POOL_IDS</code></strong> :&ensp;<code><a title="legends.utils.relations.bidict" href="utils/relations.html#legends.utils.relations.bidict">bidict</a></code></dt>
 <dd>An invertible
 dictionary mapping pool names their summon IDs, which are used
@@ -212,6 +219,12 @@ Attributes:
         of summoning the available rarities; and &#39;cost&#39;, which maps to
         the number of orbs required to summon from that pool. See the
         examples below.
+    THREAT_STATS (dict): {`str`:`str`} There are four stats used by this
+        package to model the threat posed by enemies in battle: &#39;Attack
+        Hits Per Round&#39;, &#39;Tech Hits Per Round&#39;, &#39;Attack Damage Per
+        Round&#39;, and &#39;Tech Damage Per Round&#39;. This dictionary maps the
+        names of these stats to their abbreviations, &#39;attHits&#39;,
+        &#39;techHits&#39;, &#39;attDmg&#39;, and &#39;techDmg&#39;.
     SUMMON_POOL_IDS (legends.utils.relations.bidict): An invertible
         dictionary mapping pool names their summon IDs, which are used
         by the game data to identify particular summon pools.
@@ -271,6 +284,7 @@ __all__ = [
     &#39;STAT_INITIALS&#39;,
     &#39;SUMMON_POOL&#39;,
     &#39;SUMMON_POOL_IDS&#39;,
+    &#39;THREAT_STATS&#39;,
     &#39;UPCOMING&#39;,
     &#39;Inventory&#39;
 ]
@@ -546,6 +560,13 @@ for pool, data in SUMMON_POOL.items():
             prob = data[&#39;rarityChances&#39;][rarity] / len(nameIDs)
             for nameID in nameIDs:
                 data[&#39;nameIDs&#39;][nameID] = prob
+
+THREAT_STATS = {
+    &#39;Attack Hits Per Round&#39;: &#39;attHits&#39;,
+    &#39;Tech Hits Per Round&#39;: &#39;techHits&#39;,
+    &#39;Attack Damage Per Round&#39;: &#39;attDmg&#39;,
+    &#39;Tech Damage Per Round&#39;: &#39;techDmg&#39;
+}
 
 UPCOMING = [&#39;PicardOld&#39;, &#39;JudgeQ&#39;, &#39;Guinan&#39;, &#39;NumberOne&#39;]
 UPCOMING = [nameID for nameID in UPCOMING if nameID not in ENABLED]

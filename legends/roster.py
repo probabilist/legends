@@ -21,6 +21,8 @@ __all__ = [
     'WatchedCollection',
     'WatchedList',
     'WatchedDict',
+    'CharChangeEvent',
+    'CharChangeWatcher',
     'Roster'
 ]
 
@@ -477,6 +479,8 @@ class Roster():
         inPartSlot (WatchedOneToOne): A relation mapping
             `legends.gameobjects.Particle` objects to
             `legends.gameobjects.PartSlot` objects.
+        charChangeWatcher (CharChangeWatcher): The event handler that
+            watches for changes to characters in this roster.
 
     """
     def __init__(self, save=None, slot=0):

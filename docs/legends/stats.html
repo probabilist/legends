@@ -31,16 +31,20 @@
 
 &#34;&#34;&#34;
 
-from legends.utils.functions import formatDict
+from legends.utils.functions import formatDict, objDict
 from legends.utils.eventhandler import Event, EventHandler
-from legends.constants import PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS
+from legends.constants import (
+    PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS, THREAT_STATS
+)
 
 __all__ = [
     &#39;checkForStats&#39;,
     &#39;PartEffects&#39;,
     &#39;StatChangeEvent&#39;,
+    &#39;StatMods&#39;,
     &#39;StatObject&#39;,
-    &#39;Stats&#39;
+    &#39;Stats&#39;,
+    &#39;ThreatStats&#39;
 ]
 
 def checkForStats(obj):
@@ -68,6 +72,7 @@ class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
 
     Attributes:
         parent (obj): The object whose statistics have changed.
+        statObj (StatObject): The stat object that has changed.
         oldStats (dict): {`str`:`int` or `float`} A dictionary mapping
             stat names (the keys of the `StatObject`&#39;s `statAbbrs`
             property) to their previous values (at the time of the last
@@ -75,8 +80,9 @@ class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
 
     &#34;&#34;&#34;
 
-    def __init__(self, parent, oldStats):
+    def __init__(self, parent, statObj, oldStats):
         self.parent = parent
+        self.statObj = statObj
         self.oldStats = oldStats
 
 class StatObject():
@@ -157,7 +163,7 @@ class StatObject():
         &#34;&#34;&#34;Sends a `StatChangeEvent` to the `onChange` subscribers, and
         updates the `oldStats` property.
         &#34;&#34;&#34;
-        self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+        self.onChange.notify(StatChangeEvent(self.parent, self, self.oldStats))
         self._oldStats = self.asDict
 
     def get(self, statName):
@@ -235,6 +241,11 @@ class Stats(StatObject):
     &#34;&#34;&#34;
 
     def __init__(self, parent=None, initDict=None):
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `STAT_ABBREVIATIONS`
+        dictionary.
+
+        &#34;&#34;&#34;
         StatObject.__init__(self, STAT_ABBREVIATIONS.copy(), parent, initDict)
 
     @property
@@ -249,6 +260,46 @@ class Stats(StatObject):
             powerDelta += POWER_GRADIENT[statName] * statVal
         return powerDelta
 
+class StatMods():
+    &#34;&#34;&#34;A collection of stat modifiers.
+
+    Attributes:
+        mult (Stats): Multiplicative modifiers. Defaults to all 1&#39;s.
+        preAdd (Stats): Additive modifiers, applied before the
+            multiplicative modifiers. Defaults to all 0&#39;s.
+        postAdd (Stats): Additive modifiers, applied after the
+            multiplicative modifiers. Defaults to all 0&#39;s.
+        onChange (legends.utils.eventhandler.EventHandler): When any of
+            `mult`, `preAdd`, or `postAdd` changes, this event handler
+            passes on the `StatChangeEvent` to its subscribers.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.mult = Stats({statName: 1 for statName in STAT_ABBREVIATIONS})
+        self.preAdd = Stats()
+        self.postAdd = Stats()
+        self.onChange = EventHandler()
+        self.mult.onChange.subscribe(self.onChange.notify)
+        self.preAdd.onChange.subscribe(self.onChange.notify)
+        self.postAdd.onChange.subscribe(self.onChange.notify)
+
+    def apply(self, stats):
+        &#34;&#34;&#34;Creates and returns a new `Stats` object by applying the
+        modifiers to the given `Stats` object.
+
+        Args:
+            stats (`Stats`): The stats to which the modifiers should be
+                applied.
+
+        &#34;&#34;&#34;
+        return (stats + self.preAdd) * self.mult + self.postAdd
+
+    def __repr__(self):
+        return &#39;{}({})&#39;.format(
+            self.__class__.__name__, formatDict(objDict(self))
+        )
+
 class PartEffects(StatObject):
     &#34;&#34;&#34;Stats describing effects of particles in STL.
 
@@ -258,16 +309,26 @@ class PartEffects(StatObject):
     &#34;&#34;&#34;
 
     def __init__(self, parent=None, initDict=None):
-        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
-        initializes the instance with these values.
-
-        Args:
-            initDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `PART_EFFECTS` to
-                numerical values.
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `PART_EFFECTS` dictionary.
 
         &#34;&#34;&#34;
-        StatObject.__init__(self, PART_EFFECTS, parent, initDict)</code></pre>
+        StatObject.__init__(self, PART_EFFECTS.copy(), parent, initDict)
+
+class ThreatStats(StatObject):
+    &#34;&#34;&#34;Stats describing the threat posed by enemies in battle.
+
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `THREAT_STATS`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent=None, initDict=None):
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `THREAT_STATS` dictionary.
+
+        &#34;&#34;&#34;
+        StatObject.__init__(self, THREAT_STATS.copy(), parent, initDict)</code></pre>
 </details>
 </section>
 <section>
@@ -329,15 +390,8 @@ to a <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">
 <div class="desc"><p>Stats describing effects of particles in STL.</p>
 <p>A subclass of <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> whose <code>statAbbrs</code> property is set to
 <code>PART_EFFECTS</code>.</p>
-<p>If a dictionary of stat values is provided, the constructor
-initializes the instance with these values.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>initDict</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
-the stat names in the keys of <code>PART_EFFECTS</code> to
-numerical values.</dd>
-</dl></div>
+<p>The constructor passes the arguments to the <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>
+constructor, along with a copy of the <code>PART_EFFECTS</code> dictionary.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -351,16 +405,11 @@ numerical values.</dd>
     &#34;&#34;&#34;
 
     def __init__(self, parent=None, initDict=None):
-        &#34;&#34;&#34;If a dictionary of stat values is provided, the constructor
-        initializes the instance with these values.
-
-        Args:
-            initDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `PART_EFFECTS` to
-                numerical values.
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `PART_EFFECTS` dictionary.
 
         &#34;&#34;&#34;
-        StatObject.__init__(self, PART_EFFECTS, parent, initDict)</code></pre>
+        StatObject.__init__(self, PART_EFFECTS.copy(), parent, initDict)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -383,7 +432,7 @@ numerical values.</dd>
 </dd>
 <dt id="legends.stats.StatChangeEvent"><code class="flex name class">
 <span>class <span class="ident">StatChangeEvent</span></span>
-<span>(</span><span>parent, oldStats)</span>
+<span>(</span><span>parent, statObj, oldStats)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Created when one of a <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>'s attributes changes.</p>
@@ -392,6 +441,8 @@ numerical values.</dd>
 <dl>
 <dt><strong><code>parent</code></strong> :&ensp;<code>obj</code></dt>
 <dd>The object whose statistics have changed.</dd>
+<dt><strong><code>statObj</code></strong> :&ensp;<code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code></dt>
+<dd>The stat object that has changed.</dd>
 <dt><strong><code>oldStats</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>int</code> or <code>float</code>} A dictionary mapping
 stat names (the keys of the <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>'s <code>statAbbrs</code>
@@ -409,6 +460,7 @@ issuance of a <code><a title="legends.stats.StatChangeEvent" href="#legends.stat
 
     Attributes:
         parent (obj): The object whose statistics have changed.
+        statObj (StatObject): The stat object that has changed.
         oldStats (dict): {`str`:`int` or `float`} A dictionary mapping
             stat names (the keys of the `StatObject`&#39;s `statAbbrs`
             property) to their previous values (at the time of the last
@@ -416,14 +468,108 @@ issuance of a <code><a title="legends.stats.StatChangeEvent" href="#legends.stat
 
     &#34;&#34;&#34;
 
-    def __init__(self, parent, oldStats):
+    def __init__(self, parent, statObj, oldStats):
         self.parent = parent
+        self.statObj = statObj
         self.oldStats = oldStats</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="legends.utils.eventhandler.Event" href="utils/eventhandler.html#legends.utils.eventhandler.Event">Event</a></li>
 </ul>
+</dd>
+<dt id="legends.stats.StatMods"><code class="flex name class">
+<span>class <span class="ident">StatMods</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>A collection of stat modifiers.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>mult</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></code></dt>
+<dd>Multiplicative modifiers. Defaults to all 1's.</dd>
+<dt><strong><code>preAdd</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></code></dt>
+<dd>Additive modifiers, applied before the
+multiplicative modifiers. Defaults to all 0's.</dd>
+<dt><strong><code>postAdd</code></strong> :&ensp;<code><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></code></dt>
+<dd>Additive modifiers, applied after the
+multiplicative modifiers. Defaults to all 0's.</dd>
+<dt><strong><code>onChange</code></strong> :&ensp;<code><a title="legends.utils.eventhandler.EventHandler" href="utils/eventhandler.html#legends.utils.eventhandler.EventHandler">EventHandler</a></code></dt>
+<dd>When any of
+<code>mult</code>, <code>preAdd</code>, or <code>postAdd</code> changes, this event handler
+passes on the <code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code> to its subscribers.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StatMods():
+    &#34;&#34;&#34;A collection of stat modifiers.
+
+    Attributes:
+        mult (Stats): Multiplicative modifiers. Defaults to all 1&#39;s.
+        preAdd (Stats): Additive modifiers, applied before the
+            multiplicative modifiers. Defaults to all 0&#39;s.
+        postAdd (Stats): Additive modifiers, applied after the
+            multiplicative modifiers. Defaults to all 0&#39;s.
+        onChange (legends.utils.eventhandler.EventHandler): When any of
+            `mult`, `preAdd`, or `postAdd` changes, this event handler
+            passes on the `StatChangeEvent` to its subscribers.
+
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.mult = Stats({statName: 1 for statName in STAT_ABBREVIATIONS})
+        self.preAdd = Stats()
+        self.postAdd = Stats()
+        self.onChange = EventHandler()
+        self.mult.onChange.subscribe(self.onChange.notify)
+        self.preAdd.onChange.subscribe(self.onChange.notify)
+        self.postAdd.onChange.subscribe(self.onChange.notify)
+
+    def apply(self, stats):
+        &#34;&#34;&#34;Creates and returns a new `Stats` object by applying the
+        modifiers to the given `Stats` object.
+
+        Args:
+            stats (`Stats`): The stats to which the modifiers should be
+                applied.
+
+        &#34;&#34;&#34;
+        return (stats + self.preAdd) * self.mult + self.postAdd
+
+    def __repr__(self):
+        return &#39;{}({})&#39;.format(
+            self.__class__.__name__, formatDict(objDict(self))
+        )</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.stats.StatMods.apply"><code class="name flex">
+<span>def <span class="ident">apply</span></span>(<span>self, stats)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates and returns a new <code><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></code> object by applying the
+modifiers to the given <code><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></code> object.</p>
+<h2 id="args">Args</h2>
+<p>stats (<code><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></code>): The stats to which the modifiers should be
+applied.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply(self, stats):
+    &#34;&#34;&#34;Creates and returns a new `Stats` object by applying the
+    modifiers to the given `Stats` object.
+
+    Args:
+        stats (`Stats`): The stats to which the modifiers should be
+            applied.
+
+    &#34;&#34;&#34;
+    return (stats + self.preAdd) * self.mult + self.postAdd</code></pre>
+</details>
+</dd>
+</dl>
 </dd>
 <dt id="legends.stats.StatObject"><code class="flex name class">
 <span>class <span class="ident">StatObject</span></span>
@@ -546,7 +692,7 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
         &#34;&#34;&#34;Sends a `StatChangeEvent` to the `onChange` subscribers, and
         updates the `oldStats` property.
         &#34;&#34;&#34;
-        self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+        self.onChange.notify(StatChangeEvent(self.parent, self, self.oldStats))
         self._oldStats = self.asDict
 
     def get(self, statName):
@@ -619,6 +765,7 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
 <ul class="hlist">
 <li><a title="legends.stats.PartEffects" href="#legends.stats.PartEffects">PartEffects</a></li>
 <li><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></li>
+<li><a title="legends.stats.ThreatStats" href="#legends.stats.ThreatStats">ThreatStats</a></li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
@@ -729,7 +876,7 @@ updates the <code>oldStats</code> property.</p></div>
     &#34;&#34;&#34;Sends a `StatChangeEvent` to the `onChange` subscribers, and
     updates the `oldStats` property.
     &#34;&#34;&#34;
-    self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+    self.onChange.notify(StatChangeEvent(self.parent, self, self.oldStats))
     self._oldStats = self.asDict</code></pre>
 </details>
 </dd>
@@ -814,18 +961,9 @@ should match the keys of the <code>statAbbrs</code> attribute.</dd>
 <div class="desc"><p>Stores the basic stats in STL.</p>
 <p>A subclass of <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> whose <code>statAbbrs</code> property is set to
 <code>STAT_ABBREVIATIONS</code>.</p>
-<p>If a dictionary of stat values is provided, the constructor
-initializes the instance with these values.</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>statAbbrs</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>str</code>} The dictionary to assign to
-the <code>statAbbrs</code> property.</dd>
-<dt><strong><code>initDict</code></strong> :&ensp;<code>dict</code></dt>
-<dd>{<code>str</code>:<code>int or float</code>} A dictionary mapping
-stat names to numerical values. The keys of <code>initDict</code>
-should match the keys of the <code>statAbbrs</code> property.</dd>
-</dl></div>
+<p>The constructor passes the arguments to the <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>
+constructor, along with a copy of the <code>STAT_ABBREVIATIONS</code>
+dictionary.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -839,6 +977,11 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
     &#34;&#34;&#34;
 
     def __init__(self, parent=None, initDict=None):
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `STAT_ABBREVIATIONS`
+        dictionary.
+
+        &#34;&#34;&#34;
         StatObject.__init__(self, STAT_ABBREVIATIONS.copy(), parent, initDict)
 
     @property
@@ -897,6 +1040,54 @@ def power(self):
 </li>
 </ul>
 </dd>
+<dt id="legends.stats.ThreatStats"><code class="flex name class">
+<span>class <span class="ident">ThreatStats</span></span>
+<span>(</span><span>parent=None, initDict=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Stats describing the threat posed by enemies in battle.</p>
+<p>A subclass of <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> whose <code>statAbbrs</code> property is set to
+<code>THREAT_STATS</code>.</p>
+<p>The constructor passes the arguments to the <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>
+constructor, along with a copy of the <code>THREAT_STATS</code> dictionary.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ThreatStats(StatObject):
+    &#34;&#34;&#34;Stats describing the threat posed by enemies in battle.
+
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `THREAT_STATS`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent=None, initDict=None):
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `THREAT_STATS` dictionary.
+
+        &#34;&#34;&#34;
+        StatObject.__init__(self, THREAT_STATS.copy(), parent, initDict)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.stats.StatObject.asDict" href="#legends.stats.StatObject.asDict">asDict</a></code></li>
+<li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.notify" href="#legends.stats.StatObject.notify">notify</a></code></li>
+<li><code><a title="legends.stats.StatObject.oldStats" href="#legends.stats.StatObject.oldStats">oldStats</a></code></li>
+<li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
+<li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
+<li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 </dl>
 </section>
 </article>
@@ -925,6 +1116,12 @@ def power(self):
 <h4><code><a title="legends.stats.StatChangeEvent" href="#legends.stats.StatChangeEvent">StatChangeEvent</a></code></h4>
 </li>
 <li>
+<h4><code><a title="legends.stats.StatMods" href="#legends.stats.StatMods">StatMods</a></code></h4>
+<ul class="">
+<li><code><a title="legends.stats.StatMods.apply" href="#legends.stats.StatMods.apply">apply</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code></h4>
 <ul class="two-column">
 <li><code><a title="legends.stats.StatObject.asDict" href="#legends.stats.StatObject.asDict">asDict</a></code></li>
@@ -941,6 +1138,9 @@ def power(self):
 <ul class="">
 <li><code><a title="legends.stats.Stats.power" href="#legends.stats.Stats.power">power</a></code></li>
 </ul>
+</li>
+<li>
+<h4><code><a title="legends.stats.ThreatStats" href="#legends.stats.ThreatStats">ThreatStats</a></code></h4>
 </li>
 </ul>
 </li>

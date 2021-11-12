@@ -2,16 +2,20 @@
 
 """
 
-from legends.utils.functions import formatDict
+from legends.utils.functions import formatDict, objDict
 from legends.utils.eventhandler import Event, EventHandler
-from legends.constants import PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS
+from legends.constants import (
+    PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS, THREAT_STATS
+)
 
 __all__ = [
     'checkForStats',
     'PartEffects',
     'StatChangeEvent',
+    'StatMods',
     'StatObject',
-    'Stats'
+    'Stats',
+    'ThreatStats'
 ]
 
 def checkForStats(obj):
@@ -39,6 +43,7 @@ class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
 
     Attributes:
         parent (obj): The object whose statistics have changed.
+        statObj (StatObject): The stat object that has changed.
         oldStats (dict): {`str`:`int` or `float`} A dictionary mapping
             stat names (the keys of the `StatObject`'s `statAbbrs`
             property) to their previous values (at the time of the last
@@ -46,8 +51,9 @@ class StatChangeEvent(Event): # pylint: disable=too-few-public-methods
 
     """
 
-    def __init__(self, parent, oldStats):
+    def __init__(self, parent, statObj, oldStats):
         self.parent = parent
+        self.statObj = statObj
         self.oldStats = oldStats
 
 class StatObject():
@@ -128,7 +134,7 @@ class StatObject():
         """Sends a `StatChangeEvent` to the `onChange` subscribers, and
         updates the `oldStats` property.
         """
-        self.onChange.notify(StatChangeEvent(self.parent, self.oldStats))
+        self.onChange.notify(StatChangeEvent(self.parent, self, self.oldStats))
         self._oldStats = self.asDict
 
     def get(self, statName):
@@ -206,6 +212,11 @@ class Stats(StatObject):
     """
 
     def __init__(self, parent=None, initDict=None):
+        """The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `STAT_ABBREVIATIONS`
+        dictionary.
+
+        """
         StatObject.__init__(self, STAT_ABBREVIATIONS.copy(), parent, initDict)
 
     @property
@@ -220,6 +231,46 @@ class Stats(StatObject):
             powerDelta += POWER_GRADIENT[statName] * statVal
         return powerDelta
 
+class StatMods():
+    """A collection of stat modifiers.
+
+    Attributes:
+        mult (Stats): Multiplicative modifiers. Defaults to all 1's.
+        preAdd (Stats): Additive modifiers, applied before the
+            multiplicative modifiers. Defaults to all 0's.
+        postAdd (Stats): Additive modifiers, applied after the
+            multiplicative modifiers. Defaults to all 0's.
+        onChange (legends.utils.eventhandler.EventHandler): When any of
+            `mult`, `preAdd`, or `postAdd` changes, this event handler
+            passes on the `StatChangeEvent` to its subscribers.
+
+    """
+
+    def __init__(self):
+        self.mult = Stats({statName: 1 for statName in STAT_ABBREVIATIONS})
+        self.preAdd = Stats()
+        self.postAdd = Stats()
+        self.onChange = EventHandler()
+        self.mult.onChange.subscribe(self.onChange.notify)
+        self.preAdd.onChange.subscribe(self.onChange.notify)
+        self.postAdd.onChange.subscribe(self.onChange.notify)
+
+    def apply(self, stats):
+        """Creates and returns a new `Stats` object by applying the
+        modifiers to the given `Stats` object.
+
+        Args:
+            stats (`Stats`): The stats to which the modifiers should be
+                applied.
+
+        """
+        return (stats + self.preAdd) * self.mult + self.postAdd
+
+    def __repr__(self):
+        return '{}({})'.format(
+            self.__class__.__name__, formatDict(objDict(self))
+        )
+
 class PartEffects(StatObject):
     """Stats describing effects of particles in STL.
 
@@ -229,13 +280,23 @@ class PartEffects(StatObject):
     """
 
     def __init__(self, parent=None, initDict=None):
-        """If a dictionary of stat values is provided, the constructor
-        initializes the instance with these values.
-
-        Args:
-            initDict (dict): {`str`:`int or float`} A dictionary mapping
-                the stat names in the keys of `PART_EFFECTS` to
-                numerical values.
+        """The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `PART_EFFECTS` dictionary.
 
         """
-        StatObject.__init__(self, PART_EFFECTS, parent, initDict)
+        StatObject.__init__(self, PART_EFFECTS.copy(), parent, initDict)
+
+class ThreatStats(StatObject):
+    """Stats describing the threat posed by enemies in battle.
+
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `THREAT_STATS`.
+
+    """
+
+    def __init__(self, parent=None, initDict=None):
+        """The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `THREAT_STATS` dictionary.
+
+        """
+        StatObject.__init__(self, THREAT_STATS.copy(), parent, initDict)
