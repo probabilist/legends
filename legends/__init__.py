@@ -20,3 +20,4 @@ from legends.skill import *
 from legends.gameobjects import *
 from legends.roster import *
 from legends.saveslot import *
+from legends.effstatcalc import *

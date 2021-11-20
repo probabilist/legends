@@ -1,5 +1,20 @@
 # Change log
 
+## Version 0.26.2
+
+* Dax added to summon pool.
+* `BRIDGE_STATIONS` sorted alphabetically.
+* Added `EFF_STATS` constant.
+* Corrected bug in `StatMods` constructor that instantiated multiplicative mods as 0's.
+* Added `EffStats` class.
+* Corrected bugs in `EnemyCharSettings` constructor.
+* Added `EffStatCalc` class, which is the effective stat calculator.
+* Added `EffStatSettings` class, which holds the settings for an effective stat calculator.
+* Added `pvpMeta` function, which sets the settings to correspond to the current pvp meta.
+* Changes to underlying game data:
+    - Dax added to store.
+    - Bashir added to character list, but with no stats or skills.
+
 ## Version 0.26.1
 
 * Added a `THREAT_STATS` constant.

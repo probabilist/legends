@@ -44,6 +44,9 @@ into a Python dictionary.</dd>
 <dt><strong><code>DIFFICULTIES</code></strong> :&ensp;<code>dict</code></dt>
 <dd>{<code>str</code>:<code>str</code>} A dictionary mapping the in-game
 name of the PVE difficulties to the names used in the game data.</dd>
+<dt><strong><code>EFF_STATS</code></strong> :&ensp;<code>dict</code></dt>
+<dd>{<code>str</code>:<code>str</code>} A dictionary mapping effective stat
+names to their abbreviations used for object attributes.</dd>
 <dt><strong><code>ENABLED</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
 <dd>A list of name IDs of characters that appear
 on the Crew screen.</dd>
@@ -170,6 +173,8 @@ Attributes:
         into a Python dictionary.
     DIFFICULTIES (dict): {`str`:`str`} A dictionary mapping the in-game
         name of the PVE difficulties to the names used in the game data.
+    EFF_STATS (dict): {`str`:`str`} A dictionary mapping effective stat
+        names to their abbreviations used for object attributes.
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     HELP (str): The contents of the file, `legends/help.txt`.
@@ -314,7 +319,7 @@ BRIDGE_STATIONS = []
 for data in GSCharacter.values(): # pylint: disable=undefined-variable
     if data[&#39;BridgeStations&#39;] != [&#39;None&#39;]:
         BRIDGE_STATIONS.extend(data[&#39;BridgeStations&#39;])
-BRIDGE_STATIONS = list(set(BRIDGE_STATIONS))
+BRIDGE_STATIONS = sorted(list(set(BRIDGE_STATIONS)))
 
 DESCRIPTIONS = {}
 for D in lang_en_us[&#39;List&#39;]: # pylint: disable=undefined-variable
@@ -327,6 +332,12 @@ DIFFICULTIES = {
     &#39;Normal&#39;: &#39;Easy&#39;,
     &#39;Advanced&#39;: &#39;Hard&#39;,
     &#39;Expert&#39;: &#39;Doom&#39;
+}
+
+EFF_STATS = {
+    &#39;Effective Health&#39;: &#39;effHealth&#39;,
+    &#39;Effective Attack Damage&#39;: &#39;effAttDmg&#39;,
+    &#39;Effective Tech Damage&#39;: &#39;effTechDmg&#39;
 }
 
 ENABLED = [
@@ -570,6 +581,10 @@ THREAT_STATS = {
 
 UPCOMING = [&#39;PicardOld&#39;, &#39;JudgeQ&#39;, &#39;Guinan&#39;, &#39;NumberOne&#39;]
 UPCOMING = [nameID for nameID in UPCOMING if nameID not in ENABLED]
+# Q: no stats, no bridge skill
+# Guinan: no stats
+# Number One: no stats, no bridge skill
+# Bashir: no skills, no stats, no bridge skill
 
 CHARACTER_TAGS = []
 for nameID in UPCOMING + ENABLED:

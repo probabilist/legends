@@ -34,11 +34,12 @@
 from legends.utils.functions import formatDict, objDict
 from legends.utils.eventhandler import Event, EventHandler
 from legends.constants import (
-    PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS, THREAT_STATS
+    EFF_STATS, PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS, THREAT_STATS
 )
 
 __all__ = [
     &#39;checkForStats&#39;,
+    &#39;EffStats&#39;,
     &#39;PartEffects&#39;,
     &#39;StatChangeEvent&#39;,
     &#39;StatMods&#39;,
@@ -276,7 +277,9 @@ class StatMods():
     &#34;&#34;&#34;
 
     def __init__(self):
-        self.mult = Stats({statName: 1 for statName in STAT_ABBREVIATIONS})
+        self.mult = Stats(
+            self, {statName: 1 for statName in STAT_ABBREVIATIONS}
+        )
         self.preAdd = Stats()
         self.postAdd = Stats()
         self.onChange = EventHandler()
@@ -328,7 +331,22 @@ class ThreatStats(StatObject):
         constructor, along with a copy of the `THREAT_STATS` dictionary.
 
         &#34;&#34;&#34;
-        StatObject.__init__(self, THREAT_STATS.copy(), parent, initDict)</code></pre>
+        StatObject.__init__(self, THREAT_STATS.copy(), parent, initDict)
+
+class EffStats(StatObject):
+    &#34;&#34;&#34;Effective stats for allied characters.
+
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `EFF_STATS`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent=None, initDict=None):
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `EFF_STATS` dictionary.
+
+        &#34;&#34;&#34;
+        StatObject.__init__(self, EFF_STATS.copy(), parent, initDict)</code></pre>
 </details>
 </section>
 <section>
@@ -382,6 +400,54 @@ to a <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.stats.EffStats"><code class="flex name class">
+<span>class <span class="ident">EffStats</span></span>
+<span>(</span><span>parent=None, initDict=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Effective stats for allied characters.</p>
+<p>A subclass of <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code> whose <code>statAbbrs</code> property is set to
+<code>EFF_STATS</code>.</p>
+<p>The constructor passes the arguments to the <code><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></code>
+constructor, along with a copy of the <code>EFF_STATS</code> dictionary.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EffStats(StatObject):
+    &#34;&#34;&#34;Effective stats for allied characters.
+
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `EFF_STATS`.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent=None, initDict=None):
+        &#34;&#34;&#34;The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `EFF_STATS` dictionary.
+
+        &#34;&#34;&#34;
+        StatObject.__init__(self, EFF_STATS.copy(), parent, initDict)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="legends.stats.StatObject" href="#legends.stats.StatObject">StatObject</a></b></code>:
+<ul class="hlist">
+<li><code><a title="legends.stats.StatObject.asDict" href="#legends.stats.StatObject.asDict">asDict</a></code></li>
+<li><code><a title="legends.stats.StatObject.get" href="#legends.stats.StatObject.get">get</a></code></li>
+<li><code><a title="legends.stats.StatObject.notify" href="#legends.stats.StatObject.notify">notify</a></code></li>
+<li><code><a title="legends.stats.StatObject.oldStats" href="#legends.stats.StatObject.oldStats">oldStats</a></code></li>
+<li><code><a title="legends.stats.StatObject.set" href="#legends.stats.StatObject.set">set</a></code></li>
+<li><code><a title="legends.stats.StatObject.statAbbrs" href="#legends.stats.StatObject.statAbbrs">statAbbrs</a></code></li>
+<li><code><a title="legends.stats.StatObject.update" href="#legends.stats.StatObject.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
 <dt id="legends.stats.PartEffects"><code class="flex name class">
 <span>class <span class="ident">PartEffects</span></span>
 <span>(</span><span>parent=None, initDict=None)</span>
@@ -518,7 +584,9 @@ passes on the <code><a title="legends.stats.StatChangeEvent" href="#legends.stat
     &#34;&#34;&#34;
 
     def __init__(self):
-        self.mult = Stats({statName: 1 for statName in STAT_ABBREVIATIONS})
+        self.mult = Stats(
+            self, {statName: 1 for statName in STAT_ABBREVIATIONS}
+        )
         self.preAdd = Stats()
         self.postAdd = Stats()
         self.onChange = EventHandler()
@@ -763,6 +831,7 @@ should match the keys of the <code>statAbbrs</code> property.</dd>
 </details>
 <h3>Subclasses</h3>
 <ul class="hlist">
+<li><a title="legends.stats.EffStats" href="#legends.stats.EffStats">EffStats</a></li>
 <li><a title="legends.stats.PartEffects" href="#legends.stats.PartEffects">PartEffects</a></li>
 <li><a title="legends.stats.Stats" href="#legends.stats.Stats">Stats</a></li>
 <li><a title="legends.stats.ThreatStats" href="#legends.stats.ThreatStats">ThreatStats</a></li>
@@ -1109,6 +1178,9 @@ constructor, along with a copy of the <code>THREAT_STATS</code> dictionary.</p><
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="legends.stats.EffStats" href="#legends.stats.EffStats">EffStats</a></code></h4>
+</li>
 <li>
 <h4><code><a title="legends.stats.PartEffects" href="#legends.stats.PartEffects">PartEffects</a></code></h4>
 </li>

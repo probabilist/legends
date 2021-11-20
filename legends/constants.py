@@ -18,6 +18,8 @@ Attributes:
         into a Python dictionary.
     DIFFICULTIES (dict): {`str`:`str`} A dictionary mapping the in-game
         name of the PVE difficulties to the names used in the game data.
+    EFF_STATS (dict): {`str`:`str`} A dictionary mapping effective stat
+        names to their abbreviations used for object attributes.
     ENABLED (list of str): A list of name IDs of characters that appear
         on the Crew screen.
     HELP (str): The contents of the file, `legends/help.txt`.
@@ -162,7 +164,7 @@ BRIDGE_STATIONS = []
 for data in GSCharacter.values(): # pylint: disable=undefined-variable
     if data['BridgeStations'] != ['None']:
         BRIDGE_STATIONS.extend(data['BridgeStations'])
-BRIDGE_STATIONS = list(set(BRIDGE_STATIONS))
+BRIDGE_STATIONS = sorted(list(set(BRIDGE_STATIONS)))
 
 DESCRIPTIONS = {}
 for D in lang_en_us['List']: # pylint: disable=undefined-variable
@@ -175,6 +177,12 @@ DIFFICULTIES = {
     'Normal': 'Easy',
     'Advanced': 'Hard',
     'Expert': 'Doom'
+}
+
+EFF_STATS = {
+    'Effective Health': 'effHealth',
+    'Effective Attack Damage': 'effAttDmg',
+    'Effective Tech Damage': 'effTechDmg'
 }
 
 ENABLED = [
@@ -418,6 +426,10 @@ THREAT_STATS = {
 
 UPCOMING = ['PicardOld', 'JudgeQ', 'Guinan', 'NumberOne']
 UPCOMING = [nameID for nameID in UPCOMING if nameID not in ENABLED]
+# Q: no stats, no bridge skill
+# Guinan: no stats
+# Number One: no stats, no bridge skill
+# Bashir: no skills, no stats, no bridge skill
 
 CHARACTER_TAGS = []
 for nameID in UPCOMING + ENABLED:

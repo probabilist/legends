@@ -5,11 +5,12 @@
 from legends.utils.functions import formatDict, objDict
 from legends.utils.eventhandler import Event, EventHandler
 from legends.constants import (
-    PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS, THREAT_STATS
+    EFF_STATS, PART_EFFECTS, POWER_GRADIENT, STAT_ABBREVIATIONS, THREAT_STATS
 )
 
 __all__ = [
     'checkForStats',
+    'EffStats',
     'PartEffects',
     'StatChangeEvent',
     'StatMods',
@@ -247,7 +248,9 @@ class StatMods():
     """
 
     def __init__(self):
-        self.mult = Stats({statName: 1 for statName in STAT_ABBREVIATIONS})
+        self.mult = Stats(
+            self, {statName: 1 for statName in STAT_ABBREVIATIONS}
+        )
         self.preAdd = Stats()
         self.postAdd = Stats()
         self.onChange = EventHandler()
@@ -300,3 +303,18 @@ class ThreatStats(StatObject):
 
         """
         StatObject.__init__(self, THREAT_STATS.copy(), parent, initDict)
+
+class EffStats(StatObject):
+    """Effective stats for allied characters.
+
+    A subclass of `StatObject` whose `statAbbrs` property is set to
+    `EFF_STATS`.
+
+    """
+
+    def __init__(self, parent=None, initDict=None):
+        """The constructor passes the arguments to the `StatObject`
+        constructor, along with a copy of the `EFF_STATS` dictionary.
+
+        """
+        StatObject.__init__(self, EFF_STATS.copy(), parent, initDict)

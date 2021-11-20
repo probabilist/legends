@@ -31,10 +31,57 @@
 
 &#34;&#34;&#34;
 
+import itertools
+from legends.utils.functions import formatDict
+from legends.gameobjects import Particle
 from legends.roster import Roster
-from legends.stats import StatMods, ThreatStats
+from legends.stats import EffStats, StatMods, ThreatStats
 
-__all__ = [&#39;EnemyChar&#39;, &#39;EnemyCharSettings&#39;]
+__all__ = [
+    &#39;pvpMeta&#39;,
+    &#39;EffStatCalc&#39;,
+    &#39;EffStatSettings&#39;,
+    &#39;EnemyChar&#39;,
+    &#39;EnemyCharSettings&#39;
+]
+
+def pvpMeta():
+    &#34;&#34;&#34;Builds and returns a list of enemy characters representing the
+    current pvp meta (as of Nov 19, 2021), which is T&#39;Pol, Garak,
+    Tomalak, and Scotty.
+
+    The enemy characters are given no gear and set to maximum level and
+    rank. To maximize their damage threat, they are given level 5
+    legendary amplify force particles with attack, tech, crit chance,
+    and crit damage.
+
+    It is assumed the average battle against these enemy characters will
+    last 3 rounds.
+
+    Returns:
+        list of EnemyChar: The list of enemy characters in the pvp meta
+            team.
+
+    &#34;&#34;&#34;
+    # build roster of maxed meta characters with no gear
+    nameIDs = [&#39;TPol&#39;, &#39;Garak&#39;, &#39;Tomalak&#39;, &#39;Scott&#39;]
+    roster = Roster()
+    roster.fillChars(nameIDs, False)
+
+    # add particles
+    statNames = [&#39;Attack&#39;, &#39;Tech&#39;, &#39;CritChance&#39;, &#39;CritDamage&#39;]
+    for nameID, slotIndex in itertools.product(nameIDs, (0, 1)):
+        part = Particle(&#39;Amplify Force&#39;, &#39;Legendary&#39;, 5)
+        for index, statName in enumerate(statNames):
+            part.setStatName(index, statName)
+        roster.parts.append(part)
+        roster.inPartSlot[part] = roster.chars[nameID].partSlots[slotIndex]
+
+    # build and return enemy list
+    enemyList = []
+    for nameID in nameIDs:
+        enemyList.append(EnemyChar(roster.chars[nameID], roster))
+    return enemyList
 
 class EnemyCharSettings():
     &#34;&#34;&#34;Settings for an `EnemyChar` instance.
@@ -56,11 +103,11 @@ class EnemyCharSettings():
         self._char = char
         self._roster = roster
 
-        self.rounds = rounds
+        self._rounds = rounds
 
         self._statMods = StatMods()
 
-        self.roster.onCharChange.subscribe(self.onCharChange)
+        self.roster.charChangeWatcher.subscribe(self.onCharChange)
         self.statMods.onChange.subscribe(lambda event:self.parent.update())
 
     @property
@@ -87,7 +134,7 @@ class EnemyCharSettings():
     @property
     def rounds(self):
         &#34;&#34;&#34;`int`: The number of combat rounds used to calculate the
-        threat assessment. Must be a positive integer. Setting this
+        threat assessment. Should be a positive integer. Setting this
         property forces the parent `EnemyChar` instance to update its
         threat statistics.
         &#34;&#34;&#34;
@@ -95,8 +142,6 @@ class EnemyCharSettings():
 
     @rounds.setter
     def rounds(self, value):
-        if not isinstance(value, int) or value &lt;= 0:
-            raise ValueError(&#39;{!r} not a positive integer&#39;.format(value))
         self._rounds = value
         self.parent.update()
 
@@ -234,7 +279,372 @@ class EnemyChar():
             &#39;Tech Hits Per Round&#39;: numHits[&#39;Tech&#39;] / self.settings.rounds,
             &#39;Attack Damage Per Round&#39;: dmg[&#39;Attack&#39;] / self.settings.rounds,
             &#39;Tech Damage Per Round&#39;: dmg[&#39;Tech&#39;] / self.settings.rounds
-        })</code></pre>
+        })
+
+class EffStatSettings():
+    &#34;&#34;&#34;Setting for an `EffStatCalc` instance.
+
+    There are no default settings. Users must instantiate each setting.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent):
+        self._parent = parent
+        self._settings = {
+            &#39;attDmg&#39;: None,
+            &#39;techDmg&#39;: None,
+            &#39;techChance&#39;: None,
+            &#39;cloak&#39;: None,
+            &#39;undoDmgRounds&#39;: None,
+            &#39;ampForceRounds&#39;: None
+        }
+        self._statMods = StatMods()
+        self._statMods.onChange.subscribe(self.updateParent)
+
+    @property
+    def parent(self):
+        &#34;&#34;&#34;`EffStatCalc`: The `EffStatCalc` instance to which these
+        settings belong.
+        &#34;&#34;&#34;
+        return self._parent
+
+    @property
+    def ready(self):
+        &#34;&#34;&#34;`bool`: True if all settings (attack damage, tech damage,
+        cloak, undo damage rounds, and amp force rounds) have been set.
+        &#34;&#34;&#34;
+        return not any(
+            getattr(self, attrName) is None
+            for attrName in [
+                &#39;attDmg&#39;, &#39;techDmg&#39;, &#39;techChance&#39;,
+                &#39;cloak&#39;, &#39;undoDmgRounds&#39;, &#39;ampForceRounds&#39;
+            ]
+        )
+
+    @property
+    def attDmg(self):
+        &#34;&#34;&#34;`float`: The average incoming attack damage delivered by
+        enemy attack hits that do not glance. Setting this property
+        triggers the `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;attDmg&#39;]
+
+    @attDmg.setter
+    def attDmg(self, value):
+        self._settings[&#39;attDmg&#39;] = value
+        self.updateParent()
+
+    @property
+    def techDmg(self):
+        &#34;&#34;&#34;`float`: The average incoming tech damage delivered by enemy
+        tech hits that do not glance. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;techDmg&#39;]
+
+    @techDmg.setter
+    def techDmg(self, value):
+        self._settings[&#39;techDmg&#39;] = value
+        self.updateParent()
+
+    @property
+    def techChance(self):
+        &#34;&#34;&#34;`float`: The proportion of all incoming enemy hits that
+        deliver tech damage. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;techChance&#39;]
+
+    @techChance.setter
+    def techChance(self, value):
+        self._settings[&#39;techChance&#39;] = value
+        self.updateParent()
+
+    @property
+    def cloak(self):
+        &#34;&#34;&#34;`float`: The proportion of turns during which the character
+        is cloaked. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;cloak&#39;]
+
+    @cloak.setter
+    def cloak(self, value):
+        self._settings[&#39;cloak&#39;] = value
+        self.updateParent()
+
+    @property
+    def undoDmgRounds(self):
+        &#34;&#34;&#34;`float`: The expected number of regenerations triggered by
+        any Undo Damage particles that might be equipped. Should be a
+        number between 0 and 2. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;undoDmgRounds&#39;]
+
+    @undoDmgRounds.setter
+    def undoDmgRounds(self, value):
+        self._settings[&#39;undoDmgRounds&#39;] = value
+        self.updateParent()
+
+    @property
+    def ampForceRounds(self):
+        &#34;&#34;&#34;`float`: The proportion of rounds during which the character
+        will receive the benefit of any Amplify Force particles that may
+        be equipped. Should be a number between 0 and 1. Setting this
+        property triggers the `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;ampForceRounds&#39;]
+
+    @ampForceRounds.setter
+    def ampForceRounds(self, value):
+        self._settings[&#39;ampForceRounds&#39;] = value
+        self.updateParent()
+
+    @property
+    def statMods(self):
+        &#34;&#34;&#34;`legends.stats.StatMods`: Stat modifiers to be applied to the
+        allied character. Modifying any of the stat modifiers triggers
+        the `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._statMods
+
+    def updateParent(self):
+        &#34;&#34;&#34;If the `ready` property is `True`, causes the parent
+        `EffStatCalc` instance to recalculate all effective stats in its
+        underlying data dictionary. Otherwise, does nothing.
+        &#34;&#34;&#34;
+        if self.ready:
+            self.parent.updateAll()
+
+    def fromEnemies(self, *enemyChars):
+        &#34;&#34;&#34;Sets the `attDmg`, `techDmg`, and `techChance` properties
+        using the given enemy characters.
+
+        Args:
+            enemyChars (list of EnemyChar): The enemy characters from
+                which to derive the property values.
+
+        &#34;&#34;&#34;
+        threatStats = sum(
+            (enemyChar.threatStats for enemyChar in enemyChars), ThreatStats()
+        )
+        self.attDmg = (
+            0 if threatStats.attHits == 0 else
+            threatStats.attDmg / threatStats.attHits
+        )
+        self.techDmg = (
+            0 if threatStats.techHits == 0 else
+            threatStats.techDmg / threatStats.techHits
+        )
+        totalHits = threatStats.attHits + threatStats.techHits
+        self.techChance = (
+            0.5 if totalHits == 0 else
+            threatStats.techHits / totalHits
+        )
+
+    def __repr__(self):
+        return &#39;EffStatSettings({})&#39;.format(formatDict(self._settings))
+
+class EffStatCalc():
+    &#34;&#34;&#34;Calculates effective stats for an allied character.
+
+    There are three effective stats used in this package.
+
+    &#39;Effective Attack Damage&#39; is the average amount of attack damage
+    done by the allied character. Crit chance and crit damage are
+    accounted for, as well as any particles and modifiers included in
+    the `settings` property.
+
+    &#39;Effective Tech Damage&#39; is similar, but for tech damage.
+
+    &#39;Effective Health&#39; is a measure of the character&#39;s survivability
+    that takes into account nexus shields, defense, tech defense,
+    glancing chance, and glancing damage. Effective health is
+    characterized as follows. A character whose health equals the
+    effective health and who has no nexus shields, 0 defense, 0 tech
+    defense, and 0% glancing chance would survive, on average, the same
+    number of hits as the given character.
+
+    An effective stat calculator must be assigned to a roster and can
+    only be used on characters in that roster.
+
+    The `settings` property is used to access the `EffStatSettings`
+    instance associated with the calculator. Since the attributes of
+    `EffStatSettings` instances have no default values, client objects
+    must set these attributes before using the calculator. Failing to do
+    so will raise an error.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, roster):
+        &#34;&#34;&#34;The constructor assigns the constructed instance to the given
+        roster, subscribes to the roster&#39;s `charChangeWatcher` event
+        handler with the `EffStatCalc.onCharChange` method, and sets the
+        `roster` property accordingly.
+
+        &#34;&#34;&#34;
+        self._settings = EffStatSettings(self)
+        self._roster = roster
+        self._roster.charChangeWatcher.subscribe(self.onCharChange)
+        self._data = {}
+
+    @property
+    def settings(self):
+        &#34;&#34;&#34;`EffStatSettings`: The settings for this `EffStatCalc`
+        instance.
+        &#34;&#34;&#34;
+        return self._settings
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster to which this effective
+        stat calculator belongs.
+        &#34;&#34;&#34;
+        return self._roster
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: {`str`:`legends.stats.EffStats`} A dictionary
+        mapping name IDs of characters in the roster to their
+        effective stats. To avoid unnecessarily repeating calculations,
+        calculation results are stored in a private dictionary for
+        retrieval. This is a copy of that dictionary. The underlying
+        data dictionary should not be changed directly. Event handlers
+        are used to modify the underlying data when needed.
+        &#34;&#34;&#34;
+        return self._data.copy()
+
+    def get(self, char):
+        &#34;&#34;&#34;Returns the effective stats for the given character. Looks
+        them up in the underlying database, if they exist. Otherwise,
+        computes them.
+
+        Args:
+            char (legends.gameobjects.Character): The character whose
+                effective stats to calculate. Should belong to the
+                instance&#39;s associated roster.
+
+        Returns:
+            legends.stats.EffStats: The character&#39;s effective stats.
+
+        &#34;&#34;&#34;
+        if char.nameID not in self._data:
+            self._data[char.nameID] = EffStats()
+            self._data[char.nameID].update(self.calculate(char))
+        return self._data[char.nameID]
+
+    def update(self, char):
+        &#34;&#34;&#34;Recalculates the effective stats for the given character and
+        updates their data in the underlying dictionary.
+
+        Args:
+            char (legends.gameobjects.Character): The character whose
+                effective stats to calculate. Should belong to the
+                instance&#39;s associated roster.
+
+        &#34;&#34;&#34;
+        self._data[char.nameID].update(self.calculate(char))
+
+    def updateAll(self):
+        &#34;&#34;&#34;Recalculates the effective stats for all characters in the
+        underlying data dictionary.
+
+        &#34;&#34;&#34;
+        for nameID in self._data:
+            self.update(self.roster.chars[nameID])
+
+    def calculate(self, char):
+        &#34;&#34;&#34;Calculates the effective stats for the given character and
+        returns them as a stat dictionary.
+
+        Args:
+            char (legends.gameobjects.Character): The character whose
+                effective stats to calculate. Should belong to the
+                instance&#39;s associated roster.
+
+        Returns:
+            dict: {`str`:`float`} A dictionary mapping effective stat
+                names, as they appear in `EFF_STATS` to their values.
+
+        Raises:
+            ValueError: If any settings attributes have not yet been
+                instantiated. (See `EffStatSettings.ready`.)
+
+        &#34;&#34;&#34;
+        if not self.settings.ready:
+            raise ValueError(
+                &#39;Effective stat calculator settings not fully instantiated.&#39;
+            )
+        statDict = {}
+
+        # get stats and particle effects
+        stats = char.totalStats(self.roster)
+        stats = self.settings.statMods.apply(stats)
+        partEffects = char.partEffects(self.roster)
+
+        # compute effective attack and tech damage
+        stats.att *= 1 + partEffects.attUp * self.settings.ampForceRounds
+        critFactor = stats.cc * stats.cd + (1 - stats.cc)
+        statDict[&#39;Effective Attack Damage&#39;] = stats.att * critFactor
+        statDict[&#39;Effective Tech Damage&#39;] = stats.tech * critFactor
+
+        # adjust health and gc for nexus shields, undo damage, and cloak
+        stats.hlth = (
+            stats.hlth
+            + partEffects.shield * stats.tech
+            + partEffects.regen * stats.hlth * self.settings.undoDmgRounds
+        )
+        stats.gc = self.settings.cloak + (1 - self.settings.cloak) * stats.gc
+
+        # compute average incoming damage per hit
+        dmg = (
+            self.settings.techChance * self.settings.techDmg
+            + (1 - self.settings.techChance) * self.settings.attDmg
+        )
+
+        # compute reduced incoming attack damage per hit
+        reducedAttDmg = (
+            (1 - stats.gc) * max(
+                self.settings.attDmg - stats.dfn, 1
+            )
+            + stats.gc * max(
+                (1 - stats.gd) * self.settings.attDmg - stats.dfn, 1
+            )
+        )
+
+        # compute reduced incoming tech damage per hit
+        reducedTechDmg = (
+            (1 - stats.gc) * max(
+                self.settings.techDmg - 0.38 * stats.tech, 1
+            )
+            + stats.gc * max(
+                (1 - stats.gd) * self.settings.techDmg - 0.38 * stats.dfn, 1
+            )
+        )
+
+        # compute average reduced incoming damage per hit
+        reducedDmg = (
+            self.settings.techChance * reducedTechDmg
+            + (1 - self.settings.techChance) * reducedAttDmg
+        )
+
+        # compute effective health and return stat dict
+        numHits = stats.hlth / reducedDmg   # number of hits until death
+        statDict[&#39;Effective Health&#39;] = numHits * dmg  # effective health
+        return statDict
+
+    def onCharChange(self, charChangeEvent):
+        &#34;&#34;&#34;Recalculates effective stats when a character is modified.
+
+        Args:
+            charChangeEvent (legends.roster.CharChangeEvent): The event
+                sent by the assigned roster&#39;s `charChangeWatcher` event
+                handler.
+
+        &#34;&#34;&#34;
+        if charChangeEvent.char.nameID in self._data:
+            self.update(charChangeEvent.char)</code></pre>
 </details>
 </section>
 <section>
@@ -242,10 +652,1019 @@ class EnemyChar():
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="legends.effstatcalc.pvpMeta"><code class="name flex">
+<span>def <span class="ident">pvpMeta</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds and returns a list of enemy characters representing the
+current pvp meta (as of Nov 19, 2021), which is T'Pol, Garak,
+Tomalak, and Scotty.</p>
+<p>The enemy characters are given no gear and set to maximum level and
+rank. To maximize their damage threat, they are given level 5
+legendary amplify force particles with attack, tech, crit chance,
+and crit damage.</p>
+<p>It is assumed the average battle against these enemy characters will
+last 3 rounds.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code> of <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code></dt>
+<dd>The list of enemy characters in the pvp meta
+team.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pvpMeta():
+    &#34;&#34;&#34;Builds and returns a list of enemy characters representing the
+    current pvp meta (as of Nov 19, 2021), which is T&#39;Pol, Garak,
+    Tomalak, and Scotty.
+
+    The enemy characters are given no gear and set to maximum level and
+    rank. To maximize their damage threat, they are given level 5
+    legendary amplify force particles with attack, tech, crit chance,
+    and crit damage.
+
+    It is assumed the average battle against these enemy characters will
+    last 3 rounds.
+
+    Returns:
+        list of EnemyChar: The list of enemy characters in the pvp meta
+            team.
+
+    &#34;&#34;&#34;
+    # build roster of maxed meta characters with no gear
+    nameIDs = [&#39;TPol&#39;, &#39;Garak&#39;, &#39;Tomalak&#39;, &#39;Scott&#39;]
+    roster = Roster()
+    roster.fillChars(nameIDs, False)
+
+    # add particles
+    statNames = [&#39;Attack&#39;, &#39;Tech&#39;, &#39;CritChance&#39;, &#39;CritDamage&#39;]
+    for nameID, slotIndex in itertools.product(nameIDs, (0, 1)):
+        part = Particle(&#39;Amplify Force&#39;, &#39;Legendary&#39;, 5)
+        for index, statName in enumerate(statNames):
+            part.setStatName(index, statName)
+        roster.parts.append(part)
+        roster.inPartSlot[part] = roster.chars[nameID].partSlots[slotIndex]
+
+    # build and return enemy list
+    enemyList = []
+    for nameID in nameIDs:
+        enemyList.append(EnemyChar(roster.chars[nameID], roster))
+    return enemyList</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
+<dt id="legends.effstatcalc.EffStatCalc"><code class="flex name class">
+<span>class <span class="ident">EffStatCalc</span></span>
+<span>(</span><span>roster)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates effective stats for an allied character.</p>
+<p>There are three effective stats used in this package.</p>
+<p>'Effective Attack Damage' is the average amount of attack damage
+done by the allied character. Crit chance and crit damage are
+accounted for, as well as any particles and modifiers included in
+the <code>settings</code> property.</p>
+<p>'Effective Tech Damage' is similar, but for tech damage.</p>
+<p>'Effective Health' is a measure of the character's survivability
+that takes into account nexus shields, defense, tech defense,
+glancing chance, and glancing damage. Effective health is
+characterized as follows. A character whose health equals the
+effective health and who has no nexus shields, 0 defense, 0 tech
+defense, and 0% glancing chance would survive, on average, the same
+number of hits as the given character.</p>
+<p>An effective stat calculator must be assigned to a roster and can
+only be used on characters in that roster.</p>
+<p>The <code>settings</code> property is used to access the <code><a title="legends.effstatcalc.EffStatSettings" href="#legends.effstatcalc.EffStatSettings">EffStatSettings</a></code>
+instance associated with the calculator. Since the attributes of
+<code><a title="legends.effstatcalc.EffStatSettings" href="#legends.effstatcalc.EffStatSettings">EffStatSettings</a></code> instances have no default values, client objects
+must set these attributes before using the calculator. Failing to do
+so will raise an error.</p>
+<p>The constructor assigns the constructed instance to the given
+roster, subscribes to the roster's <code>charChangeWatcher</code> event
+handler with the <code><a title="legends.effstatcalc.EffStatCalc.onCharChange" href="#legends.effstatcalc.EffStatCalc.onCharChange">EffStatCalc.onCharChange()</a></code> method, and sets the
+<code>roster</code> property accordingly.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EffStatCalc():
+    &#34;&#34;&#34;Calculates effective stats for an allied character.
+
+    There are three effective stats used in this package.
+
+    &#39;Effective Attack Damage&#39; is the average amount of attack damage
+    done by the allied character. Crit chance and crit damage are
+    accounted for, as well as any particles and modifiers included in
+    the `settings` property.
+
+    &#39;Effective Tech Damage&#39; is similar, but for tech damage.
+
+    &#39;Effective Health&#39; is a measure of the character&#39;s survivability
+    that takes into account nexus shields, defense, tech defense,
+    glancing chance, and glancing damage. Effective health is
+    characterized as follows. A character whose health equals the
+    effective health and who has no nexus shields, 0 defense, 0 tech
+    defense, and 0% glancing chance would survive, on average, the same
+    number of hits as the given character.
+
+    An effective stat calculator must be assigned to a roster and can
+    only be used on characters in that roster.
+
+    The `settings` property is used to access the `EffStatSettings`
+    instance associated with the calculator. Since the attributes of
+    `EffStatSettings` instances have no default values, client objects
+    must set these attributes before using the calculator. Failing to do
+    so will raise an error.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, roster):
+        &#34;&#34;&#34;The constructor assigns the constructed instance to the given
+        roster, subscribes to the roster&#39;s `charChangeWatcher` event
+        handler with the `EffStatCalc.onCharChange` method, and sets the
+        `roster` property accordingly.
+
+        &#34;&#34;&#34;
+        self._settings = EffStatSettings(self)
+        self._roster = roster
+        self._roster.charChangeWatcher.subscribe(self.onCharChange)
+        self._data = {}
+
+    @property
+    def settings(self):
+        &#34;&#34;&#34;`EffStatSettings`: The settings for this `EffStatCalc`
+        instance.
+        &#34;&#34;&#34;
+        return self._settings
+
+    @property
+    def roster(self):
+        &#34;&#34;&#34;`legends.roster.Roster`: The roster to which this effective
+        stat calculator belongs.
+        &#34;&#34;&#34;
+        return self._roster
+
+    @property
+    def data(self):
+        &#34;&#34;&#34;`dict`: {`str`:`legends.stats.EffStats`} A dictionary
+        mapping name IDs of characters in the roster to their
+        effective stats. To avoid unnecessarily repeating calculations,
+        calculation results are stored in a private dictionary for
+        retrieval. This is a copy of that dictionary. The underlying
+        data dictionary should not be changed directly. Event handlers
+        are used to modify the underlying data when needed.
+        &#34;&#34;&#34;
+        return self._data.copy()
+
+    def get(self, char):
+        &#34;&#34;&#34;Returns the effective stats for the given character. Looks
+        them up in the underlying database, if they exist. Otherwise,
+        computes them.
+
+        Args:
+            char (legends.gameobjects.Character): The character whose
+                effective stats to calculate. Should belong to the
+                instance&#39;s associated roster.
+
+        Returns:
+            legends.stats.EffStats: The character&#39;s effective stats.
+
+        &#34;&#34;&#34;
+        if char.nameID not in self._data:
+            self._data[char.nameID] = EffStats()
+            self._data[char.nameID].update(self.calculate(char))
+        return self._data[char.nameID]
+
+    def update(self, char):
+        &#34;&#34;&#34;Recalculates the effective stats for the given character and
+        updates their data in the underlying dictionary.
+
+        Args:
+            char (legends.gameobjects.Character): The character whose
+                effective stats to calculate. Should belong to the
+                instance&#39;s associated roster.
+
+        &#34;&#34;&#34;
+        self._data[char.nameID].update(self.calculate(char))
+
+    def updateAll(self):
+        &#34;&#34;&#34;Recalculates the effective stats for all characters in the
+        underlying data dictionary.
+
+        &#34;&#34;&#34;
+        for nameID in self._data:
+            self.update(self.roster.chars[nameID])
+
+    def calculate(self, char):
+        &#34;&#34;&#34;Calculates the effective stats for the given character and
+        returns them as a stat dictionary.
+
+        Args:
+            char (legends.gameobjects.Character): The character whose
+                effective stats to calculate. Should belong to the
+                instance&#39;s associated roster.
+
+        Returns:
+            dict: {`str`:`float`} A dictionary mapping effective stat
+                names, as they appear in `EFF_STATS` to their values.
+
+        Raises:
+            ValueError: If any settings attributes have not yet been
+                instantiated. (See `EffStatSettings.ready`.)
+
+        &#34;&#34;&#34;
+        if not self.settings.ready:
+            raise ValueError(
+                &#39;Effective stat calculator settings not fully instantiated.&#39;
+            )
+        statDict = {}
+
+        # get stats and particle effects
+        stats = char.totalStats(self.roster)
+        stats = self.settings.statMods.apply(stats)
+        partEffects = char.partEffects(self.roster)
+
+        # compute effective attack and tech damage
+        stats.att *= 1 + partEffects.attUp * self.settings.ampForceRounds
+        critFactor = stats.cc * stats.cd + (1 - stats.cc)
+        statDict[&#39;Effective Attack Damage&#39;] = stats.att * critFactor
+        statDict[&#39;Effective Tech Damage&#39;] = stats.tech * critFactor
+
+        # adjust health and gc for nexus shields, undo damage, and cloak
+        stats.hlth = (
+            stats.hlth
+            + partEffects.shield * stats.tech
+            + partEffects.regen * stats.hlth * self.settings.undoDmgRounds
+        )
+        stats.gc = self.settings.cloak + (1 - self.settings.cloak) * stats.gc
+
+        # compute average incoming damage per hit
+        dmg = (
+            self.settings.techChance * self.settings.techDmg
+            + (1 - self.settings.techChance) * self.settings.attDmg
+        )
+
+        # compute reduced incoming attack damage per hit
+        reducedAttDmg = (
+            (1 - stats.gc) * max(
+                self.settings.attDmg - stats.dfn, 1
+            )
+            + stats.gc * max(
+                (1 - stats.gd) * self.settings.attDmg - stats.dfn, 1
+            )
+        )
+
+        # compute reduced incoming tech damage per hit
+        reducedTechDmg = (
+            (1 - stats.gc) * max(
+                self.settings.techDmg - 0.38 * stats.tech, 1
+            )
+            + stats.gc * max(
+                (1 - stats.gd) * self.settings.techDmg - 0.38 * stats.dfn, 1
+            )
+        )
+
+        # compute average reduced incoming damage per hit
+        reducedDmg = (
+            self.settings.techChance * reducedTechDmg
+            + (1 - self.settings.techChance) * reducedAttDmg
+        )
+
+        # compute effective health and return stat dict
+        numHits = stats.hlth / reducedDmg   # number of hits until death
+        statDict[&#39;Effective Health&#39;] = numHits * dmg  # effective health
+        return statDict
+
+    def onCharChange(self, charChangeEvent):
+        &#34;&#34;&#34;Recalculates effective stats when a character is modified.
+
+        Args:
+            charChangeEvent (legends.roster.CharChangeEvent): The event
+                sent by the assigned roster&#39;s `charChangeWatcher` event
+                handler.
+
+        &#34;&#34;&#34;
+        if charChangeEvent.char.nameID in self._data:
+            self.update(charChangeEvent.char)</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.effstatcalc.EffStatCalc.data"><code class="name">var <span class="ident">data</span></code></dt>
+<dd>
+<div class="desc"><p><code>dict</code>: {<code>str</code>:<code><a title="legends.stats.EffStats" href="stats.html#legends.stats.EffStats">EffStats</a></code>} A dictionary
+mapping name IDs of characters in the roster to their
+effective stats. To avoid unnecessarily repeating calculations,
+calculation results are stored in a private dictionary for
+retrieval. This is a copy of that dictionary. The underlying
+data dictionary should not be changed directly. Event handlers
+are used to modify the underlying data when needed.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def data(self):
+    &#34;&#34;&#34;`dict`: {`str`:`legends.stats.EffStats`} A dictionary
+    mapping name IDs of characters in the roster to their
+    effective stats. To avoid unnecessarily repeating calculations,
+    calculation results are stored in a private dictionary for
+    retrieval. This is a copy of that dictionary. The underlying
+    data dictionary should not be changed directly. Event handlers
+    are used to modify the underlying data when needed.
+    &#34;&#34;&#34;
+    return self._data.copy()</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatCalc.roster"><code class="name">var <span class="ident">roster</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.roster.Roster" href="roster.html#legends.roster.Roster">Roster</a></code>: The roster to which this effective
+stat calculator belongs.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def roster(self):
+    &#34;&#34;&#34;`legends.roster.Roster`: The roster to which this effective
+    stat calculator belongs.
+    &#34;&#34;&#34;
+    return self._roster</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatCalc.settings"><code class="name">var <span class="ident">settings</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.effstatcalc.EffStatSettings" href="#legends.effstatcalc.EffStatSettings">EffStatSettings</a></code>: The settings for this <code><a title="legends.effstatcalc.EffStatCalc" href="#legends.effstatcalc.EffStatCalc">EffStatCalc</a></code>
+instance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def settings(self):
+    &#34;&#34;&#34;`EffStatSettings`: The settings for this `EffStatCalc`
+    instance.
+    &#34;&#34;&#34;
+    return self._settings</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.effstatcalc.EffStatCalc.calculate"><code class="name flex">
+<span>def <span class="ident">calculate</span></span>(<span>self, char)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the effective stats for the given character and
+returns them as a stat dictionary.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character whose
+effective stats to calculate. Should belong to the
+instance's associated roster.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>{<code>str</code>:<code>float</code>} A dictionary mapping effective stat
+names, as they appear in <code>EFF_STATS</code> to their values.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If any settings attributes have not yet been
+instantiated. (See <code><a title="legends.effstatcalc.EffStatSettings.ready" href="#legends.effstatcalc.EffStatSettings.ready">EffStatSettings.ready</a></code>.)</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calculate(self, char):
+    &#34;&#34;&#34;Calculates the effective stats for the given character and
+    returns them as a stat dictionary.
+
+    Args:
+        char (legends.gameobjects.Character): The character whose
+            effective stats to calculate. Should belong to the
+            instance&#39;s associated roster.
+
+    Returns:
+        dict: {`str`:`float`} A dictionary mapping effective stat
+            names, as they appear in `EFF_STATS` to their values.
+
+    Raises:
+        ValueError: If any settings attributes have not yet been
+            instantiated. (See `EffStatSettings.ready`.)
+
+    &#34;&#34;&#34;
+    if not self.settings.ready:
+        raise ValueError(
+            &#39;Effective stat calculator settings not fully instantiated.&#39;
+        )
+    statDict = {}
+
+    # get stats and particle effects
+    stats = char.totalStats(self.roster)
+    stats = self.settings.statMods.apply(stats)
+    partEffects = char.partEffects(self.roster)
+
+    # compute effective attack and tech damage
+    stats.att *= 1 + partEffects.attUp * self.settings.ampForceRounds
+    critFactor = stats.cc * stats.cd + (1 - stats.cc)
+    statDict[&#39;Effective Attack Damage&#39;] = stats.att * critFactor
+    statDict[&#39;Effective Tech Damage&#39;] = stats.tech * critFactor
+
+    # adjust health and gc for nexus shields, undo damage, and cloak
+    stats.hlth = (
+        stats.hlth
+        + partEffects.shield * stats.tech
+        + partEffects.regen * stats.hlth * self.settings.undoDmgRounds
+    )
+    stats.gc = self.settings.cloak + (1 - self.settings.cloak) * stats.gc
+
+    # compute average incoming damage per hit
+    dmg = (
+        self.settings.techChance * self.settings.techDmg
+        + (1 - self.settings.techChance) * self.settings.attDmg
+    )
+
+    # compute reduced incoming attack damage per hit
+    reducedAttDmg = (
+        (1 - stats.gc) * max(
+            self.settings.attDmg - stats.dfn, 1
+        )
+        + stats.gc * max(
+            (1 - stats.gd) * self.settings.attDmg - stats.dfn, 1
+        )
+    )
+
+    # compute reduced incoming tech damage per hit
+    reducedTechDmg = (
+        (1 - stats.gc) * max(
+            self.settings.techDmg - 0.38 * stats.tech, 1
+        )
+        + stats.gc * max(
+            (1 - stats.gd) * self.settings.techDmg - 0.38 * stats.dfn, 1
+        )
+    )
+
+    # compute average reduced incoming damage per hit
+    reducedDmg = (
+        self.settings.techChance * reducedTechDmg
+        + (1 - self.settings.techChance) * reducedAttDmg
+    )
+
+    # compute effective health and return stat dict
+    numHits = stats.hlth / reducedDmg   # number of hits until death
+    statDict[&#39;Effective Health&#39;] = numHits * dmg  # effective health
+    return statDict</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatCalc.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, char)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the effective stats for the given character. Looks
+them up in the underlying database, if they exist. Otherwise,
+computes them.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character whose
+effective stats to calculate. Should belong to the
+instance's associated roster.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="legends.stats.EffStats" href="stats.html#legends.stats.EffStats">EffStats</a></code></dt>
+<dd>The character's effective stats.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get(self, char):
+    &#34;&#34;&#34;Returns the effective stats for the given character. Looks
+    them up in the underlying database, if they exist. Otherwise,
+    computes them.
+
+    Args:
+        char (legends.gameobjects.Character): The character whose
+            effective stats to calculate. Should belong to the
+            instance&#39;s associated roster.
+
+    Returns:
+        legends.stats.EffStats: The character&#39;s effective stats.
+
+    &#34;&#34;&#34;
+    if char.nameID not in self._data:
+        self._data[char.nameID] = EffStats()
+        self._data[char.nameID].update(self.calculate(char))
+    return self._data[char.nameID]</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatCalc.onCharChange"><code class="name flex">
+<span>def <span class="ident">onCharChange</span></span>(<span>self, charChangeEvent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Recalculates effective stats when a character is modified.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>charChangeEvent</code></strong> :&ensp;<code><a title="legends.roster.CharChangeEvent" href="roster.html#legends.roster.CharChangeEvent">CharChangeEvent</a></code></dt>
+<dd>The event
+sent by the assigned roster's <code>charChangeWatcher</code> event
+handler.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def onCharChange(self, charChangeEvent):
+    &#34;&#34;&#34;Recalculates effective stats when a character is modified.
+
+    Args:
+        charChangeEvent (legends.roster.CharChangeEvent): The event
+            sent by the assigned roster&#39;s `charChangeWatcher` event
+            handler.
+
+    &#34;&#34;&#34;
+    if charChangeEvent.char.nameID in self._data:
+        self.update(charChangeEvent.char)</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatCalc.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self, char)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Recalculates the effective stats for the given character and
+updates their data in the underlying dictionary.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>char</code></strong> :&ensp;<code><a title="legends.gameobjects.Character" href="gameobjects.html#legends.gameobjects.Character">Character</a></code></dt>
+<dd>The character whose
+effective stats to calculate. Should belong to the
+instance's associated roster.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update(self, char):
+    &#34;&#34;&#34;Recalculates the effective stats for the given character and
+    updates their data in the underlying dictionary.
+
+    Args:
+        char (legends.gameobjects.Character): The character whose
+            effective stats to calculate. Should belong to the
+            instance&#39;s associated roster.
+
+    &#34;&#34;&#34;
+    self._data[char.nameID].update(self.calculate(char))</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatCalc.updateAll"><code class="name flex">
+<span>def <span class="ident">updateAll</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Recalculates the effective stats for all characters in the
+underlying data dictionary.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def updateAll(self):
+    &#34;&#34;&#34;Recalculates the effective stats for all characters in the
+    underlying data dictionary.
+
+    &#34;&#34;&#34;
+    for nameID in self._data:
+        self.update(self.roster.chars[nameID])</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings"><code class="flex name class">
+<span>class <span class="ident">EffStatSettings</span></span>
+<span>(</span><span>parent)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Setting for an <code><a title="legends.effstatcalc.EffStatCalc" href="#legends.effstatcalc.EffStatCalc">EffStatCalc</a></code> instance.</p>
+<p>There are no default settings. Users must instantiate each setting.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class EffStatSettings():
+    &#34;&#34;&#34;Setting for an `EffStatCalc` instance.
+
+    There are no default settings. Users must instantiate each setting.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent):
+        self._parent = parent
+        self._settings = {
+            &#39;attDmg&#39;: None,
+            &#39;techDmg&#39;: None,
+            &#39;techChance&#39;: None,
+            &#39;cloak&#39;: None,
+            &#39;undoDmgRounds&#39;: None,
+            &#39;ampForceRounds&#39;: None
+        }
+        self._statMods = StatMods()
+        self._statMods.onChange.subscribe(self.updateParent)
+
+    @property
+    def parent(self):
+        &#34;&#34;&#34;`EffStatCalc`: The `EffStatCalc` instance to which these
+        settings belong.
+        &#34;&#34;&#34;
+        return self._parent
+
+    @property
+    def ready(self):
+        &#34;&#34;&#34;`bool`: True if all settings (attack damage, tech damage,
+        cloak, undo damage rounds, and amp force rounds) have been set.
+        &#34;&#34;&#34;
+        return not any(
+            getattr(self, attrName) is None
+            for attrName in [
+                &#39;attDmg&#39;, &#39;techDmg&#39;, &#39;techChance&#39;,
+                &#39;cloak&#39;, &#39;undoDmgRounds&#39;, &#39;ampForceRounds&#39;
+            ]
+        )
+
+    @property
+    def attDmg(self):
+        &#34;&#34;&#34;`float`: The average incoming attack damage delivered by
+        enemy attack hits that do not glance. Setting this property
+        triggers the `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;attDmg&#39;]
+
+    @attDmg.setter
+    def attDmg(self, value):
+        self._settings[&#39;attDmg&#39;] = value
+        self.updateParent()
+
+    @property
+    def techDmg(self):
+        &#34;&#34;&#34;`float`: The average incoming tech damage delivered by enemy
+        tech hits that do not glance. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;techDmg&#39;]
+
+    @techDmg.setter
+    def techDmg(self, value):
+        self._settings[&#39;techDmg&#39;] = value
+        self.updateParent()
+
+    @property
+    def techChance(self):
+        &#34;&#34;&#34;`float`: The proportion of all incoming enemy hits that
+        deliver tech damage. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;techChance&#39;]
+
+    @techChance.setter
+    def techChance(self, value):
+        self._settings[&#39;techChance&#39;] = value
+        self.updateParent()
+
+    @property
+    def cloak(self):
+        &#34;&#34;&#34;`float`: The proportion of turns during which the character
+        is cloaked. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;cloak&#39;]
+
+    @cloak.setter
+    def cloak(self, value):
+        self._settings[&#39;cloak&#39;] = value
+        self.updateParent()
+
+    @property
+    def undoDmgRounds(self):
+        &#34;&#34;&#34;`float`: The expected number of regenerations triggered by
+        any Undo Damage particles that might be equipped. Should be a
+        number between 0 and 2. Setting this property triggers the
+        `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;undoDmgRounds&#39;]
+
+    @undoDmgRounds.setter
+    def undoDmgRounds(self, value):
+        self._settings[&#39;undoDmgRounds&#39;] = value
+        self.updateParent()
+
+    @property
+    def ampForceRounds(self):
+        &#34;&#34;&#34;`float`: The proportion of rounds during which the character
+        will receive the benefit of any Amplify Force particles that may
+        be equipped. Should be a number between 0 and 1. Setting this
+        property triggers the `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._settings[&#39;ampForceRounds&#39;]
+
+    @ampForceRounds.setter
+    def ampForceRounds(self, value):
+        self._settings[&#39;ampForceRounds&#39;] = value
+        self.updateParent()
+
+    @property
+    def statMods(self):
+        &#34;&#34;&#34;`legends.stats.StatMods`: Stat modifiers to be applied to the
+        allied character. Modifying any of the stat modifiers triggers
+        the `EffStatSettings.updateParent` method.
+        &#34;&#34;&#34;
+        return self._statMods
+
+    def updateParent(self):
+        &#34;&#34;&#34;If the `ready` property is `True`, causes the parent
+        `EffStatCalc` instance to recalculate all effective stats in its
+        underlying data dictionary. Otherwise, does nothing.
+        &#34;&#34;&#34;
+        if self.ready:
+            self.parent.updateAll()
+
+    def fromEnemies(self, *enemyChars):
+        &#34;&#34;&#34;Sets the `attDmg`, `techDmg`, and `techChance` properties
+        using the given enemy characters.
+
+        Args:
+            enemyChars (list of EnemyChar): The enemy characters from
+                which to derive the property values.
+
+        &#34;&#34;&#34;
+        threatStats = sum(
+            (enemyChar.threatStats for enemyChar in enemyChars), ThreatStats()
+        )
+        self.attDmg = (
+            0 if threatStats.attHits == 0 else
+            threatStats.attDmg / threatStats.attHits
+        )
+        self.techDmg = (
+            0 if threatStats.techHits == 0 else
+            threatStats.techDmg / threatStats.techHits
+        )
+        totalHits = threatStats.attHits + threatStats.techHits
+        self.techChance = (
+            0.5 if totalHits == 0 else
+            threatStats.techHits / totalHits
+        )
+
+    def __repr__(self):
+        return &#39;EffStatSettings({})&#39;.format(formatDict(self._settings))</code></pre>
+</details>
+<h3>Instance variables</h3>
+<dl>
+<dt id="legends.effstatcalc.EffStatSettings.ampForceRounds"><code class="name">var <span class="ident">ampForceRounds</span></code></dt>
+<dd>
+<div class="desc"><p><code>float</code>: The proportion of rounds during which the character
+will receive the benefit of any Amplify Force particles that may
+be equipped. Should be a number between 0 and 1. Setting this
+property triggers the <code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">EffStatSettings.updateParent()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def ampForceRounds(self):
+    &#34;&#34;&#34;`float`: The proportion of rounds during which the character
+    will receive the benefit of any Amplify Force particles that may
+    be equipped. Should be a number between 0 and 1. Setting this
+    property triggers the `EffStatSettings.updateParent` method.
+    &#34;&#34;&#34;
+    return self._settings[&#39;ampForceRounds&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.attDmg"><code class="name">var <span class="ident">attDmg</span></code></dt>
+<dd>
+<div class="desc"><p><code>float</code>: The average incoming attack damage delivered by
+enemy attack hits that do not glance. Setting this property
+triggers the <code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">EffStatSettings.updateParent()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def attDmg(self):
+    &#34;&#34;&#34;`float`: The average incoming attack damage delivered by
+    enemy attack hits that do not glance. Setting this property
+    triggers the `EffStatSettings.updateParent` method.
+    &#34;&#34;&#34;
+    return self._settings[&#39;attDmg&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.cloak"><code class="name">var <span class="ident">cloak</span></code></dt>
+<dd>
+<div class="desc"><p><code>float</code>: The proportion of turns during which the character
+is cloaked. Setting this property triggers the
+<code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">EffStatSettings.updateParent()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def cloak(self):
+    &#34;&#34;&#34;`float`: The proportion of turns during which the character
+    is cloaked. Setting this property triggers the
+    `EffStatSettings.updateParent` method.
+    &#34;&#34;&#34;
+    return self._settings[&#39;cloak&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.parent"><code class="name">var <span class="ident">parent</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.effstatcalc.EffStatCalc" href="#legends.effstatcalc.EffStatCalc">EffStatCalc</a></code>: The <code><a title="legends.effstatcalc.EffStatCalc" href="#legends.effstatcalc.EffStatCalc">EffStatCalc</a></code> instance to which these
+settings belong.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def parent(self):
+    &#34;&#34;&#34;`EffStatCalc`: The `EffStatCalc` instance to which these
+    settings belong.
+    &#34;&#34;&#34;
+    return self._parent</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.ready"><code class="name">var <span class="ident">ready</span></code></dt>
+<dd>
+<div class="desc"><p><code>bool</code>: True if all settings (attack damage, tech damage,
+cloak, undo damage rounds, and amp force rounds) have been set.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def ready(self):
+    &#34;&#34;&#34;`bool`: True if all settings (attack damage, tech damage,
+    cloak, undo damage rounds, and amp force rounds) have been set.
+    &#34;&#34;&#34;
+    return not any(
+        getattr(self, attrName) is None
+        for attrName in [
+            &#39;attDmg&#39;, &#39;techDmg&#39;, &#39;techChance&#39;,
+            &#39;cloak&#39;, &#39;undoDmgRounds&#39;, &#39;ampForceRounds&#39;
+        ]
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.statMods"><code class="name">var <span class="ident">statMods</span></code></dt>
+<dd>
+<div class="desc"><p><code><a title="legends.stats.StatMods" href="stats.html#legends.stats.StatMods">StatMods</a></code>: Stat modifiers to be applied to the
+allied character. Modifying any of the stat modifiers triggers
+the <code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">EffStatSettings.updateParent()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def statMods(self):
+    &#34;&#34;&#34;`legends.stats.StatMods`: Stat modifiers to be applied to the
+    allied character. Modifying any of the stat modifiers triggers
+    the `EffStatSettings.updateParent` method.
+    &#34;&#34;&#34;
+    return self._statMods</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.techChance"><code class="name">var <span class="ident">techChance</span></code></dt>
+<dd>
+<div class="desc"><p><code>float</code>: The proportion of all incoming enemy hits that
+deliver tech damage. Setting this property triggers the
+<code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">EffStatSettings.updateParent()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def techChance(self):
+    &#34;&#34;&#34;`float`: The proportion of all incoming enemy hits that
+    deliver tech damage. Setting this property triggers the
+    `EffStatSettings.updateParent` method.
+    &#34;&#34;&#34;
+    return self._settings[&#39;techChance&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.techDmg"><code class="name">var <span class="ident">techDmg</span></code></dt>
+<dd>
+<div class="desc"><p><code>float</code>: The average incoming tech damage delivered by enemy
+tech hits that do not glance. Setting this property triggers the
+<code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">EffStatSettings.updateParent()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def techDmg(self):
+    &#34;&#34;&#34;`float`: The average incoming tech damage delivered by enemy
+    tech hits that do not glance. Setting this property triggers the
+    `EffStatSettings.updateParent` method.
+    &#34;&#34;&#34;
+    return self._settings[&#39;techDmg&#39;]</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.undoDmgRounds"><code class="name">var <span class="ident">undoDmgRounds</span></code></dt>
+<dd>
+<div class="desc"><p><code>float</code>: The expected number of regenerations triggered by
+any Undo Damage particles that might be equipped. Should be a
+number between 0 and 2. Setting this property triggers the
+<code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">EffStatSettings.updateParent()</a></code> method.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@property
+def undoDmgRounds(self):
+    &#34;&#34;&#34;`float`: The expected number of regenerations triggered by
+    any Undo Damage particles that might be equipped. Should be a
+    number between 0 and 2. Setting this property triggers the
+    `EffStatSettings.updateParent` method.
+    &#34;&#34;&#34;
+    return self._settings[&#39;undoDmgRounds&#39;]</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="legends.effstatcalc.EffStatSettings.fromEnemies"><code class="name flex">
+<span>def <span class="ident">fromEnemies</span></span>(<span>self, *enemyChars)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the <code>attDmg</code>, <code>techDmg</code>, and <code>techChance</code> properties
+using the given enemy characters.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>enemyChars</code></strong> :&ensp;<code>list</code> of <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code></dt>
+<dd>The enemy characters from
+which to derive the property values.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fromEnemies(self, *enemyChars):
+    &#34;&#34;&#34;Sets the `attDmg`, `techDmg`, and `techChance` properties
+    using the given enemy characters.
+
+    Args:
+        enemyChars (list of EnemyChar): The enemy characters from
+            which to derive the property values.
+
+    &#34;&#34;&#34;
+    threatStats = sum(
+        (enemyChar.threatStats for enemyChar in enemyChars), ThreatStats()
+    )
+    self.attDmg = (
+        0 if threatStats.attHits == 0 else
+        threatStats.attDmg / threatStats.attHits
+    )
+    self.techDmg = (
+        0 if threatStats.techHits == 0 else
+        threatStats.techDmg / threatStats.techHits
+    )
+    totalHits = threatStats.attHits + threatStats.techHits
+    self.techChance = (
+        0.5 if totalHits == 0 else
+        threatStats.techHits / totalHits
+    )</code></pre>
+</details>
+</dd>
+<dt id="legends.effstatcalc.EffStatSettings.updateParent"><code class="name flex">
+<span>def <span class="ident">updateParent</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>If the <code>ready</code> property is <code>True</code>, causes the parent
+<code><a title="legends.effstatcalc.EffStatCalc" href="#legends.effstatcalc.EffStatCalc">EffStatCalc</a></code> instance to recalculate all effective stats in its
+underlying data dictionary. Otherwise, does nothing.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def updateParent(self):
+    &#34;&#34;&#34;If the `ready` property is `True`, causes the parent
+    `EffStatCalc` instance to recalculate all effective stats in its
+    underlying data dictionary. Otherwise, does nothing.
+    &#34;&#34;&#34;
+    if self.ready:
+        self.parent.updateAll()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
 <dt id="legends.effstatcalc.EnemyChar"><code class="flex name class">
 <span>class <span class="ident">EnemyChar</span></span>
 <span>(</span><span>char, roster=None, rounds=3)</span>
@@ -570,11 +1989,11 @@ to it.</p></div>
         self._char = char
         self._roster = roster
 
-        self.rounds = rounds
+        self._rounds = rounds
 
         self._statMods = StatMods()
 
-        self.roster.onCharChange.subscribe(self.onCharChange)
+        self.roster.charChangeWatcher.subscribe(self.onCharChange)
         self.statMods.onChange.subscribe(lambda event:self.parent.update())
 
     @property
@@ -601,7 +2020,7 @@ to it.</p></div>
     @property
     def rounds(self):
         &#34;&#34;&#34;`int`: The number of combat rounds used to calculate the
-        threat assessment. Must be a positive integer. Setting this
+        threat assessment. Should be a positive integer. Setting this
         property forces the parent `EnemyChar` instance to update its
         threat statistics.
         &#34;&#34;&#34;
@@ -609,8 +2028,6 @@ to it.</p></div>
 
     @rounds.setter
     def rounds(self, value):
-        if not isinstance(value, int) or value &lt;= 0:
-            raise ValueError(&#39;{!r} not a positive integer&#39;.format(value))
         self._rounds = value
         self.parent.update()
 
@@ -691,7 +2108,7 @@ def roster(self):
 <dt id="legends.effstatcalc.EnemyCharSettings.rounds"><code class="name">var <span class="ident">rounds</span></code></dt>
 <dd>
 <div class="desc"><p><code>int</code>: The number of combat rounds used to calculate the
-threat assessment. Must be a positive integer. Setting this
+threat assessment. Should be a positive integer. Setting this
 property forces the parent <code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code> instance to update its
 threat statistics.</p></div>
 <details class="source">
@@ -701,7 +2118,7 @@ threat statistics.</p></div>
 <pre><code class="python">@property
 def rounds(self):
     &#34;&#34;&#34;`int`: The number of combat rounds used to calculate the
-    threat assessment. Must be a positive integer. Setting this
+    threat assessment. Should be a positive integer. Setting this
     property forces the parent `EnemyChar` instance to update its
     threat statistics.
     &#34;&#34;&#34;
@@ -782,8 +2199,42 @@ sent by the associated roster.</dd>
 <li><code><a title="legends" href="index.html">legends</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="legends.effstatcalc.pvpMeta" href="#legends.effstatcalc.pvpMeta">pvpMeta</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
+<li>
+<h4><code><a title="legends.effstatcalc.EffStatCalc" href="#legends.effstatcalc.EffStatCalc">EffStatCalc</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.effstatcalc.EffStatCalc.calculate" href="#legends.effstatcalc.EffStatCalc.calculate">calculate</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatCalc.data" href="#legends.effstatcalc.EffStatCalc.data">data</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatCalc.get" href="#legends.effstatcalc.EffStatCalc.get">get</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatCalc.onCharChange" href="#legends.effstatcalc.EffStatCalc.onCharChange">onCharChange</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatCalc.roster" href="#legends.effstatcalc.EffStatCalc.roster">roster</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatCalc.settings" href="#legends.effstatcalc.EffStatCalc.settings">settings</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatCalc.update" href="#legends.effstatcalc.EffStatCalc.update">update</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatCalc.updateAll" href="#legends.effstatcalc.EffStatCalc.updateAll">updateAll</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="legends.effstatcalc.EffStatSettings" href="#legends.effstatcalc.EffStatSettings">EffStatSettings</a></code></h4>
+<ul class="two-column">
+<li><code><a title="legends.effstatcalc.EffStatSettings.ampForceRounds" href="#legends.effstatcalc.EffStatSettings.ampForceRounds">ampForceRounds</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.attDmg" href="#legends.effstatcalc.EffStatSettings.attDmg">attDmg</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.cloak" href="#legends.effstatcalc.EffStatSettings.cloak">cloak</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.fromEnemies" href="#legends.effstatcalc.EffStatSettings.fromEnemies">fromEnemies</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.parent" href="#legends.effstatcalc.EffStatSettings.parent">parent</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.ready" href="#legends.effstatcalc.EffStatSettings.ready">ready</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.statMods" href="#legends.effstatcalc.EffStatSettings.statMods">statMods</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.techChance" href="#legends.effstatcalc.EffStatSettings.techChance">techChance</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.techDmg" href="#legends.effstatcalc.EffStatSettings.techDmg">techDmg</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.undoDmgRounds" href="#legends.effstatcalc.EffStatSettings.undoDmgRounds">undoDmgRounds</a></code></li>
+<li><code><a title="legends.effstatcalc.EffStatSettings.updateParent" href="#legends.effstatcalc.EffStatSettings.updateParent">updateParent</a></code></li>
+</ul>
+</li>
 <li>
 <h4><code><a title="legends.effstatcalc.EnemyChar" href="#legends.effstatcalc.EnemyChar">EnemyChar</a></code></h4>
 <ul class="">
